@@ -1,0 +1,358 @@
+"use client"
+
+import { ProtectedRoute } from "@/components/protected-route"
+import { SidebarLayout } from "@/components/sidebar-layout"
+import { useLessonStore } from "@/lib/lesson-store"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BookOpen, Calendar, CheckCircle2, Clock, FileText, Star, TrendingUp, Download } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+
+export default function ClientProgressPage() {
+  const router = useRouter()
+  const { getLessonsByClient } = useLessonStore()
+  const searchParams = useSearchParams()
+  const children = [
+    { id: "child-1", label: "Марія, 12 років" },
+    { id: "child-2", label: "Іван, 9 років" },
+  ]
+  const initialChild = searchParams.get("child") || children[0].id
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || children[0].id
+  const clientId = selectedChildId || "client-1"
+
+  const allLessons = getLessonsByClient(clientId)
+  const completedLessons = allLessons.filter((l) => l.status === "completed")
+  const scheduledLessons = allLessons.filter((l) => l.status === "scheduled")
+
+  // Stats
+  const totalLessons = completedLessons.length
+  const totalHours = completedLessons.reduce((acc, l) => acc + l.duration, 0) / 60
+  const averageGrade =
+    completedLessons.filter((l) => l.homework?.grade).reduce((acc, l) => acc + (l.homework?.grade || 0), 0) /
+      completedLessons.filter((l) => l.homework?.grade).length || 0
+  const completedHomework = completedLessons.filter((l) => l.homework?.status === "checked").length
+  const totalHomework = completedLessons.filter((l) => l.homework).length
+
+  // Group by subject
+  const lessonsBySubject = completedLessons.reduce(
+    (acc, lesson) => {
+      if (!acc[lesson.subject]) {
+        acc[lesson.subject] = []
+      }
+      acc[lesson.subject].push(lesson)
+      return acc
+    },
+    {} as Record<string, typeof completedLessons>,
+  )
+
+  return (
+    <ProtectedRoute allowedRoles={["client"]}>
+      <SidebarLayout userType="client">
+        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+          <div>
+            <h1 className="text-3xl font-bold">Мій прогрес</h1>
+            <p className="text-muted-foreground">Відстежуйте свої досягнення та прогрес у навчанні</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {children.map((child) => (
+                <Button
+                  key={child.id}
+                  variant={child.id === selectedChildId ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => router.push(`/client/progress?child=${child.id}`)}
+                >
+                  {child.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid gap-4 md:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Всього занять</CardTitle>
+                <BookOpen className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{totalLessons}</div>
+                <p className="text-xs text-muted-foreground">{totalHours.toFixed(1)} годин</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Середня оцінка</CardTitle>
+                <Star className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{averageGrade.toFixed(1)}</div>
+                <p className="text-xs text-muted-foreground">Чудовий результат!</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Домашні завдання</CardTitle>
+                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {completedHomework}/{totalHomework}
+                </div>
+                <p className="text-xs text-muted-foreground">Виконано</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-sm font-medium">Наступне заняття</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{scheduledLessons.length}</div>
+                <p className="text-xs text-muted-foreground">Заплановано</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Progress by Subject */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Прогрес по предметах</CardTitle>
+              <CardDescription>Ваші досягнення в різних напрямках</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {Object.entries(lessonsBySubject).map(([subject, lessons]) => {
+                const subjectHours = lessons.reduce((acc, l) => acc + l.duration, 0) / 60
+                const subjectGrade =
+                  lessons.filter((l) => l.homework?.grade).reduce((acc, l) => acc + (l.homework?.grade || 0), 0) /
+                    lessons.filter((l) => l.homework?.grade).length || 0
+
+                return (
+                  <div key={subject} className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">{subject}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {lessons.length} занять • {subjectHours.toFixed(1)} годин
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <span className="font-bold">{subjectGrade.toFixed(1)}</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Середня оцінка</p>
+                      </div>
+                    </div>
+                    <Progress value={(lessons.length / totalLessons) * 100} className="h-2" />
+                  </div>
+                )
+              })}
+            </CardContent>
+          </Card>
+
+          {/* Detailed Lessons */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Журнал занять</CardTitle>
+              <CardDescription>Детальна історія всіх ваших занять</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="all">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="all">Всі ({allLessons.length})</TabsTrigger>
+                  <TabsTrigger value="completed">Завершені ({completedLessons.length})</TabsTrigger>
+                  <TabsTrigger value="scheduled">Заплановані ({scheduledLessons.length})</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="all" className="space-y-4">
+                  {allLessons
+                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .map((lesson) => (
+                      <LessonCard key={lesson.id} lesson={lesson} />
+                    ))}
+                </TabsContent>
+
+                <TabsContent value="completed" className="space-y-4">
+                  {completedLessons.map((lesson) => (
+                    <LessonCard key={lesson.id} lesson={lesson} />
+                  ))}
+                </TabsContent>
+
+                <TabsContent value="scheduled" className="space-y-4">
+                  {scheduledLessons.map((lesson) => (
+                    <LessonCard key={lesson.id} lesson={lesson} />
+                  ))}
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </SidebarLayout>
+    </ProtectedRoute>
+  )
+}
+
+function LessonCard({ lesson }: { lesson: any }) {
+  const statusColors = {
+    completed: "bg-green-500/10 text-green-700 border-green-200",
+    scheduled: "bg-blue-500/10 text-blue-700 border-blue-200",
+    cancelled: "bg-red-500/10 text-red-700 border-red-200",
+    missed: "bg-gray-500/10 text-gray-700 border-gray-200",
+  }
+
+  const statusLabels = {
+    completed: "Завершено",
+    scheduled: "Заплановано",
+    cancelled: "Скасовано",
+    missed: "Пропущено",
+  }
+
+  return (
+    <Card className={statusColors[lesson.status as keyof typeof statusColors]}>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-base">{lesson.topic || lesson.subject}</CardTitle>
+            <CardDescription className="flex items-center gap-2 text-sm">
+              <Calendar className="h-3 w-3" />
+              {new Date(lesson.date).toLocaleDateString("uk-UA", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}{" "}
+              • {lesson.time}
+              <Badge variant="outline" className="ml-2">
+                {lesson.duration} хв
+              </Badge>
+            </CardDescription>
+          </div>
+          <Badge variant="outline">{statusLabels[lesson.status as keyof typeof statusLabels]}</Badge>
+        </div>
+      </CardHeader>
+
+      {lesson.status === "completed" && (
+        <CardContent className="space-y-4">
+          {lesson.description && (
+            <div>
+              <h5 className="mb-1 text-sm font-medium">Опис заняття</h5>
+              <p className="text-sm text-muted-foreground">{lesson.description}</p>
+            </div>
+          )}
+
+          {lesson.report && (
+            <div className="rounded-lg border bg-background/50 p-4">
+              <h5 className="mb-2 font-medium">Звіт викладача</h5>
+              <div className="mb-3 flex gap-4">
+                <div className="flex items-center gap-2">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm">
+                    Успішність: <strong>{lesson.report.performance}/5</strong>
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  <span className="text-sm">
+                    Поведінка: <strong>{lesson.report.behavior}/5</strong>
+                  </span>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground">{lesson.report.comment}</p>
+
+              {lesson.report.strengths && lesson.report.strengths.length > 0 && (
+                <div className="mt-3">
+                  <p className="mb-1 text-sm font-medium text-green-700">Сильні сторони:</p>
+                  <ul className="list-inside list-disc text-sm text-muted-foreground">
+                    {lesson.report.strengths.map((s: string, i: number) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {lesson.report.improvements && lesson.report.improvements.length > 0 && (
+                <div className="mt-2">
+                  <p className="mb-1 text-sm font-medium text-blue-700">Що покращити:</p>
+                  <ul className="list-inside list-disc text-sm text-muted-foreground">
+                    {lesson.report.improvements.map((s: string, i: number) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {lesson.homework && (
+            <div className="rounded-lg border bg-background/50 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <h5 className="font-medium">Домашнє завдання</h5>
+                <Badge
+                  variant={
+                    lesson.homework.status === "checked"
+                      ? "default"
+                      : lesson.homework.status === "submitted"
+                        ? "secondary"
+                        : "outline"
+                  }
+                >
+                  {lesson.homework.status === "checked"
+                    ? "Перевірено"
+                    : lesson.homework.status === "submitted"
+                      ? "Відправлено"
+                      : "Очікує"}
+                </Badge>
+              </div>
+              <p className="mb-2 text-sm font-medium">{lesson.homework.title}</p>
+              <p className="mb-2 text-sm text-muted-foreground">{lesson.homework.description}</p>
+              <p className="text-xs text-muted-foreground">
+                Здати до:{" "}
+                {new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA", {
+                  day: "numeric",
+                  month: "long",
+                })}
+              </p>
+
+              {lesson.homework.grade && (
+                <div className="mt-3 flex items-center gap-2 rounded-md bg-green-500/10 p-2">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <div>
+                    <p className="text-sm font-bold">Оцінка: {lesson.homework.grade}/5</p>
+                    {lesson.homework.feedback && (
+                      <p className="text-xs text-muted-foreground">{lesson.homework.feedback}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {lesson.homework.status === "pending" && (
+                <Button size="sm" className="mt-3">
+                  <FileText className="mr-2 h-4 w-4" />
+                  Здати завдання
+                </Button>
+              )}
+            </div>
+          )}
+
+          {lesson.materials && lesson.materials.length > 0 && (
+            <div>
+              <h5 className="mb-2 text-sm font-medium">Матеріали до заняття</h5>
+              <div className="space-y-2">
+                {lesson.materials.map((material: string, i: number) => (
+                  <Button key={i} variant="outline" size="sm" className="w-full justify-start bg-transparent">
+                    <Download className="mr-2 h-4 w-4" />
+                    {material}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardContent>
+      )}
+    </Card>
+  )
+}
