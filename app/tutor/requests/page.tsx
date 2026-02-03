@@ -40,83 +40,104 @@ export default function TutorRequestsPage() {
   return (
     <ProtectedRoute allowedRoles={["specialist"]}>
       <SidebarLayout userType="tutor">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <div className="container mx-auto max-w-5xl space-y-8 p-6">
           <div>
-            <h1 className="text-3xl font-bold">Запити на заняття</h1>
-            <p className="text-muted-foreground">Управління запитами від клієнтів</p>
+            <h1 className="text-3xl font-bold text-slate-900">Запити на заняття</h1>
+            <p className="text-slate-500 mt-1">Управління запитами від клієнтів</p>
           </div>
 
           <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="pending">Нові ({pendingRequests.length})</TabsTrigger>
-              <TabsTrigger value="active">Активні ({activeRequests.length})</TabsTrigger>
-              <TabsTrigger value="completed">Завершені ({completedRequests.length})</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-3 bg-slate-100/50 p-1 rounded-xl h-12">
+              <TabsTrigger 
+                value="pending" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 font-medium transition-all"
+              >
+                Нові ({pendingRequests.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="active" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 font-medium transition-all"
+              >
+                Активні ({activeRequests.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="completed" 
+                className="rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 font-medium transition-all"
+              >
+                Завершені ({completedRequests.length})
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="pending" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Нові запити</CardTitle>
-                  <CardDescription>Відповідайте протягом 3 годин для збереження рейтингу</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {pendingRequests.length > 0 ? (
-                    pendingRequests.map((request) => (
-                      <RequestCard
-                        key={request.id}
-                        request={request}
-                        userType="specialist"
-                        onAccept={handleAcceptRequest}
-                        onReject={handleRejectRequest}
-                      />
-                    ))
-                  ) : (
-                    <p className="py-8 text-center text-muted-foreground">Немає нових запитів</p>
-                  )}
-                </CardContent>
-              </Card>
+            <TabsContent value="pending" className="mt-6 space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">Нові запити</h2>
+                  <p className="text-sm text-slate-500">Відповідайте протягом 3 годин для збереження рейтингу</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                {pendingRequests.length > 0 ? (
+                  pendingRequests.map((request) => (
+                    <RequestCard
+                      key={request.id}
+                      request={request}
+                      userType="specialist"
+                      onAccept={handleAcceptRequest}
+                      onReject={handleRejectRequest}
+                    />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 py-12 text-center">
+                    <p className="text-lg font-medium text-slate-900">Немає нових запитів</p>
+                    <p className="text-sm text-slate-500">Ваш профіль зараз не отримує нових заявок</p>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
-            <TabsContent value="active" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Активні запити</CardTitle>
-                  <CardDescription>Запити в процесі обробки</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {activeRequests.length > 0 ? (
-                    activeRequests.map((request) => (
-                      <RequestCard
-                        key={request.id}
-                        request={request}
-                        userType="specialist"
-                        onAccept={handleAcceptRequest}
-                        onReject={handleRejectRequest}
-                      />
-                    ))
-                  ) : (
-                    <p className="py-8 text-center text-muted-foreground">Немає активних запитів</p>
-                  )}
-                </CardContent>
-              </Card>
+            <TabsContent value="active" className="mt-6 space-y-6">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Активні запити</h2>
+                <p className="text-sm text-slate-500">Запити в процесі обробки та планування</p>
+              </div>
+              
+              <div className="space-y-4">
+                {activeRequests.length > 0 ? (
+                  activeRequests.map((request) => (
+                    <RequestCard
+                      key={request.id}
+                      request={request}
+                      userType="specialist"
+                      onAccept={handleAcceptRequest}
+                      onReject={handleRejectRequest}
+                    />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 py-12 text-center">
+                    <p className="text-lg font-medium text-slate-900">Немає активних запитів</p>
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
-            <TabsContent value="completed" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Завершені запити</CardTitle>
-                  <CardDescription>Історія ваших запитів</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {completedRequests.length > 0 ? (
-                    completedRequests.map((request) => (
-                      <RequestCard key={request.id} request={request} userType="specialist" />
-                    ))
-                  ) : (
-                    <p className="py-8 text-center text-muted-foreground">Немає завершених запитів</p>
-                  )}
-                </CardContent>
-              </Card>
+            <TabsContent value="completed" className="mt-6 space-y-6">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Завершені запити</h2>
+                <p className="text-sm text-slate-500">Історія ваших запитів та оплат</p>
+              </div>
+              
+              <div className="space-y-4">
+                {completedRequests.length > 0 ? (
+                  completedRequests.map((request) => (
+                    <RequestCard key={request.id} request={request} userType="specialist" />
+                  ))
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 py-12 text-center">
+                    <p className="text-lg font-medium text-slate-900">Немає завершених запитів</p>
+                  </div>
+                )}
+              </div>
             </TabsContent>
           </Tabs>
         </div>

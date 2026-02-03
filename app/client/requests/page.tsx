@@ -41,9 +41,9 @@ export default function ClientRequestsPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
-          <div>
-            <h1 className="text-3xl font-bold">Мої запити</h1>
+        <div className="container mx-auto max-w-7xl space-y-8 p-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-slate-900">Мої запити</h1>
             <p className="text-muted-foreground">Управління запитами на заняття</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {children.map((child) => (
@@ -52,6 +52,7 @@ export default function ClientRequestsPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client/requests?child=${child.id}`)}
+                  className="rounded-full"
                 >
                   {child.label}
                 </Button>
@@ -60,14 +61,14 @@ export default function ClientRequestsPage() {
           </div>
 
           <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-3 rounded-full bg-slate-100/70 p-1">
               <TabsTrigger value="pending">Очікують ({pendingRequests.length})</TabsTrigger>
               <TabsTrigger value="active">Активні ({activeRequests.length})</TabsTrigger>
               <TabsTrigger value="completed">Завершені ({completedRequests.length})</TabsTrigger>
             </TabsList>
 
             <TabsContent value="pending" className="space-y-4">
-              <Card>
+              <Card className="border-slate-200/70 bg-white/80 shadow-sm">
                 <CardHeader>
                   <CardTitle>Очікують відповіді</CardTitle>
                   <CardDescription>Спеціалісти мають 3 години для відповіді</CardDescription>
@@ -90,7 +91,7 @@ export default function ClientRequestsPage() {
             </TabsContent>
 
             <TabsContent value="active" className="space-y-4">
-              <Card>
+              <Card className="border-slate-200/70 bg-white/80 shadow-sm">
                 <CardHeader>
                   <CardTitle>Активні запити</CardTitle>
                   <CardDescription>Запити в процесі обробки</CardDescription>
@@ -113,7 +114,7 @@ export default function ClientRequestsPage() {
             </TabsContent>
 
             <TabsContent value="completed" className="space-y-4">
-              <Card>
+              <Card className="border-slate-200/70 bg-white/80 shadow-sm">
                 <CardHeader>
                   <CardTitle>Завершені запити</CardTitle>
                   <CardDescription>Історія ваших запитів</CardDescription>

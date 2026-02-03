@@ -23,6 +23,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
   const [sortBy, setSortBy] = useState("rating_desc")
   const { user } = useAuth()
   const { toast } = useToast()
+  const isClient = user?.role === "client"
+  const homeHref = isClient ? "/client" : "/"
+  const specialistsHref = isClient ? "/client/requests/new" : "/specialists"
   
   // Use a proper state for wishlist, but initialize it from user data if possible
   // For MVP we'll use a local state that would ideally sync with a backend
@@ -91,7 +94,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={homeHref} className="flex items-center gap-2">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-libitum-teal to-libitum-emerald">
                 <BookOpen className="h-6 w-6 text-white" />
               </div>
@@ -114,11 +117,11 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
+          <Link href={homeHref} className="hover:text-foreground">
             Головна
           </Link>
           <span>/</span>
-          <Link href="/specialists" className="hover:text-foreground">
+          <Link href={specialistsHref} className="hover:text-foreground">
             Спеціалісти
           </Link>
           <span>/</span>
@@ -213,8 +216,16 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                     <div className="text-sm text-muted-foreground">Від</div>
                     <div className="text-xl font-bold">{specialist.priceMin} ₴/год</div>
                   </div>
-                  <Link href={`/specialists/${specialist.id}`}>
-                    <Button className="bg-gradient-to-r from-libitum-teal to-libitum-emerald hover:opacity-90">Переглянути</Button>
+                  <Link
+                    href={
+                      isClient
+                        ? `/client/requests/new?specialist=${specialist.id}`
+                        : `/specialists/${specialist.id}`
+                    }
+                  >
+                    <Button className="bg-gradient-to-r from-libitum-teal to-libitum-emerald hover:opacity-90">
+                      {isClient ? "Створити запит" : "Переглянути"}
+                    </Button>
                   </Link>
                 </div>
               </CardContent>

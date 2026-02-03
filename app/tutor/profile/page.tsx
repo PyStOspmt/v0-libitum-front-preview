@@ -18,7 +18,16 @@ import { useToast } from "@/hooks/use-toast"
 export default function TutorProfilePage() {
   const { user } = useAuth()
   const { toast } = useToast()
-  const [subjects, setSubjects] = useState(["Англійська мова", "Німецька мова"])
+  const isPsychologist = user?.subjects?.some((subject) =>
+    subject.toLowerCase().includes("психол") || subject.toLowerCase().includes("psych")
+  )
+  const [subjects, setSubjects] = useState(
+    user?.subjects?.length
+      ? user.subjects
+      : isPsychologist
+        ? ["Підліткова психологія", "Сімейні консультації"]
+        : ["Англійська мова", "Німецька мова"],
+  )
   const [newSubject, setNewSubject] = useState("")
 
   const addSubject = () => {
@@ -41,14 +50,14 @@ export default function TutorProfilePage() {
 
   return (
     <SidebarLayout userType="tutor">
-      <div className="container mx-auto max-w-4xl px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Мій профіль</h1>
+      <div className="container mx-auto max-w-4xl space-y-8 px-4 py-8">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold text-slate-900">Мій профіль</h1>
           <p className="text-muted-foreground">Налаштуйте свій публічний профіль для клієнтів</p>
         </div>
 
         <div className="space-y-6">
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Фото профілю</CardTitle>
               <CardDescription>Додайте професійне фото для вашого профілю</CardDescription>
@@ -56,10 +65,10 @@ export default function TutorProfilePage() {
             <CardContent>
               <div className="flex items-center gap-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarFallback className="text-2xl">{user?.name[0]}</AvatarFallback>
+                  <AvatarFallback className="text-2xl">{user?.name?.[0] ?? "U"}</AvatarFallback>
                 </Avatar>
                 <div className="space-y-2">
-                  <Button>
+                  <Button className="rounded-full">
                     <Upload className="mr-2 h-4 w-4" />
                     Завантажити фото
                   </Button>
@@ -69,7 +78,7 @@ export default function TutorProfilePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Основна інформація</CardTitle>
               <CardDescription>Ваші особисті дані</CardDescription>
@@ -96,7 +105,7 @@ export default function TutorProfilePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Професійна інформація</CardTitle>
               <CardDescription>Розкажіть про свій досвід та кваліфікацію</CardDescription>
@@ -104,7 +113,7 @@ export default function TutorProfilePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="specialization">Спеціалізація</Label>
-                <Select defaultValue="tutor">
+                <Select defaultValue={isPsychologist ? "psychologist" : "tutor"}>
                   <SelectTrigger id="specialization">
                     <SelectValue />
                   </SelectTrigger>
@@ -120,7 +129,7 @@ export default function TutorProfilePage() {
                 <Label>Предмети/Напрямки</Label>
                 <div className="flex flex-wrap gap-2">
                   {subjects.map((subject) => (
-                    <Badge key={subject} variant="secondary" className="gap-1">
+                    <Badge key={subject} variant="secondary" className="gap-1 rounded-full">
                       {subject}
                       <button onClick={() => removeSubject(subject)} className="ml-1 hover:text-destructive">
                         <X className="h-3 w-3" />
@@ -135,7 +144,7 @@ export default function TutorProfilePage() {
                     onChange={(e) => setNewSubject(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addSubject()}
                   />
-                  <Button type="button" onClick={addSubject}>
+                  <Button type="button" onClick={addSubject} className="rounded-full">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
@@ -168,7 +177,7 @@ export default function TutorProfilePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Ціни та доступність</CardTitle>
               <CardDescription>Налаштуйте вартість занять та графік роботи</CardDescription>
@@ -216,7 +225,7 @@ export default function TutorProfilePage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Документи</CardTitle>
               <CardDescription>Завантажте документи для верифікації</CardDescription>
@@ -224,14 +233,14 @@ export default function TutorProfilePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Диплом про освіту</Label>
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button variant="outline" className="w-full bg-transparent rounded-full">
                   <Upload className="mr-2 h-4 w-4" />
                   Завантажити диплом
                 </Button>
               </div>
               <div className="space-y-2">
                 <Label>Сертифікати</Label>
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button variant="outline" className="w-full bg-transparent rounded-full">
                   <Upload className="mr-2 h-4 w-4" />
                   Завантажити сертифікати
                 </Button>
@@ -240,7 +249,7 @@ export default function TutorProfilePage() {
           </Card>
 
           <div className="flex justify-end">
-            <Button onClick={handleSave} size="lg">
+            <Button onClick={handleSave} size="lg" className="rounded-full">
               <Save className="mr-2 h-4 w-4" />
               Зберегти зміни
             </Button>

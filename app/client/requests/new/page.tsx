@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
@@ -13,18 +13,22 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { useRequestStore } from "@/lib/request-store"
+import { useDictionaryStore } from "@/lib/dictionary-store"
 
 export default function ClientNewRequestPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { toast } = useToast()
   const { addRequest, getActiveTrialCount } = useRequestStore()
+  const { subjects: dictionarySubjects } = useDictionaryStore()
 
   const children = [
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
   ]
-  const subjects = ["Англійська мова", "Математика", "Українська мова", "Психологія", "Логопедія"]
+  const subjects = dictionarySubjects.length
+    ? dictionarySubjects.map((item) => item.name)
+    : ["Англійська мова", "Математика", "Українська мова", "Психологія", "Логопедія"]
 
   const initialChild = searchParams.get("child") || children[0].id
   const selectedChildId = children.find((child) => child.id === initialChild)?.id || children[0].id
@@ -36,14 +40,27 @@ export default function ClientNewRequestPage() {
   const [time, setTime] = useState("")
   const [message, setMessage] = useState("")
   const [leadType, setLeadType] = useState<"private" | "public">(selectedSpecialist ? "private" : "public")
+  const selectedSubject = dictionarySubjects.find((item) => item.name === subject)
+  const subjectLevels = selectedSubject?.levels ?? []
+  const [level, setLevel] = useState(subjectLevels[0]?.label || "")
+
+  useEffect(() => {
+    if (subjectLevels.length === 0) {
+      setLevel("")
+      return
+    }
+    if (!subjectLevels.some((item) => item.label === level)) {
+      setLevel(subjectLevels[0]?.label || "")
+    }
+  }, [level, subjectLevels])
 
   const activeTrials = useMemo(() => getActiveTrialCount(selectedChildId), [getActiveTrialCount, selectedChildId])
 
   const handleSubmit = () => {
-    if (!subject || !date || !time) {
+    if (!subject || !date || !time || (subjectLevels.length > 0 && !level)) {
       toast({
         title: "Заповніть обов'язкові поля",
-        description: "Предмет, дата та час є обов'язковими",
+        description: "Предмет, рівень, дата та час є обов'язковими",
         variant: "destructive",
       })
       return
@@ -56,6 +73,7 @@ export default function ClientNewRequestPage() {
       specialistId: leadType === "private" ? selectedSpecialist || "specialist-1" : null,
       specialistName: leadType === "private" ? "Обраний спеціаліст" : undefined,
       subject,
+      level: level || undefined,
       date,
       time,
       format,
@@ -142,6 +160,24 @@ export default function ClientNewRequestPage() {
                 </div>
               </div>
 
+              {subjectLevels.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Рівень підготовки *</Label>
+                  <Select value={level} onValueChange={(value) => setLevel(value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Оберіть рівень" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {subjectLevels.map((item) => (
+                        <SelectItem key={item.id} value={item.label}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label>Формат</Label>
                 <Select value={format} onValueChange={(value) => setFormat(value as "online" | "offline")}>
@@ -169,10 +205,12 @@ export default function ClientNewRequestPage() {
           </Card>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-            <Button variant="outline" onClick={() => router.back()}>
+            <Button variant="outline" onClick={() => router.back()} className="rounded-full">
               Скасувати
             </Button>
-            <Button onClick={handleSubmit}>Створити запит</Button>
+            <Button onClick={handleSubmit} className="rounded-full">
+              Створити запит
+            </Button>
           </div>
         </div>
       </SidebarLayout>

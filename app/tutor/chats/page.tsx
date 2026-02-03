@@ -42,18 +42,20 @@ export default function TutorChatsPage() {
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-7xl space-y-6 p-6">
           <div>
-            <h1 className="text-3xl font-bold">Чати</h1>
-            <p className="text-muted-foreground">Спілкування з учнями</p>
+            <h1 className="text-3xl font-bold text-slate-900">Чати</h1>
+            <p className="text-slate-500">Спілкування з учнями</p>
           </div>
 
           {conversations.length === 0 ? (
-            <Card>
+            <Card className="rounded-2xl border-dashed border-slate-200 bg-slate-50/50 shadow-none">
               <CardHeader>
-                <div className="flex items-center gap-3">
-                  <MessageSquare className="h-8 w-8 text-muted-foreground" />
+                <div className="flex flex-col items-center gap-3 text-center py-8">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm border border-slate-100">
+                    <MessageSquare className="h-8 w-8 text-slate-400" />
+                  </div>
                   <div>
-                    <CardTitle>Немає активних чатів</CardTitle>
-                    <CardDescription>Чати з'являться після прийняття запитів</CardDescription>
+                    <CardTitle className="text-lg font-bold text-slate-900">Немає активних чатів</CardTitle>
+                    <CardDescription className="text-slate-500">Чати з'являться автоматично після прийняття запитів</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -63,25 +65,29 @@ export default function TutorChatsPage() {
               {conversations.map((conversation) => (
                 <Card
                   key={conversation.id}
-                  className="cursor-pointer transition-colors hover:bg-muted/50"
+                  className="cursor-pointer transition-all hover:bg-slate-50/50 hover:shadow-md rounded-2xl border-slate-200 shadow-sm group"
                   onClick={() => setActiveConversationId(conversation.id)}
                 >
-                  <CardContent className="flex items-center gap-4 p-4">
-                    <Avatar className="h-12 w-12">
-                      <AvatarFallback>{conversation.clientName.charAt(0)}</AvatarFallback>
+                  <CardContent className="flex items-center gap-4 p-5">
+                    <Avatar className="h-12 w-12 border border-slate-100">
+                      <AvatarFallback className="bg-slate-100 text-slate-600 font-bold">{conversation.clientName.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold">{conversation.clientName}</h3>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-bold text-slate-900 text-base">{conversation.clientName}</h3>
                         {conversation.lastMessageTime && (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs font-medium text-slate-400">
                             {formatDistanceToNow(conversation.lastMessageTime, { addSuffix: true, locale: uk })}
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-muted-foreground">{conversation.lastMessage}</p>
+                      <p className="text-sm text-slate-500 truncate group-hover:text-slate-700 transition-colors">{conversation.lastMessage}</p>
                     </div>
-                    {conversation.unreadCount > 0 && <Badge variant="default">{conversation.unreadCount}</Badge>}
+                    {conversation.unreadCount > 0 && (
+                      <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white rounded-full px-2 min-w-[1.25rem] h-5 flex items-center justify-center">
+                        {conversation.unreadCount}
+                      </Badge>
+                    )}
                   </CardContent>
                 </Card>
               ))}

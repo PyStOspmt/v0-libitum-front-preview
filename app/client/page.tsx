@@ -61,6 +61,7 @@ export default function ClientPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client?child=${child.id}`)}
+                  className="rounded-full"
                 >
                   {child.label}
                 </Button>
@@ -116,31 +117,32 @@ export default function ClientPage() {
           </div>
 
           {/* Gamification Card */}
-          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
-            <CardHeader>
+          <Card className="border-emerald-100 bg-emerald-50/30 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <CardHeader className="relative z-10">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-                    <Award className="h-6 w-6 text-primary-foreground" />
+                <div className="flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-emerald-200">
+                    <Award className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <CardTitle>Рівень {stats.level} - Активний учень</CardTitle>
-                    <CardDescription>Ще 5 занять до наступного рівня</CardDescription>
+                    <CardTitle className="text-xl font-bold text-slate-900">Рівень {stats.level} - Активний учень</CardTitle>
+                    <CardDescription className="text-slate-600">Ще 5 занять до наступного рівня</CardDescription>
                   </div>
                 </div>
-                <Badge variant="secondary" className="text-lg">
+                <Badge variant="secondary" className="text-sm px-3 py-1 bg-white text-emerald-700 shadow-sm">
                   {stats.completedSessions} занять
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent>
-              <Progress value={60} className="h-2" />
+            <CardContent className="relative z-10">
+              <Progress value={60} className="h-2.5 bg-emerald-100 [&>div]:bg-emerald-500" />
               <div className="mt-4 flex gap-2">
-                <Badge variant="outline">
+                <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
                   <Star className="mr-1 h-3 w-3" />
                   Регулярний
                 </Badge>
-                <Badge variant="outline">
+                <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
                   <TrendingUp className="mr-1 h-3 w-3" />
                   Прогрес
                 </Badge>
@@ -150,27 +152,37 @@ export default function ClientPage() {
 
           {/* Quick Actions */}
           <div className="grid gap-4 md:grid-cols-3">
-            <Button size="lg" className="h-auto flex-col gap-2 py-6" onClick={() => router.push("/specialists")}>
-              <Search className="h-6 w-6" />
-              <span>Знайти спеціаліста</span>
+            <Button
+              size="lg"
+              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
+              onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
+            >
+              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                <Search className="h-6 w-6 text-slate-700" />
+              </div>
+              <span className="font-semibold text-lg">Знайти спеціаліста</span>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-auto flex-col gap-2 bg-transparent py-6"
+              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
               onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
             >
-              <Calendar className="h-6 w-6" />
-              <span>Переглянути розклад</span>
+              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                <Calendar className="h-6 w-6 text-slate-700" />
+              </div>
+              <span className="font-semibold text-lg">Переглянути розклад</span>
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="h-auto flex-col gap-2 bg-transparent py-6"
+              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
               onClick={() => router.push(`/client/materials?child=${selectedChildId}`)}
             >
-              <FileText className="h-6 w-6" />
-              <span>Мої матеріали</span>
+              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
+                <FileText className="h-6 w-6 text-slate-700" />
+              </div>
+              <span className="font-semibold text-lg">Мої матеріали</span>
             </Button>
           </div>
 

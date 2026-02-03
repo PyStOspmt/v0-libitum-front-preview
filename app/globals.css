@@ -3,17 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Emerald/Teal theme for Libitum Education */
+/* Light neutral theme with subtle accents for Libitum Education */
 :root {
-  /* Brand Colors */
+  /* Brand Colors - kept for section accents only */
   --libitum-teal: #14b8a6;
   --libitum-emerald: #10b981;
   --libitum-purple: #a855f7;
   --libitum-lime: #84cc16;
 
-  /* Emerald/Teal theme for Libitum Education */
-  --background: oklch(0.99 0.005 180);
-  --foreground: oklch(0.15 0.01 180);
+  /* Neutral palette - even lighter, less saturated */
+  --background: oklch(0.99 0.002 95);
+  --foreground: oklch(0.18 0.008 95);
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 180);
@@ -21,47 +21,47 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.01 180);
 
-  /* Primary - Emerald/Teal (#10B981 to #14B8A6) */
-  --primary: oklch(0.68 0.17 165);
+  /* Primary - Very neutral dark */
+  --primary: oklch(0.22 0.015 95);
   --primary-foreground: oklch(0.99 0 0);
 
-  /* Secondary - Lighter Teal */
-  --secondary: oklch(0.92 0.05 180);
-  --secondary-foreground: oklch(0.2 0.02 180);
+  /* Secondary - Lighter neutral */
+  --secondary: oklch(0.96 0.003 95);
+  --secondary-foreground: oklch(0.22 0.008 95);
 
-  --muted: oklch(0.97 0.005 180);
-  --muted-foreground: oklch(0.5 0.01 180);
+  --muted: oklch(0.975 0.003 180);
+  --muted-foreground: oklch(0.48 0.008 180);
 
-  /* Accent - Bright Teal */
-  --accent: oklch(0.75 0.15 175);
-  --accent-foreground: oklch(0.99 0 0);
+  /* Accent - Very subtle */
+  --accent: oklch(0.93 0.015 95);
+  --accent-foreground: oklch(0.22 0.015 95);
 
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.93 0.005 180);
-  --input: oklch(0.96 0.005 180);
-  --ring: oklch(0.68 0.17 165);
+  --border: oklch(0.92 0.003 95);
+  --input: oklch(0.97 0.003 95);
+  --ring: oklch(0.58 0.12 155);
 
-  --success: oklch(0.68 0.17 165);
+  --success: oklch(0.62 0.12 165);
   --success-foreground: oklch(0.99 0 0);
 
-  --chart-1: oklch(0.68 0.17 165);
-  --chart-2: oklch(0.75 0.15 175);
-  --chart-3: oklch(0.62 0.19 155);
-  --chart-4: oklch(0.58 0.16 185);
-  --chart-5: oklch(0.72 0.14 170);
+  --chart-1: oklch(0.62 0.17 155);
+  --chart-2: oklch(0.7 0.12 140);
+  --chart-3: oklch(0.58 0.08 120);
+  --chart-4: oklch(0.55 0.06 110);
+  --chart-5: oklch(0.65 0.1 150);
 
   --radius: 0.75rem;
 
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.15 0.01 180);
-  --sidebar-primary: oklch(0.68 0.17 165);
+  --sidebar-foreground: oklch(0.2 0.01 95);
+  --sidebar-primary: oklch(0.25 0.02 95);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.97 0.005 180);
-  --sidebar-accent-foreground: oklch(0.15 0.01 180);
-  --sidebar-border: oklch(0.94 0.005 180);
-  --sidebar-ring: oklch(0.68 0.17 165);
+  --sidebar-accent: oklch(0.97 0.005 95);
+  --sidebar-accent-foreground: oklch(0.2 0.01 95);
+  --sidebar-border: oklch(0.94 0.005 95);
+  --sidebar-ring: oklch(0.62 0.17 155);
 }
 
 .dark {
@@ -163,16 +163,62 @@
 }
 
 @layer base {
+  /* Dynamic Themes */
+  .theme-emerald {
+    --primary: oklch(0.62 0.16 160);
+    --primary-foreground: oklch(1 0 0);
+    --ring: oklch(0.62 0.16 160);
+    --sidebar-primary: oklch(0.62 0.16 160);
+    --sidebar-primary-foreground: oklch(1 0 0);
+  }
+
+  .theme-orange {
+    --primary: oklch(0.70 0.18 45);
+    --primary-foreground: oklch(1 0 0);
+    --ring: oklch(0.70 0.18 45);
+    --sidebar-primary: oklch(0.70 0.18 45);
+    --sidebar-primary-foreground: oklch(1 0 0);
+  }
+
+  .theme-blue {
+    --primary: oklch(0.55 0.18 260);
+    --primary-foreground: oklch(1 0 0);
+    --ring: oklch(0.55 0.18 260);
+    --sidebar-primary: oklch(0.55 0.18 260);
+    --sidebar-primary-foreground: oklch(1 0 0);
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-gradient-to-br from-teal-50/30 via-white to-emerald-50/30 text-foreground;
+    @apply text-foreground;
+    background-color: #fafafa;
+    background-image: 
+      linear-gradient(180deg, rgba(240, 248, 245, 0.9) 0%, rgba(250, 250, 250, 0) 40%),
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 85% 5%, rgba(249, 115, 22, 0.04) 0%, transparent 40%);
     background-attachment: fixed;
+    scrollbar-gutter: stable;
   }
 
+  /* Custom Scrollbar - Elegant & Stable */
+  ::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-200/80 hover:bg-slate-300 rounded-full border-[5px] border-solid border-transparent bg-clip-content transition-colors;
+  }
+
+
   .dark body {
-    @apply bg-gradient-to-br from-teal-950/50 via-slate-900 to-emerald-950/50;
+    @apply bg-slate-950;
   }
 }
 
@@ -250,8 +296,26 @@
     }
   }
 
-  /* Gradient text */
+  .animate-float-slow {
+    animation: float-slow 8s ease-in-out infinite;
+  }
+
+  .animate-float-slower {
+    animation: float-slow 12s ease-in-out infinite;
+  }
+
+  @keyframes float-slow {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+
+  /* Gradient text - more neutral */
   .gradient-text {
-    @apply bg-gradient-to-r from-teal-600 to-emerald-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-slate-800 via-slate-600 to-slate-700 bg-clip-text text-transparent;
   }
 }

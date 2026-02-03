@@ -50,19 +50,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (email.includes("admin")) {
       role = "admin"
-    } else if (email.includes("specialist") || email.includes("tutor") || email.includes("teacher")) {
+    } else if (email.includes("specialist") || email.includes("tutor") || email.includes("teacher") || email.includes("psych")) {
       role = "specialist"
     }
 
+    const isPsychologist = email.includes("psych")
+
     const mockUser: User = {
       id: "1",
-      name: role === "admin" ? "Адміністратор" : "Іван Петренко",
+      name: role === "admin" ? "Адміністратор" : isPsychologist ? "Олена Психолог" : "Іван Петренко",
       email,
       role,
-      subjects: role === "specialist" ? ["Англійська мова", "Математика"] : undefined,
+      subjects: role === "specialist" 
+        ? (isPsychologist ? ["Психологія", "Консультації"] : ["Англійська мова", "Математика"]) 
+        : undefined,
       isEmailVerified: true,
       hasPassedQuiz: true,
-      status: role === "specialist" ? "active" : "active",
+      status: "active",
       language: "UA",
     }
     setUser(mockUser)

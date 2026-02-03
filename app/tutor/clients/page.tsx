@@ -3,7 +3,6 @@
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useRequestStore } from "@/lib/request-store"
-import { useChatStore } from "@/lib/chat-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +17,6 @@ import { useState } from "react"
 export default function TutorClientsPage() {
   const router = useRouter()
   const { getRequestsBySpecialist, getStudentsByTutor, addOwnStudent } = useRequestStore()
-  const { openChat } = useChatStore()
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [newStudent, setNewStudent] = useState({
     name: "",
@@ -52,24 +50,24 @@ export default function TutorClientsPage() {
   return (
     <ProtectedRoute allowedRoles={["specialist"]}>
       <SidebarLayout userType="tutor">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Мої учні</h1>
+        <div className="container mx-auto max-w-7xl space-y-8 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-900">Мої учні</h1>
               <p className="text-muted-foreground">Клієнти, з якими ви працюєте</p>
             </div>
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-base">
+              <Badge variant="outline" className="text-base rounded-full px-4 py-1">
                 Всього: {students.length}
               </Badge>
               <Dialog open={showAddStudent} onOpenChange={setShowAddStudent}>
                 <DialogTrigger asChild>
-                  <Button>
+                  <Button className="rounded-full">
                     <Plus className="mr-2 h-4 w-4" />
                     Додати свого учня
                   </Button>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="sm:max-w-lg">
                   <DialogHeader>
                     <DialogTitle>Додати свого учня</DialogTitle>
                   </DialogHeader>
@@ -118,11 +116,11 @@ export default function TutorClientsPage() {
                       <Button
                         variant="outline"
                         onClick={() => setShowAddStudent(false)}
-                        className="flex-1 bg-transparent"
+                        className="flex-1 bg-transparent rounded-full"
                       >
                         Скасувати
                       </Button>
-                      <Button onClick={handleAddStudent} className="flex-1">
+                      <Button onClick={handleAddStudent} className="flex-1 rounded-full">
                         Додати
                       </Button>
                     </div>
@@ -138,7 +136,7 @@ export default function TutorClientsPage() {
                 const relatedRequest = student.leadId ? specialistRequests.find((r) => r.id === student.leadId) : null
 
                 return (
-                  <Card key={student.id} className="flex flex-col">
+                  <Card key={student.id} className="flex flex-col border-slate-200/70 bg-white/80 shadow-sm">
                     <CardHeader>
                       <div className="flex items-start gap-4">
                         <Avatar className="h-16 w-16">
@@ -148,13 +146,18 @@ export default function TutorClientsPage() {
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
-                          <CardTitle className="text-lg">{student.name}</CardTitle>
+                          <CardTitle className="text-lg text-slate-900">{student.name}</CardTitle>
                           <CardDescription className="mt-1">{student.subject}</CardDescription>
                           <div className="mt-2 flex gap-2">
-                            <Badge variant={student.type === "platform" ? "default" : "secondary"}>
+                            <Badge
+                              variant={student.type === "platform" ? "default" : "secondary"}
+                              className="rounded-full"
+                            >
                               {student.type === "platform" ? "З платформи" : "Свій учень"}
                             </Badge>
-                            {student.status === "active" && <Badge className="bg-green-500">Активний</Badge>}
+                            {student.status === "active" && (
+                              <Badge className="rounded-full bg-emerald-500">Активний</Badge>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -168,14 +171,14 @@ export default function TutorClientsPage() {
                       )}
 
                       {student.phone && (
-                        <div className="rounded-lg border bg-muted/50 p-3">
+                        <div className="rounded-2xl border border-slate-200/60 bg-slate-50/70 p-3">
                           <div className="text-xs font-medium text-muted-foreground">Контакт</div>
                           <div className="mt-1 text-sm">{student.phone}</div>
                         </div>
                       )}
 
                       {relatedRequest?.date && (
-                        <div className="rounded-lg border bg-primary/5 p-3">
+                        <div className="rounded-2xl border border-primary/15 bg-primary/10 p-3">
                           <div className="flex items-center gap-2 text-sm font-medium">
                             <Calendar className="h-4 w-4 text-primary" />
                             <span>Наступне заняття</span>
@@ -194,7 +197,7 @@ export default function TutorClientsPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full bg-transparent"
+                          className="w-full bg-transparent rounded-full"
                           onClick={() => router.push("/tutor/schedule")}
                         >
                           <Calendar className="mr-2 h-4 w-4" />
@@ -207,7 +210,7 @@ export default function TutorClientsPage() {
               })}
             </div>
           ) : (
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <User className="mb-4 h-16 w-16 text-muted-foreground" />
                 <h3 className="mb-2 text-xl font-semibold">У вас ще немає учнів</h3>
@@ -215,11 +218,15 @@ export default function TutorClientsPage() {
                   Додайте свого учня або прийміть запит з платформи
                 </p>
                 <div className="flex gap-3">
-                  <Button onClick={() => setShowAddStudent(true)}>
+                  <Button onClick={() => setShowAddStudent(true)} className="rounded-full">
                     <Plus className="mr-2 h-4 w-4" />
                     Додати учня
                   </Button>
-                  <Button variant="outline" onClick={() => router.push("/tutor/requests")} className="bg-transparent">
+                  <Button
+                    variant="outline"
+                    onClick={() => router.push("/tutor/requests")}
+                    className="bg-transparent rounded-full"
+                  >
                     Переглянути запити
                   </Button>
                 </div>

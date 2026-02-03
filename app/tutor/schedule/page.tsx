@@ -13,8 +13,8 @@ export default function TutorSchedulePage() {
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-7xl space-y-6 p-6">
           <div>
-            <h1 className="text-3xl font-bold">Розклад</h1>
-            <p className="text-muted-foreground">Керуйте вашими заняттями та розкладом</p>
+            <h1 className="text-3xl font-bold text-slate-900">Розклад</h1>
+            <p className="text-slate-500">Керуйте вашими заняттями та розкладом</p>
           </div>
 
           <FullCalendar userType="tutor" userId={user?.id || "specialist-1"} />

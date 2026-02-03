@@ -60,10 +60,10 @@ export default function ClientWishlistPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <div className="container mx-auto max-w-7xl space-y-8 p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Обрані спеціалісти</h1>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-900">Обрані спеціалісти</h1>
               <p className="text-muted-foreground">Ваш список збережених викладачів</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {children.map((child) => (
@@ -72,19 +72,25 @@ export default function ClientWishlistPage() {
                     variant={child.id === selectedChildId ? "default" : "outline"}
                     size="sm"
                     onClick={() => router.push(`/client/wishlist?child=${child.id}`)}
+                    className="rounded-full"
                   >
                     {child.label}
                   </Button>
                 ))}
               </div>
             </div>
-            <Button onClick={() => router.push("/specialists")}>Знайти більше</Button>
+            <Button
+              onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
+              className="rounded-full"
+            >
+              Створити запит
+            </Button>
           </div>
 
           {wishlist.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {wishlist.map((specialist) => (
-                <Card key={specialist.id} className="flex flex-col">
+                <Card key={specialist.id} className="flex flex-col border-slate-200/70 bg-white/80 shadow-sm">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-4">
@@ -105,7 +111,7 @@ export default function ClientWishlistPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
                         onClick={() => removeFromWishlist(specialist.id)}
                       >
                         <Heart className="fill-current h-5 w-5" />
@@ -116,7 +122,7 @@ export default function ClientWishlistPage() {
                   <CardContent className="flex-1 space-y-4">
                     <div className="flex flex-wrap gap-2">
                       {specialist.subjects.map((subj) => (
-                        <Badge key={subj} variant="secondary">
+                        <Badge key={subj} variant="secondary" className="rounded-full">
                           {subj}
                         </Badge>
                       ))}
@@ -138,11 +144,19 @@ export default function ClientWishlistPage() {
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
-                          onClick={() => router.push(`/client/requests/new?child=${selectedChildId}&specialist=${specialist.id}`)}
+                          onClick={() =>
+                            router.push(`/client/requests/new?child=${selectedChildId}&specialist=${specialist.id}`)
+                          }
+                          className="rounded-full"
                         >
                           Створити запит
                         </Button>
-                        <Button onClick={() => router.push(`/specialists/${specialist.id}`)}>Детальніше</Button>
+                        <Button
+                          onClick={() => router.push(`/specialists/${specialist.id}?child=${selectedChildId}`)}
+                          className="rounded-full"
+                        >
+                          Детальніше
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -150,14 +164,19 @@ export default function ClientWishlistPage() {
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <Heart className="mb-4 h-16 w-16 text-muted-foreground" />
                 <h3 className="mb-2 text-xl font-semibold">Список порожній</h3>
                 <p className="mb-6 text-center text-muted-foreground">
                   Зберігайте спеціалістів, які вам сподобалися, щоб не загубити їх
                 </p>
-                <Button onClick={() => router.push("/specialists")}>Знайти спеціаліста</Button>
+                <Button
+                  onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
+                  className="rounded-full"
+                >
+                  Створити запит
+                </Button>
               </CardContent>
             </Card>
           )}
