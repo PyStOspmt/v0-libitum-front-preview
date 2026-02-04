@@ -29,6 +29,7 @@ export default function SpecialistsPage() {
       id: 1,
       name: "Олена Іваненко",
       specialization: "Репетитор",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
       subjects: ["Англійська мова", "Німецька мова"],
       rating: 4.9,
       reviews: 48,
@@ -45,6 +46,7 @@ export default function SpecialistsPage() {
       id: 3,
       name: "Марія Коваленко",
       specialization: "Психолог",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Індивідуальна терапія", "Сімейна терапія"],
       rating: 5.0,
       reviews: 62,
@@ -61,6 +63,7 @@ export default function SpecialistsPage() {
       id: 4,
       name: "Анна Мельник",
       specialization: "Логопед",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Постановка звуків", "Корекція мовлення"],
       rating: 4.9,
       reviews: 41,
@@ -332,9 +335,15 @@ export default function SpecialistsPage() {
                         {/* Avatar and basic info */}
                         <div className="flex flex-1 gap-5 p-6">
                           <div className="relative shrink-0">
-                            <Avatar className="h-16 w-16 rounded-2xl border border-slate-100 shadow-sm md:h-20 md:w-20">
-                              <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                            </Avatar>
+                            <div className="relative h-16 w-16 md:h-20 md:w-20 overflow-hidden rounded-2xl border border-slate-100 shadow-sm bg-slate-50">
+                              {specialist.image ? (
+                                <Image src={specialist.image} alt={specialist.name} fill className="object-cover" />
+                              ) : (
+                                <Avatar className="h-full w-full rounded-2xl">
+                                  <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                                </Avatar>
+                              )}
+                            </div>
                             {specialist.verified && (
                               <div className="absolute -bottom-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm ring-2 ring-white">
                                 <Award className={`h-4 w-4 ${accent.icon}`} />
