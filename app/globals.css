@@ -254,4 +254,41 @@
   .gradient-text {
     @apply bg-gradient-to-r from-teal-600 to-emerald-500 bg-clip-text text-transparent;
   }
+
+  /* Cursor-follow spotlight for buttons/cards */
+  .spotlight-button {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .spotlight-button::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: radial-gradient(120px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.35), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .spotlight-button:hover::before,
+  .spotlight-button:focus-visible::before {
+    opacity: 1;
+  }
+
+  .spotlight-button > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Gentle lift + glow for cards/containers */
+  .hover-glow {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .hover-glow:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+  }
 }
