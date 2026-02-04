@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
-import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal } from "lucide-react"
+import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal, Users } from "lucide-react"
 import Image from "next/image"
 
 export default function SpecialistsPage() {
@@ -33,6 +33,8 @@ export default function SpecialistsPage() {
       subjects: ["Англійська мова", "Німецька мова"],
       rating: 4.9,
       reviews: 48,
+      activeStudents: 49,
+      lessonsCompleted: 4975,
       experience: 5,
       priceOnline: 400,
       priceOffline: 500,
@@ -50,6 +52,8 @@ export default function SpecialistsPage() {
       subjects: ["Індивідуальна терапія", "Сімейна терапія"],
       rating: 5.0,
       reviews: 62,
+      activeStudents: 38,
+      lessonsCompleted: 6100,
       experience: 10,
       priceOnline: 600,
       priceOffline: 700,
@@ -67,6 +71,8 @@ export default function SpecialistsPage() {
       subjects: ["Постановка звуків", "Корекція мовлення"],
       rating: 4.9,
       reviews: 41,
+      activeStudents: 32,
+      lessonsCompleted: 4300,
       experience: 8,
       priceOnline: 500,
       priceOffline: 600,
@@ -333,55 +339,70 @@ export default function SpecialistsPage() {
                     <CardContent className="p-0">
                       <div className="flex flex-col md:flex-row">
                         {/* Avatar and basic info */}
-                        <div className="flex flex-col sm:flex-row flex-1 gap-5 p-5 sm:gap-6 sm:p-6">
-                          <div className="relative shrink-0 mx-auto sm:mx-0">
-                            <div className="relative w-64 sm:w-44 md:w-48 aspect-[4/5] overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-lg ring-1 ring-slate-200/60">
-                              {specialist.image ? (
-                                <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" />
-                              ) : (
-                                <Avatar className="h-full w-full rounded-2xl">
-                                  <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                                </Avatar>
-                              )}
-                            </div>
-                            {specialist.verified && (
-                              <div
-                                className="absolute -bottom-2 -right-2 sm:bottom-2 sm:right-2 sm:translate-x-1/4 sm:translate-y-1/4 flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white z-10"
-                              >
-                                <Award className={`h-5 w-5 sm:h-4.5 sm:w-4.5 ${accent.icon}`} />
-                              </div>
-                            )}
-                          </div>
-                          
-                          <div className="flex min-w-0 flex-1 flex-col text-center sm:text-left">
-                            <div className="mb-3 sm:mb-2 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-2">
-                              <div>
-                                <h3 className="text-xl sm:text-lg font-bold text-slate-900">{specialist.name}</h3>
-                                <p className="text-sm font-medium text-slate-500">{specialist.specialization}</p>
-                              </div>
-                              <div className="flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                <span className="text-sm font-bold text-amber-700">{specialist.rating}</span>
-                                <span className="text-xs text-amber-600/80">({specialist.reviews})</span>
-                              </div>
-                            </div>
+                        <div className="flex flex-col flex-1 p-5 sm:p-6">
+                          {/* Top Row: Photo + Primary Info */}
+                          <div className="flex flex-row gap-4 sm:gap-6 mb-4">
+                            <div className="relative shrink-0 w-[40%] sm:w-44 md:w-48">
+                              <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] sm:rounded-[24px] border border-slate-100 bg-white shadow-md sm:shadow-lg ring-1 ring-slate-200/60">
+                               {specialist.image ? (
+                                 <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" />
+                               ) : (
+                                 <Avatar className="h-full w-full rounded-2xl">
+                                   <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                                 </Avatar>
+                               )}
+                             </div>
+                             {specialist.verified && (
+                               <div
+                                 className="absolute -bottom-1.5 -right-1.5 sm:bottom-2 sm:right-2 sm:translate-x-1/4 sm:translate-y-1/4 flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white z-10"
+                               >
+                                 <Award className={`h-4 w-4 sm:h-4.5 sm:w-4.5 ${accent.icon}`} />
+                               </div>
+                             )}
+                           </div>
 
-                            {/* Subjects */}
-                            <div className="mb-3 flex flex-wrap justify-center sm:justify-start gap-1.5">
-                              {specialist.subjects.slice(0, 3).map((subject) => (
-                                <span key={subject} className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
-                                  {subject}
-                                </span>
-                              ))}
-                              {specialist.subjects.length > 3 && (
-                                <span className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
-                                  +{specialist.subjects.length - 3}
-                                </span>
-                              )}
-                            </div>
+                           <div className="flex flex-col flex-1 min-w-0 justify-center">
+                             <div className="flex flex-col sm:flex-row items-start justify-between gap-1 mb-2">
+                               <div className="min-w-0">
+                                 <h3 className="text-lg sm:text-lg font-bold text-slate-900 truncate">{specialist.name}</h3>
+                                 <p className="text-xs sm:text-sm font-medium text-slate-500">{specialist.specialization}</p>
+                               </div>
+                               <div className="flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-0.5 sm:py-1">
+                                 <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 fill-amber-400 text-amber-400" />
+                                 <span className="text-xs sm:text-sm font-bold text-amber-700">{specialist.rating}</span>
+                                 <span className="text-[10px] sm:text-xs text-amber-600/80">({specialist.reviews})</span>
+                               </div>
+                             </div>
 
-                            {/* Bio */}
-                            <p className="line-clamp-2 text-sm text-slate-600 mb-4 leading-relaxed text-center sm:text-left">{specialist.bio}</p>
+                             <div className="space-y-1.5">
+                               <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-xs font-medium text-slate-600">
+                                 <span className="inline-flex items-center gap-1">
+                                   <Users className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-500" />
+                                   {specialist.activeStudents} учнів
+                                 </span>
+                                 <span className="hidden sm:inline text-slate-300">•</span>
+                                 <span className="inline-flex items-center gap-1">
+                                   <BookOpen className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-500" />
+                                   {specialist.lessonsCompleted} занять
+                                 </span>
+                               </div>
+
+                               <div className="flex flex-wrap gap-1">
+                                 {specialist.subjects.slice(0, 2).map((subject) => (
+                                   <span key={subject} className="inline-flex items-center rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] sm:text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
+                                     {subject}
+                                   </span>
+                                 ))}
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+
+                         {/* Bottom Section: Bio + Footer */}
+                         <div className="flex flex-col flex-1">
+                           <p className="line-clamp-3 text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed text-left">
+                             {specialist.bio}
+                           </p>
 
                             {/* Footer tags */}
                             <div className="mt-auto flex items-center gap-4 text-xs font-medium text-slate-500">
