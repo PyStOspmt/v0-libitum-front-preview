@@ -2,6 +2,7 @@
 
 import { use, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
@@ -249,10 +250,13 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     }
   }
 
+  const isHealthSpecialist = ["Психолог", "Логопед"].includes(specialist.specialization)
+  const logoSrc = isHealthSpecialist ? "/logo-health.jpg" : "/logo-education.jpg"
+
   const getAccentStyles = () => {
     if (specialist.specialization === "Репетитор") {
       return {
-        button: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-100",
+        button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-emerald-100",
         text: "text-emerald-700",
         bg: "bg-emerald-50",
         border: "border-emerald-200",
@@ -263,12 +267,12 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
     if (["Психолог", "Логопед"].includes(specialist.specialization)) {
       return {
-        button: "bg-orange-500 hover:bg-orange-600 text-white shadow-orange-100",
-        text: "text-orange-700",
-        bg: "bg-orange-50",
-        border: "border-orange-200",
-        icon: "text-orange-600",
-        badge: "bg-orange-50 text-orange-700 border-orange-200"
+        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white shadow-amber-100",
+        text: "text-amber-700",
+        bg: "bg-amber-50",
+        border: "border-amber-200",
+        icon: "text-amber-600",
+        badge: "bg-amber-50 text-amber-700 border-amber-200"
       }
     }
 
@@ -296,8 +300,8 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 group-hover:bg-slate-200 transition-colors">
-                <BookOpen className="h-6 w-6 text-slate-700" />
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                <Image src={logoSrc} alt="Libitum" fill className="object-cover" />
               </div>
               <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
             </Link>
@@ -618,7 +622,8 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="space-y-3 pt-2">
                     <Button 
-                      className={`w-full h-12 rounded-xl text-base font-semibold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] ${accent.button}`} 
+                      variant="ghost"
+                      className={`w-full h-12 rounded-xl text-base font-semibold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] spotlight-button hover-glow ${accent.button}`} 
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />

@@ -318,4 +318,35 @@
   .gradient-text {
     @apply bg-gradient-to-r from-slate-800 via-slate-600 to-slate-700 bg-clip-text text-transparent;
   }
+
+  /* Spotlight hover effect for buttons/cards */
+  .spotlight-button {
+    position: relative;
+    overflow: hidden;
+  }
+  .spotlight-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle 80px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgba(255, 255, 255, 0.15),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .spotlight-button:hover::before {
+    opacity: 1;
+  }
+
+  /* Hover glow utility */
+  .hover-glow {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
 }

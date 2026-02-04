@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { BookOpen, Brain, MessageSquare, Star, Users, TrendingUp, ArrowRight, CheckCircle } from "lucide-react"
+import Image from "next/image"
 
 export default function HomePageClient() {
   const { user } = useAuth()
@@ -19,8 +20,8 @@ export default function HomePageClient() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-                <BookOpen className="h-6 w-6 text-slate-500" />
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <div>
                 <span className="gradient-text text-xl font-bold">Libitum</span>
@@ -217,7 +218,7 @@ export default function HomePageClient() {
           <div className="grid gap-8 md:grid-cols-3">
             {/* Tutor Category - Green Accent */}
             <Link href={`${specialistsCategoryHref}?category=tutor`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1">
+              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50/60 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1 hover-glow">
                 <div className="p-8 h-full flex flex-col">
                   <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 transition-transform group-hover:scale-110">
                     <BookOpen className="h-8 w-8" />
@@ -237,7 +238,7 @@ export default function HomePageClient() {
 
             {/* Psychologist Category - Orange Accent */}
             <Link href={`${specialistsCategoryHref}?category=psychologist`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1">
+              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50/50 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 hover-glow">
                 <div className="p-8 h-full flex flex-col">
                   <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 transition-transform group-hover:scale-110">
                     <Brain className="h-8 w-8" />
@@ -257,7 +258,7 @@ export default function HomePageClient() {
 
             {/* Speech Therapist Category - Orange Accent */}
             <Link href={`${specialistsCategoryHref}?category=speech-therapist`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1">
+              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50/50 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 hover-glow">
                 <div className="p-8 h-full flex flex-col">
                   <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 transition-transform group-hover:scale-110">
                     <MessageSquare className="h-8 w-8" />
@@ -471,8 +472,8 @@ export default function HomePageClient() {
           <div className="grid gap-8 md:grid-cols-4">
             <div>
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
-                  <BookOpen className="h-6 w-6 text-slate-700" />
+                <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                  <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                 </div>
                 <span className="gradient-text text-xl font-bold">Libitum</span>
               </div>

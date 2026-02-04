@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal } from "lucide-react"
+import Image from "next/image"
 
 export default function SpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -77,19 +78,21 @@ export default function SpecialistsPage() {
   const getAccentStyles = (specialistType: string) => {
     if (specialistType === "Репетитор") {
       return {
-        button: "bg-emerald-600 hover:bg-emerald-700 text-white border-transparent shadow-emerald-100",
+        button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-transparent shadow-emerald-100",
         price: "text-emerald-700",
         icon: "text-emerald-600",
-        ring: "focus-visible:ring-emerald-600"
+        ring: "focus-visible:ring-emerald-600",
+        cardBg: "from-emerald-50/40 via-white to-white"
       }
     }
 
     if (["Психолог", "Логопед"].includes(specialistType)) {
       return {
-        button: "bg-orange-500 hover:bg-orange-600 text-white border-transparent shadow-orange-100",
-        price: "text-orange-700",
-        icon: "text-orange-600",
-        ring: "focus-visible:ring-orange-600"
+        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
+        price: "text-amber-700",
+        icon: "text-amber-600",
+        ring: "focus-visible:ring-amber-600",
+        cardBg: "from-amber-50/30 via-white to-white"
       }
     }
 
@@ -97,7 +100,8 @@ export default function SpecialistsPage() {
       button: "bg-slate-900 hover:bg-slate-800 text-white border-transparent shadow-slate-100",
       price: "text-slate-900",
       icon: "text-slate-600",
-      ring: "focus-visible:ring-slate-900"
+      ring: "focus-visible:ring-slate-900",
+      cardBg: "from-slate-50/30 via-white to-white"
     }
   }
 
@@ -107,8 +111,8 @@ export default function SpecialistsPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100">
-                <BookOpen className="h-6 w-6 text-slate-700" />
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
             </Link>
@@ -285,7 +289,7 @@ export default function SpecialistsPage() {
               {specialists.map((specialist) => {
                 const accent = getAccentStyles(specialist.specialization);
                 return (
-                  <Card key={specialist.id} className="overflow-hidden border-slate-200 bg-white shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl">
+                  <Card key={specialist.id} className={`overflow-hidden border-slate-200 bg-gradient-to-br ${accent.cardBg} shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl hover-glow`}>
                     <CardContent className="p-0">
                       <div className="flex flex-col md:flex-row">
                         {/* Avatar and basic info */}
@@ -367,6 +371,7 @@ export default function SpecialistsPage() {
                           
                           <Link href={`/specialists/${specialist.id}`} className="shrink-0 md:w-full">
                             <Button
+                              variant="ghost"
                               className={`w-full rounded-xl font-semibold shadow-md transition-all hover:scale-[1.02] ${accent.button}`}
                             >
                               Переглянути
