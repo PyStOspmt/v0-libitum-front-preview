@@ -59,45 +59,53 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
-      <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fade-in-up">
         <div className="mb-8 text-center">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <BookOpen className="h-6 w-6 text-primary-foreground" />
+          <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 shadow-lg shadow-slate-200">
+              <BookOpen className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-semibold">Libitum Education</span>
+            <div className="text-left">
+              <span className="block text-xl font-bold tracking-tight text-slate-900">Libitum</span>
+              <span className="block text-xs font-medium text-slate-500">Education Platform</span>
+            </div>
           </Link>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Відновлення паролю</CardTitle>
-            <CardDescription>
-              Введіть вашу email адресу і ми надішлемо інструкції для відновлення паролю
+        <Card className="border-slate-200 bg-white/80 shadow-xl backdrop-blur-xl rounded-3xl overflow-hidden">
+          <CardHeader className="space-y-1 text-center pb-8 pt-8">
+            <CardTitle className="text-2xl font-bold text-slate-900">Відновлення паролю</CardTitle>
+            <CardDescription className="text-base text-slate-500 px-4">
+              Введіть вашу email адресу і ми надішлемо інструкції для відновлення
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="px-8 pb-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium text-slate-700 ml-1">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="your@email.com"
+                  placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="h-12 rounded-xl border-slate-200 bg-white/50 px-4 text-base transition-all focus:border-slate-400 focus:bg-white focus:ring-4 focus:ring-slate-100"
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="h-12 w-full rounded-xl bg-slate-900 text-base font-semibold text-white shadow-lg shadow-slate-200 transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98]" 
+                disabled={isLoading}
+              >
                 {isLoading ? "Відправка..." : "Надіслати інструкції"}
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
-              <Link href="/login" className="inline-flex items-center text-sm text-primary hover:underline">
+            <div className="mt-8 text-center">
+              <Link href="/login" className="inline-flex items-center text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Повернутися до входу
               </Link>

@@ -104,38 +104,41 @@ export default function TutorPage() {
           </div>
 
           <Link href="/tutor/stats">
-            <Card className="cursor-pointer border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5 transition-shadow hover:shadow-lg">
-              <CardHeader>
+            <Card className="cursor-pointer border-emerald-100 bg-emerald-50/30 overflow-hidden relative transition-all hover:shadow-lg hover:border-emerald-200">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <CardHeader className="relative z-10">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
-                      <Award className="h-6 w-6 text-primary-foreground" />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-emerald-200">
+                      <Award className="h-7 w-7 text-white" />
                     </div>
                     <div>
-                      <CardTitle>
+                      <CardTitle className="text-xl font-bold text-slate-900">
                         Рівень {stats.level} - {currentLevel.title}
                       </CardTitle>
-                      <CardDescription>Натисніть для детальної статистики</CardDescription>
+                      <CardDescription className="text-slate-600">Натисніть для детальної статистики</CardDescription>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant="secondary" className="text-lg">
+                    <Badge variant="secondary" className="text-sm px-3 py-1 bg-white text-emerald-700 shadow-sm">
                       {stats.completedSessions} занять
                     </Badge>
-                    <BarChart3 className="h-5 w-5 text-muted-foreground" />
+                    <BarChart3 className="h-5 w-5 text-emerald-600" />
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <Progress value={75} className="h-2" />
+              <CardContent className="relative z-10">
+                <Progress value={75} className="h-2.5 bg-emerald-100 [&>div]:bg-emerald-500" />
                 <div className="mt-4 flex gap-2">
                   {progress.achievements.slice(0, 3).map((achievement) => (
-                    <Badge key={achievement.id} variant="outline">
+                    <Badge key={achievement.id} variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
                       {achievement.icon} {achievement.title}
                     </Badge>
                   ))}
                   {progress.achievements.length > 3 && (
-                    <Badge variant="outline">+{progress.achievements.length - 3} ще</Badge>
+                    <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
+                      +{progress.achievements.length - 3} ще
+                    </Badge>
                   )}
                 </div>
               </CardContent>

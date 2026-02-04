@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal } from "lucide-react"
+import Image from "next/image"
 
 export default function SpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -29,6 +29,7 @@ export default function SpecialistsPage() {
       id: 1,
       name: "Олена Іваненко",
       specialization: "Репетитор",
+      image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
       subjects: ["Англійська мова", "Німецька мова"],
       rating: 4.9,
       reviews: 48,
@@ -45,6 +46,7 @@ export default function SpecialistsPage() {
       id: 3,
       name: "Марія Коваленко",
       specialization: "Психолог",
+      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Індивідуальна терапія", "Сімейна терапія"],
       rating: 5.0,
       reviews: 62,
@@ -61,6 +63,7 @@ export default function SpecialistsPage() {
       id: 4,
       name: "Анна Мельник",
       specialization: "Логопед",
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Постановка звуків", "Корекція мовлення"],
       rating: 4.9,
       reviews: 41,
@@ -75,59 +78,67 @@ export default function SpecialistsPage() {
     },
   ]
 
-  const getAccentStyles = (specialistType: string) => {
-    if (specialistType === "Репетитор") {
-      return {
-        button: "bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white border-transparent shadow-emerald-100",
-        price: "text-emerald-700",
-        icon: "text-emerald-600",
-        ring: "focus-visible:ring-emerald-500"
-      }
-    }
+  type AccentStyles = {
+    button: string
+    price: string
+    icon: string
+    ring: string
+    glow: string
+    soft: string
+    cardBg: string
+  }
 
-    if (["Психолог", "Логопед"].includes(specialistType)) {
-      return {
-        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white border-transparent shadow-amber-100",
-        price: "text-amber-700",
-        icon: "text-amber-600",
-        ring: "focus-visible:ring-amber-500"
-      }
-    }
-
-    return {
+  const accentPalette: Record<"tutor" | "health" | "neutral", AccentStyles> = {
+    tutor: {
+      button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-transparent shadow-emerald-100",
+      price: "text-emerald-700",
+      icon: "text-emerald-600",
+      ring: "focus-visible:ring-emerald-600",
+      glow: "rgba(16, 185, 129, 0.05)",
+      soft: "rgba(16, 185, 129, 0.03)",
+      cardBg: "from-emerald-50/18 via-white to-white"
+    },
+    health: {
+      button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
+      price: "text-amber-700",
+      icon: "text-amber-600",
+      ring: "focus-visible:ring-amber-600",
+      glow: "rgba(251, 146, 60, 0.05)",
+      soft: "rgba(251, 146, 60, 0.03)",
+      cardBg: "from-amber-50/18 via-white to-white"
+    },
+    neutral: {
       button: "bg-slate-900 hover:bg-slate-800 text-white border-transparent shadow-slate-100",
       price: "text-slate-900",
       icon: "text-slate-600",
-      ring: "focus-visible:ring-slate-900"
+      ring: "focus-visible:ring-slate-900",
+      glow: "rgba(148, 163, 184, 0.05)",
+      soft: "rgba(148, 163, 184, 0.03)",
+      cardBg: "from-slate-50/18 via-white to-white"
     }
   }
 
-  const getCardGradient = (
-    current: string,
-    prev?: string,
-    next?: string
-  ) => {
-    const emerald = "rgba(16,185,129,0.05)"
-    const amber = "rgba(249,115,22,0.045)"
-    const softWhite = "rgba(255,255,255,0.98)"
+  const getAccentStyles = (specialistType: string) => {
+    if (specialistType === "Репетитор") return accentPalette.tutor
+    if (["Психолог", "Логопед"].includes(specialistType)) return accentPalette.health
+    return accentPalette.neutral
+  }
 
-    const isTutor = current === "Репетитор"
-    const isHealth = ["Психолог", "Логопед"].includes(current)
+  const getDiffuseBackground = (index: number) => {
+    const current = getAccentStyles(specialists[index].specialization)
+    const prevType = specialists[index - 1]?.specialization
+    const nextType = specialists[index + 1]?.specialization
+    const prevAccent = prevType ? getAccentStyles(prevType) : null
+    const nextAccent = nextType ? getAccentStyles(nextType) : null
 
-    const prevType = prev && (prev === "Репетитор" || ["Психолог", "Логопед"].includes(prev)) ? prev : undefined
-    const nextType = next && (next === "Репетитор" || ["Психолог", "Логопед"].includes(next)) ? next : undefined
+    const layers = [
+      prevAccent ? `radial-gradient(140px circle at 50% 0%, ${prevAccent.glow}, transparent 65%)` : null,
+      `radial-gradient(220px circle at 50% 50%, ${current.glow}, transparent 74%)`,
+      nextAccent ? `radial-gradient(160px circle at 50% 100%, ${nextAccent.glow}, transparent 68%)` : null,
+      `linear-gradient(180deg, ${current.soft}, rgba(255,255,255,0.9))`
+    ].filter(Boolean)
 
-    const currentColor = isTutor ? emerald : isHealth ? amber : "rgba(15,23,42,0.02)"
-    const prevColor = prevType === "Репетитор" ? emerald : prevType ? amber : currentColor
-    const nextColor = nextType === "Репетитор" ? emerald : nextType ? amber : currentColor
-
-    // Overlapping light bulbs: top (prev), center (current), bottom (next)
-    return `
-      radial-gradient(180px 120px at 50% 0%, ${prevColor} 0%, transparent 65%),
-      radial-gradient(220px 160px at 50% 50%, ${currentColor} 0%, transparent 70%),
-      radial-gradient(180px 120px at 50% 100%, ${nextColor} 0%, transparent 65%),
-      linear-gradient(180deg, ${softWhite} 0%, ${softWhite} 100%)
-    `
+    return { backgroundImage: layers.join(", ") }
   }
 
   return (
@@ -135,10 +146,11 @@ export default function SpecialistsPage() {
       <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
-              <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-                <Image src="/logo-education.jpg" alt="Libitum Education" width={48} height={48} className="h-full w-full object-cover" />
+            <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
+              <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
             </Link>
             <div className="flex items-center gap-3">
               <Link href="/login">
@@ -312,34 +324,39 @@ export default function SpecialistsPage() {
             <div className="flex flex-col gap-4">
               {specialists.map((specialist, index) => {
                 const accent = getAccentStyles(specialist.specialization);
-                const prevSpec = specialists[index - 1]?.specialization
-                const nextSpec = specialists[index + 1]?.specialization
-                const cardBg = getCardGradient(specialist.specialization, prevSpec, nextSpec)
                 return (
                   <Card
                     key={specialist.id}
-                    className="overflow-hidden border-slate-200 shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl"
-                    style={{ backgroundImage: cardBg }}
+                    className={`overflow-hidden border-slate-200 bg-gradient-to-br ${accent.cardBg} shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl hover-glow`}
+                    style={getDiffuseBackground(index)}
                   >
                     <CardContent className="p-0">
                       <div className="flex flex-col md:flex-row">
                         {/* Avatar and basic info */}
-                        <div className="flex flex-1 gap-5 p-6">
-                          <div className="relative shrink-0">
-                            <Avatar className="h-16 w-16 rounded-2xl border border-slate-100 shadow-sm md:h-20 md:w-20">
-                              <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                            </Avatar>
+                        <div className="flex flex-col sm:flex-row flex-1 gap-5 p-5 sm:gap-6 sm:p-6">
+                          <div className="relative shrink-0 mx-auto sm:mx-0">
+                            <div className="relative w-64 sm:w-44 md:w-48 aspect-[4/5] overflow-hidden rounded-[28px] border border-slate-100 bg-white shadow-lg ring-1 ring-slate-200/60">
+                              {specialist.image ? (
+                                <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" />
+                              ) : (
+                                <Avatar className="h-full w-full rounded-2xl">
+                                  <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                                </Avatar>
+                              )}
+                            </div>
                             {specialist.verified && (
-                              <div className="absolute -bottom-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm ring-2 ring-white">
-                                <Award className={`h-4 w-4 ${accent.icon}`} />
+                              <div
+                                className="absolute -bottom-2 -right-2 sm:bottom-2 sm:right-2 sm:translate-x-1/4 sm:translate-y-1/4 flex h-10 w-10 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white z-10"
+                              >
+                                <Award className={`h-5 w-5 sm:h-4.5 sm:w-4.5 ${accent.icon}`} />
                               </div>
                             )}
                           </div>
                           
-                          <div className="flex min-w-0 flex-1 flex-col">
-                            <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
+                          <div className="flex min-w-0 flex-1 flex-col text-center sm:text-left">
+                            <div className="mb-3 sm:mb-2 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-2">
                               <div>
-                                <h3 className="text-lg font-bold text-slate-900 truncate">{specialist.name}</h3>
+                                <h3 className="text-xl sm:text-lg font-bold text-slate-900">{specialist.name}</h3>
                                 <p className="text-sm font-medium text-slate-500">{specialist.specialization}</p>
                               </div>
                               <div className="flex items-center gap-1 rounded-lg bg-amber-50 px-2 py-1">
@@ -350,7 +367,7 @@ export default function SpecialistsPage() {
                             </div>
 
                             {/* Subjects */}
-                            <div className="mb-3 flex flex-wrap gap-1.5">
+                            <div className="mb-3 flex flex-wrap justify-center sm:justify-start gap-1.5">
                               {specialist.subjects.slice(0, 3).map((subject) => (
                                 <span key={subject} className="inline-flex items-center rounded-md bg-slate-50 px-2 py-1 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-500/10">
                                   {subject}
@@ -364,7 +381,7 @@ export default function SpecialistsPage() {
                             </div>
 
                             {/* Bio */}
-                            <p className="line-clamp-2 text-sm text-slate-600 mb-4 leading-relaxed">{specialist.bio}</p>
+                            <p className="line-clamp-2 text-sm text-slate-600 mb-4 leading-relaxed text-center sm:text-left">{specialist.bio}</p>
 
                             {/* Footer tags */}
                             <div className="mt-auto flex items-center gap-4 text-xs font-medium text-slate-500">

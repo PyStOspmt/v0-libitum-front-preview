@@ -23,8 +23,8 @@ export default function ClientSchedulePage() {
       <SidebarLayout userType="client">
         <div className="container mx-auto max-w-7xl space-y-6 p-6">
           <div>
-            <h1 className="text-3xl font-bold">Розклад</h1>
-            <p className="text-muted-foreground">Ваші заплановані заняття</p>
+            <h1 className="text-3xl font-bold text-slate-900">Розклад</h1>
+            <p className="text-slate-500">Ваші заплановані заняття</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {children.map((child) => (
                 <Button

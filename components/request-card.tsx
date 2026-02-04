@@ -155,46 +155,48 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
 
   return (
     <>
-      <Card>
-        <CardContent className="p-4">
+      <Card className="rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+        <CardContent className="p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
-              <Avatar>
-                <AvatarFallback>{displayName[0] ?? "?"}</AvatarFallback>
+              <Avatar className="h-12 w-12 rounded-xl border border-slate-100">
+                <AvatarFallback className="bg-slate-100 text-slate-700 font-bold">{displayName[0] ?? "?"}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <p className="font-medium">{displayName}</p>
-                <p className="text-sm text-muted-foreground">{request.subject}</p>
+                <p className="font-bold text-slate-800 text-lg">{displayName}</p>
+                <p className="text-sm font-medium text-slate-500 mb-2">{request.subject}</p>
 
                 {userType === "specialist" && request.status !== "pending" && (
-                  <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <div className="mt-2 flex flex-wrap gap-2 text-xs mb-3">
                     {request.clientPhone && (
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Phone className="h-3 w-3" />
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 font-medium">
+                        <Phone className="h-3.5 w-3.5" />
                         {request.clientPhone}
                       </div>
                     )}
                     {request.clientTelegram && (
-                      <div className="flex items-center gap-1 text-blue-600">
-                        <MessageCircle className="h-3 w-3" />
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-600 font-medium">
+                        <MessageCircle className="h-3.5 w-3.5" />
                         {request.clientTelegram}
                       </div>
                     )}
                   </div>
                 )}
 
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {request.date} о {request.time}
+                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-slate-400" />
+                    <span className="font-medium text-slate-700">{request.date}</span> <span className="text-slate-400">о</span> <span className="font-medium text-slate-700">{request.time}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {request.format === "online" ? <Video className="h-3 w-3" /> : <Home className="h-3 w-3" />}
-                    {request.format === "online" ? "Онлайн" : "Офлайн"}
+                  <div className="flex items-center gap-1.5">
+                    {request.format === "online" ? <Video className="h-4 w-4 text-slate-400" /> : <Home className="h-4 w-4 text-slate-400" />}
+                    <span className="font-medium text-slate-700">{request.format === "online" ? "Онлайн" : "Офлайн"}</span>
                   </div>
                 </div>
                 {request.message && (
-                  <p className="mt-2 text-sm text-muted-foreground italic">{`"${request.message}"`}</p>
+                  <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                    <p className="text-sm text-slate-600 italic">"{request.message}"</p>
+                  </div>
                 )}
               </div>
             </div>
@@ -221,37 +223,37 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
             </div>
           </div>
 
-          <div className="mt-4 flex gap-2">
+          <div className="mt-6 flex gap-3">
             {request.status === "pending" && userType === "specialist" && onAccept && onReject && (
               <>
-                <Button size="sm" variant="outline" onClick={() => setShowRejectDialog(true)} className="flex-1">
-                  <XCircle className="mr-1 h-4 w-4" />
+                <Button size="sm" variant="outline" onClick={() => setShowRejectDialog(true)} className="flex-1 rounded-xl border-slate-200 hover:bg-slate-50 hover:text-red-600 hover:border-red-200">
+                  <XCircle className="mr-2 h-4 w-4" />
                   Відхилити
                 </Button>
-                <Button size="sm" onClick={() => onAccept(request.id)} className="flex-1">
-                  <CheckCircle2 className="mr-1 h-4 w-4" />
+                <Button size="sm" onClick={() => onAccept(request.id)} className="flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100">
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
                   Прийняти
                 </Button>
               </>
             )}
 
             {(request.status === "accepted" || request.status === "communicating") && userType === "specialist" && (
-              <Button size="sm" onClick={() => setShowCommunicationDialog(true)} className="w-full">
-                <MessageCircle className="mr-1 h-4 w-4" />
+              <Button size="sm" onClick={() => setShowCommunicationDialog(true)} className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700">
+                <MessageCircle className="mr-2 h-4 w-4" />
                 Оновити статус комунікації
               </Button>
             )}
 
             {request.status === "trial_scheduled" && userType === "specialist" && isPastTrialDateTime && (
-              <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full">
-                <CheckCircle2 className="mr-1 h-4 w-4" />
+              <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700">
+                <CheckCircle2 className="mr-2 h-4 w-4" />
                 Чи відбувся урок?
               </Button>
             )}
 
             {request.status === "trial_completed" && userType === "specialist" && !request.trialResult && (
-              <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full">
-                <CheckCircle2 className="mr-1 h-4 w-4" />
+              <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700">
+                <CheckCircle2 className="mr-2 h-4 w-4" />
                 Вказати результат пробного
               </Button>
             )}
@@ -260,16 +262,16 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
               <Button
                 size="sm"
                 onClick={() => markAsPaid(request.id)}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100"
               >
-                <DollarSign className="mr-1 h-4 w-4" />
+                <DollarSign className="mr-2 h-4 w-4" />
                 Оплатити заявку{typeof paymentAmount === "number" ? ` (${paymentAmount} грн)` : ""}
               </Button>
             )}
 
             {request.status === "pending" && userType === "client" && onCancel && (
-              <Button size="sm" variant="outline" onClick={() => onCancel(request.id)} className="w-full">
-                <XCircle className="mr-1 h-4 w-4" />
+              <Button size="sm" variant="outline" onClick={() => onCancel(request.id)} className="w-full rounded-xl border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-900">
+                <XCircle className="mr-2 h-4 w-4" />
                 Скасувати запит
               </Button>
             )}

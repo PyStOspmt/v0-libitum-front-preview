@@ -3,19 +3,17 @@
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useRequestStore } from "@/lib/request-store"
-import { useChatStore } from "@/lib/chat-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageCircle, Calendar, Star, User, Clock, MapPin } from "lucide-react"
+import { Calendar, Star, User, Clock, MapPin, Search, ArrowRight } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export default function ClientSpecialistsPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { getRequestsByClient } = useRequestStore()
-  const { openChat } = useChatStore()
 
   const children = [
     { id: "child-1", label: "Марія, 12 років" },
@@ -50,15 +48,10 @@ export default function ClientSpecialistsPage() {
 
   const specialists = Array.from(specialistsMap.values())
 
-  const handleOpenChat = (specialistId: string, specialistName: string) => {
-    openChat(specialistId, specialistName, "specialist")
-    router.push("/client/chats")
-  }
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "trial_scheduled":
-        return <Badge className="bg-blue-500">Пробне заплановано</Badge>
+        return <Badge className="bg-slate-700">Пробне заплановано</Badge>
       case "paid":
         return <Badge className="bg-green-500">Активний</Badge>
       case "awaiting_payment":
@@ -71,10 +64,10 @@ export default function ClientSpecialistsPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <div className="container mx-auto max-w-7xl space-y-8 p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Мої спеціалісти</h1>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-bold text-slate-800">Мої спеціалісти</h1>
               <p className="text-muted-foreground">Спеціалісти, з якими ви працюєте</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {children.map((child) => (
@@ -83,19 +76,64 @@ export default function ClientSpecialistsPage() {
                     variant={child.id === selectedChildId ? "default" : "outline"}
                     size="sm"
                     onClick={() => router.push(`/client/specialists?child=${child.id}`)}
+                    className="rounded-full"
                   >
                     {child.label}
                   </Button>
                 ))}
               </div>
             </div>
-            <Button onClick={() => router.push("/specialists")}>Знайти нового спеціаліста</Button>
+            <Button onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)} className="rounded-full">
+              Створити новий запит
+            </Button>
           </div>
+
+          <Card className="border-slate-200/80 bg-white/80 shadow-sm">
+            <CardContent className="grid gap-4 p-6 md:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => router.push(`/specialists?child=${selectedChildId}`)}
+                className="group flex h-full flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-colors group-hover:bg-slate-200">
+                    <Search className="h-6 w-6" />
+                  </div>
+                  <h2 className="mt-4 text-lg font-semibold text-slate-800">Знайти спеціаліста в каталозі</h2>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Перегляньте профілі, рейтинги та відгуки і оберіть найкращого.
+                  </p>
+                </div>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 group-hover:text-slate-800">
+                  Перейти до каталогу <ArrowRight className="h-4 w-4" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
+                className="group flex h-full flex-col justify-between rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 transition-colors group-hover:bg-emerald-200">
+                    <Calendar className="h-6 w-6" />
+                  </div>
+                  <h2 className="mt-4 text-lg font-semibold text-slate-800">Подати заявку на біржу</h2>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Опишіть запит і отримайте відповіді від підходящих спеціалістів.
+                  </p>
+                </div>
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                  Створити заявку <ArrowRight className="h-4 w-4" />
+                </span>
+              </button>
+            </CardContent>
+          </Card>
 
           {specialists.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {specialists.map((specialist) => (
-                <Card key={specialist.id} className="flex flex-col">
+                <Card key={specialist.id} className="flex flex-col border-slate-200/70 bg-white/80 shadow-sm">
                   <CardHeader>
                     <div className="flex items-start gap-4">
                       <Avatar className="h-16 w-16">
@@ -127,7 +165,7 @@ export default function ClientSpecialistsPage() {
 
                     {/* Next Lesson */}
                     {specialist.nextLesson && (
-                      <div className="rounded-lg border bg-muted/50 p-3">
+                      <div className="rounded-2xl border border-primary/15 bg-primary/10 p-3">
                         <div className="flex items-center gap-2 text-sm font-medium">
                           <Calendar className="h-4 w-4 text-primary" />
                           <span>Наступне заняття</span>
@@ -151,20 +189,11 @@ export default function ClientSpecialistsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full bg-transparent"
-                        onClick={() => router.push(`/specialists/${specialist.id}`)}
+                        className="w-full bg-transparent rounded-full"
+                        onClick={() => router.push(`/specialists/${specialist.id}?child=${selectedChildId}`)}
                       >
                         <User className="mr-2 h-4 w-4" />
                         Переглянути профіль
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full bg-transparent"
-                        onClick={() => handleOpenChat(specialist.id, specialist.name)}
-                      >
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        Написати
                       </Button>
                     </div>
                   </CardContent>
@@ -172,14 +201,19 @@ export default function ClientSpecialistsPage() {
               ))}
             </div>
           ) : (
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <User className="mb-4 h-16 w-16 text-muted-foreground" />
                 <h3 className="mb-2 text-xl font-semibold">У вас ще немає спеціалістів</h3>
                 <p className="mb-6 text-center text-muted-foreground">
                   Знайдіть спеціаліста, який підходить вам, та почніть навчання
                 </p>
-                <Button onClick={() => router.push("/specialists")}>Знайти спеціаліста</Button>
+                <Button
+                  onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
+                  className="rounded-full"
+                >
+                  Створити запит
+                </Button>
               </CardContent>
             </Card>
           )}

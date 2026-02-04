@@ -250,10 +250,13 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     }
   }
 
+  const isHealthSpecialist = ["Психолог", "Логопед"].includes(specialist.specialization)
+  const logoSrc = isHealthSpecialist ? "/logo-health.jpg" : "/logo-education.jpg"
+
   const getAccentStyles = () => {
     if (specialist.specialization === "Репетитор") {
       return {
-        button: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-100",
+        button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-emerald-100",
         text: "text-emerald-700",
         bg: "bg-emerald-50",
         border: "border-emerald-200",
@@ -264,12 +267,12 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
     if (["Психолог", "Логопед"].includes(specialist.specialization)) {
       return {
-        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-500 hover:to-orange-500 text-white shadow-amber-100",
-        text: "text-orange-700",
-        bg: "bg-orange-50",
-        border: "border-orange-200",
-        icon: "text-orange-600",
-        badge: "bg-orange-50 text-orange-700 border-orange-200"
+        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white shadow-amber-100",
+        text: "text-amber-700",
+        bg: "bg-amber-50",
+        border: "border-amber-200",
+        icon: "text-amber-600",
+        badge: "bg-amber-50 text-amber-700 border-amber-200"
       }
     }
 
@@ -285,10 +288,6 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
   const accent = getAccentStyles()
 
-  const logoSrc = ["Психолог", "Логопед"].includes(specialist.specialization)
-    ? "/logo-health.jpg"
-    : "/logo-education.jpg"
-
   const specialistsListHref = user?.role === "client" ? "/client/specialists" : "/specialists"
 
   return (
@@ -301,9 +300,10 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-white shadow-sm ring-1 ring-slate-200">
-                <Image src={logoSrc} alt="Libitum" width={48} height={48} className="h-full w-full object-cover" />
+              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+                <Image src={logoSrc} alt="Libitum" fill className="object-cover" />
               </div>
+              <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
             </Link>
             <div className="flex items-center gap-3">
               <Link href="/login">
@@ -317,41 +317,41 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
         <div className="grid gap-8 lg:grid-cols-12">
           {/* Main Content */}
           <div className="lg:col-span-8">
             {/* Profile Header - Clean, no card */}
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row">
-              <div className="relative shrink-0">
-                <Avatar className="h-32 w-32 rounded-2xl border-2 border-white shadow-lg sm:h-40 sm:w-40">
-                  <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover" />
+            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start">
+              <div className="relative shrink-0 mx-auto sm:mx-0">
+                <Avatar className="h-60 w-60 rounded-[32px] border-2 border-white shadow-2xl sm:h-64 sm:w-64">
+                  <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
                   <AvatarFallback className="text-4xl font-bold bg-slate-100 text-slate-400">{specialist.name[0]}</AvatarFallback>
                 </Avatar>
                 {specialist.verified && (
-                  <div className="absolute -bottom-3 -right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md ring-4 ring-slate-50">
+                  <div className="absolute -bottom-4 -right-4 sm:bottom-2 sm:right-2 sm:translate-x-1/4 sm:translate-y-1/4 flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-full bg-white shadow-lg ring-3 ring-slate-50">
                     <Award className={`h-5 w-5 ${accent.icon}`} />
                   </div>
                 )}
               </div>
               
-              <div className="flex-1 pt-2">
-                <div className="mb-3 flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <h1 className="text-3xl font-bold text-slate-800 mb-2">{specialist.name}</h1>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className={`inline-flex items-center rounded-lg px-2.5 py-0.5 text-sm font-medium ${accent.badge}`}>
+              <div className="flex-1 pt-1 text-center sm:text-left">
+                <div className="mb-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-3 sm:gap-4">
+                  <div className="space-y-2">
+                    <h1 className="text-3xl sm:text-3xl font-bold text-slate-800">{specialist.name}</h1>
+                    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
+                      <span className={`inline-flex items-center rounded-lg px-3 py-1 text-sm font-medium ${accent.badge}`}>
                         {specialist.specialization}
                       </span>
                       {specialist.badges.map((badge: string) => (
-                        <span key={badge} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-2.5 py-0.5 text-sm font-medium text-slate-600">
+                        <span key={badge} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-600">
                           {badge}
                         </span>
                       ))}
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center sm:justify-end gap-2">
                     <Button variant="outline" size="icon" onClick={handleWishlist} className="rounded-xl border-slate-200 hover:bg-slate-50 hover:text-red-500">
                       <Heart className={`h-5 w-5 ${wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"}`} />
                     </Button>
@@ -361,7 +361,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </div>
                 </div>
 
-                <div className="mb-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-sm text-slate-500">
                   <div className="flex items-center gap-1.5">
                     <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
                     <span className="font-bold text-slate-800">{specialist.rating}</span>
@@ -377,7 +377,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                   {specialist.subjects.map((subject: string) => (
                     <span key={subject} className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
                       {subject}
@@ -622,7 +622,8 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="space-y-3 pt-2">
                     <Button 
-                      className={`bg-white/60 ${accent.button} shadow-md hover:shadow-lg`}
+                      variant="ghost"
+                      className={`w-full h-12 rounded-xl text-base font-semibold shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] spotlight-button hover-glow ${accent.button}`} 
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />

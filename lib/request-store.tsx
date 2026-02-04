@@ -1,6 +1,7 @@
 "use client"
 
 import { create } from "zustand"
+import { useDictionaryStore } from "@/lib/dictionary-store"
 
 export type RequestStatus =
   | "pending" // Waiting for specialist response (3 hours)
@@ -38,6 +39,7 @@ export interface BookingRequest {
   specialistId: string | null // null for public leads
   specialistName?: string
   subject: string
+  level?: string
   date: string
   time: string
   format: "online" | "offline"
@@ -55,6 +57,7 @@ export interface BookingRequest {
   basePrice?: number // Starting price for the lead (e.g., 200 UAH)
   currentPrice?: number // Current price after auction降价
   minPriceLimit?: number // Minimum price threshold (e.g., 50 UAH)
+  stepValue?: number // Price reduction step for the lead
   lastPriceUpdate?: string // Last time price was reduced
 }
 
@@ -115,6 +118,7 @@ const mockRequests: BookingRequest[] = [
     specialistId: "specialist-1",
     specialistName: "Олена Іваненко",
     subject: "Англійська мова",
+    level: "B1 (Intermediate)",
     date: "2025-01-22",
     time: "14:00",
     format: "online",
@@ -130,6 +134,7 @@ const mockRequests: BookingRequest[] = [
     clientName: "Петро Сидоренко",
     specialistId: null, // No specialist assigned yet
     subject: "Математика",
+    level: "Підготовка до ЗНО/НМТ",
     date: "2025-01-24",
     time: "18:00",
     format: "online",
@@ -137,11 +142,31 @@ const mockRequests: BookingRequest[] = [
     status: "pending",
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     responseDeadline: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
-    basePrice: 200,
-    currentPrice: 200,
-    minPriceLimit: 50,
+    basePrice: 350,
+    currentPrice: 350,
+    minPriceLimit: 250,
+    stepValue: 20,
   },
 ]
+
+const getPricingDefaults = (subjectName: string, levelLabel?: string) => {
+  const { subjects } = useDictionaryStore.getState()
+  const subject = subjects.find((item) => item.name === subjectName)
+  if (!subject) {
+    return {
+      basePrice: undefined,
+      minPriceLimit: undefined,
+      stepValue: undefined,
+    }
+  }
+
+  const level = levelLabel ? subject.levels.find((item) => item.label === levelLabel) : undefined
+  return {
+    basePrice: level?.basePrice ?? subject.defaultBasePrice,
+    minPriceLimit: level?.minPrice ?? subject.defaultMinPrice,
+    stepValue: level?.stepValue ?? subject.defaultStepValue,
+  }
+}
 
 const mockStudents: Student[] = [
   {
@@ -163,12 +188,20 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
 
   addRequest: (request) => {
     const now = new Date()
+    const pricingDefaults = request.type === "public" ? getPricingDefaults(request.subject, request.level) : null
+    const basePrice = request.basePrice ?? pricingDefaults?.basePrice
+    const minPriceLimit = request.minPriceLimit ?? pricingDefaults?.minPriceLimit
+    const stepValue = request.stepValue ?? pricingDefaults?.stepValue
     const newRequest: BookingRequest = {
       ...request,
       id: Math.random().toString(36).substr(2, 9),
       status: "pending",
       createdAt: now.toISOString(),
       responseDeadline: new Date(now.getTime() + 3 * 60 * 60 * 1000).toISOString(), // 3 hours
+      basePrice,
+      currentPrice: request.currentPrice ?? basePrice,
+      minPriceLimit,
+      stepValue,
     }
     set((state) => ({ requests: [...state.requests, newRequest] }))
   },
@@ -322,7 +355,8 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
     set((state) => ({
       requests: state.requests.map((req) => {
         if (req.id === requestId && req.type === "public" && req.currentPrice && req.minPriceLimit) {
-          const newPrice = Math.max(req.currentPrice - 100, req.minPriceLimit)
+          const stepValue = req.stepValue ?? 100
+          const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
           return {
             ...req,
             currentPrice: newPrice,
@@ -350,7 +384,8 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
           return req
         }
 
-        const newPrice = Math.max(req.currentPrice - 100, req.minPriceLimit)
+        const stepValue = req.stepValue ?? 100
+        const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
         if (newPrice === req.currentPrice) {
           return req
         }

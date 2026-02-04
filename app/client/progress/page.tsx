@@ -51,9 +51,9 @@ export default function ClientProgressPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
-          <div>
-            <h1 className="text-3xl font-bold">Мій прогрес</h1>
+        <div className="container mx-auto max-w-7xl space-y-8 p-6">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-slate-900">Мій прогрес</h1>
             <p className="text-muted-foreground">Відстежуйте свої досягнення та прогрес у навчанні</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {children.map((child) => (
@@ -62,6 +62,7 @@ export default function ClientProgressPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client/progress?child=${child.id}`)}
+                  className="rounded-full"
                 >
                   {child.label}
                 </Button>
@@ -71,7 +72,7 @@ export default function ClientProgressPage() {
 
           {/* Stats Grid */}
           <div className="grid gap-4 md:grid-cols-4">
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Всього занять</CardTitle>
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
@@ -82,7 +83,7 @@ export default function ClientProgressPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm rounded-2xl p-4">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Середня оцінка</CardTitle>
                 <Star className="h-4 w-4 text-muted-foreground" />
@@ -93,7 +94,7 @@ export default function ClientProgressPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Домашні завдання</CardTitle>
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
@@ -106,7 +107,7 @@ export default function ClientProgressPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">Наступне заняття</CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -119,7 +120,7 @@ export default function ClientProgressPage() {
           </div>
 
           {/* Progress by Subject */}
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Прогрес по предметах</CardTitle>
               <CardDescription>Ваші досягнення в різних напрямках</CardDescription>
@@ -156,14 +157,14 @@ export default function ClientProgressPage() {
           </Card>
 
           {/* Detailed Lessons */}
-          <Card>
+          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
             <CardHeader>
               <CardTitle>Журнал занять</CardTitle>
               <CardDescription>Детальна історія всіх ваших занять</CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="all">
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-3 rounded-full bg-slate-100/70 p-1">
                   <TabsTrigger value="all">Всі ({allLessons.length})</TabsTrigger>
                   <TabsTrigger value="completed">Завершені ({completedLessons.length})</TabsTrigger>
                   <TabsTrigger value="scheduled">Заплановані ({scheduledLessons.length})</TabsTrigger>
@@ -213,7 +214,7 @@ function LessonCard({ lesson }: { lesson: any }) {
   }
 
   return (
-    <Card className={statusColors[lesson.status as keyof typeof statusColors]}>
+    <Card className={`${statusColors[lesson.status as keyof typeof statusColors]} shadow-sm`}>
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -226,12 +227,14 @@ function LessonCard({ lesson }: { lesson: any }) {
                 year: "numeric",
               })}{" "}
               • {lesson.time}
-              <Badge variant="outline" className="ml-2">
+              <Badge variant="outline" className="ml-2 rounded-full">
                 {lesson.duration} хв
               </Badge>
             </CardDescription>
           </div>
-          <Badge variant="outline">{statusLabels[lesson.status as keyof typeof statusLabels]}</Badge>
+          <Badge variant="outline" className="rounded-full">
+            {statusLabels[lesson.status as keyof typeof statusLabels]}
+          </Badge>
         </div>
       </CardHeader>
 
@@ -245,7 +248,7 @@ function LessonCard({ lesson }: { lesson: any }) {
           )}
 
           {lesson.report && (
-            <div className="rounded-lg border bg-background/50 p-4">
+            <div className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
               <h5 className="mb-2 font-medium">Звіт викладача</h5>
               <div className="mb-3 flex gap-4">
                 <div className="flex items-center gap-2">
@@ -288,7 +291,7 @@ function LessonCard({ lesson }: { lesson: any }) {
           )}
 
           {lesson.homework && (
-            <div className="rounded-lg border bg-background/50 p-4">
+            <div className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
               <div className="mb-2 flex items-center justify-between">
                 <h5 className="font-medium">Домашнє завдання</h5>
                 <Badge
@@ -318,7 +321,7 @@ function LessonCard({ lesson }: { lesson: any }) {
               </p>
 
               {lesson.homework.grade && (
-                <div className="mt-3 flex items-center gap-2 rounded-md bg-green-500/10 p-2">
+                <div className="mt-3 flex items-center gap-2 rounded-xl bg-emerald-500/10 p-2">
                   <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   <div>
                     <p className="text-sm font-bold">Оцінка: {lesson.homework.grade}/5</p>
@@ -330,7 +333,7 @@ function LessonCard({ lesson }: { lesson: any }) {
               )}
 
               {lesson.homework.status === "pending" && (
-                <Button size="sm" className="mt-3">
+                <Button size="sm" className="mt-3 rounded-full">
                   <FileText className="mr-2 h-4 w-4" />
                   Здати завдання
                 </Button>
@@ -343,7 +346,12 @@ function LessonCard({ lesson }: { lesson: any }) {
               <h5 className="mb-2 text-sm font-medium">Матеріали до заняття</h5>
               <div className="space-y-2">
                 {lesson.materials.map((material: string, i: number) => (
-                  <Button key={i} variant="outline" size="sm" className="w-full justify-start bg-transparent">
+                  <Button
+                    key={i}
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start bg-transparent rounded-full"
+                  >
                     <Download className="mr-2 h-4 w-4" />
                     {material}
                   </Button>
