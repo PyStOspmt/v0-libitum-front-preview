@@ -75,34 +75,67 @@ export default function SpecialistsPage() {
     },
   ]
 
-  const getAccentStyles = (specialistType: string) => {
-    if (specialistType === "Репетитор") {
-      return {
-        button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-transparent shadow-emerald-100",
-        price: "text-emerald-700",
-        icon: "text-emerald-600",
-        ring: "focus-visible:ring-emerald-600",
-        cardBg: "from-emerald-50/40 via-white to-white"
-      }
-    }
+  type AccentStyles = {
+    button: string
+    price: string
+    icon: string
+    ring: string
+    glow: string
+    soft: string
+    cardBg: string
+  }
 
-    if (["Психолог", "Логопед"].includes(specialistType)) {
-      return {
-        button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
-        price: "text-amber-700",
-        icon: "text-amber-600",
-        ring: "focus-visible:ring-amber-600",
-        cardBg: "from-amber-50/30 via-white to-white"
-      }
-    }
-
-    return {
+  const accentPalette: Record<"tutor" | "health" | "neutral", AccentStyles> = {
+    tutor: {
+      button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-transparent shadow-emerald-100",
+      price: "text-emerald-700",
+      icon: "text-emerald-600",
+      ring: "focus-visible:ring-emerald-600",
+      glow: "rgba(16, 185, 129, 0.05)",
+      soft: "rgba(16, 185, 129, 0.03)",
+      cardBg: "from-emerald-50/18 via-white to-white"
+    },
+    health: {
+      button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
+      price: "text-amber-700",
+      icon: "text-amber-600",
+      ring: "focus-visible:ring-amber-600",
+      glow: "rgba(251, 146, 60, 0.05)",
+      soft: "rgba(251, 146, 60, 0.03)",
+      cardBg: "from-amber-50/18 via-white to-white"
+    },
+    neutral: {
       button: "bg-slate-900 hover:bg-slate-800 text-white border-transparent shadow-slate-100",
       price: "text-slate-900",
       icon: "text-slate-600",
       ring: "focus-visible:ring-slate-900",
-      cardBg: "from-slate-50/30 via-white to-white"
+      glow: "rgba(148, 163, 184, 0.05)",
+      soft: "rgba(148, 163, 184, 0.03)",
+      cardBg: "from-slate-50/18 via-white to-white"
     }
+  }
+
+  const getAccentStyles = (specialistType: string) => {
+    if (specialistType === "Репетитор") return accentPalette.tutor
+    if (["Психолог", "Логопед"].includes(specialistType)) return accentPalette.health
+    return accentPalette.neutral
+  }
+
+  const getDiffuseBackground = (index: number) => {
+    const current = getAccentStyles(specialists[index].specialization)
+    const prevType = specialists[index - 1]?.specialization
+    const nextType = specialists[index + 1]?.specialization
+    const prevAccent = prevType ? getAccentStyles(prevType) : null
+    const nextAccent = nextType ? getAccentStyles(nextType) : null
+
+    const layers = [
+      prevAccent ? `radial-gradient(140px circle at 50% 0%, ${prevAccent.glow}, transparent 65%)` : null,
+      `radial-gradient(220px circle at 50% 50%, ${current.glow}, transparent 74%)`,
+      nextAccent ? `radial-gradient(160px circle at 50% 100%, ${nextAccent.glow}, transparent 68%)` : null,
+      `linear-gradient(180deg, ${current.soft}, rgba(255,255,255,0.9))`
+    ].filter(Boolean)
+
+    return { backgroundImage: layers.join(", ") }
   }
 
   return (
@@ -286,10 +319,14 @@ export default function SpecialistsPage() {
             <div className="mb-6 text-sm font-medium text-slate-500">Знайдено {specialists.length} спеціалістів</div>
 
             <div className="flex flex-col gap-4">
-              {specialists.map((specialist) => {
+              {specialists.map((specialist, index) => {
                 const accent = getAccentStyles(specialist.specialization);
                 return (
-                  <Card key={specialist.id} className={`overflow-hidden border-slate-200 bg-gradient-to-br ${accent.cardBg} shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl hover-glow`}>
+                  <Card
+                    key={specialist.id}
+                    className={`overflow-hidden border-slate-200 bg-gradient-to-br ${accent.cardBg} shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl hover-glow`}
+                    style={getDiffuseBackground(index)}
+                  >
                     <CardContent className="p-0">
                       <div className="flex flex-col md:flex-row">
                         {/* Avatar and basic info */}

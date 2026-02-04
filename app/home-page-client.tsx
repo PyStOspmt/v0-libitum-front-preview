@@ -68,6 +68,9 @@ export default function HomePageClient() {
       <main className="relative scroll-smooth snap-y snap-mandatory">
         {/* Hero Section */}
         <section className="relative container mx-auto px-4 py-24 md:py-28 lg:py-32 overflow-visible snap-start">
+          {/* Floating gradient orbs */}
+          <div className="pointer-events-none absolute -left-24 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-200/50 via-teal-100/40 to-transparent blur-3xl animate-float-slow" />
+          <div className="pointer-events-none absolute right-0 top-10 h-72 w-72 rounded-full bg-gradient-to-br from-amber-200/45 via-orange-100/40 to-transparent blur-3xl animate-float-slower" />
 
           <div className="relative animate-fade-in-up mx-auto max-w-4xl text-center">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-slate-600 shadow-sm transition-transform hover:scale-105">
@@ -169,7 +172,7 @@ export default function HomePageClient() {
         {/* How it works - Cleaner cards */}
         <section className="relative container mx-auto px-4 py-16 snap-start" id="how-it-works">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">{t("nav.how_it_works")}</h2>
+            <h2 className="mb-4 text-3xl font-bold gradient-text md:text-4xl">{t("nav.how_it_works")}</h2>
             <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("how.subtitle")}</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
@@ -228,8 +231,8 @@ export default function HomePageClient() {
                   
                   <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
                     <span className="text-slate-400 group-hover:text-emerald-600 transition-colors">{t("categories.tutor.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-500 transition-colors">
-                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-emerald-300 to-emerald-400 text-emerald-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-emerald-50">
+                      <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
                 </div>
@@ -248,8 +251,8 @@ export default function HomePageClient() {
                   
                   <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
                     <span className="text-slate-400 group-hover:text-orange-600 transition-colors">{t("categories.psychologist.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-orange-500 transition-colors">
-                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 text-orange-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-orange-50">
+                      <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
                 </div>
@@ -268,8 +271,8 @@ export default function HomePageClient() {
                   
                   <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
                     <span className="text-slate-400 group-hover:text-orange-600 transition-colors">{t("categories.speech.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-orange-500 transition-colors">
-                      <ArrowRight className="h-4 w-4 text-slate-400 group-hover:text-white transition-colors" />
+                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 text-orange-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-orange-50">
+                      <ArrowRight className="h-4 w-4" />
                     </div>
                   </div>
                 </div>
@@ -455,13 +458,13 @@ export default function HomePageClient() {
         {/* CTA Section */}
         <section className="relative container mx-auto px-4 py-20">
           <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm md:px-16">
-            <h2 className="mb-6 text-4xl font-bold text-slate-800 md:text-5xl tracking-tight">{t("cta.title")}</h2>
+            <h2 className="mb-6 text-4xl font-bold gradient-text md:text-5xl tracking-tight">{t("cta.title")}</h2>
             <p className="mb-10 text-xl text-slate-500">{t("cta.subtitle")}</p>
             <Link href="/specialists">
-              <button className="h-16 rounded-2xl bg-emerald-600 px-12 text-xl font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:scale-105 hover:bg-emerald-700 active:scale-95">
+              <Button className="h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-12 text-xl font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:scale-105 hover:from-emerald-600 hover:to-emerald-700 active:scale-95">
                 {t("cta.button")}
                 <ArrowRight className="ml-3 inline-block h-6 w-6" />
-              </button>
+              </Button>
             </Link>
           </div>
         </section>
