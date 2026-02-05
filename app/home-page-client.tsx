@@ -159,99 +159,122 @@ export default function HomePageClient() {
       </header>
 
       <main>
-        {/* Hero Section */}
-        <section className="relative py-8 px-4 lg:px-8">
+        {/* Hero Section - Bento Grid Style */}
+        <section className="relative py-6 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="relative bg-white rounded-[2.5rem] p-10 lg:p-16 overflow-hidden border border-slate-100/80">
-              {/* Decorative shapes - soft sage green tones */}
-              <div className="absolute top-0 right-0 w-72 h-72 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
-              <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-[#f1f8e9] rounded-full translate-y-1/2" />
-              <div className="absolute top-1/2 right-1/4 w-40 h-40 bg-[#e0f2f1] rounded-full" />
-              
-              <svg className="absolute right-16 top-16 w-80 h-80 text-[#c8e6c9]/60" viewBox="0 0 200 200">
-                <path fill="currentColor" d="M45.3,-51.2C58.3,-40.9,68.1,-25.5,71.2,-8.5C74.3,8.5,70.6,27.1,60.1,40.3C49.6,53.5,32.3,61.3,14.1,66.1C-4.1,70.9,-23.2,72.7,-39.7,66.1C-56.2,59.5,-70.1,44.5,-75.4,27C-80.7,9.5,-77.4,-10.5,-68.4,-26.3C-59.4,-42.1,-44.7,-53.7,-29.5,-63.2C-14.3,-72.7,1.4,-80.1,15.7,-77.3C30,-74.5,32.3,-61.5,45.3,-51.2Z" transform="translate(100 100)" />
-              </svg>
-
-              <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-5 py-2.5 rounded-full text-sm font-medium mb-8">
-                    <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
+            <div className="grid lg:grid-cols-12 gap-4">
+              {/* Main Hero Card */}
+              <div className="lg:col-span-7 relative bg-[#43a047] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[480px]">
+                {/* Decorative organic shapes */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[#66bb6a]/30 rounded-full translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#2e7d32]/20 rounded-full -translate-x-1/4 translate-y-1/4" />
+                <svg className="absolute right-0 bottom-0 w-72 h-72 text-white/10" viewBox="0 0 200 200">
+                  <path fill="currentColor" d="M47.7,-57.2C59.5,-47.3,65.8,-30.9,68.4,-14C71,2.9,70,20.3,62.1,33.8C54.2,47.3,39.4,56.9,23.4,62.3C7.4,67.7,-9.8,68.9,-25.1,64C-40.4,59.1,-53.8,48.1,-62.4,33.8C-71,19.5,-74.8,1.9,-71.8,-14.3C-68.8,-30.5,-59,-45.3,-45.5,-54.9C-32,-64.5,-14.8,-68.9,1.5,-70.7C17.8,-72.5,35.9,-67.1,47.7,-57.2Z" transform="translate(100 100)" />
+                </svg>
+                
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 bg-white/20 text-white px-4 py-2 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
+                    <Star className="h-4 w-4 fill-white" />
                     {t("hero.tagline")}
                   </div>
 
-                  <h1 className="text-4xl lg:text-6xl font-bold text-slate-800 mb-8 leading-[1.1] font-heading tracking-tight">
+                  <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 leading-[1.1] font-heading tracking-tight max-w-xl">
                     {t("hero.title")}
                   </h1>
 
-                  <p className="text-lg text-slate-500 mb-10 max-w-lg leading-relaxed">
+                  <p className="text-lg text-white/80 mb-8 max-w-md leading-relaxed">
                     {t("hero.subtitle")}
                   </p>
 
                   <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-[#43a047] pl-8 pr-6 text-base font-semibold text-white hover:bg-[#388e3c] gap-3 mb-12 shadow-sm">
+                    <Button className="h-14 rounded-full bg-white text-[#2e7d32] pl-8 pr-6 text-base font-semibold hover:bg-white/90 gap-3 shadow-lg">
                       {t("hero.cta")}
-                      <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <ArrowRight className="h-5 w-5" />
+                      <span className="h-10 w-10 rounded-full bg-[#43a047] flex items-center justify-center">
+                        <ArrowRight className="h-5 w-5 text-white" />
                       </span>
                     </Button>
                   </Link>
-
-                  <div className="grid grid-cols-2 gap-5">
-                    {features.map((feature, i) => (
-                      <div key={i} className="flex items-center gap-3">
-                        <div className={`h-11 w-11 rounded-2xl ${feature.color} flex items-center justify-center`}>
-                          {feature.icon}
-                        </div>
-                        <span className="text-sm font-medium text-slate-600">{feature.title}</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
 
-                {/* Floating Cards - magazine style */}
-                <div className="relative h-[420px] hidden lg:block">
-                  <div className="absolute top-0 right-0 bg-white rounded-3xl p-5 w-60 border border-slate-100/80 shadow-sm">
-                    <div className="relative h-36 bg-[#c8e6c9] rounded-2xl mb-4 overflow-hidden">
-                      <div className="absolute bottom-3 left-3 bg-[#43a047] text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium">
-                        <Play className="h-3 w-3 fill-white" />
-                        Відео
-                      </div>
-                    </div>
-                    <div className="font-bold text-slate-800">Олена Коваленко</div>
-                    <div className="text-sm text-slate-500 mt-0.5">Репетитор англійської</div>
+                {/* Floating avatars */}
+                <div className="absolute bottom-8 right-8 hidden lg:flex items-center">
+                  <div className="flex -space-x-3">
+                    <div className="w-12 h-12 rounded-full bg-white/90 border-2 border-white flex items-center justify-center text-lg">O</div>
+                    <div className="w-12 h-12 rounded-full bg-[#fff8e1] border-2 border-white flex items-center justify-center text-lg">M</div>
+                    <div className="w-12 h-12 rounded-full bg-[#e8eaf6] border-2 border-white flex items-center justify-center text-lg">A</div>
+                    <div className="w-12 h-12 rounded-full bg-[#ffccbc] border-2 border-white flex items-center justify-center text-lg">+</div>
                   </div>
-
-                  <div className="absolute top-28 left-0 bg-white rounded-3xl p-5 w-56 border border-slate-100/80 shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-16 w-16 bg-[#fff8e1] rounded-2xl overflow-hidden flex items-center justify-center">
-                        <Play className="h-5 w-5 text-[#f9a825]" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-slate-800">Марія Шевченко</div>
-                        <div className="text-sm text-slate-500">Психолог</div>
-                        <div className="flex items-center gap-1 mt-1.5">
-                          <Star className="h-3.5 w-3.5 fill-[#ffc107] text-[#ffc107]" />
-                          <span className="text-sm text-slate-600 font-medium">4.9</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-4 right-12 bg-white rounded-3xl p-5 w-52 border border-slate-100/80 shadow-sm">
-                    <div className="relative h-28 bg-[#e8eaf6] rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
-                      <Play className="h-6 w-6 text-[#5c6bc0]" />
-                    </div>
-                    <div className="font-bold text-slate-800">Андрій Петренко</div>
-                    <div className="text-sm text-slate-500 mt-0.5">Логопед</div>
-                  </div>
-
-                  {/* Stats badge */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 bg-white rounded-2xl px-6 py-4 border border-slate-100/80 shadow-sm">
-                    <div className="text-3xl font-bold text-[#43a047]">500+</div>
-                    <div className="text-sm text-slate-500">спеціалістів</div>
+                  <div className="ml-4 text-white">
+                    <div className="text-2xl font-bold">500+</div>
+                    <div className="text-sm text-white/70">спеціалістів</div>
                   </div>
                 </div>
               </div>
+
+              {/* Right column - Bento cards */}
+              <div className="lg:col-span-5 grid grid-rows-2 gap-4">
+                {/* Top tutor card */}
+                <div className="bg-white rounded-[2rem] p-6 border border-slate-100/80 flex items-center gap-5 group hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="relative w-24 h-24 bg-[#c8e6c9] rounded-2xl overflow-hidden flex-shrink-0">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Play className="h-8 w-8 text-[#2e7d32]" />
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-[#43a047] text-white text-[10px] px-2 py-1 rounded-full font-medium">
+                      2:30
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-medium text-[#43a047] bg-[#e8f5e9] px-2 py-0.5 rounded-full">TOP</span>
+                      <span className="flex items-center gap-1 text-xs text-slate-500">
+                        <Star className="h-3 w-3 fill-[#ffc107] text-[#ffc107]" />
+                        4.9
+                      </span>
+                    </div>
+                    <div className="font-bold text-slate-800 text-lg">Олена Коваленко</div>
+                    <div className="text-sm text-slate-500">Репетитор англійської</div>
+                    <div className="text-sm font-semibold text-[#43a047] mt-2">від 350 ₴/год</div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#43a047] group-hover:translate-x-1 transition-all" />
+                </div>
+
+                {/* Bottom row - 2 small cards */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Stats card */}
+                  <div className="bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between">
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-4">
+                      <TrendingUp className="h-6 w-6 text-[#f9a825]" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-slate-800">98%</div>
+                      <div className="text-sm text-slate-600">задоволених учнів</div>
+                    </div>
+                  </div>
+
+                  {/* Feature card */}
+                  <div className="bg-[#e8eaf6] rounded-[2rem] p-6 flex flex-col justify-between">
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-4">
+                      <Shield className="h-6 w-6 text-[#5c6bc0]" />
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-slate-800">Перевірені</div>
+                      <div className="text-sm text-slate-600">сертифіковані викладачі</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Features row below */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+              {features.map((feature, i) => (
+                <div key={i} className="bg-white rounded-2xl p-5 border border-slate-100/80 flex items-center gap-4 hover:shadow-sm transition-shadow">
+                  <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
+                    {feature.icon}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">{feature.title}</span>
+                </div>
+              ))}
             </div>
           </div>
         </section>
