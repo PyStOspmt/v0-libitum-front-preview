@@ -6,11 +6,10 @@ import { useRequestStore } from "@/lib/request-store"
 import { useGamificationStore } from "@/lib/gamification-store"
 import { RequestCard } from "@/components/request-card"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/hooks/use-toast"
-import { BookOpen, Clock, TrendingUp, Award, Search, FileText, Calendar, Star } from "lucide-react"
+import { BookOpen, Clock, TrendingUp, Award, Search, FileText, Calendar, Star, ArrowRight } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export default function ClientPage() {
@@ -50,18 +49,23 @@ export default function ClientPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <div className="p-6 lg:p-10 max-w-6xl mx-auto space-y-8">
+          {/* Header */}
           <div>
-            <h1 className="text-3xl font-bold">Головна</h1>
-            <p className="text-muted-foreground">Ваш особистий кабінет</p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <h1 className="text-3xl lg:text-4xl font-bold text-slate-800 tracking-tight">Головна</h1>
+            <p className="text-slate-500 mt-1">Ваш особистий кабінет</p>
+            <div className="mt-5 flex flex-wrap gap-2">
               {children.map((child) => (
                 <Button
                   key={child.id}
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client?child=${child.id}`)}
-                  className="rounded-full"
+                  className={`rounded-full ${
+                    child.id === selectedChildId 
+                      ? "bg-[#5c6bc0] hover:bg-[#3949ab]" 
+                      : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                  }`}
                 >
                   {child.label}
                 </Button>
@@ -70,138 +74,159 @@ export default function ClientPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Мої спеціалісти</CardTitle>
-                <BookOpen className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.activeSpecialists}</div>
-                <p className="text-xs text-muted-foreground">Активні</p>
-              </CardContent>
-            </Card>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-slate-500">Мої спеціалісти</span>
+                <div className="h-10 w-10 rounded-xl bg-[#e8eaf6] flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-[#5c6bc0]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-800">{stats.activeSpecialists}</div>
+              <p className="text-sm text-slate-500 mt-1">Активні</p>
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Очікують відповіді</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.pendingRequests}</div>
-                <p className="text-xs text-muted-foreground">Запити</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-slate-500">Очікують відповіді</span>
+                <div className="h-10 w-10 rounded-xl bg-[#fff8e1] flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-[#ffb74d]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-800">{stats.pendingRequests}</div>
+              <p className="text-sm text-slate-500 mt-1">Запити</p>
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Завершено занять</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.completedSessions}</div>
-                <p className="text-xs text-muted-foreground">Всього</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-slate-500">Завершено занять</span>
+                <div className="h-10 w-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-[#43a047]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-800">{stats.completedSessions}</div>
+              <p className="text-sm text-slate-500 mt-1">Всього</p>
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Рівень</CardTitle>
-                <Award className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.level}</div>
-                <p className="text-xs text-muted-foreground">Активний учень</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-sm font-medium text-slate-500">Рівень</span>
+                <div className="h-10 w-10 rounded-xl bg-[#fce4ec] flex items-center justify-center">
+                  <Award className="h-5 w-5 text-[#ec407a]" />
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-slate-800">{stats.level}</div>
+              <p className="text-sm text-slate-500 mt-1">Активний учень</p>
+            </div>
           </div>
 
           {/* Gamification Card */}
-          <Card className="border-emerald-100 bg-emerald-50/30 overflow-hidden relative">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-            <CardHeader className="relative z-10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 shadow-lg shadow-emerald-200">
-                    <Award className="h-7 w-7 text-white" />
+          <div className="bg-white rounded-3xl p-8 border border-slate-100 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#e8eaf6] rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-5">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#5c6bc0]">
+                    <Award className="h-8 w-8 text-white" />
                   </div>
                   <div>
-                    <CardTitle className="text-xl font-bold text-slate-900">Рівень {stats.level} - Активний учень</CardTitle>
-                    <CardDescription className="text-slate-600">Ще 5 занять до наступного рівня</CardDescription>
+                    <h3 className="text-xl font-bold text-slate-800">Рівень {stats.level} - Активний учень</h3>
+                    <p className="text-slate-500 mt-0.5">Ще 5 занять до наступного рівня</p>
                   </div>
                 </div>
-                <Badge variant="secondary" className="text-sm px-3 py-1 bg-white text-emerald-700 shadow-sm">
+                <Badge className="text-sm px-4 py-2 bg-[#e8eaf6] text-[#3949ab] font-medium border-0">
                   {stats.completedSessions} занять
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent className="relative z-10">
-              <Progress value={60} className="h-2.5 bg-emerald-100 [&>div]:bg-emerald-500" />
-              <div className="mt-4 flex gap-2">
-                <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
-                  <Star className="mr-1 h-3 w-3" />
+              <Progress value={60} className="h-2 mt-6 bg-slate-100 [&>div]:bg-[#5c6bc0]" />
+              <div className="mt-5 flex gap-2 flex-wrap">
+                <Badge variant="outline" className="border-slate-200 text-slate-600 bg-white px-3 py-1">
+                  <Star className="mr-1.5 h-3 w-3 text-[#ffb74d]" />
                   Регулярний
                 </Badge>
-                <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50/50">
-                  <TrendingUp className="mr-1 h-3 w-3" />
+                <Badge variant="outline" className="border-slate-200 text-slate-600 bg-white px-3 py-1">
+                  <TrendingUp className="mr-1.5 h-3 w-3 text-[#43a047]" />
                   Прогрес
                 </Badge>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Quick Actions */}
-          <div className="grid gap-4 md:grid-cols-3">
-            <Button
-              size="lg"
-              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
+          <div className="grid gap-5 md:grid-cols-3">
+            <button
               onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
+              className="bg-white rounded-2xl p-6 border border-slate-100 text-left hover:border-[#5c6bc0]/30 hover:shadow-sm transition-all group"
             >
-              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
-                <Search className="h-6 w-6 text-slate-700" />
+              <div className="h-14 w-14 rounded-2xl bg-[#e8eaf6] flex items-center justify-center mb-4 group-hover:bg-[#5c6bc0] transition-colors">
+                <Search className="h-6 w-6 text-[#5c6bc0] group-hover:text-white transition-colors" />
               </div>
-              <span className="font-semibold text-lg">Знайти спеціаліста</span>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
+              <h3 className="font-bold text-lg text-slate-800">Знайти спеціаліста</h3>
+              <p className="text-slate-500 text-sm mt-1">Пошук серед 500+ спеціалістів</p>
+              <div className="flex items-center gap-2 mt-4 text-[#5c6bc0] text-sm font-medium">
+                Переглянути
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </button>
+            
+            <button
               onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
+              className="bg-white rounded-2xl p-6 border border-slate-100 text-left hover:border-[#43a047]/30 hover:shadow-sm transition-all group"
             >
-              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
-                <Calendar className="h-6 w-6 text-slate-700" />
+              <div className="h-14 w-14 rounded-2xl bg-[#e8f5e9] flex items-center justify-center mb-4 group-hover:bg-[#43a047] transition-colors">
+                <Calendar className="h-6 w-6 text-[#43a047] group-hover:text-white transition-colors" />
               </div>
-              <span className="font-semibold text-lg">Переглянути розклад</span>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-auto flex-col gap-3 py-8 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-sm hover:bg-slate-50 hover:shadow-md hover:border-slate-300 transition-all group"
+              <h3 className="font-bold text-lg text-slate-800">Переглянути розклад</h3>
+              <p className="text-slate-500 text-sm mt-1">Ваші заплановані заняття</p>
+              <div className="flex items-center gap-2 mt-4 text-[#43a047] text-sm font-medium">
+                Переглянути
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </button>
+            
+            <button
               onClick={() => router.push(`/client/materials?child=${selectedChildId}`)}
+              className="bg-white rounded-2xl p-6 border border-slate-100 text-left hover:border-[#ffb74d]/30 hover:shadow-sm transition-all group"
             >
-              <div className="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-slate-200 transition-colors">
-                <FileText className="h-6 w-6 text-slate-700" />
+              <div className="h-14 w-14 rounded-2xl bg-[#fff8e1] flex items-center justify-center mb-4 group-hover:bg-[#ffb74d] transition-colors">
+                <FileText className="h-6 w-6 text-[#ffb74d] group-hover:text-white transition-colors" />
               </div>
-              <span className="font-semibold text-lg">Мої матеріали</span>
-            </Button>
+              <h3 className="font-bold text-lg text-slate-800">Мої матеріали</h3>
+              <p className="text-slate-500 text-sm mt-1">Навчальні документи та файли</p>
+              <div className="flex items-center gap-2 mt-4 text-[#ffb74d] text-sm font-medium">
+                Переглянути
+                <ArrowRight className="h-4 w-4" />
+              </div>
+            </button>
           </div>
 
           {/* Pending Requests */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Мої запити</CardTitle>
-              <CardDescription>Очікують відповіді від спеціалістів</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <div className="bg-white rounded-3xl p-8 border border-slate-100">
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-slate-800">Мої запити</h2>
+              <p className="text-slate-500 text-sm mt-1">Очікують відповіді від спеціалістів</p>
+            </div>
+            <div className="space-y-4">
               {pendingRequests.length > 0 ? (
                 pendingRequests.map((request) => (
                   <RequestCard key={request.id} request={request} userType="client" onCancel={handleCancelRequest} />
                 ))
               ) : (
-                <p className="py-8 text-center text-muted-foreground">Немає активних запитів</p>
+                <div className="py-12 text-center">
+                  <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
+                    <Clock className="h-8 w-8 text-slate-300" />
+                  </div>
+                  <p className="text-slate-500">Немає активних запитів</p>
+                  <Button 
+                    className="mt-4 rounded-full bg-[#5c6bc0] hover:bg-[#3949ab]"
+                    onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
+                  >
+                    Знайти спеціаліста
+                  </Button>
+                </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </SidebarLayout>
     </ProtectedRoute>

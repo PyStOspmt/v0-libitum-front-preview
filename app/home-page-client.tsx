@@ -1,554 +1,540 @@
 "use client"
 
+import Link from "next/link"
+import Image from "next/image"
+import { useState } from "react"
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Play,
+  Star,
+  Users,
+  BookOpen,
+  Shield,
+  TrendingUp,
+} from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import Image from "next/image"
-import { BookOpen, Brain, MessageSquare, Star, Users, TrendingUp, ArrowRight, CheckCircle } from "lucide-react"
 
 export default function HomePageClient() {
   const { user } = useAuth()
   const { t } = useTranslation(user?.language || "UA")
-  const specialistsHref = user?.role === "client" ? "/client/specialists" : "/specialists"
-  const specialistsCategoryHref = user?.role === "client" ? "/client/specialists" : "/specialists"
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+
+  const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
+
+  const features = [
+    { icon: <Shield className="h-5 w-5 text-emerald-600" />, title: t("features.verified.title"), color: "bg-emerald-50" },
+    { icon: <Star className="h-5 w-5 text-amber-500" />, title: t("features.ratings.title"), color: "bg-amber-50" },
+    { icon: <TrendingUp className="h-5 w-5 text-teal-600" />, title: t("features.progress.title"), color: "bg-teal-50" },
+    { icon: <Users className="h-5 w-5 text-blue-600" />, title: "Групові заняття", color: "bg-blue-50" },
+  ]
+
+  const categories = [
+    {
+      title: t("categories.tutor.title"),
+      desc: t("categories.tutor.desc"),
+      stat: t("categories.tutor.stat"),
+      color: "bg-emerald-500",
+      icon: <BookOpen className="h-6 w-6" />,
+    },
+    {
+      title: t("categories.psychologist.title"),
+      desc: t("categories.psychologist.desc"),
+      stat: t("categories.psychologist.stat"),
+      color: "bg-violet-500",
+      icon: <Users className="h-6 w-6" />,
+    },
+    {
+      title: t("categories.speech.title"),
+      desc: t("categories.speech.desc"),
+      stat: t("categories.speech.stat"),
+      color: "bg-amber-500",
+      icon: <Star className="h-6 w-6" />,
+    },
+  ]
+
+  const steps = [
+    { num: "01", title: t("how.step1.title"), desc: t("how.step1.desc") },
+    { num: "02", title: t("how.step2.title"), desc: t("how.step2.desc") },
+    { num: "03", title: t("how.step3.title"), desc: t("how.step3.desc") },
+  ]
+
+  const pricing = [
+    {
+      lessons: "4 уроки",
+      name: t("pricing.item1.title"),
+      price: "990 ₴",
+      desc: t("pricing.item1.desc"),
+      features: ["4 заняття з репетитором", "Доступ до матеріалів", "Домашні завдання", "Підтримка вчителя"],
+      highlight: false,
+    },
+    {
+      lessons: "12 уроків",
+      name: t("pricing.item2.title"),
+      price: "2199 ₴",
+      oldPrice: "2590 ₴",
+      badge: "НАЙКРАЩА ПРОПОЗИЦІЯ",
+      desc: t("pricing.item2.desc"),
+      features: ["12 занять з репетитором", "Повний доступ до матеріалів", "Детальний фідбек", "Тести прогресу", "Персоналізовані сесії"],
+      highlight: true,
+    },
+    {
+      lessons: "24 уроки",
+      name: t("pricing.item3.title"),
+      price: "5199 ₴",
+      desc: t("pricing.item3.desc"),
+      features: ["24 заняття поглиблено", "Преміум матеріали", "Інтенсивні ДЗ з фідбеком", "Щомісячні звіти", "Підготовка до іспитів"],
+      highlight: false,
+    },
+  ]
+
+  const reviews = [
+    { text: t("reviews.item1.text"), name: t("reviews.item1.name"), rating: 5 },
+    { text: t("reviews.item2.text"), name: t("reviews.item2.name"), rating: 5 },
+    { text: t("reviews.item3.text"), name: t("reviews.item3.name"), rating: 5 },
+  ]
+
+  const faqs = [
+    { q: t("faq.q1.q"), a: t("faq.q1.a") },
+    { q: t("faq.q2.q"), a: t("faq.q2.a") },
+    { q: t("faq.q3.q"), a: t("faq.q3.a") },
+    { q: t("faq.q4.q"), a: t("faq.q4.a") },
+  ]
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-transparent text-slate-700">
-      <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-lg">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+    <div className="min-h-screen bg-[#fafaf8]">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex h-18 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <div>
-                <span className="gradient-text text-xl font-bold">Libitum</span>
-                <p className="text-xs text-muted-foreground">Education</p>
-              </div>
-            </div>
-            <nav className="hidden items-center gap-6 md:flex">
-              <Link
-                href={specialistsHref}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
+              <span className="text-lg font-bold text-slate-800">LIBITUM</span>
+            </Link>
+
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.specialists")}
               </Link>
-              <Link
-                href="#how-it-works"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
+              <Link href="#how" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.how_it_works")}
               </Link>
-              <Link
-                href="#pricing"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Ціни
+              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
+                {t("nav.reviews")}
               </Link>
-            </nav>
-            <div className="flex items-center gap-3">
               <LanguageSwitcher />
-              <Link href="/login">
-                <Button variant="ghost" className="rounded-2xl">
-                  {t("btn.login")}
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button className="rounded-2xl border border-slate-200 bg-slate-800 text-white shadow-sm transition-all hover:bg-slate-700 h-11 px-6 text-base">
-                  {t("btn.register")}
-                </Button>
-              </Link>
+            </nav>
+
+            <div className="flex items-center gap-3">
+              {user ? (
+                <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
+                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
+                      {t("btn.login")}
+                    </Button>
+                  </Link>
+                  <Link href="/register">
+                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
+                      {t("btn.register")}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      <main className="relative scroll-smooth snap-y snap-mandatory">
-        {/* Hero Section */}
-        <section className="relative container mx-auto px-4 py-24 md:py-28 lg:py-32 overflow-visible snap-start">
-          {/* Floating gradient orbs */}
-          <div className="pointer-events-none absolute -left-24 -top-16 h-64 w-64 rounded-full bg-gradient-to-br from-emerald-200/50 via-teal-100/40 to-transparent blur-3xl animate-float-slow" />
-          <div className="pointer-events-none absolute right-0 top-10 h-72 w-72 rounded-full bg-gradient-to-br from-amber-200/45 via-orange-100/40 to-transparent blur-3xl animate-float-slower" />
+      <main>
+        {/* Hero Section - Paper Bento Grid */}
+        <section className="relative py-8 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="grid lg:grid-cols-12 gap-5">
+              {/* Main Hero Card - warm paper feel */}
+              <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px]">
+                {/* Decorative soft circles */}
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fff8e1] rounded-full -translate-x-1/4 translate-y-1/4" />
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#e0f2f1] rounded-full" />
+                
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-4 py-2 rounded-full text-sm font-medium mb-8">
+                    <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
+                    {t("hero.tagline")}
+                  </div>
 
-          <div className="relative animate-fade-in-up mx-auto max-w-4xl text-center">
-            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-medium text-slate-600 shadow-sm transition-transform hover:scale-105">
-              <CheckCircle className="h-4 w-4 text-emerald-500" />
-              <span>{t("hero.tagline")}</span>
+                  <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-800 mb-6 leading-[1.1] font-heading tracking-tight max-w-xl">
+                    {t("hero.title")}
+                  </h1>
+
+                  <p className="text-lg text-slate-600 mb-10 max-w-md leading-relaxed">
+                    {t("hero.subtitle")}
+                  </p>
+
+                  <Link href={specialistHref}>
+                    <Button className="h-14 rounded-full bg-[#43a047] text-white pl-8 pr-6 text-base font-semibold hover:bg-[#388e3c] gap-3">
+                      {t("hero.cta")}
+                      <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <ArrowRight className="h-5 w-5" />
+                      </span>
+                    </Button>
+                  </Link>
+
+                  {/* Avatars row */}
+                  <div className="flex items-center mt-10">
+                    <div className="flex -space-x-3">
+                      <div className="w-11 h-11 rounded-full bg-[#c8e6c9] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#2e7d32]">ОК</div>
+                      <div className="w-11 h-11 rounded-full bg-[#fff8e1] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#f9a825]">МШ</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e8eaf6] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#5c6bc0]">АП</div>
+                      <div className="w-11 h-11 rounded-full bg-[#ffccbc] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#e64a19]">+</div>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-xl font-bold text-slate-800">500+</div>
+                      <div className="text-sm text-slate-500">спеціалістів онлайн</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right column - Bento cards */}
+              <div className="lg:col-span-5 grid grid-rows-2 gap-5">
+                {/* Top tutor card */}
+                <div className="bg-[#fafaf8] rounded-[2rem] p-6 border border-slate-100 flex items-center gap-5 group hover:bg-white transition-colors cursor-pointer">
+                  <div className="relative w-28 h-28 bg-[#e8f5e9] rounded-2xl overflow-hidden flex-shrink-0">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-[#43a047] flex items-center justify-center">
+                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                      </div>
+                    </div>
+                    <div className="absolute bottom-2 right-2 bg-slate-800/80 text-white text-[10px] px-2 py-1 rounded-full font-medium">
+                      2:30
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs font-semibold text-[#2e7d32] bg-[#e8f5e9] px-2.5 py-1 rounded-full">TOP</span>
+                      <span className="flex items-center gap-1 text-sm text-slate-500">
+                        <Star className="h-3.5 w-3.5 fill-[#ffc107] text-[#ffc107]" />
+                        4.9
+                      </span>
+                    </div>
+                    <div className="font-bold text-slate-800 text-lg mb-0.5">Олена Коваленко</div>
+                    <div className="text-sm text-slate-500 mb-2">Репетитор англійської</div>
+                    <div className="text-sm font-semibold text-[#43a047]">від 350 ₴/год</div>
+                  </div>
+                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#43a047] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                </div>
+
+                {/* Bottom row - 2 small cards */}
+                <div className="grid grid-cols-2 gap-5">
+                  {/* Stats card */}
+                  <div className="bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between">
+                    <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
+                      <TrendingUp className="h-6 w-6 text-[#f9a825]" />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-bold text-slate-800">98%</div>
+                      <div className="text-sm text-slate-600">задоволених учнів</div>
+                    </div>
+                  </div>
+
+                  {/* Feature card */}
+                  <div className="bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between">
+                    <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
+                      <Shield className="h-6 w-6 text-[#43a047]" />
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-slate-800">Перевірені</div>
+                      <div className="text-sm text-slate-600">сертифіковані викладачі</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <h1 className="mb-6 text-balance text-5xl font-bold tracking-tight text-slate-800 md:text-6xl lg:text-7xl">
-              {t("hero.title").split(" ").slice(0, -1).join(" ")}{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 pr-2">
-                {t("hero.title").split(" ").pop()}
-              </span>
-            </h1>
+            {/* Features row below */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+              {features.map((feature, i) => (
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:bg-white transition-colors">
+                  <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
+                    {feature.icon}
+                  </div>
+                  <span className="text-sm font-medium text-slate-700">{feature.title}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
-            <p className="mb-6 text-pretty text-xl text-slate-600 md:text-2xl max-w-2xl mx-auto leading-relaxed">
-              {t("hero.subtitle")}
-            </p>
-            
-            <p className="mb-10 text-pretty text-base text-slate-500 md:text-lg max-w-3xl mx-auto">
-              {t("hero.extra")}
-            </p>
+        {/* Categories Section */}
+        <section className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="text-center mb-14">
+              <p className="text-sm font-medium text-[#43a047] mb-4 uppercase tracking-wider">{t("about.label")}</p>
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
+                Категорії спеціалістів
+              </h2>
+              <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("specialists.subtitle")}</p>
+            </div>
 
-            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href={specialistsHref}>
-                <Button
-                  size="lg"
-                  className="h-14 rounded-2xl bg-emerald-600 px-10 text-lg font-semibold text-white shadow-lg shadow-emerald-100 transition-all hover:bg-emerald-700 hover:scale-105 active:scale-95"
+            <div className="grid md:grid-cols-3 gap-6">
+              {categories.map((cat, i) => (
+                <div key={i} className="bg-[#fafaf8] rounded-3xl p-8 border border-slate-100 hover:bg-white transition-colors">
+                  <div className={`h-14 w-14 ${cat.color === "bg-emerald-500" ? "bg-[#e8f5e9]" : cat.color === "bg-violet-500" ? "bg-[#ede7f6]" : "bg-[#fff8e1]"} rounded-2xl flex items-center justify-center mb-6`}>
+                    <div className={`${cat.color === "bg-emerald-500" ? "text-[#43a047]" : cat.color === "bg-violet-500" ? "text-[#7e57c2]" : "text-[#f9a825]"}`}>
+                      {cat.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
+                  <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
+                  <div className="text-sm font-semibold text-[#43a047]">{cat.stat}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section id="how" className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="bg-[#f5f5f0] rounded-[2.5rem] p-10 lg:p-16">
+              <div className="text-center mb-14">
+                <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
+                  {t("nav.how_it_works")}
+                </h2>
+                <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("how.subtitle")}</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-10">
+                {steps.map((step, i) => (
+                  <div key={i} className="text-center">
+                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border border-slate-100">
+                      <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
+                    <p className="text-slate-500 leading-relaxed">{step.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center mt-12">
+                <Link href={specialistHref}>
+                  <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c]">
+                    {t("hero.cta")}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <section id="plans" className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
+                Обери свій план
+              </h2>
+              <p className="text-slate-500 text-lg">{t("pricing.subtitle")}</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {pricing.map((plan, i) => (
+                <div 
+                  key={i} 
+                  className={`relative rounded-3xl p-8 ${
+                    plan.highlight 
+                      ? "bg-[#e8f5e9] border-2 border-[#43a047]" 
+                      : "bg-[#fafaf8] border border-slate-100"
+                  }`}
                 >
-                  {t("hero.cta")}
+                  {plan.badge && (
+                    <div className="absolute -top-3 left-6 bg-[#43a047] text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                      {plan.badge}
+                    </div>
+                  )}
+
+                  <div className={`inline-block px-5 py-2 rounded-full text-xs font-bold mb-5 ${
+                    plan.highlight ? "bg-[#43a047] text-white" : "bg-[#e8f5e9] text-[#2e7d32]"
+                  }`}>
+                    {plan.lessons}
+                  </div>
+
+                  <h3 className="text-lg font-bold mb-3 text-[#2e7d32]">
+                    {plan.name}
+                  </h3>
+
+                  <div className="flex items-baseline gap-2 mb-8">
+                    {plan.oldPrice && (
+                      <span className="text-sm line-through text-slate-400">
+                        {plan.oldPrice}
+                      </span>
+                    )}
+                    <span className="text-3xl font-bold text-slate-800">
+                      {plan.price}
+                    </span>
+                  </div>
+
+                  <Button className={`w-full h-12 rounded-full font-semibold mb-8 ${
+                    plan.highlight 
+                      ? "bg-[#43a047] text-white hover:bg-[#388e3c]" 
+                      : "bg-slate-800 text-white hover:bg-slate-700"
+                  }`}>
+                    Обрати
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+
+                  <div className="space-y-4">
+                    {plan.features.map((feature, j) => (
+                      <div key={j} className="flex items-start gap-3">
+                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#43a047]" />
+                        <span className="text-sm text-slate-600">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Reviews */}
+        <section id="reviews" className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
+                {t("nav.reviews")}
+              </h2>
+              <p className="text-slate-500 text-lg">{t("reviews.subtitle")}</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {reviews.map((review, i) => (
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border border-slate-100">
+                  <div className="flex gap-1 mb-5">
+                    {[...Array(review.rating)].map((_, j) => (
+                      <Star key={j} className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
+                    ))}
+                  </div>
+                  <p className="text-slate-600 mb-5 leading-relaxed">{'"'}{review.text}{'"'}</p>
+                  <div className="text-sm font-semibold text-slate-800">{review.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto max-w-3xl">
+            <div className="text-center mb-14">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
+                Часті запитання
+              </h2>
+              <p className="text-slate-500 text-lg">{t("faq.subtitle")}</p>
+            </div>
+
+            <div className="space-y-4">
+              {faqs.map((faq, i) => (
+                <div key={i} className="bg-[#fafaf8] rounded-2xl overflow-hidden border border-slate-100">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors"
+                  >
+                    <span className="font-semibold text-slate-800">{faq.q}</span>
+                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                  </button>
+                  {openFaq === i && (
+                    <div className="px-7 pb-5 text-slate-600 leading-relaxed">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-20 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border border-[#c8e6c9]">
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
+                {t("cta.title")}
+              </h2>
+              <p className="text-slate-600 mb-10 max-w-xl mx-auto text-lg">
+                {t("cta.subtitle")}
+              </p>
+              <Link href={specialistHref}>
+                <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c]">
+                  {t("cta.button")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/register">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="h-14 rounded-2xl border-slate-200 bg-white px-10 text-lg font-medium text-slate-600 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-800 hover:border-slate-300"
-                >
-                  {t("btn.become_specialist")}
-                </Button>
-              </Link>
             </div>
-
-            <div className="mt-12 grid gap-4 md:grid-cols-3">
-              {[
-                {
-                  title: "Швидкий підбір",
-                  text: "Сформуйте запит та отримайте відповіді",
-                  action: t("hero.cta"),
-                  href: specialistsHref,
-                },
-                {
-                  title: "Почати зараз",
-                  text: "Створіть заявку на пробне заняття",
-                  action: "Створити запит",
-                  href: "/client/requests/new",
-                },
-                {
-                  title: "Підібрати спеціаліста",
-                  text: "Каталог з фільтрами та рейтингом",
-                  action: "Переглянути каталог",
-                  href: specialistsHref,
-                },
-              ].map((card, index) => (
-                <Link
-                  key={card.title}
-                  href={card.href}
-                  style={{ animationDelay: `${index * 120}ms` }}
-                  className="group animate-fade-in-up rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg hover:border-slate-300 hover-glow"
-                >
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{card.title}</p>
-                  <p className="mt-2 text-base font-semibold text-slate-800">{card.text}</p>
-                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-emerald-600 group-hover:text-emerald-700">
-                    {card.action}
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-            
-            {/* Trust markers */}
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-4 text-sm font-medium text-slate-400">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-slate-300" />
-                Перевірені спеціалісти
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-slate-300" />
-                Безпечна оплата
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-slate-300" />
-                Підтримка 24/7
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* How it works - Cleaner cards */}
-        <section className="relative container mx-auto px-4 py-16 snap-start" id="how-it-works">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold gradient-text md:text-4xl">{t("nav.how_it_works")}</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("how.subtitle")}</p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                title: t("how.step1.title"),
-                text: t("how.step1.desc"),
-                icon: BookOpen
-              },
-              {
-                title: t("how.step2.title"),
-                text: t("how.step2.desc"),
-                icon: Users
-              },
-              {
-                title: t("how.step3.title"),
-                text: t("how.step3.desc"),
-                icon: TrendingUp
-              },
-            ].map((step, index) => (
-              <div
-                key={step.title}
-                style={{ animationDelay: `${index * 140}ms` }}
-                className="group relative animate-fade-in-up rounded-2xl border border-slate-100 bg-white p-10 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 hover-glow"
-              >
-                <div className="absolute top-10 right-10 text-6xl font-bold text-slate-100 select-none group-hover:text-slate-200 transition-colors">
-                  {index + 1}
-                </div>
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-600 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
-                  <step.icon className="h-7 w-7" />
-                </div>
-                <h3 className="mb-3 text-xl font-bold text-slate-800">{step.title}</h3>
-                <p className="text-base text-slate-500 leading-relaxed">{step.text}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Categories - Strong accent usage */}
-        <section className="relative container mx-auto px-4 py-16 snap-start" id="specialists">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">{t("how.step1.title")}</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("specialists.subtitle")}</p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {/* Tutor Category - Green Accent */}
-            <Link href={`${specialistsCategoryHref}?category=tutor`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50/60 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1 hover-glow">
-                <div className="p-8 h-full flex flex-col">
-                  <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 transition-transform group-hover:scale-110">
-                    <BookOpen className="h-8 w-8" />
-                  </div>
-                  <h3 className="mb-2 text-2xl font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">{t("categories.tutor.title")}</h3>
-                  <p className="text-base text-slate-500 mb-8 flex-1">{t("categories.tutor.desc")}</p>
-                  
-                  <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
-                    <span className="text-slate-400 group-hover:text-emerald-600 transition-colors">{t("categories.tutor.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-emerald-300 to-emerald-400 text-emerald-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-emerald-50">
-                      <ArrowRight className="h-4 w-4" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {/* Psychologist Category - Orange Accent */}
-            <Link href={`${specialistsCategoryHref}?category=psychologist`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50/50 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 hover-glow">
-                <div className="p-8 h-full flex flex-col">
-                  <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 transition-transform group-hover:scale-110">
-                    <Brain className="h-8 w-8" />
-                  </div>
-                  <h3 className="mb-2 text-2xl font-bold text-slate-800 group-hover:text-orange-600 transition-colors">{t("categories.psychologist.title")}</h3>
-                  <p className="text-base text-slate-500 mb-8 flex-1">{t("categories.psychologist.desc")}</p>
-                  
-                  <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
-                    <span className="text-slate-400 group-hover:text-orange-600 transition-colors">{t("categories.psychologist.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 text-orange-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-orange-50">
-                      <ArrowRight className="h-4 w-4" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            {/* Speech Therapist Category - Orange Accent */}
-            <Link href={`${specialistsCategoryHref}?category=speech-therapist`} className="group">
-              <div className="h-full rounded-2xl border border-slate-200 bg-gradient-to-br from-amber-50/50 via-white to-white overflow-hidden shadow-sm transition-all hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 hover-glow">
-                <div className="p-8 h-full flex flex-col">
-                  <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 transition-transform group-hover:scale-110">
-                    <MessageSquare className="h-8 w-8" />
-                  </div>
-                  <h3 className="mb-2 text-2xl font-bold text-slate-800 group-hover:text-orange-600 transition-colors">{t("categories.speech.title")}</h3>
-                  <p className="text-base text-slate-500 mb-8 flex-1">{t("categories.speech.desc")}</p>
-                  
-                  <div className="flex items-center justify-between text-sm font-medium border-t border-slate-100 pt-6">
-                    <span className="text-slate-400 group-hover:text-orange-600 transition-colors">{t("categories.speech.stat")}</span>
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-r from-amber-300 to-orange-400 text-orange-800 flex items-center justify-center transition-all group-hover:scale-110 shadow-sm shadow-orange-50">
-                      <ArrowRight className="h-4 w-4" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          </div>
-        </section>
-
-        {/* Pricing - Clean & Neutral */}
-        <section className="relative container mx-auto px-4 py-20" id="pricing">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">Ціни та умови</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("pricing.subtitle")}</p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                title: t("pricing.item1.title"),
-                text: t("pricing.item1.desc"),
-              },
-              {
-                title: t("pricing.item2.title"),
-                text: t("pricing.item2.desc"),
-              },
-              {
-                title: t("pricing.item3.title"),
-                text: t("pricing.item3.desc"),
-              },
-            ].map((item, index) => (
-              <div
-                key={item.title}
-                style={{ animationDelay: `${index * 140}ms` }}
-                className="rounded-2xl border border-slate-200 bg-white p-10 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 animate-fade-in-up"
-              >
-                <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-                  <CheckCircle className="h-6 w-6" />
-                </div>
-                <h3 className="mb-3 text-xl font-bold text-slate-800">{item.title}</h3>
-                <p className="text-base text-slate-500 leading-relaxed">{item.text}</p>
-                <div className="mt-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-                  <span className="h-px w-8 bg-slate-200"></span>
-                  Перевага {index + 1}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Reviews - Softer appearance */}
-        <section className="relative container mx-auto px-4 py-20" id="reviews">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">{t("nav.reviews")}</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("reviews.subtitle")}</p>
-          </div>
-          <div className="grid gap-8 md:grid-cols-3">
-            {[
-              {
-                text: t("reviews.item1.text"),
-                name: t("reviews.item1.name"),
-                rating: 5,
-              },
-              {
-                text: t("reviews.item2.text"),
-                name: t("reviews.item2.name"),
-                rating: 5,
-              },
-              {
-                text: t("reviews.item3.text"),
-                name: t("reviews.item3.name"),
-                rating: 4,
-              },
-            ].map((review, i) => (
-              <div
-                key={i}
-                style={{ animationDelay: `${i * 140}ms` }}
-                className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm animate-fade-in-up"
-              >
-                <div className="mb-6 flex items-center gap-1 text-amber-400">
-                  {Array.from({ length: 5 }).map((_, idx) => (
-                    <Star key={idx} className={`h-5 w-5 ${idx < review.rating ? "fill-current" : "text-slate-200 fill-slate-200"}`} />
-                  ))}
-                </div>
-                <p className="mb-6 text-lg italic text-slate-600">“{review.text}”</p>
-                <div className="flex items-center gap-4 border-t border-slate-100 pt-6">
-                  <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500">
-                    {review.name[0]}
-                  </div>
-                  <p className="font-bold text-slate-800">{review.name}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* FAQ section - Simplified */}
-        <section className="relative container mx-auto px-4 py-20" id="faq">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-slate-800 md:text-4xl">FAQ</h2>
-            <p className="text-xl text-slate-500 max-w-2xl mx-auto">{t("faq.subtitle")}</p>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 max-w-5xl mx-auto">
-            {[
-              { q: t("faq.q1.q"), a: t("faq.q1.a") },
-              { q: t("faq.q2.q"), a: t("faq.q2.a") },
-              { q: t("faq.q3.q"), a: t("faq.q3.a") },
-              { q: t("faq.q4.q"), a: t("faq.q4.a") },
-            ].map((item, index) => (
-              <div
-                key={item.q}
-                style={{ animationDelay: `${index * 120}ms` }}
-                className="group rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition-all hover:border-slate-300 hover:shadow-md animate-fade-in-up"
-              >
-                <h3 className="mb-3 text-lg font-bold text-slate-800 group-hover:text-emerald-600 transition-colors">{item.q}</h3>
-                <p className="text-base text-slate-500 leading-relaxed">{item.a}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* About section - Light & Airy */}
-        <section className="relative container mx-auto px-4 py-20" id="about">
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 md:p-20 text-center shadow-sm relative overflow-hidden">
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-semibold text-slate-500 mb-8">
-                {t("about.label")}
-              </div>
-              <h2 className="mb-6 text-4xl font-bold text-slate-800 md:text-5xl">{t("about.title")}</h2>
-              <p className="mb-12 text-xl text-slate-500 leading-relaxed">{t("about.desc")}</p>
-              
-              <div className="grid gap-6 md:grid-cols-3 text-left">
-                {[t("about.point1"), t("about.point2"), t("about.point3")].map((text, i) => (
-                  <div key={i} className="rounded-2xl border border-slate-100 bg-slate-50 p-6 transition-colors hover:bg-white hover:shadow-sm">
-                    <p className="text-sm font-medium text-slate-600">{text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact & Rules */}
-        <section className="relative container mx-auto px-4 py-20" id="contact">
-          <div className="grid gap-8 md:grid-cols-2 max-w-5xl mx-auto">
-            <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-sm">
-              <h2 className="mb-6 text-2xl font-bold text-slate-800">{t("contact.title")}</h2>
-              <p className="mb-8 text-slate-500">{t("contact.desc")}</p>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 text-slate-600">
-                  <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
-                    <MessageSquare className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Email</p>
-                    <p className="font-medium">{t("contact.email")}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-slate-600">
-                  <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
-                    <Users className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Social</p>
-                    <p className="font-medium">{t("contact.telegram")}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-sm" id="rules">
-              <h2 className="mb-6 text-2xl font-bold text-slate-800">{t("rules.title")}</h2>
-              <ul className="space-y-4">
-                {[t("rules.item1"), t("rules.item2"), t("rules.item3")].map((item, i) => (
-                  <li key={i} className="flex gap-4">
-                    <CheckCircle className="h-6 w-6 text-emerald-500 shrink-0" />
-                    <span className="text-slate-600">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="relative container mx-auto px-4 py-20">
-          <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm md:px-16 hover-glow">
-            <h2 className="mb-6 text-4xl font-bold gradient-text md:text-5xl tracking-tight">{t("cta.title")}</h2>
-            <p className="mb-10 text-xl text-slate-500">{t("cta.subtitle")}</p>
-            <Link href="/specialists">
-              <Button className="h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-12 text-xl font-bold text-white shadow-lg shadow-emerald-100 transition-all hover:scale-105 hover:from-emerald-600 hover:to-emerald-700 active:scale-95">
-                {t("cta.button")}
-                <ArrowRight className="ml-3 inline-block h-6 w-6" />
-              </Button>
-            </Link>
           </div>
         </section>
       </main>
 
-      <footer className="bg-white border-t border-slate-100 relative mt-20 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-4">
+      {/* Footer */}
+      <footer className="bg-slate-800 text-white py-14 px-4 lg:px-8 rounded-t-[2rem]">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="mb-4 flex items-center gap-3">
-                <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
+              <Link href="/" className="flex items-center gap-2 mb-4">
+                <div className="relative h-9 w-9 overflow-hidden rounded-xl">
                   <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                 </div>
-                <span className="gradient-text text-xl font-bold">Libitum</span>
+                <span className="text-lg font-bold">LIBITUM</span>
+              </Link>
+              <p className="text-slate-400 text-sm">{t("about.desc")}</p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">{t("contact.title")}</h4>
+              <div className="space-y-2 text-sm text-slate-400">
+                <p>{t("contact.email")}</p>
+                <p>{t("contact.telegram")}</p>
+                <p>{t("contact.hours")}</p>
               </div>
-              <p className="text-sm text-muted-foreground">Платформа №1 для пошуку репетиторів, психологів та логопедів в Україні.</p>
             </div>
 
             <div>
-              <h3 className="mb-4 font-semibold">Для клієнтів</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href={specialistsHref} className="hover:text-foreground">
-                    Знайти спеціаліста
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#how-it-works" className="hover:text-foreground">
-                    Як це працює
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#reviews" className="hover:text-foreground">
-                    Відгуки
-                  </Link>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4">{t("rules.title")}</h4>
+              <div className="space-y-2 text-sm text-slate-400">
+                <p>{t("rules.item1")}</p>
+                <p>{t("rules.item2")}</p>
+              </div>
             </div>
 
             <div>
-              <h3 className="mb-4 font-semibold">Для спеціалістів</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="/register" className="hover:text-foreground">
-                    Стати спеціалістом
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#pricing" className="hover:text-foreground">
-                    Ціни
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#faq" className="hover:text-foreground">
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="mb-4 font-semibold">Компанія</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link href="#about" className="hover:text-foreground">
-                    Про нас
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#contact" className="hover:text-foreground">
-                    Контакти
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#rules" className="hover:text-foreground">
-                    Правила платформи
-                  </Link>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4">Навігація</h4>
+              <div className="space-y-2 text-sm">
+                <Link href={specialistHref} className="block text-slate-400 hover:text-white">{t("nav.specialists")}</Link>
+                <Link href="#how" className="block text-slate-400 hover:text-white">{t("nav.how_it_works")}</Link>
+                <Link href="#reviews" className="block text-slate-400 hover:text-white">{t("nav.reviews")}</Link>
+              </div>
             </div>
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2026 Libitum Education. Всі права захищені.</p>
+          <div className="border-t border-slate-800 pt-8 text-center text-sm text-slate-400">
+            © 2024 Libitum Education. {t("footer.rights")}
           </div>
         </div>
       </footer>
