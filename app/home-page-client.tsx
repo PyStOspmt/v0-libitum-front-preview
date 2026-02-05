@@ -95,29 +95,29 @@ export default function HomePageClient() {
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-slate-200/50">
+      <header className="fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-12 w-12 overflow-hidden rounded-2xl shadow-lg shadow-emerald-200/50 ring-1 ring-slate-200/50 transition-transform group-hover:scale-105">
+              <div className="relative h-11 w-11 overflow-hidden rounded-xl shadow-lg ring-1 ring-white/20 transition-transform group-hover:scale-105">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <div>
-                <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                <span className="text-xl font-bold tracking-tight text-white drop-shadow-sm">
                   Libitum
                 </span>
-                <p className="text-xs font-medium text-slate-500">Education</p>
+                <p className="text-[10px] font-medium text-white/70">Education</p>
               </div>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-8">
-              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+              <Link href={specialistHref} className="text-sm font-medium text-white/90 hover:text-white transition-colors">
                 {t("nav.specialists")}
               </Link>
-              <Link href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+              <Link href="#how-it-works" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
                 {t("nav.how_it_works")}
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-emerald-600 transition-colors">
+              <Link href="#reviews" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
                 {t("nav.reviews")}
               </Link>
             </nav>
@@ -126,7 +126,7 @@ export default function HomePageClient() {
               <LanguageSwitcher />
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-11 rounded-2xl bg-emerald-600 px-6 font-semibold text-white shadow-lg shadow-emerald-200/50 hover:bg-emerald-700 transition-all">
+                  <Button className="h-10 rounded-xl bg-white/10 backdrop-blur-sm px-5 font-medium text-white border border-white/20 hover:bg-white/20 transition-all">
                     Dashboard
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -134,12 +134,12 @@ export default function HomePageClient() {
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="ghost" className="h-11 rounded-2xl px-5 font-medium text-slate-700 hover:text-emerald-600 hover:bg-emerald-50/50">
+                    <Button variant="ghost" className="h-10 rounded-xl px-5 font-medium text-white/90 hover:text-white hover:bg-white/10">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-11 rounded-2xl bg-emerald-600 px-6 font-semibold text-white shadow-lg shadow-emerald-200/50 hover:bg-emerald-700 transition-all">
+                    <Button className="h-10 rounded-xl bg-white px-5 font-semibold text-emerald-700 hover:bg-white/90 transition-all shadow-lg shadow-black/10">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -152,33 +152,47 @@ export default function HomePageClient() {
 
       <main>
         {/* Hero */}
-        <section className="relative py-20 lg:py-32">
-          <div className="container mx-auto px-4 lg:px-8">
+        <section className="relative min-h-[100vh] flex items-center overflow-hidden" style={{
+          background: "linear-gradient(135deg, #059669 0%, #047857 25%, #065f46 50%, #064e3b 75%, #0f766e 100%)"
+        }}>
+          {/* Decorative elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-400/5 rounded-full blur-3xl" />
+            {/* Grid pattern */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{
+              backgroundImage: "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
+              backgroundSize: "60px 60px"
+            }} />
+          </div>
+
+          <div className="container mx-auto px-4 lg:px-8 relative z-10 pt-20">
             <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 border border-emerald-200/50 px-4 py-2 mb-8 animate-fade-in-up">
-                <Sparkles className="h-4 w-4 text-emerald-600" />
-                <span className="text-sm font-semibold text-emerald-700">{t("hero.tagline")}</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 mb-8 animate-fade-in-up">
+                <Sparkles className="h-4 w-4 text-amber-300" />
+                <span className="text-sm font-semibold text-white">{t("hero.tagline")}</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 mb-6 animate-fade-in-up font-heading" style={{ animationDelay: "0.1s" }}>
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-8 animate-fade-in-up font-heading leading-[1.1]" style={{ animationDelay: "0.1s" }}>
                 {t("hero.title")}
               </h1>
 
-              <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+              <p className="text-lg sm:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
                 {t("hero.subtitle")}
               </p>
 
-              <div className="glass-card rounded-3xl p-3 max-w-2xl mx-auto mb-8 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-                <div className="flex flex-col sm:flex-row gap-3">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 max-w-2xl mx-auto mb-10 animate-fade-in-up border border-white/20" style={{ animationDelay: "0.3s" }}>
+                <div className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50" />
                     <Input
                       placeholder="Англійська мова, математика, психологія..."
-                      className="h-14 pl-12 rounded-2xl border-0 bg-slate-50/80 text-base focus-visible:ring-2 focus-visible:ring-emerald-500/30"
+                      className="h-14 pl-12 rounded-xl border-0 bg-white/10 text-base text-white placeholder:text-white/50 focus-visible:ring-2 focus-visible:ring-white/30"
                     />
                   </div>
                   <Link href={specialistHref}>
-                    <Button className="h-14 w-full sm:w-auto rounded-2xl bg-emerald-600 px-8 text-base font-semibold text-white shadow-lg shadow-emerald-200/50 hover:bg-emerald-700 transition-all">
+                    <Button className="h-14 w-full sm:w-auto rounded-xl bg-white px-8 text-base font-semibold text-emerald-700 hover:bg-white/90 transition-all shadow-lg shadow-black/10">
                       {t("hero.cta")}
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
@@ -186,21 +200,28 @@ export default function HomePageClient() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-white/70 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
                   <span>500+ спеціалістів</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
                   <span>Перевірені профілі</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
                   <span>Безкоштовний підбір</span>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Bottom wave */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+              <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+            </svg>
           </div>
         </section>
 
