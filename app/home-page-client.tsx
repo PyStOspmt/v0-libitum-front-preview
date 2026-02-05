@@ -9,11 +9,8 @@ import Image from "next/image"
 import { BookOpen, Brain, MessageSquare, Star, Users, TrendingUp, ArrowRight, CheckCircle, Sparkles, Play, Shield, Clock, Award, Zap } from "lucide-react"
 
 export default function HomePageClient() {
-  console.log("[v0] HomePageClient rendering")
   const { user } = useAuth()
-  console.log("[v0] User:", user)
   const { t } = useTranslation(user?.language || "UA")
-  console.log("[v0] Translation function loaded")
   const specialistsHref = user?.role === "client" ? "/client/specialists" : "/specialists"
   const specialistsCategoryHref = user?.role === "client" ? "/client/specialists" : "/specialists"
 

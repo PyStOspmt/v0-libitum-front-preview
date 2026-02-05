@@ -114,7 +114,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-satoshi), "DM Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "DM Sans", "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Geist Mono", monospace;
 
   /* Brand Colors for Tailwind */

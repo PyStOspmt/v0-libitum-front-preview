@@ -6,10 +6,9 @@ import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/lib/auth-context"
 import "./globals.css"
 
-const satoshi = DM_Sans({ 
-  subsets: ["latin"],
+const dmSans = DM_Sans({ 
+  subsets: ["latin", "latin-ext"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-satoshi"
 })
 
 export const metadata: Metadata = {
@@ -25,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body className={`${satoshi.className} ${satoshi.variable} antialiased`}>
+      <body className={`${dmSans.className} antialiased`}>
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
         <Analytics />
