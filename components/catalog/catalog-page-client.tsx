@@ -246,47 +246,49 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </header>
 
       {/* Hero Banner */}
-      <section className="relative overflow-hidden mx-4 lg:mx-8 my-6 rounded-[2rem]" style={{
+      <section className="relative overflow-hidden mx-4 lg:mx-8 my-6 rounded-[2.5rem]" style={{
         background: "linear-gradient(135deg, #059669 0%, #047857 40%, #065f46 70%, #0d9488 100%)"
       }}>
         {/* Decorative blobs */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-3xl" />
           
-          {/* Decorative circles */}
-          <div className="absolute top-16 right-24 w-20 h-20 bg-lime-400 rounded-full opacity-60 animate-float-slow" />
-          <div className="absolute bottom-24 left-16 w-12 h-12 bg-white/30 rounded-full animate-float-slower" />
-          <div className="absolute top-1/2 right-1/3 w-8 h-8 bg-orange-400 rounded-full opacity-70 animate-float-slow" style={{ animationDelay: "1s" }} />
+          {/* Decorative shapes */}
+          <div className="absolute top-20 right-20 w-24 h-24 bg-lime-400 rounded-full opacity-60 animate-float-slow" />
+          <div className="absolute bottom-20 left-16 w-14 h-14 bg-white/30 rounded-full animate-float-slower" />
+          <div className="absolute top-1/3 right-1/4 w-10 h-10 bg-orange-400 rounded-full opacity-70 animate-float-slow" style={{ animationDelay: "1s" }} />
+          <div className="absolute bottom-1/3 left-1/4 w-8 h-8 bg-teal-300 rounded-full opacity-50 animate-float-slower" style={{ animationDelay: "2s" }} />
         </div>
 
-        <div className="relative z-10 text-center py-16 lg:py-24 px-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 font-heading tracking-tight">
+        <div className="relative z-10 text-center py-20 lg:py-28 px-8">
+          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold text-white mb-8 font-heading tracking-tight leading-[0.95]">
             Find the best
             <br />
             <span className="relative inline-block">
               online tutor
-              <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 300 12" fill="none">
-                <path d="M2 10C80 2 220 2 298 10" stroke="#bef264" strokeWidth="4" strokeLinecap="round"/>
+              <svg className="absolute -bottom-3 left-0 w-full" viewBox="0 0 300 12" fill="none">
+                <path d="M2 10C80 2 220 2 298 10" stroke="#bef264" strokeWidth="5" strokeLinecap="round"/>
               </svg>
             </span>
           </h1>
-          <p className="text-lg lg:text-xl text-white/80 max-w-2xl mx-auto mb-8">
+          <p className="text-xl lg:text-2xl text-white/80 max-w-2xl mx-auto mb-10 font-light">
             Connect with expert tutors for personalized learning experiences
           </p>
           
           {/* Search Bar */}
-          <div className="max-w-xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-2 border border-white/20">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white/15 backdrop-blur-md rounded-2xl p-2.5 border border-white/20">
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
                   <Input 
                     placeholder="Search for subject or tutor..."
-                    className="h-12 pl-12 rounded-xl bg-white/10 border-0 text-white placeholder:text-white/50 focus-visible:ring-white/30"
+                    className="h-14 pl-14 rounded-xl bg-white/10 border-0 text-white text-lg placeholder:text-white/50 focus-visible:ring-white/30"
                   />
                 </div>
-                <Button className="h-12 px-8 rounded-xl bg-lime-400 text-emerald-900 hover:bg-lime-300 font-semibold">
+                <Button className="h-14 px-10 rounded-xl bg-lime-400 text-emerald-900 hover:bg-lime-300 font-bold text-base">
                   Search
                 </Button>
               </div>
@@ -296,11 +298,11 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </section>
 
       {/* Categories Section */}
-      <section className="container mx-auto px-4 lg:px-8 py-12">
-        <div className="flex items-end justify-between mb-8">
+      <section className="container mx-auto px-4 lg:px-8 py-16 lg:py-20">
+        <div className="flex items-end justify-between mb-12">
           <div>
-            <p className="text-sm font-medium text-emerald-600 mb-2">Improve your knowledge</p>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 tracking-tight font-heading">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide uppercase">Improve your knowledge</p>
+            <h2 className="text-4xl lg:text-6xl font-bold text-slate-900 tracking-tight font-heading leading-[1.1]">
               Foreign language
               <br />
               training for everyone
@@ -344,7 +346,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   <div className={`ml-auto w-8 h-8 rounded-full ${category.accentColor} ${category.bgColor === 'bg-white' ? '' : 'opacity-30'}`} />
                 </div>
                 
-                <h3 className={`text-2xl lg:text-3xl font-bold ${category.textColor} mb-2 font-heading`}>
+                <h3 className={`text-3xl lg:text-4xl font-bold ${category.textColor} mb-3 font-heading leading-[1.1]`}>
                   {category.title}
                 </h3>
                 <p className={`text-sm ${category.bgColor === 'bg-white' ? 'text-slate-600' : category.textColor} opacity-80 mb-4`}>
@@ -372,11 +374,11 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </section>
 
       {/* Tutors Section */}
-      <section className="container mx-auto px-4 lg:px-8 py-12 border-t border-slate-100">
-        <div className="flex items-end justify-between mb-8">
+      <section className="container mx-auto px-4 lg:px-8 py-16 lg:py-20 border-t border-slate-100">
+        <div className="flex items-end justify-between mb-12">
           <div>
-            <p className="text-sm font-medium text-emerald-600 mb-2">Best specialists</p>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 tracking-tight font-heading">
+            <p className="text-sm font-semibold text-emerald-600 mb-3 tracking-wide uppercase">Best specialists</p>
+            <h2 className="text-4xl lg:text-6xl font-bold text-slate-900 tracking-tight font-heading leading-[1.1]">
               Popular tutors
             </h2>
           </div>
@@ -428,7 +430,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   </Button>
                 </div>
                 
-                <h3 className={`text-xl lg:text-2xl font-bold mb-1 font-heading ${specialist.cardBg === 'bg-white' ? 'text-slate-900' : specialist.cardBg === 'bg-violet-400' ? 'text-white' : 'text-emerald-900'}`}>
+                <h3 className={`text-2xl lg:text-3xl font-bold mb-2 font-heading leading-tight ${specialist.cardBg === 'bg-white' ? 'text-slate-900' : specialist.cardBg === 'bg-violet-400' ? 'text-white' : 'text-emerald-900'}`}>
                   {specialist.name}
                 </h3>
                 <p className={`text-sm mb-3 ${specialist.cardBg === 'bg-white' ? 'text-slate-600' : specialist.cardBg === 'bg-violet-400' ? 'text-white/80' : 'text-emerald-800'}`}>

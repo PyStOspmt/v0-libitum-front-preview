@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: var(--font-body), "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Helvetica Neue", "Helvetica", "Arial", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Geist Mono", monospace;
 
   --radius: 1rem;
@@ -213,7 +213,7 @@ body {
 
 /* Font Heading */
 .font-heading {
-  font-family: var(--font-heading), "Space Grotesk", system-ui, sans-serif;
+  font-family: "Helvetica Neue", "Helvetica", "Arial", system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
 }

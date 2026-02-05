@@ -167,18 +167,18 @@ export default function HomePageClient() {
                     <span className="text-sm font-semibold">{t("hero.tagline")}</span>
                   </div>
 
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 font-heading leading-[1.1]">
+                  <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-8 font-heading leading-[0.95]">
                     <span className="relative">
                       {t("hero.title").split(" ").slice(0, 2).join(" ")}
-                      <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
-                        <path d="M2 10C50 2 150 2 198 10" stroke="#bef264" strokeWidth="3" strokeLinecap="round"/>
+                      <svg className="absolute -bottom-3 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                        <path d="M2 10C50 2 150 2 198 10" stroke="#bef264" strokeWidth="4" strokeLinecap="round"/>
                       </svg>
                     </span>
                     <br />
                     {t("hero.title").split(" ").slice(2).join(" ")}
                   </h1>
 
-                  <p className="text-lg text-white/80 mb-8 max-w-md leading-relaxed">
+                  <p className="text-xl lg:text-2xl text-white/80 mb-10 max-w-lg leading-relaxed font-light">
                     {t("hero.subtitle")}
                   </p>
 
