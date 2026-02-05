@@ -1,12 +1,16 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Manrope } from "next/font/google"
+import { DM_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/lib/auth-context"
 import "./globals.css"
 
-const manrope = Manrope({ subsets: ["latin"] })
+const satoshi = DM_Sans({ 
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-satoshi"
+})
 
 export const metadata: Metadata = {
   title: "Libitum Education - Платформа для репетиторів, психологів та логопедів",
@@ -21,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="uk">
-      <body className={`${manrope.className} antialiased`}>
+      <body className={`${satoshi.className} ${satoshi.variable} antialiased`}>
         <AuthProvider>{children}</AuthProvider>
         <Toaster />
         <Analytics />
