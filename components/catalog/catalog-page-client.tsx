@@ -3,14 +3,34 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useMemo, useState } from "react"
-import { BookOpen, MapPin, Search, Star, Award, Heart, Filter, Grid3X3, LayoutList, Clock, Sparkles, ArrowRight, Users, ChevronDown } from "lucide-react"
+import {
+  BookOpen,
+  MapPin,
+  Search,
+  Star,
+  Award,
+  Heart,
+  Filter,
+  Grid3X3,
+  LayoutList,
+  Sparkles,
+  ArrowRight,
+  Users,
+  ChevronDown,
+} from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { getCityBySlug, getSubjectBySlug } from "@/lib/catalog-dictionaries"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
@@ -28,7 +48,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
   const isClient = user?.role === "client"
   const homeHref = isClient ? "/client" : "/"
   const specialistsHref = isClient ? "/client/requests/new" : "/specialists"
-  
+
   const [wishlist, setWishlist] = useState<number[]>([])
 
   const toggleWishlist = (id: number) => {
@@ -40,18 +60,18 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       })
       return
     }
-    
+
     setWishlist((prev) => {
       const isAdded = prev.includes(id)
       const newWishlist = isAdded ? prev.filter((item) => item !== id) : [...prev, id]
-      
+
       toast({
         title: isAdded ? "Видалено з обраного" : "Додано в обране",
-        description: isAdded 
-          ? "Спеціаліста видалено з вашого списку" 
+        description: isAdded
+          ? "Спеціаліста видалено з вашого списку"
           : "Спеціаліст тепер у вашому списку обраних",
       })
-      
+
       return newWishlist
     })
   }
@@ -71,9 +91,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         priceMin: 400,
         location: city?.name ?? "Онлайн",
         verified: true,
-        efficiencyScore: 95,
         availability: "Доступний сьогодні",
-        avatar: null,
       },
       {
         id: 2,
@@ -85,9 +103,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         priceMin: 450,
         location: city?.name ?? "Онлайн",
         verified: true,
-        efficiencyScore: 92,
         availability: "Доступний завтра",
-        avatar: null,
       },
       {
         id: 3,
@@ -99,9 +115,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         priceMin: 500,
         location: city?.name ?? "Онлайн",
         verified: true,
-        efficiencyScore: 98,
         availability: "Доступний сьогодні",
-        avatar: null,
       },
       {
         id: 4,
@@ -113,12 +127,10 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         priceMin: 350,
         location: city?.name ?? "Онлайн",
         verified: false,
-        efficiencyScore: 88,
         availability: "Доступний через 2 дні",
-        avatar: null,
       },
     ],
-    [city?.name],
+    [city?.name]
   )
 
   return (
@@ -131,7 +143,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/30">
+      <header className="sticky top-0 z-50 glass border-b border-slate-200/50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href={homeHref} className="flex items-center gap-3">
@@ -139,16 +151,20 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <div>
-                <span className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 bg-clip-text text-transparent text-2xl font-bold tracking-tight">Libitum</span>
-                <p className="text-xs text-muted-foreground font-medium">Education</p>
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent text-2xl font-bold tracking-tight">
+                  Libitum
+                </span>
+                <p className="text-xs text-slate-500 font-medium">Education</p>
               </div>
             </Link>
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="ghost" className="rounded-2xl font-medium">Увійти</Button>
+                <Button variant="ghost" className="rounded-2xl font-medium">
+                  Увійти
+                </Button>
               </Link>
               <Link href="/register">
-                <Button className="rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-200/50 transition-all hover:bg-emerald-700 h-11 px-6 font-semibold">
+                <Button className="rounded-2xl bg-emerald-600 text-white shadow-lg shadow-emerald-200/50 hover:bg-emerald-700 h-11 px-6 font-semibold">
                   Реєстрація
                 </Button>
               </Link>
@@ -159,14 +175,18 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href={homeHref} className="hover:text-foreground transition-colors">Головна</Link>
+        <div className="mb-6 flex items-center gap-2 text-sm text-slate-500">
+          <Link href={homeHref} className="hover:text-slate-900 transition-colors">
+            Головна
+          </Link>
           <ChevronDown className="h-4 w-4 -rotate-90" />
-          <Link href={specialistsHref} className="hover:text-foreground transition-colors">Спеціалісти</Link>
+          <Link href={specialistsHref} className="hover:text-slate-900 transition-colors">
+            Спеціалісти
+          </Link>
           <ChevronDown className="h-4 w-4 -rotate-90" />
-          <span className="text-foreground font-medium">{subject?.name}</span>
+          <span className="text-slate-900 font-medium">{subject?.name}</span>
           <ChevronDown className="h-4 w-4 -rotate-90" />
-          <span className="text-foreground font-medium">{city?.name}</span>
+          <span className="text-slate-900 font-medium">{city?.name}</span>
         </div>
 
         {/* Page Header */}
@@ -177,15 +197,16 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 <Sparkles className="h-4 w-4" />
                 Каталог спеціалістів
               </div>
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3">
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3 font-heading">
                 {subject?.name} <span className="text-slate-400">у</span> {city?.name}
               </h1>
               <p className="text-lg text-slate-500">
-                Знайдено <span className="font-semibold text-emerald-600">{specialists.length}</span> перевірених спеціалістів
+                Знайдено{" "}
+                <span className="font-semibold text-emerald-600">{specialists.length}</span>{" "}
+                перевірених спеціалістів
               </p>
             </div>
-            
-            {/* Stats Cards */}
+
             <div className="flex gap-4">
               <div className="rounded-2xl bg-emerald-500/10 px-5 py-3 text-center">
                 <p className="text-2xl font-bold text-emerald-600">{specialists.length}</p>
@@ -202,22 +223,23 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         {/* Filters Bar */}
         <div className="mb-8 rounded-3xl glass-card p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            {/* Search */}
             <div className="relative flex-1 max-w-xl">
               <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input 
-                placeholder="Пошук за ім'ям спеціаліста..." 
-                className="h-12 pl-12 rounded-2xl border-slate-200/60 bg-white/80 text-base focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500/50" 
+              <Input
+                placeholder="Пошук за ім'ям спеціаліста..."
+                className="h-12 pl-12 rounded-2xl border-slate-200/60 bg-white/80 text-base focus-visible:ring-2 focus-visible:ring-emerald-500/20"
               />
             </div>
-            
-            {/* Controls */}
+
             <div className="flex items-center gap-3">
-              <Button variant="outline" className="h-12 rounded-2xl border-slate-200/60 bg-white/80 hover:bg-white gap-2">
+              <Button
+                variant="outline"
+                className="h-12 rounded-2xl border-slate-200/60 bg-white/80 hover:bg-white gap-2"
+              >
                 <Filter className="h-4 w-4" />
                 Фільтри
               </Button>
-              
+
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-[200px] h-12 rounded-2xl border-slate-200/60 bg-white/80">
                   <SelectValue />
@@ -229,19 +251,18 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   <SelectItem value="reviews_desc">За відгуками</SelectItem>
                 </SelectContent>
               </Select>
-              
-              {/* View Toggle */}
+
               <div className="hidden md:flex items-center rounded-2xl border border-slate-200/60 bg-white/80 p-1">
-                <Button 
-                  variant={viewMode === "grid" ? "default" : "ghost"} 
-                  size="icon" 
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="icon"
                   className={`h-10 w-10 rounded-xl ${viewMode === "grid" ? "bg-emerald-600 text-white" : ""}`}
                   onClick={() => setViewMode("grid")}
                 >
                   <Grid3X3 className="h-4 w-4" />
                 </Button>
-                <Button 
-                  variant={viewMode === "list" ? "default" : "ghost"} 
+                <Button
+                  variant={viewMode === "list" ? "default" : "ghost"}
                   size="icon"
                   className={`h-10 w-10 rounded-xl ${viewMode === "list" ? "bg-emerald-600 text-white" : ""}`}
                   onClick={() => setViewMode("list")}
@@ -256,27 +277,33 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         {/* Specialists Grid */}
         <div className={`grid gap-6 ${viewMode === "grid" ? "md:grid-cols-2 lg:grid-cols-3" : "grid-cols-1"}`}>
           {specialists.map((specialist, index) => (
-            <Card 
-              key={specialist.id} 
+            <Card
+              key={specialist.id}
               className="group overflow-hidden rounded-3xl glass-card border-0 hover-lift transition-all animate-fade-in-up"
               style={{ animationDelay: `${index * 80}ms` }}
             >
               <CardContent className="p-0">
-                {/* Card Header with Gradient */}
-                <div className={`relative h-28 ${index % 2 === 0 ? 'bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-teal-500/10' : 'bg-gradient-to-br from-orange-500/10 via-orange-400/5 to-amber-500/10'}`}>
-                  {/* Wishlist Button */}
+                {/* Card Header */}
+                <div
+                  className={`relative h-28 ${
+                    index % 2 === 0
+                      ? "bg-gradient-to-br from-emerald-500/10 via-emerald-400/5 to-teal-500/10"
+                      : "bg-gradient-to-br from-orange-500/10 via-orange-400/5 to-amber-500/10"
+                  }`}
+                >
                   <Button
                     variant="ghost"
                     size="icon"
                     className={`absolute top-4 right-4 h-10 w-10 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm transition-all hover:scale-110 ${
-                      wishlist.includes(specialist.id) ? "text-red-500" : "text-slate-400 hover:text-red-500"
+                      wishlist.includes(specialist.id)
+                        ? "text-red-500"
+                        : "text-slate-400 hover:text-red-500"
                     }`}
                     onClick={() => toggleWishlist(specialist.id)}
                   >
                     <Heart className={wishlist.includes(specialist.id) ? "fill-current h-5 w-5" : "h-5 w-5"} />
                   </Button>
-                  
-                  {/* Verified Badge */}
+
                   {specialist.verified && (
                     <div className="absolute top-4 left-4">
                       <Badge className="rounded-xl bg-emerald-600 text-white border-0 gap-1.5 px-3 py-1 shadow-lg shadow-emerald-200/50">
@@ -285,20 +312,24 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                       </Badge>
                     </div>
                   )}
-                  
-                  {/* Avatar */}
+
                   <div className="absolute -bottom-10 left-6">
                     <Avatar className="h-20 w-20 ring-4 ring-white shadow-xl">
-                      <AvatarFallback className={`text-2xl font-bold text-white ${index % 2 === 0 ? 'bg-gradient-to-br from-emerald-500 to-teal-500' : 'bg-gradient-to-br from-orange-500 to-amber-500'}`}>
-                        {specialist.name.split(" ").map(n => n[0]).join("")}
+                      <AvatarFallback
+                        className={`text-2xl font-bold text-white ${
+                          index % 2 === 0
+                            ? "bg-gradient-to-br from-emerald-500 to-teal-500"
+                            : "bg-gradient-to-br from-orange-500 to-amber-500"
+                        }`}
+                      >
+                        {specialist.name.split(" ").map((n) => n[0]).join("")}
                       </AvatarFallback>
                     </Avatar>
                   </div>
                 </div>
-                
+
                 {/* Card Body */}
                 <div className="pt-14 px-6 pb-6">
-                  {/* Name & Rating */}
                   <div className="flex items-start justify-between mb-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-900 mb-1">{specialist.name}</h3>
@@ -311,21 +342,21 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Subjects */}
+
                   <div className="flex flex-wrap gap-2 mb-4">
                     {specialist.subjects.map((subj) => (
-                      <Badge 
-                        key={subj} 
-                        variant="outline" 
-                        className={`rounded-xl border-0 font-medium ${index % 2 === 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-orange-700'}`}
+                      <Badge
+                        key={subj}
+                        variant="outline"
+                        className={`rounded-xl border-0 font-medium ${
+                          index % 2 === 0 ? "bg-emerald-50 text-emerald-700" : "bg-orange-50 text-orange-700"
+                        }`}
                       >
                         {subj}
                       </Badge>
                     ))}
                   </div>
-                  
-                  {/* Info Grid */}
+
                   <div className="grid grid-cols-2 gap-3 mb-5">
                     <div className="flex items-center gap-2 text-sm text-slate-500">
                       <div className="h-8 w-8 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -340,18 +371,25 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                       <span>{specialist.experience} років</span>
                     </div>
                   </div>
-                  
-                  {/* Availability */}
+
                   <div className="flex items-center gap-2 mb-5 text-sm">
-                    <div className={`h-2 w-2 rounded-full ${specialist.availability.includes("сьогодні") ? "bg-emerald-500" : "bg-orange-500"}`} />
+                    <div
+                      className={`h-2 w-2 rounded-full ${
+                        specialist.availability.includes("сьогодні") ? "bg-emerald-500" : "bg-orange-500"
+                      }`}
+                    />
                     <span className="text-slate-500">{specialist.availability}</span>
                   </div>
-                  
-                  {/* Footer */}
+
                   <div className="flex items-center justify-between pt-5 border-t border-slate-100">
                     <div>
-                      <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">Від</p>
-                      <p className="text-2xl font-bold text-slate-900">{specialist.priceMin} <span className="text-base font-medium text-slate-400">₴/год</span></p>
+                      <p className="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">
+                        Від
+                      </p>
+                      <p className="text-2xl font-bold text-slate-900">
+                        {specialist.priceMin}{" "}
+                        <span className="text-base font-medium text-slate-400">₴/год</span>
+                      </p>
                     </div>
                     <Link
                       href={
@@ -360,11 +398,13 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                           : `/specialists/${specialist.id}`
                       }
                     >
-                      <Button className={`rounded-2xl h-12 px-6 font-semibold shadow-lg transition-all hover:scale-[1.02] ${
-                        index % 2 === 0 
-                          ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200/50' 
-                          : 'bg-orange-600 hover:bg-orange-700 shadow-orange-200/50'
-                      }`}>
+                      <Button
+                        className={`rounded-2xl h-12 px-6 font-semibold shadow-lg transition-all hover:scale-[1.02] ${
+                          index % 2 === 0
+                            ? "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200/50"
+                            : "bg-orange-600 hover:bg-orange-700 shadow-orange-200/50"
+                        }`}
+                      >
                         {isClient ? "Запит" : "Детальніше"}
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
@@ -378,8 +418,8 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
         {/* Load More */}
         <div className="mt-12 text-center">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             size="lg"
             className="h-14 rounded-3xl border-slate-200/60 bg-white/80 px-10 text-base font-semibold hover:bg-white hover:shadow-lg transition-all"
           >
