@@ -10,8 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Chrome, Eye, EyeOff } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
+import { Chrome, Eye, EyeOff, ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -44,53 +43,36 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{
-      background: "linear-gradient(135deg, #059669 0%, #047857 25%, #065f46 50%, #0d9488 75%, #14b8a6 100%)"
-    }}>
-      {/* Decorative Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-3xl" />
-        
-        {/* Decorative shapes */}
-        <div className="absolute top-32 right-1/4 w-16 h-16 bg-lime-400 rounded-full animate-float-slow" />
-        <div className="absolute bottom-1/4 left-20 w-10 h-10 bg-white/30 rounded-full animate-float-slower" />
-        <div className="absolute top-1/2 left-10 w-8 h-8 bg-orange-400/60 rounded-full animate-float-slow" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-32 right-32 w-12 h-12 bg-teal-300/50 rounded-full animate-float-slower" />
-        
-        {/* Curved lines */}
-        <svg className="absolute bottom-0 left-0 w-1/3 h-auto text-white/10" viewBox="0 0 200 300" fill="none">
-          <path d="M-50 300C50 200 100 100 200 50" stroke="currentColor" strokeWidth="3" fill="none"/>
-          <path d="M-30 300C70 180 120 80 220 30" stroke="currentColor" strokeWidth="2" fill="none"/>
-        </svg>
-        <svg className="absolute top-0 right-0 w-1/4 h-auto text-white/10" viewBox="0 0 200 200" fill="none">
-          <path d="M250 0C150 50 100 100 50 200" stroke="currentColor" strokeWidth="3" fill="none"/>
-        </svg>
-      </div>
+    <div className="min-h-screen bg-[#fafaf8]">
+      {/* Header */}
+      <header className="px-6 py-5">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+              <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
+            </div>
+            <span className="text-lg font-bold text-slate-800">LIBITUM</span>
+          </Link>
+          
+          <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            На головну
+          </Link>
+        </div>
+      </header>
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
-          {/* Logo */}
-          <div className="mb-8 text-center">
-            <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
-              <div className="relative h-14 w-14 overflow-hidden rounded-2xl shadow-xl ring-2 ring-white/30">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-            </Link>
-          </div>
-
+      <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
+        <div className="w-full max-w-[440px]">
           {/* Card */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-emerald-900/20 overflow-hidden">
+          <div className="bg-white rounded-3xl border border-slate-100/80 overflow-hidden">
             <div className="p-8 sm:p-10">
-              <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
-                <p className="text-slate-500">Please login to your account</p>
+              <div className="text-center mb-10">
+                <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">З поверненням</h1>
+                <p className="text-slate-500">Увійдіть у свій акаунт</p>
               </div>
 
               {/* Test Accounts */}
-              <div className="mb-6 rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
+              <div className="mb-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Тестові акаунти</p>
                 <div className="flex flex-wrap gap-2">
                   {testAccounts.map((account) => (
@@ -99,7 +81,7 @@ export default function LoginPage() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="h-8 rounded-full text-xs border-slate-200 hover:bg-lime-50 hover:text-emerald-700 hover:border-lime-300"
+                      className="h-9 rounded-full text-xs border-slate-200 hover:bg-[#f1f8e9] hover:text-[#2e7d32] hover:border-[#c8e6c9]"
                       onClick={() => quickLogin(account.email, account.password)}
                     >
                       {account.role}
@@ -108,9 +90,9 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email address</Label>
+                  <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email адреса</Label>
                   <Input
                     id="email"
                     type="email"
@@ -118,21 +100,21 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-12 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
+                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">Password</Label>
+                  <Label htmlFor="password" className="text-sm font-medium text-slate-700">Пароль</Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Введіть пароль"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
+                      className="h-13 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
                     />
                     <button
                       type="button"
@@ -142,54 +124,59 @@ export default function LoginPage() {
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
-                  <p className="text-xs text-slate-400 mt-1">Password must contain at least 8 characters</p>
+                  <p className="text-xs text-slate-400 mt-1">Пароль повинен містити мінімум 8 символів</p>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox className="border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600" />
-                    <span className="text-sm text-slate-600">Remember me</span>
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <Checkbox className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]" />
+                    <span className="text-sm text-slate-600">Запам'ятати мене</span>
                   </label>
-                  <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
-                    Forgot your password?
+                  <Link href="/forgot-password" className="text-sm font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
+                    Забули пароль?
                   </Link>
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="h-12 w-full rounded-xl bg-lime-400 text-base font-semibold text-emerald-900 shadow-lg shadow-lime-200 hover:bg-lime-300 transition-all hover:scale-[1.02] active:scale-[0.98]" 
+                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] transition-colors" 
                   disabled={isLoading}
                 >
-                  {isLoading ? "Loading..." : "Log in"}
+                  {isLoading ? "Завантаження..." : "Увійти"}
                 </Button>
 
-                <div className="relative my-6">
+                <div className="relative">
                   <div className="absolute inset-0 flex items-center">
-                    <Separator className="w-full bg-slate-200" />
+                    <div className="w-full border-t border-slate-200"></div>
                   </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-white px-3 text-slate-400 font-medium">or</span>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="bg-white px-4 text-slate-400">або</span>
                   </div>
                 </div>
 
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="h-12 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50" 
+                  className="h-13 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50" 
                 >
                   <Chrome className="mr-2 h-5 w-5" />
-                  Sign in with Google
+                  Увійти через Google
                 </Button>
               </form>
 
-              <div className="mt-8 text-center text-sm text-slate-500">
-                {"Don't have an account?"}{" "}
-                <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700">
-                  Sign up
+              <div className="mt-10 text-center text-sm text-slate-500">
+                Ще немає акаунту?{" "}
+                <Link href="/register" className="font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
+                  Зареєструватись
                 </Link>
               </div>
             </div>
           </div>
+
+          {/* Footer text */}
+          <p className="mt-8 text-center text-xs text-slate-400">
+            Захищено та безпечно
+          </p>
         </div>
       </div>
     </div>
