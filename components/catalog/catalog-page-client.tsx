@@ -190,7 +190,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </header>
 
       {/* Hero Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-500 via-purple-500 to-violet-600 mx-4 my-4 rounded-[2rem]">
+      <section className="relative overflow-hidden mx-4 my-4 rounded-[2rem]" style={{
+        background: "linear-gradient(135deg, #059669 0%, #047857 40%, #065f46 70%, #0d9488 100%)"
+      }}>
         {/* Floating Language Tags */}
         <div className="absolute inset-0 overflow-hidden">
           {languageTags.map((tag, i) => (
@@ -209,10 +211,14 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
             </div>
           ))}
           
+          {/* Decorative blobs */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+          
           {/* Decorative circles */}
-          <div className="absolute top-10 right-20 w-16 h-16 bg-lime-400 rounded-full opacity-60" />
-          <div className="absolute bottom-20 left-10 w-10 h-10 bg-white/30 rounded-full" />
-          <div className="absolute top-1/2 right-1/3 w-8 h-8 bg-orange-400 rounded-full opacity-70" />
+          <div className="absolute top-10 right-20 w-16 h-16 bg-lime-400 rounded-full opacity-60 animate-float-slow" />
+          <div className="absolute bottom-20 left-10 w-10 h-10 bg-white/30 rounded-full animate-float-slower" />
+          <div className="absolute top-1/2 right-1/3 w-8 h-8 bg-orange-400 rounded-full opacity-70 animate-float-slow" style={{ animationDelay: "1s" }} />
           
           {/* Avatar bubbles */}
           <div className="absolute top-8 left-1/4 w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 border-4 border-white shadow-xl" />
@@ -376,7 +382,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                         
                         {/* Video Play Button */}
                         <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg">
-                          <div className="w-8 h-8 rounded-full bg-violet-500 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
                             <Play className="h-4 w-4 text-white fill-white ml-0.5" />
                           </div>
                           <div>

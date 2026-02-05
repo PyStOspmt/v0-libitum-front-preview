@@ -45,20 +45,20 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{
-      background: "linear-gradient(135deg, #7c3aed 0%, #8b5cf6 25%, #a78bfa 50%, #c4b5fd 75%, #ddd6fe 100%)"
+      background: "linear-gradient(135deg, #059669 0%, #047857 25%, #065f46 50%, #0d9488 75%, #14b8a6 100%)"
     }}>
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Blobs */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-lime-400/40 rounded-full blur-xl" />
-        <div className="absolute bottom-40 right-20 w-48 h-48 bg-violet-300/30 rounded-full blur-2xl" />
-        <div className="absolute top-1/3 right-10 w-24 h-24 bg-white/20 rounded-full blur-lg" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-400/10 rounded-full blur-3xl" />
         
         {/* Decorative shapes */}
         <div className="absolute top-32 right-1/4 w-16 h-16 bg-lime-400 rounded-full animate-float-slow" />
-        <div className="absolute bottom-1/4 left-20 w-10 h-10 bg-white/40 rounded-full animate-float-slower" />
+        <div className="absolute bottom-1/4 left-20 w-10 h-10 bg-white/30 rounded-full animate-float-slower" />
         <div className="absolute top-1/2 left-10 w-8 h-8 bg-orange-400/60 rounded-full animate-float-slow" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-32 right-32 w-12 h-12 bg-lime-300/50 rounded-full animate-float-slower" />
+        <div className="absolute bottom-32 right-32 w-12 h-12 bg-teal-300/50 rounded-full animate-float-slower" />
         
         {/* Curved lines */}
         <svg className="absolute bottom-0 left-0 w-1/3 h-auto text-white/10" viewBox="0 0 200 300" fill="none">
@@ -82,7 +82,7 @@ export default function LoginPage() {
           </div>
 
           {/* Card */}
-          <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-violet-900/20 overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-emerald-900/20 overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-bold text-slate-900 mb-2">Welcome Back</h1>
@@ -118,7 +118,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-12 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                    className="h-12 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                   />
                 </div>
 
@@ -132,7 +132,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+                      className="h-12 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
                     />
                     <button
                       type="button"
@@ -147,10 +147,10 @@ export default function LoginPage() {
 
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox className="border-slate-300 data-[state=checked]:bg-violet-600 data-[state=checked]:border-violet-600" />
+                    <Checkbox className="border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600" />
                     <span className="text-sm text-slate-600">Remember me</span>
                   </label>
-                  <Link href="/forgot-password" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+                  <Link href="/forgot-password" className="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
                     Forgot your password?
                   </Link>
                 </div>
@@ -184,7 +184,7 @@ export default function LoginPage() {
 
               <div className="mt-8 text-center text-sm text-slate-500">
                 {"Don't have an account?"}{" "}
-                <Link href="/register" className="font-semibold text-violet-600 hover:text-violet-700">
+                <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-700">
                   Sign up
                 </Link>
               </div>
