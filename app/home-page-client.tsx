@@ -7,21 +7,17 @@ import {
   ArrowRight,
   BookOpen,
   Brain,
-  CheckCircle2,
+  Check,
   ChevronDown,
   MessageSquare,
+  Play,
   Search,
-  Shield,
-  Sparkles,
   Star,
-  TrendingUp,
   Users,
-  Zap,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { LanguageSwitcher } from "@/components/language-switcher"
@@ -33,105 +29,120 @@ export default function HomePageClient() {
 
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
-  const categories = [
-    {
-      icon: BookOpen,
-      title: t("categories.tutor.title"),
-      description: t("categories.tutor.desc"),
-      stat: t("categories.tutor.stat"),
-      color: "emerald" as const,
-      href: "/specialists/tutors",
-    },
-    {
-      icon: Brain,
-      title: t("categories.psychologist.title"),
-      description: t("categories.psychologist.desc"),
-      stat: t("categories.psychologist.stat"),
-      color: "orange" as const,
-      href: "/specialists/psychologists",
-    },
-    {
-      icon: MessageSquare,
-      title: t("categories.speech.title"),
-      description: t("categories.speech.desc"),
-      stat: t("categories.speech.stat"),
-      color: "emerald" as const,
-      href: "/specialists/speech-therapists",
-    },
-  ]
-
-  const steps = [
-    { num: "01", title: t("how.step1.title"), desc: t("how.step1.desc") },
-    { num: "02", title: t("how.step2.title"), desc: t("how.step2.desc") },
-    { num: "03", title: t("how.step3.title"), desc: t("how.step3.desc") },
-  ]
-
   const features = [
-    { icon: Shield, title: t("features.verified.title"), desc: t("features.verified.desc") },
-    { icon: Star, title: t("features.ratings.title"), desc: t("features.ratings.desc") },
-    { icon: TrendingUp, title: t("features.progress.title"), desc: t("features.progress.desc") },
+    { icon: "📚", title: "Personalized Approach", color: "bg-emerald-100" },
+    { icon: "👥", title: "3-4 People In Each Group", color: "bg-orange-100" },
+    { icon: "🎯", title: "Easy And Fun Modules", color: "bg-amber-100" },
+    { icon: "💬", title: "School Lesson Support", color: "bg-teal-100" },
   ]
 
-  const reviews = [
-    { text: t("reviews.item1.text"), name: t("reviews.item1.name"), rating: 5 },
-    { text: t("reviews.item2.text"), name: t("reviews.item2.name"), rating: 5 },
-    { text: t("reviews.item3.text"), name: t("reviews.item3.name"), rating: 5 },
+  const advantages = [
+    {
+      title: "Flexible training schedule",
+      tag: "CLASS TIME",
+      tagColor: "bg-emerald-500",
+      description: "It's ideal for busy people who want to balance language learning with their work and personal life.",
+    },
+    {
+      title: "Personalized approach",
+      tag: "ACHIEVE GOALS QUICKLY", 
+      tagColor: "bg-emerald-500",
+      description: "Each student receives an individual learning plan based on their goals and current level.",
+    },
+    {
+      title: "Access to quality resources",
+      tag: "IMPROVING KNOWLEDGE",
+      tagColor: "bg-emerald-500", 
+      description: "Get access to modern educational materials, interactive exercises, and video lessons.",
+    },
+  ]
+
+  const plans = [
+    {
+      lessons: "4 LESSONS",
+      name: "STARTER PACK",
+      price: "990 UAH",
+      oldPrice: null,
+      features: ["4 grammar and vocabulary lessons", "Access to educational materials", "Homework with verification", "Recommendations for further learning", "Teacher support"],
+      highlight: false,
+      buttonStyle: "bg-slate-900 text-white",
+    },
+    {
+      lessons: "12 LESSONS",
+      name: "PROGRESS PACK",
+      price: "2199 UAH",
+      oldPrice: "2590",
+      badge: "WOW! BEST OFFER",
+      features: ["24 lessons with an average load", "Access to educational materials", "Homework with detailed review", "Regular tests to track progress", "Personalized sessions"],
+      highlight: true,
+      buttonStyle: "bg-emerald-600 text-white",
+    },
+    {
+      lessons: "24 LESSONS",
+      name: "MASTERY PACK",
+      price: "5199 UAH",
+      oldPrice: null,
+      features: ["24 lessons with in-depth study", "Access to advanced materials", "Intensive homework with feedback", "Monthly tests and progress reports", "Preparation for exams"],
+      highlight: false,
+      buttonStyle: "bg-emerald-600 text-white",
+    },
   ]
 
   const faqs = [
-    { q: t("faq.q1.q"), a: t("faq.q1.a") },
-    { q: t("faq.q2.q"), a: t("faq.q2.a") },
-    { q: t("faq.q3.q"), a: t("faq.q3.a") },
-    { q: t("faq.q4.q"), a: t("faq.q4.a") },
+    { q: "What level of English can I achieve by studying at your school?", a: "At our school, you can reach any level, from beginner to advanced, thanks to an individualized approach and effective methods." },
+    { q: "How long will the course take to become fluent in English?", a: "Depending on your level and intensity, significant results can be achieved in as little as 3-6 months of regular lessons." },
+    { q: "Can I combine my studies with work or university studies?", a: "Yes, our courses are flexible, with the ability to choose your own class times, including weekends." },
+    { q: "Do I need any special knowledge to start studying?", a: "No, we offer courses for any level, even for complete beginners, and we will select a program just for you." },
+    { q: "What makes your school special?", a: "Modern methods, individual approach, experienced teachers, and interactive platforms make our training effective and interesting." },
+    { q: "Can I try your lessons before signing up for a course?", a: "Yes, we offer a free trial lesson so that you can evaluate our approach and quality of instruction." },
   ]
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-emerald-50/30">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 lg:px-8 pt-4">
-        <div className="container mx-auto">
-          <div className="flex h-16 items-center justify-between bg-white/80 backdrop-blur-xl rounded-2xl px-6 shadow-lg shadow-slate-900/5 border border-slate-100">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-10 w-10 overflow-hidden rounded-xl shadow-md ring-1 ring-slate-200/50 transition-transform group-hover:scale-105">
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-100">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="relative h-9 w-9 overflow-hidden rounded-xl">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <div>
-                <span className="text-lg font-bold tracking-tight text-slate-900">Libitum</span>
-                <p className="text-[10px] font-medium text-slate-500">Education</p>
-              </div>
+              <span className="text-lg font-bold text-slate-900">LIBITUM</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-1 bg-slate-100/80 rounded-xl p-1">
-              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
-                {t("nav.specialists")}
+            <nav className="hidden lg:flex items-center gap-8">
+              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                Teachers
               </Link>
-              <Link href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
-                {t("nav.how_it_works")}
+              <Link href="#about" className="text-sm font-medium text-slate-600 hover:text-slate-900 border-b-2 border-slate-900 pb-0.5 transition-colors">
+                About us
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
-                {t("nav.reviews")}
+              <Link href="#contact" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                Contacts
               </Link>
+              <Link href="#plans" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                Plans
+              </Link>
+              <LanguageSwitcher />
             </nav>
 
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-xl bg-emerald-600 px-5 font-medium text-white hover:bg-emerald-700 transition-all">
+                  <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
                     Dashboard
-                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="ghost" className="h-10 rounded-xl px-4 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100">
-                      {t("btn.login")}
+                    <Button variant="outline" className="h-9 rounded-full px-5 text-sm font-medium border-slate-300">
+                      Login
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-xl bg-emerald-600 px-5 font-semibold text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/25">
-                      {t("btn.register")}
+                    <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
+                      Create Account
                     </Button>
                   </Link>
                 </>
@@ -142,112 +153,90 @@ export default function HomePageClient() {
       </header>
 
       <main>
-        {/* Hero */}
-        <section className="relative pt-28 pb-16 px-4 lg:px-8">
+        {/* Hero Section */}
+        <section className="relative py-8 px-4 lg:px-8">
           <div className="container mx-auto">
-            {/* Banner Card */}
-            <div className="relative rounded-[2.5rem] overflow-hidden" style={{
-              background: "linear-gradient(135deg, #059669 0%, #047857 40%, #065f46 70%, #0d9488 100%)"
-            }}>
-              {/* Decorative blobs */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
-              <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
-              <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-emerald-300/20 rounded-full blur-2xl" />
+            {/* Main Hero Card */}
+            <div className="relative bg-white rounded-[2rem] p-8 lg:p-12 overflow-hidden">
+              {/* Decorative shapes - flat, no blur */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 rounded-full translate-x-1/3 -translate-y-1/3" />
+              <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-amber-100 rounded-full translate-y-1/2" />
+              <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-teal-100 rounded-full" />
               
-              {/* Decorative shapes */}
-              <div className="absolute top-20 right-20 w-20 h-20 bg-lime-400/40 rounded-full animate-float-slow" />
-              <div className="absolute bottom-32 left-16 w-12 h-12 bg-white/20 rounded-full animate-float-slower" />
-              <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-orange-400/50 rounded-full animate-float-slow" style={{ animationDelay: "1s" }} />
+              {/* Organic blob shape */}
+              <svg className="absolute right-20 top-20 w-64 h-64 text-emerald-100/80" viewBox="0 0 200 200">
+                <path fill="currentColor" d="M45.3,-51.2C58.3,-40.9,68.1,-25.5,71.2,-8.5C74.3,8.5,70.6,27.1,60.1,40.3C49.6,53.5,32.3,61.3,14.1,66.1C-4.1,70.9,-23.2,72.7,-39.7,66.1C-56.2,59.5,-70.1,44.5,-75.4,27C-80.7,9.5,-77.4,-10.5,-68.4,-26.3C-59.4,-42.1,-44.7,-53.7,-29.5,-63.2C-14.3,-72.7,1.4,-80.1,15.7,-77.3C30,-74.5,32.3,-61.5,45.3,-51.2Z" transform="translate(100 100)" />
+              </svg>
 
-              <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center min-h-[600px] p-8 lg:p-16">
+              <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
                 {/* Left Content */}
-                <div className="text-white">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 px-4 py-2 mb-8">
-                    <Sparkles className="h-4 w-4 text-lime-300" />
-                    <span className="text-sm font-semibold">{t("hero.tagline")}</span>
-                  </div>
-
-                  <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight mb-8 font-heading leading-[0.95]">
-                    <span className="relative">
-                      {t("hero.title").split(" ").slice(0, 2).join(" ")}
-                      <svg className="absolute -bottom-3 left-0 w-full" viewBox="0 0 200 12" fill="none">
-                        <path d="M2 10C50 2 150 2 198 10" stroke="#bef264" strokeWidth="4" strokeLinecap="round"/>
-                      </svg>
-                    </span>
+                <div>
+                  <h1 className="text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-[1.1] font-heading">
+                    The easiest way
                     <br />
-                    {t("hero.title").split(" ").slice(2).join(" ")}
+                    to learn English
                   </h1>
 
-                  <p className="text-xl lg:text-2xl text-white/80 mb-10 max-w-lg leading-relaxed font-light">
-                    {t("hero.subtitle")}
-                  </p>
+                  <Link href={specialistHref}>
+                    <Button className="h-12 rounded-full bg-emerald-600 pl-6 pr-4 text-base font-semibold text-white hover:bg-emerald-700 gap-2 mb-10">
+                      GET FREE LESSON
+                      <span className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                        <ArrowRight className="h-4 w-4" />
+                      </span>
+                    </Button>
+                  </Link>
 
-                  <div className="flex flex-wrap gap-4 mb-10">
-                    <Link href={specialistHref}>
-                      <Button className="h-14 rounded-full bg-lime-400 px-8 text-base font-semibold text-emerald-900 hover:bg-lime-300 transition-all shadow-lg shadow-lime-400/30">
-                        {t("hero.cta")}
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Button>
-                    </Link>
-                  </div>
-
-                  <div className="flex flex-wrap gap-6 text-sm text-white/70">
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-lime-300" />
+                  {/* Features Grid */}
+                  <div className="grid grid-cols-2 gap-4">
+                    {features.map((feature, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <div className={`h-10 w-10 rounded-xl ${feature.color} flex items-center justify-center text-lg`}>
+                          {feature.icon}
+                        </div>
+                        <span className="text-sm font-medium text-slate-700">{feature.title}</span>
                       </div>
-                      <span>500+ спеціалістів</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-lime-300" />
-                      </div>
-                      <span>Перевірені профілі</span>
-                    </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Right Content - Stats Card */}
-                <div className="relative hidden lg:block">
-                  {/* Main Stats Card */}
-                  <div className="absolute top-8 right-8 bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl shadow-slate-900/20 w-72 animate-fade-in-up">
-                    <div className="flex items-start justify-between mb-4">
+                {/* Right Content - Floating Cards */}
+                <div className="relative h-[400px] hidden lg:block">
+                  {/* Main teacher card */}
+                  <div className="absolute top-0 right-0 bg-white rounded-2xl shadow-lg p-4 w-56">
+                    <div className="relative h-32 bg-emerald-100 rounded-xl mb-3 overflow-hidden">
+                      <div className="absolute bottom-2 left-2 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <Play className="h-3 w-3 fill-white" />
+                      </div>
+                    </div>
+                    <div className="font-semibold text-slate-900">Ivan Shevchenko</div>
+                    <div className="text-xs text-slate-500">13 Years Old</div>
+                  </div>
+
+                  {/* Second card */}
+                  <div className="absolute top-24 left-0 bg-white rounded-2xl shadow-lg p-4 w-52">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="relative h-16 w-16 bg-amber-100 rounded-xl overflow-hidden">
+                        <div className="absolute bottom-1 left-1 bg-emerald-600 text-white text-[10px] p-1 rounded-full">
+                          <Play className="h-2.5 w-2.5 fill-white" />
+                        </div>
+                      </div>
                       <div>
-                        <div className="text-5xl font-bold text-slate-900">489<span className="text-emerald-500">+</span></div>
-                        <p className="text-sm text-slate-600 mt-1">Більше ніж 489 студентів<br/>навчаються з нами</p>
-                      </div>
-                      <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center">
-                        <ArrowRight className="h-5 w-5 text-slate-600 -rotate-45" />
+                        <div className="font-semibold text-slate-900 text-sm">Olga Petrenko and</div>
+                        <div className="font-semibold text-slate-900 text-sm">Oleksandr Honchar</div>
+                        <div className="text-xs text-slate-500">Peers Of 8 Years Old</div>
                       </div>
                     </div>
-                    <div className="flex -space-x-2">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 border-2 border-white" />
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 border-2 border-white" />
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-400 border-2 border-white" />
-                      <div className="h-10 w-10 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-semibold text-slate-600">+50</div>
-                    </div>
                   </div>
 
-                  {/* Floating badges */}
-                  <div className="absolute bottom-32 right-4 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slow">
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                      <span className="text-[10px] text-white font-bold">EN</span>
+                  {/* Third card */}
+                  <div className="absolute bottom-0 right-8 bg-white rounded-2xl shadow-lg p-4 w-48">
+                    <div className="relative h-24 bg-rose-100 rounded-xl mb-3 overflow-hidden">
+                      <div className="absolute bottom-2 left-2 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <Play className="h-3 w-3 fill-white" />
+                      </div>
                     </div>
-                    <span className="text-sm font-semibold text-slate-700">English</span>
-                  </div>
-
-                  <div className="absolute top-32 right-0 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slower">
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
-                      <span className="text-[10px] text-white font-bold">UA</span>
-                    </div>
-                    <span className="text-sm font-semibold text-slate-700">Українська</span>
-                  </div>
-
-                  <div className="absolute bottom-8 left-0 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slow" style={{ animationDelay: "0.5s" }}>
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
-                      <Star className="h-3 w-3 text-white fill-white" />
-                    </div>
-                    <span className="text-sm font-semibold text-slate-700">4.9 Rating</span>
+                    <div className="font-semibold text-slate-900 text-sm">Maria Kovalchuk</div>
+                    <div className="text-xs text-slate-500">16 Years Old</div>
                   </div>
                 </div>
               </div>
@@ -255,271 +244,322 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* Categories */}
-        <section className="py-20 lg:py-28">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="text-center mb-16">
-              <Badge className="mb-4 rounded-full bg-emerald-50 text-emerald-700 border-emerald-200/50 px-4 py-1.5 text-sm font-semibold">
-                Категорії
-              </Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 font-heading">
-                {t("nav.specialists")}
-              </h2>
-              <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                {t("specialists.subtitle")}
-              </p>
+        {/* Our Advantages Section */}
+        <section id="about" className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 font-heading">Our advantages</h2>
+              <div className="flex gap-2">
+                <button className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50">
+                  <ChevronDown className="h-5 w-5 -rotate-90" />
+                </button>
+                <button className="h-10 w-10 rounded-full bg-slate-900 flex items-center justify-center text-white">
+                  <ChevronDown className="h-5 w-5 rotate-90" />
+                </button>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {categories.map((cat, i) => (
-                <Link href={cat.href} key={cat.title}>
-                  <div
-                    className={`group relative h-full rounded-3xl p-8 transition-all hover-lift cursor-pointer ${
-                      cat.color === "emerald"
-                        ? "bg-gradient-to-br from-emerald-50 to-teal-50/50"
-                        : "bg-gradient-to-br from-orange-50 to-amber-50/50"
-                    } hover:shadow-xl`}
-                  >
-                    <div
-                      className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl mb-6 ${
-                        cat.color === "emerald" ? "bg-emerald-100 text-emerald-600" : "bg-orange-100 text-orange-600"
-                      }`}
-                    >
-                      <cat.icon className="h-8 w-8" />
-                    </div>
+            {/* Advantage Card */}
+            <div className="relative bg-gradient-to-br from-teal-50 to-emerald-50 rounded-[2rem] p-8 lg:p-12 overflow-hidden">
+              {/* Decorative blob */}
+              <svg className="absolute left-0 top-0 w-96 h-96 text-emerald-200/50" viewBox="0 0 200 200">
+                <path fill="currentColor" d="M47.5,-57.2C59.5,-47.3,65.8,-30.6,68.6,-13.3C71.4,4,70.8,22,62.5,35.5C54.2,49,38.2,58,21.3,63.3C4.4,68.6,-13.4,70.2,-29.3,65.1C-45.2,60,-59.2,48.2,-66.8,33.1C-74.4,18,-75.6,-0.4,-70.8,-16.5C-66,-32.6,-55.2,-46.4,-41.8,-56C-28.4,-65.6,-12.4,-71,2.6,-74.2C17.6,-77.4,35.5,-67.1,47.5,-57.2Z" transform="translate(100 100)" />
+              </svg>
 
-                    <h3 className="text-xl font-bold text-slate-900 mb-3">{cat.title}</h3>
-                    <p className="text-slate-600 mb-6 leading-relaxed">{cat.description}</p>
+              <div className="relative z-10 grid lg:grid-cols-2 gap-12">
+                <div>
+                  <div className="inline-block bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+                    FIRST LESSON
+                  </div>
+                  <h3 className="text-4xl font-bold text-slate-900 mb-4 font-heading">free</h3>
+                  <p className="text-slate-600 leading-relaxed max-w-md">
+                    It gives you the opportunity to experience our teaching style and see how our courses can help you achieve your language goals.
+                  </p>
+                </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className={`text-sm font-semibold ${cat.color === "emerald" ? "text-emerald-600" : "text-orange-600"}`}>
-                        {cat.stat}
-                      </span>
-                      <ArrowRight className={`h-5 w-5 transition-transform group-hover:translate-x-1 ${cat.color === "emerald" ? "text-emerald-600" : "text-orange-600"}`} />
+                <div className="flex items-center justify-center">
+                  <div className="relative">
+                    <div className="bg-white rounded-2xl shadow-lg p-6 w-72">
+                      <div className="h-40 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl mb-4" />
+                      <div className="text-center">
+                        <div className="flex items-center justify-center gap-1 mb-2">
+                          <Play className="h-5 w-5 text-emerald-600 fill-emerald-600" />
+                          <span className="text-sm text-slate-500">3 min</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </Link>
-              ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* How it Works */}
-        <section id="how-it-works" className="py-20 lg:py-28 bg-slate-50/50">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="text-center mb-16">
-              <Badge className="mb-4 rounded-full bg-orange-50 text-orange-700 border-orange-200/50 px-4 py-1.5 text-sm font-semibold">
-                Як це працює
-              </Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 font-heading">
-                {t("nav.how_it_works")}
+        {/* Why Trust Us */}
+        <section className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 font-heading">
+                Why you <span className="text-emerald-600">(LIBITUM)</span> can trust us
               </h2>
-              <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                {t("how.subtitle")}
-              </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {steps.map((step, i) => (
-                <div key={step.num} className="relative text-center">
-                  {i < steps.length - 1 && (
-                    <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-[2px] bg-gradient-to-r from-emerald-300 to-emerald-100" />
-                  )}
-                  <div className="relative inline-flex h-24 w-24 items-center justify-center rounded-3xl bg-white shadow-lg shadow-emerald-100/50 mb-6">
-                    <span className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                      {step.num}
-                    </span>
+            <div className="space-y-4">
+              {advantages.map((item, i) => (
+                <div key={i} className="bg-white rounded-2xl p-6 flex items-center gap-6 hover:shadow-md transition-shadow">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                    <p className="text-slate-500 text-sm">{item.description}</p>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">{step.title}</h3>
-                  <p className="text-slate-600 leading-relaxed">{step.desc}</p>
+                  <div className={`${item.tagColor} text-white text-xs font-bold px-4 py-2 rounded-full whitespace-nowrap`}>
+                    {item.tag}
+                  </div>
+                  <div className="w-32 h-20 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-xl flex-shrink-0" />
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Features */}
-        <section className="py-20 lg:py-28">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div>
-                <Badge className="mb-4 rounded-full bg-emerald-50 text-emerald-700 border-emerald-200/50 px-4 py-1.5 text-sm font-semibold">
-                  Чому ми
-                </Badge>
-                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-6 font-heading">
-                  Ваш успіх — наш пріоритет
-                </h2>
-                <p className="text-lg text-slate-600 mb-10 leading-relaxed">
-                  {t("hero.extra")}
-                </p>
+        {/* Pricing Section */}
+        <section id="plans" className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="text-center mb-4">
+              <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 font-heading mb-4">
+                Choose your ideal
+                <br />
+                knowledge investment!
+              </h2>
+            </div>
 
-                <div className="space-y-6">
-                  {features.map((feature) => (
-                    <div key={feature.title} className="flex gap-4">
-                      <div className="flex-shrink-0 h-12 w-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-600">
-                        <feature.icon className="h-6 w-6" />
+            {/* Toggle */}
+            <div className="flex justify-center gap-2 mb-12">
+              <button className="px-6 py-2.5 rounded-full bg-slate-100 text-sm font-medium text-slate-900">
+                Personal lessons
+              </button>
+              <button className="px-6 py-2.5 rounded-full text-sm font-medium text-slate-500 hover:bg-slate-50">
+                Group classes
+              </button>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {plans.map((plan, i) => (
+                <div 
+                  key={i} 
+                  className={`relative rounded-3xl p-6 ${
+                    plan.highlight 
+                      ? "bg-emerald-600 text-white" 
+                      : "bg-white border border-slate-200"
+                  }`}
+                >
+                  {plan.badge && (
+                    <div className="absolute -top-3 left-6 bg-lime-400 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full">
+                      {plan.badge}
+                    </div>
+                  )}
+
+                  <div className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-4 ${
+                    plan.highlight ? "bg-white/20 text-white" : "bg-emerald-50 text-emerald-700"
+                  }`}>
+                    {plan.lessons}
+                  </div>
+
+                  <h3 className={`text-lg font-bold mb-2 ${plan.highlight ? "text-white" : "text-emerald-700"}`}>
+                    {plan.name}
+                  </h3>
+                  
+                  <p className={`text-sm mb-4 ${plan.highlight ? "text-white/80" : "text-slate-500"}`}>
+                    for those who want to start learning
+                  </p>
+
+                  <div className="flex items-baseline gap-2 mb-6">
+                    {plan.oldPrice && (
+                      <span className={`text-sm line-through ${plan.highlight ? "text-white/60" : "text-slate-400"}`}>
+                        {plan.oldPrice}
+                      </span>
+                    )}
+                    <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-slate-900"}`}>
+                      {plan.price}
+                    </span>
+                  </div>
+
+                  <Button className={`w-full h-11 rounded-full font-semibold mb-6 ${
+                    plan.highlight 
+                      ? "bg-white text-emerald-700 hover:bg-white/90" 
+                      : "bg-emerald-600 text-white hover:bg-emerald-700"
+                  }`}>
+                    TRY PACK
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+
+                  <div className="space-y-3">
+                    {plan.features.map((feature, j) => (
+                      <div key={j} className="flex items-start gap-3">
+                        <Check className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
+                          plan.highlight ? "text-lime-300" : "text-emerald-600"
+                        }`} />
+                        <span className={`text-sm ${plan.highlight ? "text-white/90" : "text-slate-600"}`}>
+                          {feature}
+                        </span>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-slate-900 mb-1">{feature.title}</h3>
-                        <p className="text-slate-600 text-sm leading-relaxed">{feature.desc}</p>
-                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="relative bg-gradient-to-br from-slate-50 to-emerald-50/50 rounded-[2rem] p-8 lg:p-12 overflow-hidden">
+              {/* Decorative shapes */}
+              <svg className="absolute right-0 top-0 w-64 h-64 text-emerald-100" viewBox="0 0 200 200">
+                <path fill="currentColor" d="M39.5,-47.6C52.9,-37.3,66.8,-27.2,71.8,-13.6C76.8,0,72.9,17.1,64.1,30.8C55.3,44.5,41.6,54.8,26.5,60.7C11.4,66.6,-5.1,68.1,-20.3,64.1C-35.5,60.1,-49.4,50.6,-58.8,37.5C-68.2,24.4,-73.1,7.7,-71.4,-8.3C-69.7,-24.3,-61.4,-39.6,-49.3,-50.1C-37.2,-60.6,-21.3,-66.3,-5.3,-60.1C10.7,-53.9,26.1,-57.9,39.5,-47.6Z" transform="translate(100 100)" />
+              </svg>
+
+              <div className="relative z-10">
+                <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 font-heading text-center mb-12">
+                  Why do they
+                  <br />
+                  choose us?
+                </h2>
+
+                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                  {faqs.slice(0, 6).map((faq, i) => (
+                    <div 
+                      key={i}
+                      className="bg-white rounded-2xl p-6 cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    >
+                      <h3 className="font-bold text-slate-900 mb-2">{faq.q}</h3>
+                      <p className={`text-sm text-slate-500 ${openFaq === i ? "" : "line-clamp-2"}`}>
+                        {faq.a}
+                      </p>
                     </div>
                   ))}
                 </div>
-              </div>
 
-              <div className="relative">
-                <div className="glass-card rounded-3xl p-8 lg:p-10">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50">
-                      <div className="text-4xl font-bold text-emerald-600 mb-2">500+</div>
-                      <div className="text-sm text-slate-600 font-medium">Спеціалістів</div>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50">
-                      <div className="text-4xl font-bold text-orange-600 mb-2">10K+</div>
-                      <div className="text-sm text-slate-600 font-medium">Учнів</div>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-slate-50 to-slate-100">
-                      <div className="text-4xl font-bold text-slate-700 mb-2">4.9</div>
-                      <div className="text-sm text-slate-600 font-medium">Рейтинг</div>
-                    </div>
-                    <div className="text-center p-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50">
-                      <div className="text-4xl font-bold text-emerald-600 mb-2">95%</div>
-                      <div className="text-sm text-slate-600 font-medium">Задоволених</div>
-                    </div>
-                  </div>
+                <div className="text-center mt-10">
+                  <Link href="#contact">
+                    <Button variant="outline" className="h-11 rounded-full px-8 font-semibold border-emerald-600 text-emerald-600 hover:bg-emerald-50">
+                      FREE CONSULTATION
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
                 </div>
-                <div className="absolute -top-6 -right-6 h-24 w-24 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-400 opacity-20 blur-2xl animate-float-slow" />
-                <div className="absolute -bottom-6 -left-6 h-32 w-32 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-400 opacity-20 blur-2xl animate-float-slower" />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Reviews */}
-        <section id="reviews" className="py-20 lg:py-28 bg-slate-50/50">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="text-center mb-16">
-              <Badge className="mb-4 rounded-full bg-emerald-50 text-emerald-700 border-emerald-200/50 px-4 py-1.5 text-sm font-semibold">
-                Відгуки
-              </Badge>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 font-heading">
-                {t("nav.reviews")}
-              </h2>
-              <p className="text-lg text-slate-500 max-w-2xl mx-auto">
-                {t("reviews.subtitle")}
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
-              {reviews.map((review, i) => (
-                <div key={i} className="glass-card rounded-3xl p-8 hover-lift">
-                  <div className="flex gap-1 mb-6">
-                    {Array.from({ length: review.rating }).map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-slate-700 mb-6 leading-relaxed text-lg">"{review.text}"</p>
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-white font-semibold text-sm">
-                      {review.name.charAt(0)}
+        {/* CTA Section */}
+        <section className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Left Card */}
+              <div className="relative bg-emerald-600 rounded-[2rem] p-8 lg:p-10 overflow-hidden text-white">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500 rounded-full translate-x-1/3 -translate-y-1/3" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="relative h-8 w-8 overflow-hidden rounded-lg">
+                      <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                     </div>
-                    <span className="font-medium text-slate-900">{review.name}</span>
+                    <span className="font-bold">LIBITUM</span>
+                  </div>
+
+                  <h3 className="text-2xl lg:text-3xl font-bold mb-4 font-heading">
+                    Buy a ticket to a free
+                    <br />
+                    conversation club
+                  </h3>
+
+                  <p className="text-white/80 text-sm mb-6 max-w-sm">
+                    Flexible schedule, native speakers, and personalized approach for comfortable language improvement.
+                  </p>
+
+                  <Button className="h-10 rounded-full bg-white text-emerald-700 hover:bg-white/90 font-semibold px-6">
+                    Buy ticket
+                  </Button>
+
+                  <div className="flex gap-8 mt-8">
+                    <div>
+                      <div className="text-xs text-white/60 mb-1">When</div>
+                      <div className="font-semibold">Every Saturday</div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-white/60 mb-1">Price</div>
+                      <div className="font-semibold">UAH 0.00</div>
+                    </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-20 lg:py-28">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-12">
-                <Badge className="mb-4 rounded-full bg-orange-50 text-orange-700 border-orange-200/50 px-4 py-1.5 text-sm font-semibold">
-                  FAQ
-                </Badge>
-                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 font-heading">
-                  Часті питання
-                </h2>
-                <p className="text-lg text-slate-500">{t("faq.subtitle")}</p>
               </div>
 
-              <div className="space-y-4">
-                {faqs.map((faq, i) => (
-                  <div key={i} className="glass-card rounded-2xl overflow-hidden">
-                    <button
-                      onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                      className="w-full flex items-center justify-between p-6 text-left"
-                    >
-                      <span className="font-semibold text-slate-900 pr-4">{faq.q}</span>
-                      <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform flex-shrink-0 ${openFaq === i ? "rotate-180" : ""}`} />
-                    </button>
-                    {openFaq === i && (
-                      <div className="px-6 pb-6">
-                        <p className="text-slate-600 leading-relaxed">{faq.a}</p>
+              {/* Right Card */}
+              <div className="relative bg-slate-100 rounded-[2rem] p-8 lg:p-10 overflow-hidden">
+                <div className="h-full flex items-center justify-center">
+                  <div className="relative w-full max-w-sm">
+                    <div className="bg-slate-200 rounded-2xl h-64 w-full flex items-center justify-center">
+                      <div className="h-14 w-14 rounded-full bg-emerald-600 flex items-center justify-center">
+                        <Play className="h-6 w-6 text-white fill-white ml-1" />
                       </div>
-                    )}
+                    </div>
+                    <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 text-sm text-slate-600">
+                      3 min
+                    </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="bg-emerald-600 text-white py-12 px-4 lg:px-8 rounded-t-[2rem]">
+          <div className="container mx-auto">
+            <div className="grid lg:grid-cols-3 gap-12">
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="relative h-8 w-8 overflow-hidden rounded-lg bg-white">
+                    <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
+                  </div>
+                  <span className="font-bold">LIBITUM</span>
+                </div>
+                <p className="text-2xl font-bold mb-6">smart.english@com</p>
+                <Button variant="outline" className="rounded-full border-white/30 text-white hover:bg-white/10">
+                  WRITE IN TELEGRAM
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+
+              <div>
+                <p className="font-semibold mb-2">Learn with inspiration!</p>
+                <p className="text-white/80 text-sm">Follow us for tips and motivation.</p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {["FACEBOOK", "INSTAGRAM", "YOUTUBE", "LINKEDIN", "TELEGRAM"].map(social => (
+                  <span key={social} className="px-4 py-2 rounded-full border border-white/30 text-sm font-medium hover:bg-white/10 cursor-pointer transition-colors">
+                    {social}
+                  </span>
                 ))}
               </div>
             </div>
-          </div>
-        </section>
 
-        {/* CTA */}
-        <section className="py-20 lg:py-28">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 p-12 lg:p-20 text-center">
-              <div className="absolute top-0 left-0 w-full h-full opacity-20">
-                <div className="absolute top-10 left-10 h-40 w-40 rounded-full bg-white/20 blur-3xl" />
-                <div className="absolute bottom-10 right-10 h-60 w-60 rounded-full bg-white/10 blur-3xl" />
-              </div>
-
-              <div className="relative z-10">
-                <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 font-heading">
-                  {t("cta.title")}
-                </h2>
-                <p className="text-lg text-emerald-100 mb-8 max-w-xl mx-auto">
-                  {t("cta.subtitle")}
-                </p>
-                <Link href={specialistHref}>
-                  <Button className="h-14 rounded-2xl bg-white px-10 text-base font-semibold text-emerald-600 shadow-lg hover:bg-emerald-50 transition-all">
-                    {t("cta.button")}
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 mt-12 pt-8 border-t border-white/20">
+              <LanguageSwitcher />
+              <nav className="flex gap-6 text-sm">
+                <Link href="/specialists" className="hover:underline">Teachers</Link>
+                <Link href="#about" className="hover:underline">About us</Link>
+                <Link href="#contact" className="hover:underline">Contact</Link>
+                <Link href="#plans" className="hover:underline">Plans</Link>
+              </nav>
             </div>
           </div>
-        </section>
+        </footer>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-200/50 bg-white/50 py-12">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="font-bold text-slate-900">Libitum Education</span>
-            </div>
-            <p className="text-sm text-slate-500">
-              © {new Date().getFullYear()} Libitum. {t("footer.rights")}
-            </p>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="text-sm text-slate-500 hover:text-emerald-600 transition-colors">
-                Політика конфіденційності
-              </Link>
-              <Link href="/terms" className="text-sm text-slate-500 hover:text-emerald-600 transition-colors">
-                Умови використання
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
