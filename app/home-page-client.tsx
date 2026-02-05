@@ -86,38 +86,29 @@ export default function HomePageClient() {
   ]
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-[600px] w-[600px] rounded-full bg-gradient-to-br from-emerald-100/60 via-emerald-50/40 to-transparent blur-3xl animate-pulse-soft" />
-        <div className="absolute top-1/3 -left-40 h-[500px] w-[500px] rounded-full bg-gradient-to-br from-orange-100/50 via-orange-50/30 to-transparent blur-3xl animate-pulse-soft" style={{ animationDelay: "2s" }} />
-        <div className="absolute bottom-0 right-1/4 h-[400px] w-[400px] rounded-full bg-gradient-to-br from-emerald-50/40 to-transparent blur-3xl animate-pulse-soft" style={{ animationDelay: "4s" }} />
-      </div>
-
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-20 items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 px-4 lg:px-8 pt-4">
+        <div className="container mx-auto">
+          <div className="flex h-16 items-center justify-between bg-white/80 backdrop-blur-xl rounded-2xl px-6 shadow-lg shadow-slate-900/5 border border-slate-100">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative h-11 w-11 overflow-hidden rounded-xl shadow-lg ring-1 ring-white/20 transition-transform group-hover:scale-105">
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl shadow-md ring-1 ring-slate-200/50 transition-transform group-hover:scale-105">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <div>
-                <span className="text-xl font-bold tracking-tight text-white drop-shadow-sm">
-                  Libitum
-                </span>
-                <p className="text-[10px] font-medium text-white/70">Education</p>
+                <span className="text-lg font-bold tracking-tight text-slate-900">Libitum</span>
+                <p className="text-[10px] font-medium text-slate-500">Education</p>
               </div>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href={specialistHref} className="text-sm font-medium text-white/90 hover:text-white transition-colors">
+            <nav className="hidden lg:flex items-center gap-1 bg-slate-100/80 rounded-xl p-1">
+              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
                 {t("nav.specialists")}
               </Link>
-              <Link href="#how-it-works" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
+              <Link href="#how-it-works" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
                 {t("nav.how_it_works")}
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-white/90 hover:text-white transition-colors">
+              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-white px-4 py-2 rounded-lg transition-all">
                 {t("nav.reviews")}
               </Link>
             </nav>
@@ -126,7 +117,7 @@ export default function HomePageClient() {
               <LanguageSwitcher />
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-xl bg-white/10 backdrop-blur-sm px-5 font-medium text-white border border-white/20 hover:bg-white/20 transition-all">
+                  <Button className="h-10 rounded-xl bg-emerald-600 px-5 font-medium text-white hover:bg-emerald-700 transition-all">
                     Dashboard
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -134,12 +125,12 @@ export default function HomePageClient() {
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="ghost" className="h-10 rounded-xl px-5 font-medium text-white/90 hover:text-white hover:bg-white/10">
+                    <Button variant="ghost" className="h-10 rounded-xl px-4 font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-xl bg-white px-5 font-semibold text-emerald-700 hover:bg-white/90 transition-all shadow-lg shadow-black/10">
+                    <Button className="h-10 rounded-xl bg-emerald-600 px-5 font-semibold text-white hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-600/25">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -152,76 +143,115 @@ export default function HomePageClient() {
 
       <main>
         {/* Hero */}
-        <section className="relative min-h-[100vh] flex items-center overflow-hidden" style={{
-          background: "linear-gradient(135deg, #059669 0%, #047857 25%, #065f46 50%, #064e3b 75%, #0f766e 100%)"
-        }}>
-          {/* Decorative elements */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-teal-400/10 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-400/5 rounded-full blur-3xl" />
-            {/* Grid pattern */}
-            <div className="absolute inset-0 opacity-[0.03]" style={{
-              backgroundImage: "linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)",
-              backgroundSize: "60px 60px"
-            }} />
-          </div>
+        <section className="relative pt-28 pb-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            {/* Banner Card */}
+            <div className="relative rounded-[2.5rem] overflow-hidden" style={{
+              background: "linear-gradient(135deg, #059669 0%, #047857 40%, #065f46 70%, #0d9488 100%)"
+            }}>
+              {/* Decorative blobs */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-lime-400/30 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-teal-300/20 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
+              <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-emerald-300/20 rounded-full blur-2xl" />
+              
+              {/* Decorative shapes */}
+              <div className="absolute top-20 right-20 w-20 h-20 bg-lime-400/40 rounded-full animate-float-slow" />
+              <div className="absolute bottom-32 left-16 w-12 h-12 bg-white/20 rounded-full animate-float-slower" />
+              <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-orange-400/50 rounded-full animate-float-slow" style={{ animationDelay: "1s" }} />
 
-          <div className="container mx-auto px-4 lg:px-8 relative z-10 pt-20">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-2.5 mb-8 animate-fade-in-up">
-                <Sparkles className="h-4 w-4 text-amber-300" />
-                <span className="text-sm font-semibold text-white">{t("hero.tagline")}</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-8 animate-fade-in-up font-heading leading-[1.1]" style={{ animationDelay: "0.1s" }}>
-                {t("hero.title")}
-              </h1>
-
-              <p className="text-lg sm:text-xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-                {t("hero.subtitle")}
-              </p>
-
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-2 max-w-2xl mx-auto mb-10 animate-fade-in-up border border-white/20" style={{ animationDelay: "0.3s" }}>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/50" />
-                    <Input
-                      placeholder="Англійська мова, математика, психологія..."
-                      className="h-14 pl-12 rounded-xl border-0 bg-white/10 text-base text-white placeholder:text-white/50 focus-visible:ring-2 focus-visible:ring-white/30"
-                    />
+              <div className="relative z-10 grid lg:grid-cols-2 gap-8 items-center min-h-[600px] p-8 lg:p-16">
+                {/* Left Content */}
+                <div className="text-white">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 px-4 py-2 mb-8">
+                    <Sparkles className="h-4 w-4 text-lime-300" />
+                    <span className="text-sm font-semibold">{t("hero.tagline")}</span>
                   </div>
-                  <Link href={specialistHref}>
-                    <Button className="h-14 w-full sm:w-auto rounded-xl bg-white px-8 text-base font-semibold text-emerald-700 hover:bg-white/90 transition-all shadow-lg shadow-black/10">
-                      {t("hero.cta")}
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                </div>
-              </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-white/70 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                  <span>500+ спеціалістів</span>
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 font-heading leading-[1.1]">
+                    <span className="relative">
+                      {t("hero.title").split(" ").slice(0, 2).join(" ")}
+                      <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                        <path d="M2 10C50 2 150 2 198 10" stroke="#bef264" strokeWidth="3" strokeLinecap="round"/>
+                      </svg>
+                    </span>
+                    <br />
+                    {t("hero.title").split(" ").slice(2).join(" ")}
+                  </h1>
+
+                  <p className="text-lg text-white/80 mb-8 max-w-md leading-relaxed">
+                    {t("hero.subtitle")}
+                  </p>
+
+                  <div className="flex flex-wrap gap-4 mb-10">
+                    <Link href={specialistHref}>
+                      <Button className="h-14 rounded-full bg-lime-400 px-8 text-base font-semibold text-emerald-900 hover:bg-lime-300 transition-all shadow-lg shadow-lime-400/30">
+                        {t("hero.cta")}
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                  </div>
+
+                  <div className="flex flex-wrap gap-6 text-sm text-white/70">
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-lime-300" />
+                      </div>
+                      <span>500+ спеціалістів</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-lime-300" />
+                      </div>
+                      <span>Перевірені профілі</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                  <span>Перевірені профілі</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-300" />
-                  <span>Безкоштовний підбір</span>
+
+                {/* Right Content - Stats Card */}
+                <div className="relative hidden lg:block">
+                  {/* Main Stats Card */}
+                  <div className="absolute top-8 right-8 bg-white/95 backdrop-blur-sm rounded-3xl p-6 shadow-2xl shadow-slate-900/20 w-72 animate-fade-in-up">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <div className="text-5xl font-bold text-slate-900">489<span className="text-emerald-500">+</span></div>
+                        <p className="text-sm text-slate-600 mt-1">Більше ніж 489 студентів<br/>навчаються з нами</p>
+                      </div>
+                      <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center">
+                        <ArrowRight className="h-5 w-5 text-slate-600 -rotate-45" />
+                      </div>
+                    </div>
+                    <div className="flex -space-x-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-400 border-2 border-white" />
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 border-2 border-white" />
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-400 border-2 border-white" />
+                      <div className="h-10 w-10 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-xs font-semibold text-slate-600">+50</div>
+                    </div>
+                  </div>
+
+                  {/* Floating badges */}
+                  <div className="absolute bottom-32 right-4 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slow">
+                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                      <span className="text-[10px] text-white font-bold">EN</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">English</span>
+                  </div>
+
+                  <div className="absolute top-32 right-0 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slower">
+                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+                      <span className="text-[10px] text-white font-bold">UA</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">Українська</span>
+                  </div>
+
+                  <div className="absolute bottom-8 left-0 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2 animate-float-slow" style={{ animationDelay: "0.5s" }}>
+                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+                      <Star className="h-3 w-3 text-white fill-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">4.9 Rating</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Bottom wave */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-              <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
-            </svg>
           </div>
         </section>
 
