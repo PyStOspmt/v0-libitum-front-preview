@@ -148,26 +148,26 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
   )
 
   return (
-    <div className="min-h-screen bg-emerald-50/30">
+    <div className="min-h-screen bg-[#fafaf8]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-100">
+      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-9 w-9 overflow-hidden rounded-xl">
+          <div className="flex h-18 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <span className="text-lg font-bold text-slate-900">LIBITUM</span>
+              <span className="text-lg font-bold text-slate-800">LIBITUM</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/catalog" className="text-sm font-medium text-slate-900 border-b-2 border-emerald-600 pb-0.5">
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href="/catalog" className="text-sm font-medium text-slate-800 border-b-2 border-[#43a047] pb-0.5">
                 {t("nav.specialists")}
               </Link>
-              <Link href="/#how" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              <Link href="/#how" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.how_it_works")}
               </Link>
-              <Link href="/#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              <Link href="/#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.reviews")}
               </Link>
               <LanguageSwitcher />
@@ -176,19 +176,19 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
+                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-9 rounded-full px-5 text-sm font-medium border-slate-300">
+                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
+                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -203,52 +203,52 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         {/* Hero Banner */}
         <section className="relative py-8 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="relative bg-white rounded-[2rem] p-8 lg:p-12 overflow-hidden">
-              {/* Decorative shapes */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 rounded-full translate-x-1/3 -translate-y-1/3" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-teal-100 rounded-full -translate-x-1/4 translate-y-1/4" />
+            <div className="relative bg-white rounded-[2.5rem] p-10 lg:p-14 overflow-hidden border border-slate-100/80">
+              {/* Decorative shapes - soft sage green */}
+              <div className="absolute top-0 right-0 w-72 h-72 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
+              <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#e0f2f1] rounded-full -translate-x-1/4 translate-y-1/4" />
               
-              <svg className="absolute right-10 bottom-0 w-72 h-72 text-emerald-100/80" viewBox="0 0 200 200">
+              <svg className="absolute right-8 bottom-0 w-80 h-80 text-[#c8e6c9]/50" viewBox="0 0 200 200">
                 <path fill="currentColor" d="M45.3,-51.2C58.3,-40.9,68.1,-25.5,71.2,-8.5C74.3,8.5,70.6,27.1,60.1,40.3C49.6,53.5,32.3,61.3,14.1,66.1C-4.1,70.9,-23.2,72.7,-39.7,66.1C-56.2,59.5,-70.1,44.5,-75.4,27C-80.7,9.5,-77.4,-10.5,-68.4,-26.3C-59.4,-42.1,-44.7,-53.7,-29.5,-63.2C-14.3,-72.7,1.4,-80.1,15.7,-77.3C30,-74.5,32.3,-61.5,45.3,-51.2Z" transform="translate(100 100)" />
               </svg>
 
               <div className="relative z-10 max-w-3xl">
-                <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-                  <Star className="h-4 w-4 fill-emerald-500 text-emerald-500" />
+                <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-5 py-2.5 rounded-full text-sm font-medium mb-8">
+                  <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
                   {t("hero.tagline")}
                 </div>
 
-                <h1 className="text-4xl lg:text-6xl font-bold text-slate-900 mb-6 font-heading leading-[1.1]">
+                <h1 className="text-4xl lg:text-6xl font-bold text-slate-800 mb-8 font-heading leading-[1.1] tracking-tight">
                   {t("hero.title")}
                 </h1>
                 
-                <p className="text-lg text-slate-600 mb-8 max-w-xl">
+                <p className="text-lg text-slate-500 mb-10 max-w-xl leading-relaxed">
                   {t("hero.subtitle")}
                 </p>
 
                 {/* Search Bar */}
-                <div className="bg-slate-50 rounded-2xl p-2 max-w-2xl">
+                <div className="bg-slate-50/80 rounded-2xl p-2.5 max-w-2xl">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                       <Input 
                         placeholder="Пошук за предметом, мовою або іменем..."
-                        className="h-12 pl-12 rounded-xl border-0 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-emerald-500"
+                        className="h-13 pl-12 rounded-xl border-0 bg-white text-slate-800 placeholder:text-slate-400 focus-visible:ring-[#43a047]"
                       />
                     </div>
-                    <Button className="h-12 px-8 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 font-semibold">
+                    <Button className="h-13 px-8 rounded-xl bg-[#43a047] text-white hover:bg-[#388e3c] font-semibold shadow-sm">
                       Знайти
                     </Button>
                   </div>
                 </div>
 
                 {/* Language tags */}
-                <div className="flex flex-wrap items-center gap-3 mt-6">
+                <div className="flex flex-wrap items-center gap-3 mt-8">
                   {["Англійська", "Німецька", "Українська", "Іспанська", "Французька"].map((lang, i) => (
                     <span 
                       key={lang}
-                      className={`px-4 py-2 rounded-full text-sm font-medium cursor-pointer transition-colors ${
-                        i === 0 ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-emerald-50"
+                      className={`px-5 py-2.5 rounded-full text-sm font-medium cursor-pointer transition-colors ${
+                        i === 0 ? "bg-[#43a047] text-white" : "bg-white text-slate-600 hover:bg-[#e8f5e9] border border-slate-100/80"
                       }`}
                     >
                       {lang}
@@ -291,20 +291,20 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
             <aside className="hidden lg:block w-72 flex-shrink-0">
               <div className="sticky top-24 space-y-4">
                 {/* Language Filter */}
-                <div className="bg-white rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-900">Мова</h3>
+                <div className="bg-white rounded-3xl p-6 border border-slate-100/80">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-bold text-slate-800">Мова</h3>
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {languages.map(lang => (
                       <label key={lang.id} className="flex items-center gap-3 cursor-pointer group">
                         <Checkbox 
                           checked={selectedLanguages.includes(lang.id)}
                           onCheckedChange={() => toggleLanguage(lang.id)}
-                          className="border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 rounded"
+                          className="border-slate-200 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047] rounded"
                         />
-                        <span className="text-sm text-slate-600 group-hover:text-slate-900 flex-1">{lang.name}</span>
+                        <span className="text-sm text-slate-600 group-hover:text-slate-800 flex-1">{lang.name}</span>
                         <span className="text-xs text-slate-400">({lang.count})</span>
                       </label>
                     ))}
@@ -312,12 +312,12 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 </div>
 
                 {/* Country Filter */}
-                <div className="bg-white rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-900">Країна</h3>
+                <div className="bg-white rounded-3xl p-6 border border-slate-100/80">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-bold text-slate-800">Країна</h3>
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {countries.map(country => (
                       <label key={country.id} className="flex items-center gap-3 cursor-pointer group">
                         <Checkbox 
@@ -325,9 +325,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                           onCheckedChange={() => setSelectedCountries(prev => 
                             prev.includes(country.id) ? prev.filter(c => c !== country.id) : [...prev, country.id]
                           )}
-                          className="border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 rounded"
+                          className="border-slate-200 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047] rounded"
                         />
-                        <span className="text-sm text-slate-600 group-hover:text-slate-900 flex-1">{country.name}</span>
+                        <span className="text-sm text-slate-600 group-hover:text-slate-800 flex-1">{country.name}</span>
                         <span className="text-xs text-slate-400">({country.count})</span>
                       </label>
                     ))}
@@ -335,9 +335,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 </div>
 
                 {/* Price Filter */}
-                <div className="bg-white rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-900">Ціна, ₴/год</h3>
+                <div className="bg-white rounded-3xl p-6 border border-slate-100/80">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-bold text-slate-800">Ціна, ₴/год</h3>
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   </div>
                   <div className="flex items-center gap-3 mb-4">
@@ -366,23 +366,23 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 </div>
 
                 {/* Experience Filter */}
-                <div className="bg-white rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-slate-900">Досвід</h3>
+                <div className="bg-white rounded-3xl p-6 border border-slate-100/80">
+                  <div className="flex items-center justify-between mb-5">
+                    <h3 className="font-bold text-slate-800">Досвід</h3>
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   </div>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {["1-2 роки", "3-5 років", "5+ років"].map((exp, i) => (
                       <label key={exp} className="flex items-center gap-3 cursor-pointer group">
-                        <Checkbox className="border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600 rounded" />
-                        <span className="text-sm text-slate-600 group-hover:text-slate-900">{exp}</span>
+                        <Checkbox className="border-slate-200 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047] rounded" />
+                        <span className="text-sm text-slate-600 group-hover:text-slate-800">{exp}</span>
                       </label>
                     ))}
                   </div>
                 </div>
 
                 {/* Apply Button */}
-                <Button className="w-full h-12 rounded-full bg-emerald-600 text-white hover:bg-emerald-700 font-semibold">
+                <Button className="w-full h-13 rounded-full bg-[#43a047] text-white hover:bg-[#388e3c] font-semibold shadow-sm">
                   Застосувати
                 </Button>
               </div>
@@ -393,18 +393,18 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
               {specialists.map((specialist) => (
                 <div 
                   key={specialist.id} 
-                  className="bg-white rounded-2xl p-5 hover:shadow-md transition-shadow"
+                  className="bg-white rounded-3xl p-6 border border-slate-100/80 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex gap-5">
+                  <div className="flex gap-6">
                     {/* Photo */}
                     <div className="relative flex-shrink-0">
-                      <div className={`w-36 h-44 ${specialist.color} rounded-2xl overflow-hidden relative`}>
+                      <div className={`w-40 h-48 ${specialist.color} rounded-2xl overflow-hidden relative`}>
                         {/* Video button */}
-                        <div className="absolute bottom-3 left-3 bg-emerald-600 text-white rounded-full px-3 py-1.5 flex items-center gap-1.5 text-xs font-medium">
+                        <div className="absolute bottom-3 left-3 bg-[#43a047] text-white rounded-full px-3.5 py-2 flex items-center gap-2 text-xs font-medium shadow-sm">
                           <Play className="h-3 w-3 fill-white" />
                           Відео
                         </div>
-                        <div className="absolute bottom-3 right-3 text-xs text-slate-600 bg-white/80 rounded-full px-2 py-0.5">
+                        <div className="absolute bottom-3 right-3 text-xs text-slate-600 bg-white rounded-full px-2.5 py-1 font-medium">
                           {specialist.videoLength}
                         </div>
                       </div>
@@ -412,10 +412,10 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-4 mb-3">
+                      <div className="flex items-start justify-between gap-4 mb-4">
                         <div>
-                          <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="text-xl font-bold text-slate-800">{specialist.name}</h3>
                             <button 
                               onClick={() => toggleWishlist(specialist.id)}
                               className="text-slate-300 hover:text-rose-500 transition-colors"
@@ -424,40 +424,40 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                             </button>
                           </div>
                           
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-xs font-medium">
-                              <Star className="h-3 w-3 fill-amber-500" />
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            <span className="inline-flex items-center gap-1.5 bg-[#fff8e1] text-[#f9a825] px-3 py-1 rounded-full text-xs font-medium">
+                              <Star className="h-3 w-3 fill-[#ffc107]" />
                               {specialist.rating}
                             </span>
-                            <span className="text-xs text-slate-500">{specialist.reviews} відгуків</span>
-                            <span className="text-xs text-slate-500">{specialist.experience} р. досвіду</span>
-                            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-medium">
+                            <span className="text-sm text-slate-500">{specialist.reviews} відгуків</span>
+                            <span className="text-sm text-slate-500">{specialist.experience} р. досвіду</span>
+                            <span className="bg-[#e8f5e9] text-[#2e7d32] px-3 py-1 rounded-full text-xs font-medium">
                               {specialist.languages} мов
                             </span>
                             {specialist.available && (
-                              <span className="bg-emerald-500 text-white px-2 py-0.5 rounded-full text-xs font-medium">
+                              <span className="bg-[#43a047] text-white px-3 py-1 rounded-full text-xs font-medium">
                                 Онлайн
                               </span>
                             )}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-slate-900">від {specialist.priceMin} ₴</div>
+                          <div className="text-2xl font-bold text-slate-800">від {specialist.priceMin} ₴</div>
                           <div className="text-xs text-slate-500">за годину</div>
                         </div>
                       </div>
 
-                      <p className="text-sm text-slate-600 mb-4 line-clamp-2">
+                      <p className="text-sm text-slate-500 mb-5 line-clamp-2 leading-relaxed">
                         {specialist.bio}
                       </p>
 
                       <div className="flex items-center gap-3">
                         <Link href={`/specialists/${specialist.id}`}>
-                          <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-300 hover:bg-slate-50">
+                          <Button variant="outline" className="h-11 rounded-full px-7 text-sm font-medium border-slate-200 hover:bg-slate-50 text-slate-700">
                             Детальніше
                           </Button>
                         </Link>
-                        <Button className="h-10 rounded-full px-6 text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700">
+                        <Button className="h-11 rounded-full px-7 text-sm font-medium bg-[#43a047] text-white hover:bg-[#388e3c] shadow-sm">
                           Безкоштовний урок
                         </Button>
                       </div>
@@ -467,8 +467,8 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
               ))}
 
               {/* Load More */}
-              <div className="text-center py-8">
-                <Button variant="outline" className="h-12 rounded-full px-8 border-slate-300 font-medium hover:bg-slate-50">
+              <div className="text-center py-10">
+                <Button variant="outline" className="h-13 rounded-full px-10 border-slate-200 font-medium hover:bg-slate-50 text-slate-700">
                   Показати більше
                   <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
@@ -479,7 +479,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-12 px-4 lg:px-8 rounded-t-[2rem]">
+      <footer className="bg-slate-800 text-white py-16 px-4 lg:px-8 rounded-t-[2.5rem]">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>

@@ -107,26 +107,26 @@ export default function HomePageClient() {
   ]
 
   return (
-    <div className="min-h-screen bg-emerald-50/30">
+    <div className="min-h-screen bg-[#fafaf8]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-100">
+      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-9 w-9 overflow-hidden rounded-xl">
+          <div className="flex h-18 items-center justify-between">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <span className="text-lg font-bold text-slate-900">LIBITUM</span>
+              <span className="text-lg font-bold text-slate-800">LIBITUM</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.specialists")}
               </Link>
-              <Link href="#how" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              <Link href="#how" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.how_it_works")}
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.reviews")}
               </Link>
               <LanguageSwitcher />
@@ -135,19 +135,19 @@ export default function HomePageClient() {
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
+                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-9 rounded-full px-5 text-sm font-medium border-slate-300">
+                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-9 rounded-full bg-emerald-600 px-5 text-sm font-medium text-white hover:bg-emerald-700">
+                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -162,33 +162,33 @@ export default function HomePageClient() {
         {/* Hero Section */}
         <section className="relative py-8 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="relative bg-white rounded-[2rem] p-8 lg:p-12 overflow-hidden">
-              {/* Decorative shapes */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-100 rounded-full translate-x-1/3 -translate-y-1/3" />
-              <div className="absolute bottom-0 left-1/4 w-48 h-48 bg-amber-100 rounded-full translate-y-1/2" />
-              <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-teal-100 rounded-full" />
+            <div className="relative bg-white rounded-[2.5rem] p-10 lg:p-16 overflow-hidden border border-slate-100/80">
+              {/* Decorative shapes - soft sage green tones */}
+              <div className="absolute top-0 right-0 w-72 h-72 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
+              <div className="absolute bottom-0 left-1/4 w-56 h-56 bg-[#f1f8e9] rounded-full translate-y-1/2" />
+              <div className="absolute top-1/2 right-1/4 w-40 h-40 bg-[#e0f2f1] rounded-full" />
               
-              <svg className="absolute right-20 top-20 w-64 h-64 text-emerald-100/80" viewBox="0 0 200 200">
+              <svg className="absolute right-16 top-16 w-80 h-80 text-[#c8e6c9]/60" viewBox="0 0 200 200">
                 <path fill="currentColor" d="M45.3,-51.2C58.3,-40.9,68.1,-25.5,71.2,-8.5C74.3,8.5,70.6,27.1,60.1,40.3C49.6,53.5,32.3,61.3,14.1,66.1C-4.1,70.9,-23.2,72.7,-39.7,66.1C-56.2,59.5,-70.1,44.5,-75.4,27C-80.7,9.5,-77.4,-10.5,-68.4,-26.3C-59.4,-42.1,-44.7,-53.7,-29.5,-63.2C-14.3,-72.7,1.4,-80.1,15.7,-77.3C30,-74.5,32.3,-61.5,45.3,-51.2Z" transform="translate(100 100)" />
               </svg>
 
               <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
                 <div>
-                  <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-                    <Star className="h-4 w-4 fill-emerald-500 text-emerald-500" />
+                  <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-5 py-2.5 rounded-full text-sm font-medium mb-8">
+                    <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
                     {t("hero.tagline")}
                   </div>
 
-                  <h1 className="text-4xl lg:text-6xl font-bold text-slate-900 mb-6 leading-[1.1] font-heading">
+                  <h1 className="text-4xl lg:text-6xl font-bold text-slate-800 mb-8 leading-[1.1] font-heading tracking-tight">
                     {t("hero.title")}
                   </h1>
 
-                  <p className="text-lg text-slate-600 mb-8 max-w-lg leading-relaxed">
+                  <p className="text-lg text-slate-500 mb-10 max-w-lg leading-relaxed">
                     {t("hero.subtitle")}
                   </p>
 
                   <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-emerald-600 pl-8 pr-6 text-base font-semibold text-white hover:bg-emerald-700 gap-3 mb-10">
+                    <Button className="h-14 rounded-full bg-[#43a047] pl-8 pr-6 text-base font-semibold text-white hover:bg-[#388e3c] gap-3 mb-12 shadow-sm">
                       {t("hero.cta")}
                       <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
                         <ArrowRight className="h-5 w-5" />
@@ -196,58 +196,59 @@ export default function HomePageClient() {
                     </Button>
                   </Link>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-5">
                     {features.map((feature, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <div className={`h-10 w-10 rounded-xl ${feature.color} flex items-center justify-center`}>
+                        <div className={`h-11 w-11 rounded-2xl ${feature.color} flex items-center justify-center`}>
                           {feature.icon}
                         </div>
-                        <span className="text-sm font-medium text-slate-700">{feature.title}</span>
+                        <span className="text-sm font-medium text-slate-600">{feature.title}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Floating Cards */}
-                <div className="relative h-[400px] hidden lg:block">
-                  <div className="absolute top-0 right-0 bg-white rounded-2xl shadow-lg p-4 w-56">
-                    <div className="relative h-32 bg-gradient-to-br from-emerald-200 to-teal-200 rounded-xl mb-3 overflow-hidden">
-                      <div className="absolute bottom-2 left-2 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                {/* Floating Cards - magazine style */}
+                <div className="relative h-[420px] hidden lg:block">
+                  <div className="absolute top-0 right-0 bg-white rounded-3xl p-5 w-60 border border-slate-100/80 shadow-sm">
+                    <div className="relative h-36 bg-[#c8e6c9] rounded-2xl mb-4 overflow-hidden">
+                      <div className="absolute bottom-3 left-3 bg-[#43a047] text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium">
                         <Play className="h-3 w-3 fill-white" />
+                        Відео
                       </div>
                     </div>
-                    <div className="font-semibold text-slate-900">Олена Коваленко</div>
-                    <div className="text-xs text-slate-500">Репетитор англійської</div>
+                    <div className="font-bold text-slate-800">Олена Коваленко</div>
+                    <div className="text-sm text-slate-500 mt-0.5">Репетитор англійської</div>
                   </div>
 
-                  <div className="absolute top-24 left-0 bg-white rounded-2xl shadow-lg p-4 w-52">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="relative h-14 w-14 bg-gradient-to-br from-amber-200 to-orange-200 rounded-xl overflow-hidden flex items-center justify-center">
-                        <Play className="h-4 w-4 text-amber-700" />
+                  <div className="absolute top-28 left-0 bg-white rounded-3xl p-5 w-56 border border-slate-100/80 shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="relative h-16 w-16 bg-[#fff8e1] rounded-2xl overflow-hidden flex items-center justify-center">
+                        <Play className="h-5 w-5 text-[#f9a825]" />
                       </div>
                       <div>
-                        <div className="font-semibold text-slate-900 text-sm">Марія Шевченко</div>
-                        <div className="text-xs text-slate-500">Психолог</div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                          <span className="text-xs text-slate-600">4.9</span>
+                        <div className="font-bold text-slate-800">Марія Шевченко</div>
+                        <div className="text-sm text-slate-500">Психолог</div>
+                        <div className="flex items-center gap-1 mt-1.5">
+                          <Star className="h-3.5 w-3.5 fill-[#ffc107] text-[#ffc107]" />
+                          <span className="text-sm text-slate-600 font-medium">4.9</span>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="absolute bottom-0 right-8 bg-white rounded-2xl shadow-lg p-4 w-48">
-                    <div className="relative h-24 bg-gradient-to-br from-violet-200 to-purple-200 rounded-xl mb-3 overflow-hidden flex items-center justify-center">
-                      <Play className="h-5 w-5 text-violet-700" />
+                  <div className="absolute bottom-4 right-12 bg-white rounded-3xl p-5 w-52 border border-slate-100/80 shadow-sm">
+                    <div className="relative h-28 bg-[#e8eaf6] rounded-2xl mb-4 overflow-hidden flex items-center justify-center">
+                      <Play className="h-6 w-6 text-[#5c6bc0]" />
                     </div>
-                    <div className="font-semibold text-slate-900 text-sm">Андрій Петренко</div>
-                    <div className="text-xs text-slate-500">Логопед</div>
+                    <div className="font-bold text-slate-800">Андрій Петренко</div>
+                    <div className="text-sm text-slate-500 mt-0.5">Логопед</div>
                   </div>
 
                   {/* Stats badge */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 bg-white rounded-2xl shadow-lg px-5 py-3">
-                    <div className="text-2xl font-bold text-emerald-600">500+</div>
-                    <div className="text-xs text-slate-500">спеціалістів</div>
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 bg-white rounded-2xl px-6 py-4 border border-slate-100/80 shadow-sm">
+                    <div className="text-3xl font-bold text-[#43a047]">500+</div>
+                    <div className="text-sm text-slate-500">спеціалістів</div>
                   </div>
                 </div>
               </div>
@@ -256,25 +257,25 @@ export default function HomePageClient() {
         </section>
 
         {/* Categories Section */}
-        <section className="py-16 px-4 lg:px-8">
+        <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <p className="text-sm font-semibold text-emerald-600 mb-3 uppercase tracking-wide">{t("about.label")}</p>
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 font-heading mb-4">
+            <div className="text-center mb-16">
+              <p className="text-sm font-medium text-[#66bb6a] mb-4 uppercase tracking-wider">{t("about.label")}</p>
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Категорії спеціалістів
               </h2>
-              <p className="text-slate-600 max-w-2xl mx-auto">{t("specialists.subtitle")}</p>
+              <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("specialists.subtitle")}</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-8">
               {categories.map((cat, i) => (
-                <div key={i} className="bg-white rounded-2xl p-6 hover:shadow-lg transition-shadow">
-                  <div className={`h-12 w-12 ${cat.color} rounded-xl flex items-center justify-center text-white mb-4`}>
+                <div key={i} className="bg-white rounded-3xl p-8 border border-slate-100/80 hover:shadow-md transition-shadow">
+                  <div className={`h-14 w-14 ${cat.color} rounded-2xl flex items-center justify-center text-white mb-5`}>
                     {cat.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-2">{cat.title}</h3>
-                  <p className="text-slate-600 text-sm mb-4">{cat.desc}</p>
-                  <div className="text-xs font-semibold text-emerald-600">{cat.stat}</div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
+                  <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
+                  <div className="text-sm font-semibold text-[#43a047]">{cat.stat}</div>
                 </div>
               ))}
             </div>
@@ -282,31 +283,31 @@ export default function HomePageClient() {
         </section>
 
         {/* How it works */}
-        <section id="how" className="py-16 px-4 lg:px-8">
+        <section id="how" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-white rounded-[2rem] p-8 lg:p-12">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 font-heading mb-4">
+            <div className="bg-white rounded-[2.5rem] p-10 lg:p-16 border border-slate-100/80">
+              <div className="text-center mb-16">
+                <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                   {t("nav.how_it_works")}
                 </h2>
-                <p className="text-slate-600 max-w-2xl mx-auto">{t("how.subtitle")}</p>
+                <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("how.subtitle")}</p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-3 gap-12">
                 {steps.map((step, i) => (
                   <div key={i} className="text-center">
-                    <div className="h-16 w-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                      <span className="text-2xl font-bold text-emerald-600">{step.num}</span>
+                    <div className="h-20 w-20 rounded-full bg-[#e8f5e9] flex items-center justify-center mx-auto mb-6">
+                      <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 mb-2">{step.title}</h3>
-                    <p className="text-slate-600 text-sm">{step.desc}</p>
+                    <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
+                    <p className="text-slate-500 leading-relaxed">{step.desc}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="text-center mt-10">
+              <div className="text-center mt-14">
                 <Link href={specialistHref}>
-                  <Button className="h-12 rounded-full bg-emerald-600 px-8 text-base font-semibold text-white hover:bg-emerald-700">
+                  <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c] shadow-sm">
                     {t("hero.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -317,66 +318,66 @@ export default function HomePageClient() {
         </section>
 
         {/* Pricing */}
-        <section id="plans" className="py-16 px-4 lg:px-8">
+        <section id="plans" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 font-heading mb-4">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Обери свій план
               </h2>
-              <p className="text-slate-600">{t("pricing.subtitle")}</p>
+              <p className="text-slate-500 text-lg">{t("pricing.subtitle")}</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {pricing.map((plan, i) => (
                 <div 
                   key={i} 
-                  className={`relative rounded-3xl p-6 ${
+                  className={`relative rounded-3xl p-8 ${
                     plan.highlight 
-                      ? "bg-emerald-600 text-white" 
-                      : "bg-white border border-slate-200"
+                      ? "bg-[#43a047] text-white" 
+                      : "bg-white border border-slate-100/80"
                   }`}
                 >
                   {plan.badge && (
-                    <div className="absolute -top-3 left-6 bg-lime-400 text-emerald-900 text-xs font-bold px-3 py-1 rounded-full">
+                    <div className="absolute -top-3 left-6 bg-[#c5e1a5] text-[#33691e] text-xs font-bold px-4 py-1.5 rounded-full">
                       {plan.badge}
                     </div>
                   )}
 
-                  <div className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold mb-4 ${
-                    plan.highlight ? "bg-white/20 text-white" : "bg-emerald-50 text-emerald-700"
+                  <div className={`inline-block px-5 py-2 rounded-full text-xs font-bold mb-5 ${
+                    plan.highlight ? "bg-white/20 text-white" : "bg-[#e8f5e9] text-[#2e7d32]"
                   }`}>
                     {plan.lessons}
                   </div>
 
-                  <h3 className={`text-lg font-bold mb-2 ${plan.highlight ? "text-white" : "text-emerald-700"}`}>
+                  <h3 className={`text-lg font-bold mb-3 ${plan.highlight ? "text-white" : "text-[#2e7d32]"}`}>
                     {plan.name}
                   </h3>
 
-                  <div className="flex items-baseline gap-2 mb-6">
+                  <div className="flex items-baseline gap-2 mb-8">
                     {plan.oldPrice && (
                       <span className={`text-sm line-through ${plan.highlight ? "text-white/60" : "text-slate-400"}`}>
                         {plan.oldPrice}
                       </span>
                     )}
-                    <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-slate-900"}`}>
+                    <span className={`text-3xl font-bold ${plan.highlight ? "text-white" : "text-slate-800"}`}>
                       {plan.price}
                     </span>
                   </div>
 
-                  <Button className={`w-full h-11 rounded-full font-semibold mb-6 ${
+                  <Button className={`w-full h-12 rounded-full font-semibold mb-8 ${
                     plan.highlight 
-                      ? "bg-white text-emerald-700 hover:bg-white/90" 
-                      : "bg-emerald-600 text-white hover:bg-emerald-700"
+                      ? "bg-white text-[#2e7d32] hover:bg-white/90" 
+                      : "bg-[#43a047] text-white hover:bg-[#388e3c]"
                   }`}>
                     Обрати
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
 
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {plan.features.map((feature, j) => (
                       <div key={j} className="flex items-start gap-3">
                         <Check className={`h-4 w-4 mt-0.5 flex-shrink-0 ${
-                          plan.highlight ? "text-lime-300" : "text-emerald-600"
+                          plan.highlight ? "text-[#c5e1a5]" : "text-[#43a047]"
                         }`} />
                         <span className={`text-sm ${plan.highlight ? "text-white/90" : "text-slate-600"}`}>
                           {feature}
