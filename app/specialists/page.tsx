@@ -254,13 +254,10 @@ export default function SpecialistsPage() {
               const accent = getAccentColor(specialist.specialization)
               const isFav = favorites.includes(specialist.id)
               const isExpanded = expandedBio === specialist.id
-              const isHovered = hoveredSpecialist === specialist.id
               return (
                 <div
                   key={specialist.id}
-                  className={`relative bg-white rounded-2xl border-4 transition-colors cursor-pointer ${
-                    isHovered ? "border-black" : "border-slate-200"
-                  }`}
+                  className="relative bg-white rounded-2xl border-4 border-slate-200 hover:border-black transition-colors cursor-pointer"
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                 >
                   <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
