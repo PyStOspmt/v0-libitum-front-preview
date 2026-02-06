@@ -164,7 +164,7 @@ export default function HomePageClient() {
           <div className="container mx-auto">
             <div className="grid lg:grid-cols-12 gap-5">
               {/* Main Hero Card - warm paper feel */}
-              <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px]">
+              <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-2 border-transparent hover:border-black transition-all">
                 {/* Decorative soft circles */}
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
                 <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fff8e1] rounded-full -translate-x-1/4 translate-y-1/4" />
@@ -252,7 +252,7 @@ export default function HomePageClient() {
                   </div>
 
                   {/* Feature card */}
-                  <div className="bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black transition-all">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <Shield className="h-6 w-6 text-[#43a047]" />
                     </div>
@@ -268,7 +268,7 @@ export default function HomePageClient() {
             {/* Features row below */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
               {features.map((feature, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:bg-white transition-colors">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-5 border-2 border-transparent flex items-center gap-4 hover:border-black transition-all">
                   <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
@@ -292,7 +292,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {categories.map((cat, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-3xl p-8 border border-slate-100 hover:bg-white transition-colors">
+                <div key={i} className="bg-[#fafaf8] rounded-3xl p-8 border-2 border-transparent hover:border-black transition-all">
                   <div className={`h-14 w-14 ${cat.color === "bg-emerald-500" ? "bg-[#e8f5e9]" : cat.color === "bg-violet-500" ? "bg-[#ede7f6]" : "bg-[#fff8e1]"} rounded-2xl flex items-center justify-center mb-6`}>
                     <div className={`${cat.color === "bg-emerald-500" ? "text-[#43a047]" : cat.color === "bg-violet-500" ? "text-[#7e57c2]" : "text-[#f9a825]"}`}>
                       {cat.icon}
@@ -321,7 +321,7 @@ export default function HomePageClient() {
               <div className="grid md:grid-cols-3 gap-10">
                 {steps.map((step, i) => (
                   <div key={i} className="text-center">
-                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border border-slate-100">
+                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border-2 border-transparent hover:border-black transition-all">
                       <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
                     </div>
                     <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
@@ -356,10 +356,10 @@ export default function HomePageClient() {
               {pricing.map((plan, i) => (
                 <div 
                   key={i} 
-                  className={`relative rounded-3xl p-8 ${
+                  className={`relative rounded-3xl p-8 border-2 transition-all hover:border-black ${
                     plan.highlight 
-                      ? "bg-[#e8f5e9] border-2 border-[#43a047]" 
-                      : "bg-[#fafaf8] border border-slate-100"
+                      ? "bg-[#e8f5e9] border-[#43a047]" 
+                      : "bg-[#fafaf8] border-transparent"
                   }`}
                 >
                   {plan.badge && (
@@ -426,7 +426,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map((review, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border border-slate-100">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border-2 border-transparent hover:border-black transition-all">
                   <div className="flex gap-1 mb-5">
                     {[...Array(review.rating)].map((_, j) => (
                       <Star key={j} className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
@@ -452,7 +452,7 @@ export default function HomePageClient() {
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl overflow-hidden border border-slate-100">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl overflow-hidden border-2 border-transparent hover:border-black transition-all">
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors"
@@ -474,7 +474,7 @@ export default function HomePageClient() {
         {/* CTA */}
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border border-[#c8e6c9]">
+            <div className="bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-2 border-transparent hover:border-black transition-all">
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
                 {t("cta.title")}
               </h2>
