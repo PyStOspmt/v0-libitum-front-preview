@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { BookOpen, Search, Star, Video, Home, Award, Users, Heart, ArrowLeft, MessageCircle, ChevronDown, TrendingUp } from "lucide-react"
+import { BookOpen, Search, Star, Video, Home, Award, Users, Heart, ArrowLeft, MessageCircle, ChevronDown, TrendingUp, Play, Calendar, User } from "lucide-react"
 
 export default function SpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -17,6 +17,7 @@ export default function SpecialistsPage() {
   const [sortBy, setSortBy] = useState("top")
   const [favorites, setFavorites] = useState<number[]>([])
   const [expandedBio, setExpandedBio] = useState<number | null>(null)
+  const [hoveredSpecialist, setHoveredSpecialist] = useState<number | null>(null)
 
   const specialists = [
     {
@@ -41,6 +42,7 @@ export default function SpecialistsPage() {
       bio: "Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку та рівня підготовки. Готую до іспитів ЗНО/НМТ, допомагаю прокачати розмовну мову та адаптую програму під індивідуальні цілі кожного учня.",
       popular: true,
       bookedRecently: 12,
+      videoTags: ["Англійська", "Розмовна", "ЗНО", "Репетитор", "IELTS", "B2+"],
     },
     {
       id: 3,
@@ -64,6 +66,7 @@ export default function SpecialistsPage() {
       bio: "Клінічний психолог з 10-річним досвідом. Спеціалізуюсь на роботі з тривожністю, депресією та вигоранням. Використовую когнітивно-поведінкову терапію та mindfulness-підходи для досягнення стійких результатів.",
       popular: false,
       bookedRecently: 9,
+      videoTags: ["Психолог", "КПТ", "Терапія", "Тривожність", "Mindfulness"],
     },
     {
       id: 4,
@@ -87,6 +90,7 @@ export default function SpecialistsPage() {
       bio: "Логопед-дефектолог з 8-річним стажем. Працюю з дітьми від 3 років та дорослими. Спеціалізуюсь на постановці звуків, корекції заїкання та розвитку мовлення.",
       popular: true,
       bookedRecently: 7,
+      videoTags: ["Логопед", "Звуки", "Діти", "Мовлення", "Корекція"],
     },
   ]
 
@@ -96,9 +100,17 @@ export default function SpecialistsPage() {
     return { bg: "bg-[#fff8e1]", text: "text-[#f9a825]" }
   }
 
+  const getVideoColor = (type: string) => {
+    if (type === "Репетитор") return "bg-[#c8e6c9]"
+    if (type === "Психолог") return "bg-[#c5cae9]"
+    return "bg-[#fff9c4]"
+  }
+
   const toggleFavorite = (id: number) => {
     setFavorites(prev => prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id])
   }
+
+  const hoveredData = specialists.find(s => s.id === hoveredSpecialist) || specialists[0]
 
   return (
     <div className="min-h-screen bg-white">
@@ -226,149 +238,217 @@ export default function SpecialistsPage() {
         </div>
       </div>
 
-      {/* Results */}
-      <div className="container mx-auto px-4 lg:px-8 py-6">
-        <div className="mb-5 text-sm text-slate-500">
-          Знайдено <span className="font-semibold text-slate-700">{specialists.length}</span> спеціалістів
-        </div>
+      {/* Title */}
+      <div className="container mx-auto px-4 lg:px-8 pt-6 pb-2">
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
+          <span className="italic">{specialists.length}</span> спеціалістів для вашого розвитку
+        </h1>
+      </div>
 
-        <div className="flex flex-col gap-4">
-          {specialists.map((specialist) => {
-            const accent = getAccentColor(specialist.specialization)
-            const isFav = favorites.includes(specialist.id)
-            const isExpanded = expandedBio === specialist.id
-            return (
-              <div
-                key={specialist.id}
-                className="bg-white rounded-2xl border-2 border-slate-200 hover:border-black transition-colors cursor-pointer"
-              >
-                <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
-                  {/* Photo */}
-                  <div className="relative w-full md:w-44 lg:w-48 flex-shrink-0">
-                    <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-xl bg-slate-100">
-                      {specialist.image ? (
-                        <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
-                      ) : (
-                        <Avatar className="h-full w-full rounded-xl">
-                          <AvatarFallback className="bg-slate-50 text-2xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                        </Avatar>
-                      )}
-                      {specialist.online && (
-                        <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-2 border-white" />
-                      )}
+      {/* Two-column layout: Cards + Video Sidebar */}
+      <div className="container mx-auto px-4 lg:px-8 py-4">
+        <div className="flex gap-6">
+          {/* Left column - Specialist cards */}
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+            {specialists.map((specialist) => {
+              const accent = getAccentColor(specialist.specialization)
+              const isFav = favorites.includes(specialist.id)
+              const isExpanded = expandedBio === specialist.id
+              const isHovered = hoveredSpecialist === specialist.id
+              return (
+                <div
+                  key={specialist.id}
+                  className={`relative bg-white rounded-2xl border-2 transition-colors cursor-pointer ${
+                    isHovered ? "border-black" : "border-slate-200"
+                  }`}
+                  onMouseEnter={() => setHoveredSpecialist(specialist.id)}
+                >
+                  <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
+                    {/* Photo */}
+                    <div className="relative w-full md:w-40 lg:w-44 flex-shrink-0">
+                      <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-xl bg-slate-100">
+                        {specialist.image ? (
+                          <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
+                        ) : (
+                          <Avatar className="h-full w-full rounded-xl">
+                            <AvatarFallback className="bg-slate-50 text-2xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                          </Avatar>
+                        )}
+                        {specialist.online && (
+                          <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-2 border-white" />
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
-                          {specialist.verified && (
-                            <Award className="h-5 w-5 text-[#43a047]" />
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {specialist.superTutor && (
-                            <span className="text-xs font-bold text-white bg-[#43a047] px-2.5 py-1 rounded">
-                              Супер-спеціаліст
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-4 mb-2">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
+                            {specialist.verified && (
+                              <Award className="h-5 w-5 text-[#43a047]" />
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {specialist.superTutor && (
+                              <span className="text-xs font-bold text-white bg-[#43a047] px-2.5 py-1 rounded">
+                                Супер-спеціаліст
+                              </span>
+                            )}
+                            <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2.5 py-1 rounded`}>
+                              {specialist.specialization}
                             </span>
-                          )}
-                          <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2.5 py-1 rounded`}>
-                            {specialist.specialization}
-                          </span>
+                          </div>
                         </div>
                       </div>
+
+                      {/* Subjects & Languages */}
+                      <div className="flex flex-col gap-1 mb-3 text-sm text-slate-600">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
+                          <span>{specialist.subjects.join(", ")}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400">{"🗣"}</span>
+                          <span>{specialist.languages.join(", ")}</span>
+                        </div>
+                      </div>
+
+                      {/* Stats row */}
+                      <div className="flex items-center gap-5 mb-3">
+                        <div className="flex items-center gap-1">
+                          <span className="text-base font-bold text-slate-900">{specialist.rating}</span>
+                          <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.reviews}</span>
+                          <span className="text-xs text-slate-400 ml-1">відгуків</span>
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.activeStudents}</span>
+                          <span className="text-xs text-slate-400 ml-1">учнів</span>
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.lessonsCompleted}</span>
+                          <span className="text-xs text-slate-400 ml-1">занять</span>
+                        </div>
+                      </div>
+
+                      {/* Bio */}
+                      <p className={`text-sm text-slate-600 leading-relaxed mb-1.5 ${isExpanded ? "" : "line-clamp-2"}`}>
+                        {specialist.bio}
+                      </p>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setExpandedBio(isExpanded ? null : specialist.id) }}
+                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#43a047] transition-colors cursor-pointer mb-2"
+                      >
+                        {isExpanded ? "Згорнути" : "Дізнатись більше"}
+                      </button>
+
+                      {/* Popular badge */}
+                      {specialist.popular && specialist.bookedRecently > 0 && (
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
+                          <TrendingUp className="h-3.5 w-3.5 text-[#43a047]" />
+                          <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Languages */}
-                    <div className="flex flex-col gap-1 mb-3 text-sm text-slate-600">
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-400">Предмети:</span>
-                        {specialist.subjects.map(s => (
-                          <span key={s} className="font-medium">{s}</span>
-                        ))}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-400">Мови:</span>
-                        <span>{specialist.languages.join(", ")}</span>
-                      </div>
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="flex items-center gap-6 mb-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-lg font-bold text-slate-900">{specialist.rating}</span>
-                        <Star className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-bold text-slate-900">{specialist.reviews}</div>
-                        <div className="text-xs text-slate-400">{"відгуків"}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-bold text-slate-900">{specialist.activeStudents}</div>
-                        <div className="text-xs text-slate-400">{"учнів"}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-bold text-slate-900">{specialist.lessonsCompleted}</div>
-                        <div className="text-xs text-slate-400">{"занять"}</div>
-                      </div>
-                    </div>
-
-                    {/* Bio */}
-                    <p className={`text-sm text-slate-600 leading-relaxed mb-2 ${isExpanded ? "" : "line-clamp-2"}`}>
-                      {specialist.bio}
-                    </p>
-                    <button
-                      onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
-                      className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#43a047] transition-colors cursor-pointer mb-3"
-                    >
-                      {isExpanded ? "Згорнути" : "Дізнатись більше"}
-                    </button>
-
-                    {/* Popular badge */}
-                    {specialist.popular && specialist.bookedRecently > 0 && (
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                        <TrendingUp className="h-3.5 w-3.5 text-[#43a047]" />
-                        <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Price & Actions */}
-                  <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-3 md:w-52 flex-shrink-0 border-t md:border-t-0 pt-4 md:pt-0">
-                    <div className="flex items-center gap-2 md:flex-col md:items-end">
-                      <div className="flex items-baseline gap-1">
+                    {/* Price & Actions */}
+                    <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:w-48 flex-shrink-0 border-t md:border-t-0 pt-4 md:pt-0">
+                      <div className="flex items-center gap-2 md:flex-col md:items-end">
                         <span className="text-2xl font-bold text-slate-900">{"₴"}{specialist.priceOnline}</span>
+                        <span className="text-xs text-slate-400">50-хв заняття</span>
                       </div>
-                      <span className="text-sm text-slate-400">50-хв заняття</span>
-                    </div>
 
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleFavorite(specialist.id) }}
-                      className="absolute top-5 right-5 md:static p-0 cursor-pointer"
-                      aria-label="Додати в обране"
-                    >
-                      <Heart className={`h-6 w-6 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
-                    </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(specialist.id) }}
+                        className="md:absolute md:top-5 md:right-5 p-0 cursor-pointer"
+                        aria-label="Додати в обране"
+                      >
+                        <Heart className={`h-6 w-6 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
+                      </button>
 
-                    <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full">
-                      <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                        <Button className="w-full h-11 rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer text-sm">
-                          Записатись на заняття
+                      <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
+                        <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
+                          <Button className="w-full h-11 rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer text-sm">
+                            Записатись
+                          </Button>
+                        </Link>
+                        <Button variant="outline" className="flex-1 md:w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                          <MessageCircle className="h-4 w-4 mr-1.5" />
+                          Написати
                         </Button>
-                      </Link>
-                      <Button variant="outline" className="flex-1 md:w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Написати
-                      </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
+
+          {/* Right column - Video Sidebar (sticky, desktop only) */}
+          <div className="hidden lg:block w-80 xl:w-96 flex-shrink-0">
+            <div className="sticky top-44">
+              {hoveredData && (
+                <div className="flex flex-col gap-3 animate-scale-in" key={hoveredData.id}>
+                  {/* Video preview card */}
+                  <div className={`relative rounded-2xl overflow-hidden ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
+                    {/* Floating tags */}
+                    <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
+                      {hoveredData.videoTags?.map((tag, i) => (
+                        <span
+                          key={tag}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+                            i % 3 === 0
+                              ? "bg-white/90 text-slate-800"
+                              : i % 3 === 1
+                              ? "bg-[#43a047] text-white"
+                              : "bg-slate-800 text-white"
+                          }`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Small tutor photo */}
+                    <div className="absolute bottom-4 right-4 w-20 h-20 rounded-xl overflow-hidden border-2 border-white">
+                      <Image
+                        src={hoveredData.image}
+                        alt={hoveredData.name}
+                        fill
+                        className="object-cover object-top"
+                        crossOrigin="anonymous"
+                      />
+                    </div>
+
+                    {/* Play button */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                      <div className="w-14 h-14 rounded-full bg-[#43a047] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                        <Play className="h-6 w-6 text-white fill-white ml-0.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Action buttons */}
+                  <Link href={`/specialists/${hoveredData.id}`} className="w-full">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Переглянути розклад
+                    </Button>
+                  </Link>
+                  <Link href={`/specialists/${hoveredData.id}`} className="w-full">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                      <User className="h-4 w-4 mr-2" />
+                      {"Профіль " + hoveredData.name.split(" ")[0]}
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
