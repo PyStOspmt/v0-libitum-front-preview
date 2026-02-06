@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
   ArrowRight,
   Check,
@@ -20,6 +20,23 @@ import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
+/* ── Scroll-triggered animation hook ── */
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [threshold])
+  return { ref, visible }
+}
+
 export default function HomePageClient() {
   const { user } = useAuth()
   const { t } = useTranslation(user?.language || "UA")
@@ -27,11 +44,20 @@ export default function HomePageClient() {
 
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
+  /* section observers */
+  const hero = useInView(0.1)
+  const cats = useInView()
+  const how  = useInView()
+  const price = useInView()
+  const revs = useInView()
+  const faqSec = useInView()
+  const ctaSec = useInView()
+
   const features = [
-    { icon: <Shield className="h-5 w-5 text-emerald-600" />, title: t("features.verified.title"), color: "bg-emerald-50" },
-    { icon: <Star className="h-5 w-5 text-amber-500" />, title: t("features.ratings.title"), color: "bg-amber-50" },
-    { icon: <TrendingUp className="h-5 w-5 text-teal-600" />, title: t("features.progress.title"), color: "bg-teal-50" },
-    { icon: <Users className="h-5 w-5 text-blue-600" />, title: "Групові заняття", color: "bg-blue-50" },
+    { icon: <Shield className="h-5 w-5 text-[#43a047]" />, title: t("features.verified.title"), color: "bg-[#e8f5e9]" },
+    { icon: <Star className="h-5 w-5 text-[#f9a825]" />, title: t("features.ratings.title"), color: "bg-[#fff8e1]" },
+    { icon: <TrendingUp className="h-5 w-5 text-[#43a047]" />, title: t("features.progress.title"), color: "bg-[#e8f5e9]" },
+    { icon: <Users className="h-5 w-5 text-[#5c6bc0]" />, title: "Групові заняття", color: "bg-[#e8eaf6]" },
   ]
 
   const categories = [
@@ -39,21 +65,24 @@ export default function HomePageClient() {
       title: t("categories.tutor.title"),
       desc: t("categories.tutor.desc"),
       stat: t("categories.tutor.stat"),
-      color: "bg-emerald-500",
+      iconBg: "bg-[#e8f5e9]",
+      iconColor: "text-[#43a047]",
       icon: <BookOpen className="h-6 w-6" />,
     },
     {
       title: t("categories.psychologist.title"),
       desc: t("categories.psychologist.desc"),
       stat: t("categories.psychologist.stat"),
-      color: "bg-violet-500",
+      iconBg: "bg-[#e8eaf6]",
+      iconColor: "text-[#5c6bc0]",
       icon: <Users className="h-6 w-6" />,
     },
     {
       title: t("categories.speech.title"),
       desc: t("categories.speech.desc"),
       stat: t("categories.speech.stat"),
-      color: "bg-amber-500",
+      iconBg: "bg-[#fff8e1]",
+      iconColor: "text-[#f9a825]",
       icon: <Star className="h-6 w-6" />,
     },
   ]
@@ -135,19 +164,19 @@ export default function HomePageClient() {
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
+                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
+                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
+                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -159,17 +188,16 @@ export default function HomePageClient() {
       </header>
 
       <main>
-        {/* Hero Section - Paper Bento Grid */}
-        <section className="relative py-8 px-4 lg:px-8">
+        {/* ═══ HERO ═══ */}
+        <section ref={hero.ref} className="relative py-8 px-4 lg:px-8">
           <div className="container mx-auto">
             <div className="grid lg:grid-cols-12 gap-5">
-              {/* Main Hero Card - warm paper feel */}
-              <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-2 border-transparent hover:border-black transition-all">
-                {/* Decorative soft circles */}
+              {/* Main Hero Card */}
+              <div className={`lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
                 <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fff8e1] rounded-full -translate-x-1/4 translate-y-1/4" />
                 <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#e0f2f1] rounded-full" />
-                
+
                 <div className="relative z-10">
                   <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-4 py-2 rounded-full text-sm font-medium mb-8">
                     <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
@@ -185,7 +213,7 @@ export default function HomePageClient() {
                   </p>
 
                   <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-[#43a047] text-white pl-8 pr-6 text-base font-semibold hover:bg-[#388e3c] gap-3">
+                    <Button className="h-14 rounded-full bg-[#43a047] text-white pl-8 pr-6 text-base font-semibold hover:bg-[#388e3c] gap-3 cursor-pointer">
                       {t("hero.cta")}
                       <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
                         <ArrowRight className="h-5 w-5" />
@@ -193,7 +221,6 @@ export default function HomePageClient() {
                     </Button>
                   </Link>
 
-                  {/* Avatars row */}
                   <div className="flex items-center mt-10">
                     <div className="flex -space-x-3">
                       <div className="w-11 h-11 rounded-full bg-[#c8e6c9] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#2e7d32]">ОК</div>
@@ -211,8 +238,7 @@ export default function HomePageClient() {
 
               {/* Right column - Bento cards */}
               <div className="lg:col-span-5 grid grid-rows-2 gap-5">
-                {/* Top tutor card */}
-                <div className="bg-[#fafaf8] rounded-[2rem] p-6 border-2 border-slate-100 flex items-center gap-5 group hover:border-black transition-all cursor-pointer">
+                <div className={`bg-[#fafaf8] rounded-[2rem] p-6 border-2 border-slate-100 flex items-center gap-5 group hover:border-black card-hover cursor-pointer ${hero.visible ? "animate-slide-in-right delay-200" : "opacity-0"}`}>
                   <div className="relative w-28 h-28 bg-[#e8f5e9] rounded-2xl overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-[#43a047] flex items-center justify-center">
@@ -238,10 +264,8 @@ export default function HomePageClient() {
                   <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#43a047] group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
 
-                {/* Bottom row - 2 small cards */}
                 <div className="grid grid-cols-2 gap-5">
-                  {/* Stats card */}
-                  <div className="bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black transition-all">
+                  <div className={`bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-300" : "opacity-0"}`}>
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <TrendingUp className="h-6 w-6 text-[#f9a825]" />
                     </div>
@@ -251,8 +275,7 @@ export default function HomePageClient() {
                     </div>
                   </div>
 
-                  {/* Feature card */}
-                  <div className="bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black transition-all">
+                  <div className={`bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-400" : "opacity-0"}`}>
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <Shield className="h-6 w-6 text-[#43a047]" />
                     </div>
@@ -265,10 +288,10 @@ export default function HomePageClient() {
               </div>
             </div>
 
-            {/* Features row below */}
+            {/* Features row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
               {features.map((feature, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl p-5 border-2 border-transparent flex items-center gap-4 hover:border-black transition-all">
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-5 border-2 border-transparent flex items-center gap-4 hover:border-black card-hover ${hero.visible ? `animate-slide-up delay-${(i + 4) * 100}` : "opacity-0"}`} style={{ animationDelay: `${(i + 4) * 100}ms` }}>
                   <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
@@ -279,10 +302,10 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* Categories Section */}
-        <section className="py-20 px-4 lg:px-8">
+        {/* ═══ CATEGORIES ═══ */}
+        <section ref={cats.ref} className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="text-center mb-14">
+            <div className={`text-center mb-14 ${cats.visible ? "animate-slide-up" : "opacity-0"}`}>
               <p className="text-sm font-medium text-[#43a047] mb-4 uppercase tracking-wider">{t("about.label")}</p>
               <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Категорії спеціалістів
@@ -292,11 +315,9 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {categories.map((cat, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-3xl p-8 border-2 border-transparent hover:border-black transition-all">
-                  <div className={`h-14 w-14 ${cat.color === "bg-emerald-500" ? "bg-[#e8f5e9]" : cat.color === "bg-violet-500" ? "bg-[#ede7f6]" : "bg-[#fff8e1]"} rounded-2xl flex items-center justify-center mb-6`}>
-                    <div className={`${cat.color === "bg-emerald-500" ? "text-[#43a047]" : cat.color === "bg-violet-500" ? "text-[#7e57c2]" : "text-[#f9a825]"}`}>
-                      {cat.icon}
-                    </div>
+                <div key={i} className={`bg-[#fafaf8] rounded-3xl p-8 border-2 border-transparent hover:border-black card-hover ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                  <div className={`h-14 w-14 ${cat.iconBg} rounded-2xl flex items-center justify-center mb-6`}>
+                    <div className={cat.iconColor}>{cat.icon}</div>
                   </div>
                   <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
                   <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
@@ -307,10 +328,10 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* How it works */}
-        <section id="how" className="py-20 px-4 lg:px-8">
+        {/* ═══ HOW IT WORKS ═══ */}
+        <section ref={how.ref} id="how" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#f5f5f0] rounded-[2.5rem] p-10 lg:p-16">
+            <div className={`bg-[#f5f5f0] rounded-[2.5rem] p-10 lg:p-16 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
               <div className="text-center mb-14">
                 <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                   {t("nav.how_it_works")}
@@ -320,7 +341,7 @@ export default function HomePageClient() {
 
               <div className="grid md:grid-cols-3 gap-10">
                 {steps.map((step, i) => (
-                  <div key={i} className="text-center">
+                  <div key={i} className={`text-center ${how.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 200}ms` }}>
                     <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border-2 border-transparent hover:border-black transition-all">
                       <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
                     </div>
@@ -332,7 +353,7 @@ export default function HomePageClient() {
 
               <div className="text-center mt-12">
                 <Link href={specialistHref}>
-                  <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c]">
+                  <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer">
                     {t("hero.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -342,10 +363,10 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* Pricing */}
-        <section id="plans" className="py-20 px-4 lg:px-8">
+        {/* ═══ PRICING ═══ */}
+        <section ref={price.ref} id="plans" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="text-center mb-16">
+            <div className={`text-center mb-16 ${price.visible ? "animate-slide-up" : "opacity-0"}`}>
               <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Обери свій план
               </h2>
@@ -354,13 +375,14 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {pricing.map((plan, i) => (
-                <div 
-                  key={i} 
-                  className={`relative rounded-3xl p-8 border-2 transition-all hover:border-black ${
-                    plan.highlight 
-                      ? "bg-[#e8f5e9] border-[#43a047]" 
+                <div
+                  key={i}
+                  className={`relative rounded-3xl p-8 border-2 hover:border-black card-hover ${
+                    plan.highlight
+                      ? "bg-[#e8f5e9] border-[#43a047]"
                       : "bg-[#fafaf8] border-transparent"
-                  }`}
+                  } ${price.visible ? "animate-slide-up" : "opacity-0"}`}
+                  style={{ animationDelay: `${(i + 1) * 150}ms` }}
                 >
                   {plan.badge && (
                     <div className="absolute -top-3 left-6 bg-[#43a047] text-white text-xs font-bold px-4 py-1.5 rounded-full">
@@ -389,9 +411,9 @@ export default function HomePageClient() {
                     </span>
                   </div>
 
-                  <Button className={`w-full h-12 rounded-full font-semibold mb-8 ${
-                    plan.highlight 
-                      ? "bg-[#43a047] text-white hover:bg-[#388e3c]" 
+                  <Button className={`w-full h-12 rounded-full font-semibold mb-8 cursor-pointer ${
+                    plan.highlight
+                      ? "bg-[#43a047] text-white hover:bg-[#388e3c]"
                       : "bg-slate-800 text-white hover:bg-slate-700"
                   }`}>
                     Обрати
@@ -414,10 +436,10 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* Reviews */}
-        <section id="reviews" className="py-20 px-4 lg:px-8">
+        {/* ═══ REVIEWS ═══ */}
+        <section ref={revs.ref} id="reviews" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="text-center mb-14">
+            <div className={`text-center mb-14 ${revs.visible ? "animate-slide-up" : "opacity-0"}`}>
               <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
                 {t("nav.reviews")}
               </h2>
@@ -426,7 +448,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map((review, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border-2 border-transparent hover:border-black transition-all">
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-7 border-2 border-transparent hover:border-black card-hover ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
                   <div className="flex gap-1 mb-5">
                     {[...Array(review.rating)].map((_, j) => (
                       <Star key={j} className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
@@ -440,10 +462,10 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* FAQ */}
-        <section className="py-20 px-4 lg:px-8">
+        {/* ═══ FAQ ═══ */}
+        <section ref={faqSec.ref} className="py-20 px-4 lg:px-8">
           <div className="container mx-auto max-w-3xl">
-            <div className="text-center mb-14">
+            <div className={`text-center mb-14 ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`}>
               <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
                 Часті запитання
               </h2>
@@ -452,29 +474,31 @@ export default function HomePageClient() {
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className="bg-[#fafaf8] rounded-2xl overflow-hidden border-2 border-transparent hover:border-black transition-all">
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl overflow-hidden border-2 border-transparent hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors"
+                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors cursor-pointer"
                   >
                     <span className="font-semibold text-slate-800">{faq.q}</span>
-                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${openFaq === i ? "rotate-180" : ""}`} />
                   </button>
-                  {openFaq === i && (
-                    <div className="px-7 pb-5 text-slate-600 leading-relaxed">
-                      {faq.a}
+                  <div className={`grid transition-all duration-300 ease-in-out ${openFaq === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className="overflow-hidden">
+                      <div className="px-7 pb-5 text-slate-600 leading-relaxed">
+                        {faq.a}
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-20 px-4 lg:px-8">
+        {/* ═══ CTA ═══ */}
+        <section ref={ctaSec.ref} className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-2 border-transparent hover:border-black transition-all">
+            <div className={`bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-2 border-transparent hover:border-black card-hover ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
                 {t("cta.title")}
               </h2>
@@ -482,7 +506,7 @@ export default function HomePageClient() {
                 {t("cta.subtitle")}
               </p>
               <Link href={specialistHref}>
-                <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c]">
+                <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer">
                   {t("cta.button")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -526,15 +550,15 @@ export default function HomePageClient() {
             <div>
               <h4 className="font-semibold mb-4">Навігація</h4>
               <div className="space-y-2 text-sm">
-                <Link href={specialistHref} className="block text-slate-400 hover:text-white">{t("nav.specialists")}</Link>
-                <Link href="#how" className="block text-slate-400 hover:text-white">{t("nav.how_it_works")}</Link>
-                <Link href="#reviews" className="block text-slate-400 hover:text-white">{t("nav.reviews")}</Link>
+                <Link href={specialistHref} className="block text-slate-400 hover:text-white transition-colors">{t("nav.specialists")}</Link>
+                <Link href="#how" className="block text-slate-400 hover:text-white transition-colors">{t("nav.how_it_works")}</Link>
+                <Link href="#reviews" className="block text-slate-400 hover:text-white transition-colors">{t("nav.reviews")}</Link>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-slate-800 pt-8 text-center text-sm text-slate-400">
-            © 2024 Libitum Education. {t("footer.rights")}
+          <div className="border-t border-slate-700 pt-8 text-center text-sm text-slate-400">
+            &copy; 2024 Libitum Education. {t("footer.rights")}
           </div>
         </div>
       </footer>

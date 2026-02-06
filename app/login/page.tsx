@@ -53,7 +53,7 @@ export default function LoginPage() {
             </div>
             <span className="text-lg font-bold text-slate-800">LIBITUM</span>
           </Link>
-          
+
           <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
             <ArrowLeft className="h-4 w-4" />
             На головну
@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[440px]">
           {/* Card */}
-          <div className="bg-white rounded-3xl border border-slate-100/80 overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-3xl border-2 border-transparent hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">З поверненням</h1>
@@ -72,7 +72,7 @@ export default function LoginPage() {
               </div>
 
               {/* Test Accounts */}
-              <div className="mb-8 rounded-2xl border border-slate-100 bg-slate-50/50 p-5">
+              <div className="mb-8 rounded-2xl bg-white p-5">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Тестові акаунти</p>
                 <div className="flex flex-wrap gap-2">
                   {testAccounts.map((account) => (
@@ -81,7 +81,7 @@ export default function LoginPage() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="h-9 rounded-full text-xs border-slate-200 hover:bg-[#f1f8e9] hover:text-[#2e7d32] hover:border-[#c8e6c9]"
+                      className="h-9 rounded-full text-xs border-slate-200 hover:bg-[#e8f5e9] hover:text-[#2e7d32] hover:border-[#c8e6c9] cursor-pointer"
                       onClick={() => quickLogin(account.email, account.password)}
                     >
                       {account.role}
@@ -119,7 +119,7 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
@@ -130,16 +130,16 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2.5 cursor-pointer">
                     <Checkbox className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]" />
-                    <span className="text-sm text-slate-600">Запам'ятати мене</span>
+                    <span className="text-sm text-slate-600">Запам{"'"}ятати мене</span>
                   </label>
                   <Link href="/forgot-password" className="text-sm font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
                     Забули пароль?
                   </Link>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] transition-colors" 
+                <Button
+                  type="submit"
+                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer"
                   disabled={isLoading}
                 >
                   {isLoading ? "Завантаження..." : "Увійти"}
@@ -150,14 +150,14 @@ export default function LoginPage() {
                     <div className="w-full border-t border-slate-200"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-4 text-slate-400">або</span>
+                    <span className="bg-[#f5f5f0] px-4 text-slate-400">або</span>
                   </div>
                 </div>
 
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="h-13 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50" 
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-13 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
                 >
                   <Chrome className="mr-2 h-5 w-5" />
                   Увійти через Google
@@ -173,7 +173,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Footer text */}
           <p className="mt-8 text-center text-xs text-slate-400">
             Захищено та безпечно
           </p>

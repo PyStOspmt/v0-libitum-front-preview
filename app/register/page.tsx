@@ -67,7 +67,7 @@ export default function RegisterPage() {
             </div>
             <span className="text-lg font-bold text-slate-800">LIBITUM</span>
           </Link>
-          
+
           <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
             <ArrowLeft className="h-4 w-4" />
             На головну
@@ -78,7 +78,7 @@ export default function RegisterPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[480px]">
           {/* Card */}
-          <div className="bg-white rounded-3xl border border-slate-100/80 overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-3xl border-2 border-transparent hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Створити акаунт</h1>
@@ -90,18 +90,18 @@ export default function RegisterPage() {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-slate-700">Я хочу</Label>
                   <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "client" | "specialist")} className="grid grid-cols-2 gap-4">
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === 'client' ? 'border-[#43a047] bg-[#f1f8e9]' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === "client" ? "border-[#43a047] bg-[#e8f5e9]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="client" id="client" className="sr-only" />
                       <Label htmlFor="client" className="cursor-pointer text-center">
-                        <span className="text-3xl mb-3 block">🎓</span>
+                        <span className="text-3xl mb-3 block">&#127891;</span>
                         <span className="font-bold text-slate-800 block">Знайти репетитора</span>
                         <span className="text-xs text-slate-500 mt-1 block">Для учнів</span>
                       </Label>
                     </div>
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === 'specialist' ? 'border-[#f9a825] bg-[#fffde7]' : 'border-slate-200 bg-white hover:bg-slate-50'}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f9a825] bg-[#fff8e1]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="specialist" id="specialist" className="sr-only" />
                       <Label htmlFor="specialist" className="cursor-pointer text-center">
-                        <span className="text-3xl mb-3 block">👨‍🏫</span>
+                        <span className="text-3xl mb-3 block">&#128104;&#8205;&#127979;</span>
                         <span className="font-bold text-slate-800 block">Стати репетитором</span>
                         <span className="text-xs text-slate-500 mt-1 block">Для вчителів</span>
                       </Label>
@@ -110,7 +110,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm font-medium text-slate-700">Повне ім'я</Label>
+                  <Label htmlFor="name" className="text-sm font-medium text-slate-700">Повне ім{"'"}я</Label>
                   <Input
                     id="name"
                     type="text"
@@ -142,7 +142,7 @@ export default function RegisterPage() {
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
+                        placeholder="--------"
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         required
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                       >
                         {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </button>
@@ -164,7 +164,7 @@ export default function RegisterPage() {
                     <Input
                       id="confirmPassword"
                       type="password"
-                      placeholder="••••••••"
+                      placeholder="--------"
                       value={formData.confirmPassword}
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                       required
@@ -183,16 +183,16 @@ export default function RegisterPage() {
                   />
                   <label htmlFor="rules" className="text-sm leading-relaxed text-slate-500">
                     Я приймаю{" "}
-                    <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#2e7d32] hover:underline">
+                    <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#2e7d32] hover:underline cursor-pointer">
                       правила платформи
                     </button>{" "}
                     та політику конфіденційності
                   </label>
                 </div>
 
-                <Button 
-                  type="submit" 
-                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] transition-colors" 
+                <Button
+                  type="submit"
+                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer"
                   disabled={isLoading}
                 >
                   {isLoading ? "Створення акаунту..." : "Створити акаунт"}
@@ -203,14 +203,14 @@ export default function RegisterPage() {
                     <div className="w-full border-t border-slate-200"></div>
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="bg-white px-4 text-slate-400">або</span>
+                    <span className="bg-[#f5f5f0] px-4 text-slate-400">або</span>
                   </div>
                 </div>
 
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  className="h-13 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50" 
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="h-13 w-full rounded-xl border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 cursor-pointer"
                 >
                   <Chrome className="mr-2 h-5 w-5" />
                   Зареєструватись через Google
@@ -226,7 +226,6 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          {/* Footer text */}
           <p className="mt-8 text-center text-xs text-slate-400">
             Реєструючись, ви погоджуєтесь з нашими умовами використання
           </p>
@@ -235,7 +234,7 @@ export default function RegisterPage() {
 
       {/* Rules Dialog */}
       <Dialog open={showRules} onOpenChange={setShowRules}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border border-slate-100/80 shadow-lg">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border-2 border-transparent">
           <DialogHeader className="pb-5 border-b border-slate-100">
             <DialogTitle className="text-2xl font-bold text-slate-800">Правила платформи</DialogTitle>
             <DialogDescription className="text-slate-500">Будь ласка, ознайомтесь перед реєстрацією</DialogDescription>
@@ -250,7 +249,7 @@ export default function RegisterPage() {
               <ul className="space-y-3 pl-2">
                 <li className="flex gap-3">
                   <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
-                  <span><strong className="text-slate-700">Час відповіді:</strong> 3 години для прийняття/відхилення заявок. Бонус за відповідь протягом 20 хвилин.</span>
+                  <span><strong className="text-slate-700">Час відповіді:</strong> 3 години для прийняття/відхилення заявок.</span>
                 </li>
                 <li className="flex gap-3">
                   <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
@@ -280,7 +279,7 @@ export default function RegisterPage() {
               </ul>
             </section>
 
-            <section className="bg-[#fff8e1] p-5 rounded-2xl border border-[#ffecb3]">
+            <section className="bg-[#fff8e1] p-5 rounded-2xl">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-[#f9a825] mt-0.5 shrink-0" />
                 <div>
