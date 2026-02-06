@@ -212,7 +212,7 @@ export default function HomePageClient() {
               {/* Right column - Bento cards */}
               <div className="lg:col-span-5 grid grid-rows-2 gap-5">
                 {/* Top tutor card */}
-                <div className="bg-[#fafaf8] rounded-[2rem] p-6 border border-slate-100 flex items-center gap-5 group hover:bg-white transition-colors cursor-pointer">
+                <div className="bg-[#fafaf8] rounded-[2rem] p-6 border-2 border-slate-100 flex items-center gap-5 group hover:border-black transition-all cursor-pointer">
                   <div className="relative w-28 h-28 bg-[#e8f5e9] rounded-2xl overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-[#43a047] flex items-center justify-center">
@@ -241,7 +241,7 @@ export default function HomePageClient() {
                 {/* Bottom row - 2 small cards */}
                 <div className="grid grid-cols-2 gap-5">
                   {/* Stats card */}
-                  <div className="bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black transition-all">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <TrendingUp className="h-6 w-6 text-[#f9a825]" />
                     </div>
