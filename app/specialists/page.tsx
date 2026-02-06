@@ -394,7 +394,7 @@ export default function SpecialistsPage() {
               {hoveredData && (
                 <div className="flex flex-col gap-3 animate-scale-in" key={hoveredData.id}>
                   {/* Video preview card */}
-                  <div className={`relative rounded-2xl overflow-hidden ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
+                  <div className={`relative rounded-2xl overflow-hidden border-2 border-slate-200 ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
                     {/* Floating tags */}
                     <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
                       {hoveredData.videoTags?.map((tag, i) => (
@@ -434,13 +434,13 @@ export default function SpecialistsPage() {
 
                   {/* Action buttons */}
                   <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-2 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
                       <Calendar className="h-4 w-4 mr-2" />
                       Переглянути розклад
                     </Button>
                   </Link>
                   <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-2 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
                       <User className="h-4 w-4 mr-2" />
                       {"Профіль " + hoveredData.name.split(" ")[0]}
                     </Button>
