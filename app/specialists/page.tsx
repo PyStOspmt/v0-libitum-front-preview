@@ -2,28 +2,22 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal, Users, Heart } from "lucide-react"
 import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { BookOpen, Search, Star, Video, Home, Award, Users, Heart, ArrowLeft, MessageCircle, ChevronDown, TrendingUp, Play, Calendar, User } from "lucide-react"
 
 export default function SpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState("all")
-  const [showFilters, setShowFilters] = useState(true)
-  const [priceRange, setPriceRange] = useState([0, 1000])
-  const [onlineOnly, setOnlineOnly] = useState(false)
-  const [offlineOnly, setOfflineOnly] = useState(false)
-  const [verifiedOnly, setVerifiedOnly] = useState(false)
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [priceFilter, setPriceFilter] = useState("all")
+  const [formatFilter, setFormatFilter] = useState("all")
+  const [sortBy, setSortBy] = useState("top")
   const [favorites, setFavorites] = useState<number[]>([])
+  const [expandedBio, setExpandedBio] = useState<number | null>(null)
+  const [hoveredSpecialist, setHoveredSpecialist] = useState<number | null>(null)
 
   const specialists = [
     {
@@ -32,6 +26,7 @@ export default function SpecialistsPage() {
       specialization: "Репетитор",
       image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
       subjects: ["Англійська мова", "Німецька мова"],
+      languages: ["Українська (рідна)", "Англійська (C2)"],
       rating: 4.9,
       reviews: 48,
       activeStudents: 49,
@@ -41,9 +36,13 @@ export default function SpecialistsPage() {
       priceOffline: 500,
       location: "Київ",
       verified: true,
+      superTutor: true,
       online: true,
       offline: true,
-      bio: "Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку. Готую до іспитів, допомагаю прокачати розмовну мову та адаптую програму під цілі учня, щоб кожне заняття давало відчутний прогрес.",
+      bio: "Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку та рівня підготовки. Готую до іспитів ЗНО/НМТ, допомагаю прокачати розмовну мову та адаптую програму під індивідуальні цілі кожного учня.",
+      popular: true,
+      bookedRecently: 12,
+      videoTags: ["Англійська", "Розмовна", "ЗНО", "Репетитор", "IELTS", "B2+"],
     },
     {
       id: 3,
@@ -51,6 +50,7 @@ export default function SpecialistsPage() {
       specialization: "Психолог",
       image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Індивідуальна терапія", "Сімейна терапія"],
+      languages: ["Українська (рідна)", "Англійська (B2)"],
       rating: 5.0,
       reviews: 62,
       activeStudents: 38,
@@ -60,9 +60,13 @@ export default function SpecialistsPage() {
       priceOffline: 700,
       location: "Київ",
       verified: true,
+      superTutor: true,
       online: true,
       offline: false,
-      bio: "Клінічний психолог з 10-річним досвідом. Спеціалізуюсь на роботі з тривожністю.",
+      bio: "Клінічний психолог з 10-річним досвідом. Спеціалізуюсь на роботі з тривожністю, депресією та вигоранням. Використовую когнітивно-поведінкову терапію та mindfulness-підходи для досягнення стійких результатів.",
+      popular: false,
+      bookedRecently: 9,
+      videoTags: ["Психолог", "КПТ", "Терапія", "Тривожність", "Mindfulness"],
     },
     {
       id: 4,
@@ -70,6 +74,7 @@ export default function SpecialistsPage() {
       specialization: "Логопед",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Постановка звуків", "Корекція мовлення"],
+      languages: ["Українська (рідна)"],
       rating: 4.9,
       reviews: 41,
       activeStudents: 32,
@@ -79,438 +84,368 @@ export default function SpecialistsPage() {
       priceOffline: 600,
       location: "Київ",
       verified: true,
+      superTutor: false,
       online: true,
       offline: true,
-      bio: "Логопед-дефектолог. Працюю з дітьми та дорослими.",
+      bio: "Логопед-дефектолог з 8-річним стажем. Працюю з дітьми від 3 років та дорослими. Спеціалізуюсь на постановці звуків, корекції заїкання та розвитку мовлення.",
+      popular: true,
+      bookedRecently: 7,
+      videoTags: ["Логопед", "Звуки", "Діти", "Мовлення", "Корекція"],
     },
   ]
 
-  type AccentStyles = {
-    button: string
-    price: string
-    icon: string
-    ring: string
-    glow: string
-    soft: string
-    cardBg: string
+  const getAccentColor = (type: string) => {
+    if (type === "Репетитор") return { bg: "bg-[#e8f5e9]", text: "text-[#43a047]" }
+    if (type === "Психолог") return { bg: "bg-[#e8eaf6]", text: "text-[#5c6bc0]" }
+    return { bg: "bg-[#fff8e1]", text: "text-[#f9a825]" }
   }
 
-  const accentPalette: Record<"tutor" | "health" | "neutral", AccentStyles> = {
-    tutor: {
-      button: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-transparent shadow-emerald-100",
-      price: "text-emerald-700",
-      icon: "text-emerald-600",
-      ring: "focus-visible:ring-emerald-600",
-      glow: "rgba(16, 185, 129, 0.05)",
-      soft: "rgba(16, 185, 129, 0.03)",
-      cardBg: "from-emerald-50/18 via-white to-white"
-    },
-    health: {
-      button: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
-      price: "text-amber-700",
-      icon: "text-amber-600",
-      ring: "focus-visible:ring-amber-600",
-      glow: "rgba(251, 146, 60, 0.05)",
-      soft: "rgba(251, 146, 60, 0.03)",
-      cardBg: "from-amber-50/18 via-white to-white"
-    },
-    neutral: {
-      button: "bg-slate-900 hover:bg-slate-800 text-white border-transparent shadow-slate-100",
-      price: "text-slate-900",
-      icon: "text-slate-600",
-      ring: "focus-visible:ring-slate-900",
-      glow: "rgba(148, 163, 184, 0.05)",
-      soft: "rgba(148, 163, 184, 0.03)",
-      cardBg: "from-slate-50/18 via-white to-white"
-    }
-  }
-
-  const getAccentStyles = (specialistType: string) => {
-    if (specialistType === "Репетитор") return accentPalette.tutor
-    if (["Психолог", "Логопед"].includes(specialistType)) return accentPalette.health
-    return accentPalette.neutral
+  const getVideoColor = (type: string) => {
+    if (type === "Репетитор") return "bg-[#c8e6c9]"
+    if (type === "Психолог") return "bg-[#c5cae9]"
+    return "bg-[#fff9c4]"
   }
 
   const toggleFavorite = (id: number) => {
-    setFavorites(prev => 
-      prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]
-    )
+    setFavorites(prev => prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id])
   }
-  const getDiffuseBackground = (index: number) => {
-    const current = getAccentStyles(specialists[index].specialization)
-    const prevType = specialists[index - 1]?.specialization
-    const nextType = specialists[index + 1]?.specialization
-    const prevAccent = prevType ? getAccentStyles(prevType) : null
-    const nextAccent = nextType ? getAccentStyles(nextType) : null
 
-    const layers = [
-      prevAccent ? `radial-gradient(140px circle at 50% 0%, ${prevAccent.glow}, transparent 65%)` : null,
-      `radial-gradient(220px circle at 50% 50%, ${current.glow}, transparent 74%)`,
-      nextAccent ? `radial-gradient(160px circle at 50% 100%, ${nextAccent.glow}, transparent 68%)` : null,
-      `linear-gradient(180deg, ${current.soft}, rgba(255,255,255,0.9))`
-    ].filter(Boolean)
-
-    return { backgroundImage: layers.join(", ") }
-  }
+  const hoveredData = specialists.find(s => s.id === hoveredSpecialist) || specialists[0]
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
-            </Link>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="flex items-center gap-2.5">
+                <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+                  <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
+                </div>
+                <span className="text-lg font-bold text-slate-800">LIBITUM</span>
+              </Link>
+              <Link href="/" className="hidden sm:flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                На головну
+              </Link>
+            </div>
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="ghost" className="font-medium text-slate-600 hover:text-slate-800">Увійти</Button>
+                <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
+                  Увійти
+                </Button>
               </Link>
               <Link href="/register">
-                <Button className="rounded-xl bg-slate-800 text-white hover:bg-slate-700 shadow-sm">Реєстрація</Button>
+                <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
+                  Реєстрація
+                </Button>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-10">
-          <h1 className="mb-6 text-3xl font-bold tracking-tight text-slate-800">Знайти спеціаліста</h1>
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input
-                placeholder="Пошук за ім'ям або предметом..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 rounded-xl border-slate-200 bg-white pl-12 text-base shadow-sm focus-visible:ring-slate-400"
-              />
+      {/* Top Filter Bar */}
+      <div className="sticky top-16 z-40 bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 lg:px-8">
+          {/* Primary filters row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-slate-200 py-3">
+            <div className="px-4 first:pl-0">
+              <div className="text-xs font-medium text-slate-400 mb-1">Спеціальність</div>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Всі спеціалісти</SelectItem>
+                  <SelectItem value="tutor">Репетитори</SelectItem>
+                  <SelectItem value="psychologist">Психологи</SelectItem>
+                  <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="h-12 w-full rounded-xl border-slate-200 bg-white shadow-sm md:w-[220px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Всі спеціалісти</SelectItem>
-                <SelectItem value="tutor">Репетитори</SelectItem>
-                <SelectItem value="psychologist">Психологи</SelectItem>
-                <SelectItem value="speech-therapist">Логопеди</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button 
-              variant="outline" 
-              onClick={() => setShowFilters(!showFilters)} 
-              className="h-12 rounded-xl border-slate-200 bg-white shadow-sm md:w-auto hover:bg-slate-50"
-            >
-              <SlidersHorizontal className="mr-2 h-4 w-4" />
-              Фільтри
-            </Button>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Ціна за заняття</div>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{"₴100 – ₴1,000+"}</SelectItem>
+                  <SelectItem value="low">{"До ₴300"}</SelectItem>
+                  <SelectItem value="mid">{"₴300 – ₴600"}</SelectItem>
+                  <SelectItem value="high">{"₴600+"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Формат</div>
+              <Select value={formatFilter} onValueChange={setFormatFilter}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-який</SelectItem>
+                  <SelectItem value="online">Онлайн</SelectItem>
+                  <SelectItem value="offline">Офлайн</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Сортувати</div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="top">Наш вибір</SelectItem>
+                  <SelectItem value="rating">За рейтингом</SelectItem>
+                  <SelectItem value="price-low">Ціна: низька</SelectItem>
+                  <SelectItem value="price-high">Ціна: висока</SelectItem>
+                  <SelectItem value="reviews">За відгуками</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Secondary chips row */}
+          <div className="flex items-center gap-3 pb-3 overflow-x-auto">
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Предмети
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Рідна мова
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Супер-спеціаліст
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <div className="ml-auto flex items-center gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Пошук за ім'ям..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-9 w-48 rounded-full border-slate-200 pl-9 text-sm focus:border-[#43a047] focus:ring-1 focus:ring-[#c8e6c9]"
+                />
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid gap-8 lg:grid-cols-4">
-          {showFilters && (
-            <div className="space-y-6 lg:col-span-1">
-              <Card className="border-slate-200 shadow-sm rounded-2xl">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">Фільтри</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Ціна за годину</Label>
-                    <div className="space-y-4">
-                      <Slider
-                        value={priceRange}
-                        onValueChange={setPriceRange}
-                        max={1000}
-                        step={50}
-                        className="w-full"
-                      />
-                      <div className="flex items-center justify-between text-sm font-medium text-slate-600">
-                        <span>{priceRange[0]} ₴</span>
-                        <span>{priceRange[1]} ₴</span>
+      {/* Title */}
+      <div className="container mx-auto px-4 lg:px-8 pt-6 pb-2">
+        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
+          <span className="italic">{specialists.length}</span> спеціалістів для вашого розвитку
+        </h1>
+      </div>
+
+      {/* Two-column layout: Cards + Video Sidebar */}
+      <div className="container mx-auto px-4 lg:px-8 py-4">
+        <div className="flex gap-6">
+          {/* Left column - Specialist cards */}
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+            {specialists.map((specialist) => {
+              const accent = getAccentColor(specialist.specialization)
+              const isFav = favorites.includes(specialist.id)
+              const isExpanded = expandedBio === specialist.id
+              return (
+                <div
+                  key={specialist.id}
+                  className="relative bg-white rounded-2xl border-4 border-slate-200 hover:border-black transition-colors cursor-pointer"
+                  onMouseEnter={() => setHoveredSpecialist(specialist.id)}
+                >
+                  <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
+                    {/* Photo */}
+                    <div className="relative w-full md:w-40 lg:w-44 flex-shrink-0">
+                      <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-xl bg-slate-100">
+                        {specialist.image ? (
+                          <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
+                        ) : (
+                          <Avatar className="h-full w-full rounded-xl">
+                            <AvatarFallback className="bg-slate-50 text-2xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                          </Avatar>
+                        )}
+                        {specialist.online && (
+                          <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-4 border-white" />
+                        )}
                       </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Формат занять</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="online"
-                          checked={onlineOnly}
-                          onCheckedChange={(checked) => setOnlineOnly(checked as boolean)}
-                          className="rounded-md border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
-                        />
-                        <Label htmlFor="online" className="text-sm font-normal text-slate-600 cursor-pointer">
-                          Онлайн
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="offline"
-                          checked={offlineOnly}
-                          onCheckedChange={(checked) => setOfflineOnly(checked as boolean)}
-                          className="rounded-md border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
-                        />
-                        <Label htmlFor="offline" className="text-sm font-normal text-slate-600 cursor-pointer">
-                          Офлайн
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="verified"
-                        checked={verifiedOnly}
-                        onCheckedChange={(checked) => setVerifiedOnly(checked as boolean)}
-                        className="rounded-md border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
-                      />
-                      <Label htmlFor="verified" className="text-sm font-normal text-slate-600 cursor-pointer">
-                        Тільки верифіковані
-                      </Label>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Предмети</Label>
-                    <div className="space-y-2 max-h-48 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
-                      {[
-                        "Англійська мова",
-                        "Німецька мова",
-                        "Математика",
-                        "Фізика",
-                        "Хімія",
-                        "Українська мова",
-                        "Історія",
-                        "Біологія",
-                      ].map((subject) => (
-                        <div key={subject} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={subject}
-                            checked={selectedSubjects.includes(subject)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setSelectedSubjects([...selectedSubjects, subject])
-                              } else {
-                                setSelectedSubjects(selectedSubjects.filter((s) => s !== subject))
-                              }
-                            }}
-                            className="rounded-md border-slate-300 data-[state=checked]:bg-slate-900 data-[state=checked]:border-slate-900"
-                          />
-                          <Label htmlFor={subject} className="text-sm font-normal text-slate-600 cursor-pointer">
-                            {subject}
-                          </Label>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-4 mb-2">
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
+                            {specialist.verified && (
+                              <Award className="h-5 w-5 text-[#43a047]" />
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            {specialist.superTutor && (
+                              <span className="text-xs font-bold text-white bg-[#43a047] px-2.5 py-1 rounded">
+                                Супер-спеціаліст
+                              </span>
+                            )}
+                            <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2.5 py-1 rounded`}>
+                              {specialist.specialization}
+                            </span>
+                          </div>
                         </div>
+                      </div>
+
+                      {/* Subjects & Languages */}
+                      <div className="flex flex-col gap-1 mb-3 text-sm text-slate-600">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
+                          <span>{specialist.subjects.join(", ")}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-400">{"🗣"}</span>
+                          <span>{specialist.languages.join(", ")}</span>
+                        </div>
+                      </div>
+
+                      {/* Stats row */}
+                      <div className="flex items-center gap-5 mb-3">
+                        <div className="flex items-center gap-1">
+                          <span className="text-base font-bold text-slate-900">{specialist.rating}</span>
+                          <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.reviews}</span>
+                          <span className="text-xs text-slate-400 ml-1">відгуків</span>
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.activeStudents}</span>
+                          <span className="text-xs text-slate-400 ml-1">учнів</span>
+                        </div>
+                        <div>
+                          <span className="text-sm font-bold text-slate-900">{specialist.lessonsCompleted}</span>
+                          <span className="text-xs text-slate-400 ml-1">занять</span>
+                        </div>
+                      </div>
+
+                      {/* Bio */}
+                      <p className={`text-sm text-slate-600 leading-relaxed mb-1.5 ${isExpanded ? "" : "line-clamp-2"}`}>
+                        {specialist.bio}
+                      </p>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setExpandedBio(isExpanded ? null : specialist.id) }}
+                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#43a047] transition-colors cursor-pointer mb-2"
+                      >
+                        {isExpanded ? "Згорнути" : "Дізнатись більше"}
+                      </button>
+
+                      {/* Popular badge */}
+                      {specialist.popular && specialist.bookedRecently > 0 && (
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
+                          <TrendingUp className="h-3.5 w-3.5 text-[#43a047]" />
+                          <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Price & Actions */}
+                    <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:w-48 flex-shrink-0 border-t md:border-t-0 pt-4 md:pt-0">
+                      <div className="flex items-center gap-2 md:flex-col md:items-end">
+                        <span className="text-2xl font-bold text-slate-900">{"₴"}{specialist.priceOnline}</span>
+                        <span className="text-xs text-slate-400">50-хв заняття</span>
+                      </div>
+
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleFavorite(specialist.id) }}
+                        className="md:absolute md:top-5 md:right-5 p-0 cursor-pointer"
+                        aria-label="Додати в обране"
+                      >
+                        <Heart className={`h-6 w-6 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
+                      </button>
+
+                      <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
+                        <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
+                          <Button className="w-full h-11 rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer text-sm">
+                            Записатись
+                          </Button>
+                        </Link>
+                        <Button variant="outline" className="flex-1 md:w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                          <MessageCircle className="h-4 w-4 mr-1.5" />
+                          Написати
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Right column - Video Sidebar (sticky, desktop only) */}
+          <div className="hidden lg:block w-80 xl:w-96 flex-shrink-0">
+            <div className="sticky top-44">
+              {hoveredData && (
+                <div className="rounded-2xl border-4 border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
+                  {/* Video preview */}
+                  <div className={`relative ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
+                    {/* Floating tags */}
+                    <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
+                      {hoveredData.videoTags?.map((tag, i) => (
+                        <span
+                          key={tag}
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+                            i % 3 === 0
+                              ? "bg-white/90 text-slate-800"
+                              : i % 3 === 1
+                              ? "bg-[#43a047] text-white"
+                              : "bg-slate-800 text-white"
+                          }`}
+                        >
+                          {tag}
+                        </span>
                       ))}
                     </div>
-                  </div>
 
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-xl border-dashed border-slate-300 text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                    onClick={() => {
-                      setPriceRange([0, 1000])
-                      setOnlineOnly(false)
-                      setOfflineOnly(false)
-                      setVerifiedOnly(false)
-                      setSelectedSubjects([])
-                    }}
-                  >
-                    Скинути фільтри
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          )}
+                    {/* Small tutor photo */}
+                    <div className="absolute bottom-4 right-4 w-20 h-20 rounded-xl overflow-hidden border-4 border-white">
+                      <Image
+                        src={hoveredData.image}
+                        alt={hoveredData.name}
+                        fill
+                        className="object-cover object-top"
+                        crossOrigin="anonymous"
+                      />
+                    </div>
 
-          <div className={showFilters ? "lg:col-span-3" : "lg:col-span-4"}>
-            <div className="mb-6 text-sm font-medium text-slate-500">Знайдено {specialists.length} спеціалістів</div>
-
-            {/* Favorites Bar */}
-            {favorites.length > 0 && (
-              <div className="mb-6 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-red-500 fill-current" />
-                    <span className="text-sm font-medium text-slate-700">
-                      {favorites.length} {favorites.length === 1 ? 'обраний' : 'обраних'}
-                    </span>
-                  </div>
-                  <Link href="/favorites">
-                    <Button variant="outline" size="sm" className="text-xs">
-                      Переглянути обраних
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-4 max-w-5xl mx-auto">
-              {specialists.map((specialist, index) => {
-                const accent = getAccentStyles(specialist.specialization)
-                return (
-                  <Card
-                    key={specialist.id}
-                    className={`overflow-hidden border-slate-200 bg-gradient-to-br ${accent.cardBg} shadow-sm transition-all hover:shadow-lg hover:translate-y-[-2px] rounded-2xl hover-glow relative`}
-                    style={getDiffuseBackground(index)}
-                  >
-                    {/* Favorite Button */}
-                    <button
-                      onClick={() => toggleFavorite(specialist.id)}
-                      className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all hover:scale-110 shadow-md ${
-                        favorites.includes(specialist.id)
-                          ? 'text-red-500 bg-white hover:bg-red-50'
-                          : 'text-slate-400 bg-white hover:text-red-500 hover:bg-red-50'
-                      }`}
-                    >
-                      <Heart className={`h-4 w-4 ${favorites.includes(specialist.id) ? 'fill-current' : ''}`} />
-                    </button>
-                    <CardContent className="p-0">
-                      <div className="flex flex-col md:flex-row">
-                        {/* Main Info Area */}
-                        <div className="flex flex-col md:flex-row flex-1 p-0 sm:p-1 md:p-2 gap-2 md:gap-6 px-1">
-                          {/* Photo Column */}
-                          <div className="flex flex-row md:flex-col gap-3 md:gap-6 md:shrink-0 md:w-56 lg:w-64">
-                            {/* Photo Box */}
-                            <div className="relative shrink-0 w-[38%] md:w-full">
-                              <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] sm:rounded-[24px] border border-slate-100 bg-white shadow-md sm:shadow-lg ring-1 ring-slate-200/60">
-                                {specialist.image ? (
-                                  <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" />
-                                ) : (
-                                  <Avatar className="h-full w-full rounded-2xl">
-                                    <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                                  </Avatar>
-                                )}
-                              </div>
-                              {specialist.verified && (
-                                <div className="absolute -bottom-1.5 -right-1.5 sm:bottom-2 sm:right-2 sm:translate-x-1/4 sm:translate-y-1/4 flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white shadow-lg ring-2 ring-white z-10">
-                                  <Award className={`h-4 w-4 sm:h-4.5 sm:w-4.5 ${accent.icon}`} />
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Mobile Header Info (beside photo) */}
-                            <div className="flex flex-col flex-1 min-w-0 md:hidden text-left py-0.5">
-                              <h3 className="text-lg font-bold text-slate-900 leading-tight mb-0.5">{specialist.name}</h3>
-                              <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                                <p className="text-xs font-medium text-slate-500">{specialist.specialization}</p>
-                                <div className="flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 ring-1 ring-amber-200/50">
-                                  <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                                  <span className="text-xs font-bold text-amber-700">{specialist.rating}</span>
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-1 text-[11px] font-medium text-slate-500 mb-0.5">
-                                <span className="inline-flex items-center gap-1.5">
-                                  <Users className="h-3 w-3 text-slate-400" />
-                                  {specialist.activeStudents} учнів
-                                </span>
-                                <span className="inline-flex items-center gap-1.5">
-                                  <BookOpen className="h-3 w-3 text-slate-400" />
-                                  {specialist.lessonsCompleted} занять
-                                </span>
-                              </div>
-                              <div className="flex flex-wrap gap-1.5">
-                                {specialist.subjects.slice(0, 2).map((s) => (
-                                  <span key={s} className="rounded-md bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium text-slate-600 ring-1 ring-slate-200">
-                                    {s}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Info Column (Desktop Header + Bio + Footer) */}
-                          <div className="flex flex-col flex-1 min-w-0">
-                            {/* Desktop Header */}
-                            <div className="hidden md:flex flex-col gap-1 mb-1 text-left">
-                              <div className="flex items-center justify-between gap-4">
-                                <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
-                                <div className="flex items-center gap-1.5 rounded-lg bg-amber-50 px-2.5 py-1">
-                                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                                  <span className="text-sm font-bold text-amber-700">{specialist.rating}</span>
-                                  <span className="text-xs text-amber-600/80">({specialist.reviews})</span>
-                                </div>
-                              </div>
-                              <p className="text-sm font-medium text-slate-500">{specialist.specialization}</p>
-                              <div className="mt-2 flex items-center gap-4 text-xs font-medium text-slate-500">
-                                <span className="inline-flex items-center gap-1.5">
-                                  <Users className="h-3.5 w-3.5" />
-                                  {specialist.activeStudents} учнів
-                                </span>
-                                <span className="text-slate-300">•</span>
-                                <span className="inline-flex items-center gap-1.5">
-                                  <BookOpen className="h-3.5 w-3.5" />
-                                  {specialist.lessonsCompleted} занять
-                                </span>
-                                <span className="text-slate-300">•</span>
-                                <div className="flex gap-1.5">
-                                  {specialist.subjects.map((s) => (
-                                    <span key={s} className="rounded-md bg-slate-50 px-1.5 py-0.5 ring-1 ring-slate-500/10">{s}</span>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Bio */}
-                            <p className="text-xs sm:text-sm text-slate-600 mb-1 leading-relaxed text-left line-clamp-6 md:line-clamp-none px-1">
-                              {specialist.bio}
-                            </p>
-
-                            {/* Footer */}
-                            <div className="mt-auto flex flex-wrap items-center justify-start gap-x-4 gap-y-2 text-[11px] sm:text-xs font-medium text-slate-500 px-1">
-                              <div className="flex items-center gap-1.5">
-                                <MapPin className="h-3.5 w-3.5" />
-                                {specialist.location}
-                              </div>
-                              <div className="flex items-center gap-3">
-                                {specialist.online && (
-                                  <span className="flex items-center gap-1.5 text-slate-600">
-                                    <Video className="h-3.5 w-3.5" />
-                                    Онлайн
-                                  </span>
-                                )}
-                                {specialist.offline && (
-                                  <span className="flex items-center gap-1.5 text-slate-600">
-                                    <Home className="h-3.5 w-3.5" />
-                                    Офлайн
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Price and CTA Sidebar */}
-                        <div className="flex flex-row md:flex-col items-center justify-between gap-3 border-t border-slate-100 bg-slate-50/50 p-2 sm:p-2.5 md:w-48 md:border-l md:border-t-0 md:justify-center">
-                          <div className="text-left md:text-center">
-                            <div className="text-xs font-medium text-slate-500 mb-1">Вартість заняття</div>
-                            <div className={`text-2xl font-bold ${accent.price}`}>
-                              {specialist.priceOnline} ₴
-                              <span className="text-sm font-medium text-slate-400 ml-1">/ год</span>
-                            </div>
-                          </div>
-
-                          <Link href={`/specialists/${specialist.id}`} className="shrink-0 md:w-full">
-                            <Button
-                              variant="ghost"
-                              className={`w-full rounded-xl font-semibold shadow-md transition-all hover:scale-[1.02] ${accent.button}`}
-                            >
-                              Переглянути
-                            </Button>
-                          </Link>
-                        </div>
+                    {/* Play button */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                      <div className="w-14 h-14 rounded-full bg-[#43a047] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                        <Play className="h-6 w-6 text-white fill-white ml-0.5" />
                       </div>
-                    </CardContent>
-                  </Card>
-                )
-              })}
+                    </div>
+                  </div>
+
+                  {/* Action buttons inside the same border block */}
+                  <div className="flex flex-col">
+                    <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
+                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                        <Calendar className="h-4 w-4" />
+                        Переглянути розклад
+                      </button>
+                    </Link>
+                    <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
+                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                        <User className="h-4 w-4" />
+                        {"Профіль " + hoveredData.name.split(" ")[0]}
+                      </button>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
