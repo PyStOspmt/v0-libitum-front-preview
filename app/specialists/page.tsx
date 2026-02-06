@@ -240,7 +240,7 @@ export default function SpecialistsPage() {
             return (
               <div
                 key={specialist.id}
-                className="bg-white rounded-2xl border border-slate-200 hover:border-black hover:border-2 hover:m-[-1px] transition-colors cursor-pointer"
+                className="bg-white rounded-2xl border-2 border-slate-200 hover:border-black transition-colors cursor-pointer"
               >
                 <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
                   {/* Photo */}
