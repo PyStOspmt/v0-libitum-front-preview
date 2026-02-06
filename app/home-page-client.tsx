@@ -28,10 +28,10 @@ export default function HomePageClient() {
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
   const features = [
-    { icon: <Shield className="h-5 w-5 text-[#4E996D]" />, title: t("features.verified.title"), color: "bg-[#e6fbee]" },
-    { icon: <Star className="h-5 w-5 text-[#EB9E1A]" />, title: t("features.ratings.title"), color: "bg-[#fef3dd]" },
-    { icon: <TrendingUp className="h-5 w-5 text-[#9C2FEB]" />, title: t("features.progress.title"), color: "bg-[#f0e5fd]" },
-    { icon: <Users className="h-5 w-5 text-[#4E996D]" />, title: "Групові заняття", color: "bg-[#e6fbee]" },
+    { icon: <Shield className="h-5 w-5 text-[#66995C]" />, title: t("features.verified.title"), color: "bg-[#e8f7e4]" },
+    { icon: <Star className="h-5 w-5 text-[#EB7734]" />, title: t("features.ratings.title"), color: "bg-[#fde8d4]" },
+    { icon: <TrendingUp className="h-5 w-5 text-[#4D44EB]" />, title: t("features.progress.title"), color: "bg-[#e4e3fc]" },
+    { icon: <Users className="h-5 w-5 text-[#66995C]" />, title: "Групові заняття", color: "bg-[#e8f7e4]" },
   ]
 
   const categories = [
@@ -39,24 +39,24 @@ export default function HomePageClient() {
       title: t("categories.tutor.title"),
       desc: t("categories.tutor.desc"),
       stat: t("categories.tutor.stat"),
-      colorBg: "bg-[#e6fbee]",
-      colorText: "text-[#4E996D]",
+      colorBg: "bg-[#e8f7e4]",
+      colorText: "text-[#66995C]",
       icon: <BookOpen className="h-6 w-6" />,
     },
     {
       title: t("categories.psychologist.title"),
       desc: t("categories.psychologist.desc"),
       stat: t("categories.psychologist.stat"),
-      colorBg: "bg-[#f0e5fd]",
-      colorText: "text-[#9C2FEB]",
+      colorBg: "bg-[#e4e3fc]",
+      colorText: "text-[#4D44EB]",
       icon: <Users className="h-6 w-6" />,
     },
     {
       title: t("categories.speech.title"),
       desc: t("categories.speech.desc"),
       stat: t("categories.speech.stat"),
-      colorBg: "bg-[#fef3dd]",
-      colorText: "text-[#EB9E1A]",
+      colorBg: "bg-[#fde8d4]",
+      colorText: "text-[#EB7734]",
       icon: <Star className="h-6 w-6" />,
     },
   ]
@@ -138,7 +138,7 @@ export default function HomePageClient() {
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-full bg-[#18EB6F] px-6 text-sm font-medium text-slate-900 hover:bg-[#18EB6F]/85">
+                  <Button className="h-10 rounded-full bg-[#4DEB2D] px-6 text-sm font-medium text-slate-900 hover:bg-[#4DEB2D]/85">
                     Dashboard
                   </Button>
                 </Link>
@@ -150,7 +150,7 @@ export default function HomePageClient() {
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-full bg-[#18EB6F] px-6 text-sm font-medium text-slate-900 hover:bg-[#18EB6F]/85">
+                    <Button className="h-10 rounded-full bg-[#4DEB2D] px-6 text-sm font-medium text-slate-900 hover:bg-[#4DEB2D]/85">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -169,13 +169,13 @@ export default function HomePageClient() {
               {/* Main Hero Card */}
               <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px]">
                 {/* Decorative soft circles */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-[#e6fbee] rounded-full translate-x-1/3 -translate-y-1/3" />
-                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fef3dd] rounded-full -translate-x-1/4 translate-y-1/4" />
-                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#f0e5fd] rounded-full" />
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f7e4] rounded-full translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fde8d4] rounded-full -translate-x-1/4 translate-y-1/4" />
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#e4e3fc] rounded-full" />
                 
                 <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 bg-[#e6fbee] text-[#4E996D] px-4 py-2 rounded-full text-sm font-medium mb-8">
-                    <Star className="h-4 w-4 fill-[#18EB6F] text-[#18EB6F]" />
+                  <div className="inline-flex items-center gap-2 bg-[#e8f7e4] text-[#66995C] px-4 py-2 rounded-full text-sm font-medium mb-8">
+                    <Star className="h-4 w-4 fill-[#4DEB2D] text-[#4DEB2D]" />
                     {t("hero.tagline")}
                   </div>
 
@@ -188,7 +188,7 @@ export default function HomePageClient() {
                   </p>
 
                   <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-[#18EB6F] text-slate-900 pl-8 pr-6 text-base font-semibold hover:bg-[#18EB6F]/85 gap-3">
+                    <Button className="h-14 rounded-full bg-[#4DEB2D] text-slate-900 pl-8 pr-6 text-base font-semibold hover:bg-[#4DEB2D]/85 gap-3">
                       {t("hero.cta")}
                       <span className="h-10 w-10 rounded-full bg-slate-900/10 flex items-center justify-center">
                         <ArrowRight className="h-5 w-5" />
@@ -199,10 +199,10 @@ export default function HomePageClient() {
                   {/* Avatars row */}
                   <div className="flex items-center mt-10">
                     <div className="flex -space-x-3">
-                      <div className="w-11 h-11 rounded-full bg-[#e6fbee] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#4E996D]">ОК</div>
-                      <div className="w-11 h-11 rounded-full bg-[#fef3dd] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#EB9E1A]">МШ</div>
-                      <div className="w-11 h-11 rounded-full bg-[#f0e5fd] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#9C2FEB]">АП</div>
-                      <div className="w-11 h-11 rounded-full bg-[#e6fbee] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#4E996D]">+</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e8f7e4] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#66995C]">ОК</div>
+                      <div className="w-11 h-11 rounded-full bg-[#fde8d4] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#EB7734]">МШ</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e4e3fc] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#4D44EB]">АП</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e8f7e4] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#66995C]">+</div>
                     </div>
                     <div className="ml-4">
                       <div className="text-xl font-bold text-slate-800">500+</div>
@@ -216,9 +216,9 @@ export default function HomePageClient() {
               <div className="lg:col-span-5 grid grid-rows-2 gap-5">
                 {/* Top tutor card */}
                 <div className="bg-[#fafaf8] rounded-[2rem] p-6 border border-slate-100 flex items-center gap-5 group hover:bg-white transition-colors cursor-pointer">
-                  <div className="relative w-28 h-28 bg-[#e6fbee] rounded-2xl overflow-hidden flex-shrink-0">
+                  <div className="relative w-28 h-28 bg-[#e8f7e4] rounded-2xl overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-[#18EB6F] flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-[#4DEB2D] flex items-center justify-center">
                         <Play className="h-5 w-5 text-slate-900 fill-slate-900 ml-0.5" />
                       </div>
                     </div>
@@ -228,25 +228,25 @@ export default function HomePageClient() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold text-[#4E996D] bg-[#e6fbee] px-2.5 py-1 rounded-full">TOP</span>
+                      <span className="text-xs font-semibold text-[#66995C] bg-[#e8f7e4] px-2.5 py-1 rounded-full">TOP</span>
                       <span className="flex items-center gap-1 text-sm text-slate-500">
-                        <Star className="h-3.5 w-3.5 fill-[#EB9E1A] text-[#EB9E1A]" />
+                        <Star className="h-3.5 w-3.5 fill-[#EB7734] text-[#EB7734]" />
                         4.9
                       </span>
                     </div>
                     <div className="font-bold text-slate-800 text-lg mb-0.5">Олена Коваленко</div>
                     <div className="text-sm text-slate-500 mb-2">Репетитор англійської</div>
-                    <div className="text-sm font-semibold text-[#4E996D]">від 350 ₴/год</div>
+                    <div className="text-sm font-semibold text-[#66995C]">від 350 ₴/год</div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#18EB6F] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#4DEB2D] group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
 
                 {/* Bottom row - 2 small cards */}
                 <div className="grid grid-cols-2 gap-5">
                   {/* Stats card */}
-                  <div className="bg-[#fef3dd] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#fde8d4] rounded-[2rem] p-6 flex flex-col justify-between">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <TrendingUp className="h-6 w-6 text-[#EB9E1A]" />
+                      <TrendingUp className="h-6 w-6 text-[#EB7734]" />
                     </div>
                     <div>
                       <div className="text-3xl font-bold text-slate-800">98%</div>
@@ -255,9 +255,9 @@ export default function HomePageClient() {
                   </div>
 
                   {/* Feature card */}
-                  <div className="bg-[#f0e5fd] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#e4e3fc] rounded-[2rem] p-6 flex flex-col justify-between">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <Shield className="h-6 w-6 text-[#9C2FEB]" />
+                      <Shield className="h-6 w-6 text-[#4D44EB]" />
                     </div>
                     <div>
                       <div className="text-lg font-bold text-slate-800">Перевірені</div>
@@ -286,7 +286,7 @@ export default function HomePageClient() {
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
             <div className="text-center mb-14">
-              <p className="text-sm font-medium text-[#4E996D] mb-4 uppercase tracking-wider">{t("about.label")}</p>
+              <p className="text-sm font-medium text-[#66995C] mb-4 uppercase tracking-wider">{t("about.label")}</p>
               <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Категорії спеціалістів
               </h2>
@@ -303,7 +303,7 @@ export default function HomePageClient() {
                   </div>
                   <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
                   <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
-                  <div className="text-sm font-semibold text-[#4E996D]">{cat.stat}</div>
+                  <div className="text-sm font-semibold text-[#66995C]">{cat.stat}</div>
                 </div>
               ))}
             </div>
@@ -325,7 +325,7 @@ export default function HomePageClient() {
                 {steps.map((step, i) => (
                   <div key={i} className="text-center">
                     <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border border-slate-100">
-                      <span className="text-2xl font-bold text-[#18EB6F]">{step.num}</span>
+                      <span className="text-2xl font-bold text-[#4DEB2D]">{step.num}</span>
                     </div>
                     <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
                     <p className="text-slate-500 leading-relaxed">{step.desc}</p>
@@ -335,7 +335,7 @@ export default function HomePageClient() {
 
               <div className="text-center mt-12">
                 <Link href={specialistHref}>
-                  <Button className="h-14 rounded-full bg-[#18EB6F] px-10 text-base font-semibold text-slate-900 hover:bg-[#18EB6F]/85">
+                  <Button className="h-14 rounded-full bg-[#4DEB2D] px-10 text-base font-semibold text-slate-900 hover:bg-[#4DEB2D]/85">
                     {t("hero.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -361,23 +361,23 @@ export default function HomePageClient() {
                   key={i} 
                   className={`relative rounded-3xl p-8 ${
                     plan.highlight 
-                      ? "bg-[#e6fbee] border-2 border-[#18EB6F]" 
+                      ? "bg-[#e8f7e4] border-2 border-[#4DEB2D]" 
                       : "bg-[#fafaf8] border border-slate-100"
                   }`}
                 >
                   {plan.badge && (
-                    <div className="absolute -top-3 left-6 bg-[#18EB6F] text-slate-900 text-xs font-bold px-4 py-1.5 rounded-full">
+                    <div className="absolute -top-3 left-6 bg-[#4DEB2D] text-slate-900 text-xs font-bold px-4 py-1.5 rounded-full">
                       {plan.badge}
                     </div>
                   )}
 
                   <div className={`inline-block px-5 py-2 rounded-full text-xs font-bold mb-5 ${
-                    plan.highlight ? "bg-[#18EB6F] text-slate-900" : "bg-[#e6fbee] text-[#4E996D]"
+                    plan.highlight ? "bg-[#4DEB2D] text-slate-900" : "bg-[#e8f7e4] text-[#66995C]"
                   }`}>
                     {plan.lessons}
                   </div>
 
-                  <h3 className="text-lg font-bold mb-3 text-[#4E996D]">
+                  <h3 className="text-lg font-bold mb-3 text-[#66995C]">
                     {plan.name}
                   </h3>
 
@@ -394,7 +394,7 @@ export default function HomePageClient() {
 
                   <Button className={`w-full h-12 rounded-full font-semibold mb-8 ${
                     plan.highlight 
-                      ? "bg-[#18EB6F] text-slate-900 hover:bg-[#18EB6F]/85" 
+                      ? "bg-[#4DEB2D] text-slate-900 hover:bg-[#4DEB2D]/85" 
                       : "bg-slate-800 text-white hover:bg-slate-700"
                   }`}>
                     Обрати
@@ -404,7 +404,7 @@ export default function HomePageClient() {
                   <div className="space-y-4">
                     {plan.features.map((feature, j) => (
                       <div key={j} className="flex items-start gap-3">
-                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#18EB6F]" />
+                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#4DEB2D]" />
                         <span className="text-sm text-slate-600">
                           {feature}
                         </span>
@@ -432,7 +432,7 @@ export default function HomePageClient() {
                 <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border border-slate-100">
                   <div className="flex gap-1 mb-5">
                     {[...Array(review.rating)].map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-[#EB9E1A] text-[#EB9E1A]" />
+                      <Star key={j} className="h-5 w-5 fill-[#EB7734] text-[#EB7734]" />
                     ))}
                   </div>
                   <p className="text-slate-600 mb-5 leading-relaxed">{'"'}{review.text}{'"'}</p>
@@ -477,7 +477,7 @@ export default function HomePageClient() {
         {/* CTA */}
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#e6fbee] rounded-[2rem] p-10 lg:p-14 text-center border border-[#18EB6F]/30">
+            <div className="bg-[#e8f7e4] rounded-[2rem] p-10 lg:p-14 text-center border border-[#4DEB2D]/30">
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
                 {t("cta.title")}
               </h2>
@@ -485,7 +485,7 @@ export default function HomePageClient() {
                 {t("cta.subtitle")}
               </p>
               <Link href={specialistHref}>
-                <Button className="h-14 rounded-full bg-[#18EB6F] px-10 text-base font-semibold text-slate-900 hover:bg-[#18EB6F]/85">
+                <Button className="h-14 rounded-full bg-[#4DEB2D] px-10 text-base font-semibold text-slate-900 hover:bg-[#4DEB2D]/85">
                   {t("cta.button")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
