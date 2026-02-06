@@ -389,9 +389,9 @@ export default function SpecialistsPage() {
           <div className="hidden lg:block w-80 xl:w-96 flex-shrink-0">
             <div className="sticky top-44">
               {hoveredData && (
-                <div className="flex flex-col gap-3 animate-scale-in" key={hoveredData.id}>
-                  {/* Video preview card */}
-                  <div className={`relative rounded-2xl overflow-hidden border-4 border-slate-200 ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
+                <div className="rounded-2xl border-4 border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
+                  {/* Video preview */}
+                  <div className={`relative ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
                     {/* Floating tags */}
                     <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
                       {hoveredData.videoTags?.map((tag, i) => (
@@ -429,19 +429,21 @@ export default function SpecialistsPage() {
                     </div>
                   </div>
 
-                  {/* Action buttons */}
-                  <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-4 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
-                      <Calendar className="h-4 w-4 mr-2" />
-                      Переглянути розклад
-                    </Button>
-                  </Link>
-                  <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-4 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
-                      <User className="h-4 w-4 mr-2" />
-                      {"Профіль " + hoveredData.name.split(" ")[0]}
-                    </Button>
-                  </Link>
+                  {/* Action buttons inside the same border block */}
+                  <div className="flex flex-col">
+                    <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
+                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                        <Calendar className="h-4 w-4" />
+                        Переглянути розклад
+                      </button>
+                    </Link>
+                    <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
+                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                        <User className="h-4 w-4" />
+                        {"Профіль " + hoveredData.name.split(" ")[0]}
+                      </button>
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
