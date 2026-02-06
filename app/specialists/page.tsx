@@ -5,23 +5,18 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { BookOpen, Search, Star, MapPin, Video, Home, Award, SlidersHorizontal, Users, Heart, ArrowLeft } from "lucide-react"
+import { BookOpen, Search, Star, Video, Home, Award, Users, Heart, ArrowLeft, MessageCircle, ChevronDown, TrendingUp } from "lucide-react"
 
 export default function SpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState("all")
-  const [showFilters, setShowFilters] = useState(true)
-  const [priceRange, setPriceRange] = useState([0, 1000])
-  const [onlineOnly, setOnlineOnly] = useState(false)
-  const [offlineOnly, setOfflineOnly] = useState(false)
-  const [verifiedOnly, setVerifiedOnly] = useState(false)
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([])
+  const [priceFilter, setPriceFilter] = useState("all")
+  const [formatFilter, setFormatFilter] = useState("all")
+  const [sortBy, setSortBy] = useState("top")
   const [favorites, setFavorites] = useState<number[]>([])
+  const [expandedBio, setExpandedBio] = useState<number | null>(null)
 
   const specialists = [
     {
@@ -30,6 +25,7 @@ export default function SpecialistsPage() {
       specialization: "Репетитор",
       image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
       subjects: ["Англійська мова", "Німецька мова"],
+      languages: ["Українська (рідна)", "Англійська (C2)"],
       rating: 4.9,
       reviews: 48,
       activeStudents: 49,
@@ -39,9 +35,12 @@ export default function SpecialistsPage() {
       priceOffline: 500,
       location: "Київ",
       verified: true,
+      superTutor: true,
       online: true,
       offline: true,
-      bio: "Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку. Готую до іспитів, допомагаю прокачати розмовну мову та адаптую програму під цілі учня.",
+      bio: "Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку та рівня підготовки. Готую до іспитів ЗНО/НМТ, допомагаю прокачати розмовну мову та адаптую програму під індивідуальні цілі кожного учня.",
+      popular: true,
+      bookedRecently: 12,
     },
     {
       id: 3,
@@ -49,6 +48,7 @@ export default function SpecialistsPage() {
       specialization: "Психолог",
       image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Індивідуальна терапія", "Сімейна терапія"],
+      languages: ["Українська (рідна)", "Англійська (B2)"],
       rating: 5.0,
       reviews: 62,
       activeStudents: 38,
@@ -58,9 +58,12 @@ export default function SpecialistsPage() {
       priceOffline: 700,
       location: "Київ",
       verified: true,
+      superTutor: true,
       online: true,
       offline: false,
-      bio: "Клінічний психолог з 10-річним досвідом. Спеціалізуюсь на роботі з тривожністю.",
+      bio: "Клінічний психолог з 10-річним досвідом. Спеціалізуюсь на роботі з тривожністю, депресією та вигоранням. Використовую когнітивно-поведінкову терапію та mindfulness-підходи для досягнення стійких результатів.",
+      popular: false,
+      bookedRecently: 9,
     },
     {
       id: 4,
@@ -68,6 +71,7 @@ export default function SpecialistsPage() {
       specialization: "Логопед",
       image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
       subjects: ["Постановка звуків", "Корекція мовлення"],
+      languages: ["Українська (рідна)"],
       rating: 4.9,
       reviews: 41,
       activeStudents: 32,
@@ -77,16 +81,19 @@ export default function SpecialistsPage() {
       priceOffline: 600,
       location: "Київ",
       verified: true,
+      superTutor: false,
       online: true,
       offline: true,
-      bio: "Логопед-дефектолог. Працюю з дітьми та дорослими.",
+      bio: "Логопед-дефектолог з 8-річним стажем. Працюю з дітьми від 3 років та дорослими. Спеціалізуюсь на постановці звуків, корекції заїкання та розвитку мовлення.",
+      popular: true,
+      bookedRecently: 7,
     },
   ]
 
   const getAccentColor = (type: string) => {
-    if (type === "Репетитор") return { bg: "bg-[#e8f5e9]", text: "text-[#43a047]", border: "border-[#43a047]" }
-    if (type === "Психолог") return { bg: "bg-[#e8eaf6]", text: "text-[#5c6bc0]", border: "border-[#5c6bc0]" }
-    return { bg: "bg-[#fff8e1]", text: "text-[#f9a825]", border: "border-[#f9a825]" }
+    if (type === "Репетитор") return { bg: "bg-[#e8f5e9]", text: "text-[#43a047]" }
+    if (type === "Психолог") return { bg: "bg-[#e8eaf6]", text: "text-[#5c6bc0]" }
+    return { bg: "bg-[#fff8e1]", text: "text-[#f9a825]" }
   }
 
   const toggleFavorite = (id: number) => {
@@ -94,9 +101,9 @@ export default function SpecialistsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafaf8]">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
+      <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-6">
@@ -127,304 +134,241 @@ export default function SpecialistsPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 lg:px-8 py-8">
-        {/* Search bar */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-6 tracking-tight font-heading">Знайти спеціаліста</h1>
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
-              <Input
-                placeholder="Пошук за ім'ям або предметом..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-13 rounded-2xl border-slate-200 bg-white pl-12 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
-              />
+      {/* Top Filter Bar */}
+      <div className="sticky top-16 z-40 bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 lg:px-8">
+          {/* Primary filters row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-slate-200 py-3">
+            <div className="px-4 first:pl-0">
+              <div className="text-xs font-medium text-slate-400 mb-1">Спеціальність</div>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Всі спеціалісти</SelectItem>
+                  <SelectItem value="tutor">Репетитори</SelectItem>
+                  <SelectItem value="psychologist">Психологи</SelectItem>
+                  <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger className="h-13 w-full rounded-2xl border-slate-200 bg-white md:w-[220px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Всі спеціалісти</SelectItem>
-                <SelectItem value="tutor">Репетитори</SelectItem>
-                <SelectItem value="psychologist">Психологи</SelectItem>
-                <SelectItem value="speech-therapist">Логопеди</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="h-13 rounded-2xl border-slate-200 bg-white md:w-auto hover:bg-slate-50 cursor-pointer"
-            >
-              <SlidersHorizontal className="mr-2 h-4 w-4" />
-              Фільтри
-            </Button>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Ціна за заняття</div>
+              <Select value={priceFilter} onValueChange={setPriceFilter}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{"₴100 – ₴1,000+"}</SelectItem>
+                  <SelectItem value="low">{"До ₴300"}</SelectItem>
+                  <SelectItem value="mid">{"₴300 – ₴600"}</SelectItem>
+                  <SelectItem value="high">{"₴600+"}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Формат</div>
+              <Select value={formatFilter} onValueChange={setFormatFilter}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-який</SelectItem>
+                  <SelectItem value="online">Онлайн</SelectItem>
+                  <SelectItem value="offline">Офлайн</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="px-4">
+              <div className="text-xs font-medium text-slate-400 mb-1">Сортувати</div>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="top">Наш вибір</SelectItem>
+                  <SelectItem value="rating">За рейтингом</SelectItem>
+                  <SelectItem value="price-low">Ціна: низька</SelectItem>
+                  <SelectItem value="price-high">Ціна: висока</SelectItem>
+                  <SelectItem value="reviews">За відгуками</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Secondary chips row */}
+          <div className="flex items-center gap-3 pb-3 overflow-x-auto">
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Предмети
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Рідна мова
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+              Супер-спеціаліст
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
+            <div className="ml-auto flex items-center gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Пошук за ім'ям..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-9 w-48 rounded-full border-slate-200 pl-9 text-sm focus:border-[#43a047] focus:ring-1 focus:ring-[#c8e6c9]"
+                />
+              </div>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="grid gap-8 lg:grid-cols-4">
-          {/* Filters */}
-          {showFilters && (
-            <div className="lg:col-span-1">
-              <div className="bg-[#fafaf8] rounded-3xl p-6 border-2 border-transparent hover:border-black transition-all">
-                <h3 className="text-base font-bold text-slate-800 mb-6">Фільтри</h3>
+      {/* Results */}
+      <div className="container mx-auto px-4 lg:px-8 py-6">
+        <div className="mb-5 text-sm text-slate-500">
+          Знайдено <span className="font-semibold text-slate-700">{specialists.length}</span> спеціалістів
+        </div>
 
-                <div className="space-y-6">
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Ціна за годину</Label>
-                    <Slider
-                      value={priceRange}
-                      onValueChange={setPriceRange}
-                      max={1000}
-                      step={50}
-                      className="w-full"
-                    />
-                    <div className="flex items-center justify-between text-sm font-medium text-slate-600">
-                      <span>{priceRange[0]} ₴</span>
-                      <span>{priceRange[1]} ₴</span>
+        <div className="flex flex-col gap-4">
+          {specialists.map((specialist) => {
+            const accent = getAccentColor(specialist.specialization)
+            const isFav = favorites.includes(specialist.id)
+            const isExpanded = expandedBio === specialist.id
+            return (
+              <div
+                key={specialist.id}
+                className="bg-white rounded-2xl border border-slate-200 hover:border-black hover:border-2 hover:m-[-1px] transition-colors cursor-pointer"
+              >
+                <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
+                  {/* Photo */}
+                  <div className="relative w-full md:w-44 lg:w-48 flex-shrink-0">
+                    <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-xl bg-slate-100">
+                      {specialist.image ? (
+                        <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
+                      ) : (
+                        <Avatar className="h-full w-full rounded-xl">
+                          <AvatarFallback className="bg-slate-50 text-2xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
+                        </Avatar>
+                      )}
+                      {specialist.online && (
+                        <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-2 border-white" />
+                      )}
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Формат занять</Label>
-                    <div className="space-y-2.5">
-                      <label className="flex items-center gap-2.5 cursor-pointer">
-                        <Checkbox
-                          checked={onlineOnly}
-                          onCheckedChange={(c) => setOnlineOnly(c as boolean)}
-                          className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
-                        />
-                        <span className="text-sm text-slate-600">Онлайн</span>
-                      </label>
-                      <label className="flex items-center gap-2.5 cursor-pointer">
-                        <Checkbox
-                          checked={offlineOnly}
-                          onCheckedChange={(c) => setOfflineOnly(c as boolean)}
-                          className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
-                        />
-                        <span className="text-sm text-slate-600">Офлайн</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <label className="flex items-center gap-2.5 cursor-pointer">
-                    <Checkbox
-                      checked={verifiedOnly}
-                      onCheckedChange={(c) => setVerifiedOnly(c as boolean)}
-                      className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
-                    />
-                    <span className="text-sm text-slate-600">Тільки верифіковані</span>
-                  </label>
-
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium text-slate-700">Предмети</Label>
-                    <div className="space-y-2.5 max-h-48 overflow-y-auto">
-                      {["Англійська мова", "Німецька мова", "Математика", "Фізика", "Хімія", "Українська мова", "Історія", "Біологія"].map((subject) => (
-                        <label key={subject} className="flex items-center gap-2.5 cursor-pointer">
-                          <Checkbox
-                            checked={selectedSubjects.includes(subject)}
-                            onCheckedChange={(checked) => {
-                              if (checked) setSelectedSubjects([...selectedSubjects, subject])
-                              else setSelectedSubjects(selectedSubjects.filter((s) => s !== subject))
-                            }}
-                            className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
-                          />
-                          <span className="text-sm text-slate-600">{subject}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-xl border-dashed border-slate-300 text-slate-500 hover:bg-white hover:text-slate-800 cursor-pointer"
-                    onClick={() => {
-                      setPriceRange([0, 1000])
-                      setOnlineOnly(false)
-                      setOfflineOnly(false)
-                      setVerifiedOnly(false)
-                      setSelectedSubjects([])
-                    }}
-                  >
-                    Скинути фільтри
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Results */}
-          <div className={showFilters ? "lg:col-span-3" : "lg:col-span-4"}>
-            <div className="mb-6 text-sm font-medium text-slate-500">
-              Знайдено {specialists.length} спеціалістів
-            </div>
-
-            {favorites.length > 0 && (
-              <div className="mb-6 p-4 bg-[#fafaf8] rounded-2xl border-2 border-transparent hover:border-black transition-all">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-red-500 fill-current" />
-                    <span className="text-sm font-medium text-slate-700">
-                      {favorites.length} {favorites.length === 1 ? "обраний" : "обраних"}
-                    </span>
-                  </div>
-                  <Button variant="outline" size="sm" className="text-xs rounded-full cursor-pointer">
-                    Переглянути обраних
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            <div className="flex flex-col gap-5">
-              {specialists.map((specialist) => {
-                const accent = getAccentColor(specialist.specialization)
-                return (
-                  <div
-                    key={specialist.id}
-                    className="bg-white rounded-3xl border-2 border-transparent hover:border-black card-hover overflow-hidden"
-                  >
-                    <div className="flex flex-col md:flex-row">
-                      {/* Photo + mobile info */}
-                      <div className="flex flex-row md:flex-col gap-4 p-5 md:w-56 lg:w-64 flex-shrink-0">
-                        <div className="relative w-[38%] md:w-full flex-shrink-0">
-                          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-slate-100">
-                            {specialist.image ? (
-                              <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
-                            ) : (
-                              <Avatar className="h-full w-full rounded-2xl">
-                                <AvatarFallback className="bg-slate-50 text-xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
-                              </Avatar>
-                            )}
-                          </div>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-4 mb-2">
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
                           {specialist.verified && (
-                            <div className="absolute -bottom-1.5 -right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm ring-2 ring-white z-10">
-                              <Award className={`h-4 w-4 ${accent.text}`} />
-                            </div>
+                            <Award className="h-5 w-5 text-[#43a047]" />
                           )}
                         </div>
-
-                        {/* Mobile header info */}
-                        <div className="flex flex-col flex-1 min-w-0 md:hidden py-0.5">
-                          <h3 className="text-lg font-bold text-slate-800 mb-0.5">{specialist.name}</h3>
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`text-xs font-medium ${accent.text} ${accent.bg} px-2 py-0.5 rounded-full`}>
-                              {specialist.specialization}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {specialist.superTutor && (
+                            <span className="text-xs font-bold text-white bg-[#43a047] px-2.5 py-1 rounded">
+                              Супер-спеціаліст
                             </span>
-                            <span className="flex items-center gap-1 text-xs text-slate-500">
-                              <Star className="h-3 w-3 fill-[#ffc107] text-[#ffc107]" />
-                              {specialist.rating}
-                            </span>
-                          </div>
-                          <div className="flex flex-col gap-1 text-[11px] text-slate-500 mb-1">
-                            <span className="flex items-center gap-1.5">
-                              <Users className="h-3 w-3" />
-                              {specialist.activeStudents} учнів
-                            </span>
-                            <span className="flex items-center gap-1.5">
-                              <BookOpen className="h-3 w-3" />
-                              {specialist.lessonsCompleted} занять
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {specialist.subjects.slice(0, 2).map((s) => (
-                              <span key={s} className="rounded-full bg-[#fafaf8] px-2 py-0.5 text-[10px] font-medium text-slate-600">{s}</span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Desktop info */}
-                      <div className="flex flex-col flex-1 min-w-0 p-5 pt-0 md:pt-5 md:pl-0">
-                        <div className="hidden md:flex flex-col gap-1 mb-2">
-                          <div className="flex items-center justify-between gap-4">
-                            <h3 className="text-xl font-bold text-slate-800">{specialist.name}</h3>
-                            <div className="flex items-center gap-1.5 bg-[#fff8e1] px-2.5 py-1 rounded-full">
-                              <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
-                              <span className="text-sm font-bold text-slate-700">{specialist.rating}</span>
-                              <span className="text-xs text-slate-500">({specialist.reviews})</span>
-                            </div>
-                          </div>
-                          <span className={`self-start text-xs font-medium ${accent.text} ${accent.bg} px-2.5 py-1 rounded-full`}>
+                          )}
+                          <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2.5 py-1 rounded`}>
                             {specialist.specialization}
                           </span>
-                          <div className="mt-2 flex items-center gap-4 text-xs font-medium text-slate-500">
-                            <span className="flex items-center gap-1.5">
-                              <Users className="h-3.5 w-3.5" />
-                              {specialist.activeStudents} учнів
-                            </span>
-                            <span className="text-slate-300">|</span>
-                            <span className="flex items-center gap-1.5">
-                              <BookOpen className="h-3.5 w-3.5" />
-                              {specialist.lessonsCompleted} занять
-                            </span>
-                            <span className="text-slate-300">|</span>
-                            <div className="flex gap-1.5">
-                              {specialist.subjects.map((s) => (
-                                <span key={s} className="rounded-full bg-[#fafaf8] px-2 py-0.5 text-xs text-slate-600">{s}</span>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-
-                        <p className="text-sm text-slate-600 mb-3 leading-relaxed line-clamp-3 md:line-clamp-none">
-                          {specialist.bio}
-                        </p>
-
-                        <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-medium text-slate-500">
-                          <span className="flex items-center gap-1.5">
-                            <MapPin className="h-3.5 w-3.5" />
-                            {specialist.location}
-                          </span>
-                          {specialist.online && (
-                            <span className="flex items-center gap-1.5">
-                              <Video className="h-3.5 w-3.5" />
-                              Онлайн
-                            </span>
-                          )}
-                          {specialist.offline && (
-                            <span className="flex items-center gap-1.5">
-                              <Home className="h-3.5 w-3.5" />
-                              Офлайн
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Price sidebar */}
-                      <div className="flex flex-row md:flex-col items-center justify-between gap-3 border-t md:border-t-0 md:border-l border-slate-100 bg-[#fafaf8] p-5 md:w-48">
-                        <div className="text-left md:text-center">
-                          <div className="text-xs font-medium text-slate-500 mb-1">Вартість заняття</div>
-                          <div className="text-2xl font-bold text-[#43a047]">
-                            {specialist.priceOnline} ₴
-                            <span className="text-sm font-medium text-slate-400 ml-1">/ год</span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 shrink-0 md:w-full md:flex-col">
-                          <button
-                            onClick={() => toggleFavorite(specialist.id)}
-                            className={`p-2.5 rounded-xl border-2 transition-all cursor-pointer ${
-                              favorites.includes(specialist.id)
-                                ? "text-red-500 bg-red-50 border-red-200"
-                                : "text-slate-400 bg-white border-slate-200 hover:text-red-500 hover:border-red-200"
-                            }`}
-                          >
-                            <Heart className={`h-4 w-4 ${favorites.includes(specialist.id) ? "fill-current" : ""}`} />
-                          </button>
-                          <Link href={`/specialists/${specialist.id}`} className="shrink-0 md:w-full">
-                            <Button className="w-full rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer">
-                              Переглянути
-                            </Button>
-                          </Link>
                         </div>
                       </div>
                     </div>
+
+                    {/* Languages */}
+                    <div className="flex flex-col gap-1 mb-3 text-sm text-slate-600">
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-400">Предмети:</span>
+                        {specialist.subjects.map(s => (
+                          <span key={s} className="font-medium">{s}</span>
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-slate-400">Мови:</span>
+                        <span>{specialist.languages.join(", ")}</span>
+                      </div>
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="flex items-center gap-6 mb-3">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-lg font-bold text-slate-900">{specialist.rating}</span>
+                        <Star className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-slate-900">{specialist.reviews}</div>
+                        <div className="text-xs text-slate-400">{"відгуків"}</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-slate-900">{specialist.activeStudents}</div>
+                        <div className="text-xs text-slate-400">{"учнів"}</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm font-bold text-slate-900">{specialist.lessonsCompleted}</div>
+                        <div className="text-xs text-slate-400">{"занять"}</div>
+                      </div>
+                    </div>
+
+                    {/* Bio */}
+                    <p className={`text-sm text-slate-600 leading-relaxed mb-2 ${isExpanded ? "" : "line-clamp-2"}`}>
+                      {specialist.bio}
+                    </p>
+                    <button
+                      onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
+                      className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#43a047] transition-colors cursor-pointer mb-3"
+                    >
+                      {isExpanded ? "Згорнути" : "Дізнатись більше"}
+                    </button>
+
+                    {/* Popular badge */}
+                    {specialist.popular && specialist.bookedRecently > 0 && (
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <TrendingUp className="h-3.5 w-3.5 text-[#43a047]" />
+                        <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
+                      </div>
+                    )}
                   </div>
-                )
-              })}
-            </div>
-          </div>
+
+                  {/* Price & Actions */}
+                  <div className="flex flex-row md:flex-col items-center md:items-end gap-4 md:gap-3 md:w-52 flex-shrink-0 border-t md:border-t-0 pt-4 md:pt-0">
+                    <div className="flex items-center gap-2 md:flex-col md:items-end">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-2xl font-bold text-slate-900">{"₴"}{specialist.priceOnline}</span>
+                      </div>
+                      <span className="text-sm text-slate-400">50-хв заняття</span>
+                    </div>
+
+                    <button
+                      onClick={(e) => { e.stopPropagation(); toggleFavorite(specialist.id) }}
+                      className="absolute top-5 right-5 md:static p-0 cursor-pointer"
+                      aria-label="Додати в обране"
+                    >
+                      <Heart className={`h-6 w-6 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
+                    </button>
+
+                    <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full">
+                      <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
+                        <Button className="w-full h-11 rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer text-sm">
+                          Записатись на заняття
+                        </Button>
+                      </Link>
+                      <Button variant="outline" className="flex-1 md:w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Написати
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>
