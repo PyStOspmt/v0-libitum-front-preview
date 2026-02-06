@@ -28,10 +28,10 @@ export default function HomePageClient() {
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
   const features = [
-    { icon: <Shield className="h-5 w-5 text-[#2D7519]" />, title: t("features.verified.title"), color: "bg-[#e6f5e0]" },
-    { icon: <Star className="h-5 w-5 text-[#25A901]" />, title: t("features.ratings.title"), color: "bg-[#d4f0cc]" },
-    { icon: <TrendingUp className="h-5 w-5 text-[#24421B]" />, title: t("features.progress.title"), color: "bg-[#e6f5e0]" },
-    { icon: <Users className="h-5 w-5 text-[#2D7519]" />, title: "Групові заняття", color: "bg-[#d4f0cc]" },
+    { icon: <Shield className="h-5 w-5 text-[#4E996D]" />, title: t("features.verified.title"), color: "bg-[#e6fbee]" },
+    { icon: <Star className="h-5 w-5 text-[#EB9E1A]" />, title: t("features.ratings.title"), color: "bg-[#fef3dd]" },
+    { icon: <TrendingUp className="h-5 w-5 text-[#9C2FEB]" />, title: t("features.progress.title"), color: "bg-[#f0e5fd]" },
+    { icon: <Users className="h-5 w-5 text-[#4E996D]" />, title: "Групові заняття", color: "bg-[#e6fbee]" },
   ]
 
   const categories = [
@@ -39,24 +39,24 @@ export default function HomePageClient() {
       title: t("categories.tutor.title"),
       desc: t("categories.tutor.desc"),
       stat: t("categories.tutor.stat"),
-      colorBg: "bg-[#e6f5e0]",
-      colorText: "text-[#2D7519]",
+      colorBg: "bg-[#e6fbee]",
+      colorText: "text-[#4E996D]",
       icon: <BookOpen className="h-6 w-6" />,
     },
     {
       title: t("categories.psychologist.title"),
       desc: t("categories.psychologist.desc"),
       stat: t("categories.psychologist.stat"),
-      colorBg: "bg-[#d4f0cc]",
-      colorText: "text-[#24421B]",
+      colorBg: "bg-[#f0e5fd]",
+      colorText: "text-[#9C2FEB]",
       icon: <Users className="h-6 w-6" />,
     },
     {
       title: t("categories.speech.title"),
       desc: t("categories.speech.desc"),
       stat: t("categories.speech.stat"),
-      colorBg: "bg-[#e6f5e0]",
-      colorText: "text-[#2D7519]",
+      colorBg: "bg-[#fef3dd]",
+      colorText: "text-[#EB9E1A]",
       icon: <Star className="h-6 w-6" />,
     },
   ]
@@ -110,26 +110,26 @@ export default function HomePageClient() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#f6f7f4]">
+    <div className="min-h-screen bg-[#fafaf8]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 border-b border-[#e6f5e0]">
+      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-18 items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="relative h-10 w-10 overflow-hidden rounded-xl">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <span className="text-lg font-bold text-[#23331F]">LIBITUM</span>
+              <span className="text-lg font-bold text-slate-800">LIBITUM</span>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-10">
-              <Link href={specialistHref} className="text-sm font-medium text-[#2B3329] hover:text-[#25A901] transition-colors">
+              <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.specialists")}
               </Link>
-              <Link href="#how" className="text-sm font-medium text-[#2B3329] hover:text-[#25A901] transition-colors">
+              <Link href="#how" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.how_it_works")}
               </Link>
-              <Link href="#reviews" className="text-sm font-medium text-[#2B3329] hover:text-[#25A901] transition-colors">
+              <Link href="#reviews" className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.reviews")}
               </Link>
               <LanguageSwitcher />
@@ -138,19 +138,19 @@ export default function HomePageClient() {
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-full bg-[#25A901] px-6 text-sm font-medium text-white hover:bg-[#2D7519]">
+                  <Button className="h-10 rounded-full bg-[#18EB6F] px-6 text-sm font-medium text-slate-900 hover:bg-[#18EB6F]/85">
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-[#d4f0cc] text-[#2B3329] hover:bg-[#e6f5e0]">
+                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-full bg-[#25A901] px-6 text-sm font-medium text-white hover:bg-[#2D7519]">
+                    <Button className="h-10 rounded-full bg-[#18EB6F] px-6 text-sm font-medium text-slate-900 hover:bg-[#18EB6F]/85">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -167,30 +167,30 @@ export default function HomePageClient() {
           <div className="container mx-auto">
             <div className="grid lg:grid-cols-12 gap-5">
               {/* Main Hero Card */}
-              <div className="lg:col-span-7 relative bg-[#e6f5e0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px]">
+              <div className="lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px]">
                 {/* Decorative soft circles */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-[#d4f0cc] rounded-full translate-x-1/3 -translate-y-1/3" />
-                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#c2e8b5] rounded-full -translate-x-1/4 translate-y-1/4" />
-                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#d4f0cc] rounded-full" />
+                <div className="absolute top-0 right-0 w-80 h-80 bg-[#e6fbee] rounded-full translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fef3dd] rounded-full -translate-x-1/4 translate-y-1/4" />
+                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#f0e5fd] rounded-full" />
                 
                 <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 bg-white/60 text-[#2D7519] px-4 py-2 rounded-full text-sm font-medium mb-8">
-                    <Star className="h-4 w-4 fill-[#25A901] text-[#25A901]" />
+                  <div className="inline-flex items-center gap-2 bg-[#e6fbee] text-[#4E996D] px-4 py-2 rounded-full text-sm font-medium mb-8">
+                    <Star className="h-4 w-4 fill-[#18EB6F] text-[#18EB6F]" />
                     {t("hero.tagline")}
                   </div>
 
-                  <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-[#23331F] mb-6 leading-[1.1] font-heading tracking-tight max-w-xl">
+                  <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-800 mb-6 leading-[1.1] font-heading tracking-tight max-w-xl">
                     {t("hero.title")}
                   </h1>
 
-                  <p className="text-lg text-[#24421B] mb-10 max-w-md leading-relaxed">
+                  <p className="text-lg text-slate-600 mb-10 max-w-md leading-relaxed">
                     {t("hero.subtitle")}
                   </p>
 
                   <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-[#25A901] text-white pl-8 pr-6 text-base font-semibold hover:bg-[#2D7519] gap-3">
+                    <Button className="h-14 rounded-full bg-[#18EB6F] text-slate-900 pl-8 pr-6 text-base font-semibold hover:bg-[#18EB6F]/85 gap-3">
                       {t("hero.cta")}
-                      <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
+                      <span className="h-10 w-10 rounded-full bg-slate-900/10 flex items-center justify-center">
                         <ArrowRight className="h-5 w-5" />
                       </span>
                     </Button>
@@ -199,14 +199,14 @@ export default function HomePageClient() {
                   {/* Avatars row */}
                   <div className="flex items-center mt-10">
                     <div className="flex -space-x-3">
-                      <div className="w-11 h-11 rounded-full bg-white/70 border-2 border-[#e6f5e0] flex items-center justify-center text-sm font-medium text-[#2D7519]">OK</div>
-                      <div className="w-11 h-11 rounded-full bg-white/70 border-2 border-[#e6f5e0] flex items-center justify-center text-sm font-medium text-[#24421B]">MШ</div>
-                      <div className="w-11 h-11 rounded-full bg-white/70 border-2 border-[#e6f5e0] flex items-center justify-center text-sm font-medium text-[#2D7519]">AП</div>
-                      <div className="w-11 h-11 rounded-full bg-[#25A901] border-2 border-[#e6f5e0] flex items-center justify-center text-sm font-medium text-white">+</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e6fbee] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#4E996D]">ОК</div>
+                      <div className="w-11 h-11 rounded-full bg-[#fef3dd] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#EB9E1A]">МШ</div>
+                      <div className="w-11 h-11 rounded-full bg-[#f0e5fd] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#9C2FEB]">АП</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e6fbee] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#4E996D]">+</div>
                     </div>
                     <div className="ml-4">
-                      <div className="text-xl font-bold text-[#23331F]">500+</div>
-                      <div className="text-sm text-[#24421B]">спеціалістів онлайн</div>
+                      <div className="text-xl font-bold text-slate-800">500+</div>
+                      <div className="text-sm text-slate-500">спеціалістів онлайн</div>
                     </div>
                   </div>
                 </div>
@@ -215,53 +215,53 @@ export default function HomePageClient() {
               {/* Right column - Bento cards */}
               <div className="lg:col-span-5 grid grid-rows-2 gap-5">
                 {/* Top tutor card */}
-                <div className="bg-white rounded-[2rem] p-6 border border-[#d4f0cc] flex items-center gap-5 group hover:border-[#25A901] transition-colors cursor-pointer">
-                  <div className="relative w-28 h-28 bg-[#e6f5e0] rounded-2xl overflow-hidden flex-shrink-0">
+                <div className="bg-[#fafaf8] rounded-[2rem] p-6 border border-slate-100 flex items-center gap-5 group hover:bg-white transition-colors cursor-pointer">
+                  <div className="relative w-28 h-28 bg-[#e6fbee] rounded-2xl overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-[#25A901] flex items-center justify-center">
-                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
+                      <div className="w-12 h-12 rounded-full bg-[#18EB6F] flex items-center justify-center">
+                        <Play className="h-5 w-5 text-slate-900 fill-slate-900 ml-0.5" />
                       </div>
                     </div>
-                    <div className="absolute bottom-2 right-2 bg-[#23331F] text-white text-[10px] px-2 py-1 rounded-full font-medium">
+                    <div className="absolute bottom-2 right-2 bg-slate-800/80 text-white text-[10px] px-2 py-1 rounded-full font-medium">
                       2:30
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold text-[#25A901] bg-[#e6f5e0] px-2.5 py-1 rounded-full">TOP</span>
-                      <span className="flex items-center gap-1 text-sm text-[#2B3329]">
-                        <Star className="h-3.5 w-3.5 fill-[#25A901] text-[#25A901]" />
+                      <span className="text-xs font-semibold text-[#4E996D] bg-[#e6fbee] px-2.5 py-1 rounded-full">TOP</span>
+                      <span className="flex items-center gap-1 text-sm text-slate-500">
+                        <Star className="h-3.5 w-3.5 fill-[#EB9E1A] text-[#EB9E1A]" />
                         4.9
                       </span>
                     </div>
-                    <div className="font-bold text-[#23331F] text-lg mb-0.5">Олена Коваленко</div>
-                    <div className="text-sm text-[#2B3329]/70 mb-2">Репетитор англійської</div>
-                    <div className="text-sm font-semibold text-[#25A901]">від 350 ₴/год</div>
+                    <div className="font-bold text-slate-800 text-lg mb-0.5">Олена Коваленко</div>
+                    <div className="text-sm text-slate-500 mb-2">Репетитор англійської</div>
+                    <div className="text-sm font-semibold text-[#4E996D]">від 350 ₴/год</div>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-[#d4f0cc] group-hover:text-[#25A901] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#18EB6F] group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </div>
 
                 {/* Bottom row - 2 small cards */}
                 <div className="grid grid-cols-2 gap-5">
                   {/* Stats card */}
-                  <div className="bg-[#d4f0cc] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#fef3dd] rounded-[2rem] p-6 flex flex-col justify-between">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <TrendingUp className="h-6 w-6 text-[#2D7519]" />
+                      <TrendingUp className="h-6 w-6 text-[#EB9E1A]" />
                     </div>
                     <div>
-                      <div className="text-3xl font-bold text-[#23331F]">98%</div>
-                      <div className="text-sm text-[#24421B]">задоволених учнів</div>
+                      <div className="text-3xl font-bold text-slate-800">98%</div>
+                      <div className="text-sm text-slate-600">задоволених учнів</div>
                     </div>
                   </div>
 
                   {/* Feature card */}
-                  <div className="bg-[#e6f5e0] rounded-[2rem] p-6 flex flex-col justify-between">
+                  <div className="bg-[#f0e5fd] rounded-[2rem] p-6 flex flex-col justify-between">
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <Shield className="h-6 w-6 text-[#24421B]" />
+                      <Shield className="h-6 w-6 text-[#9C2FEB]" />
                     </div>
                     <div>
-                      <div className="text-lg font-bold text-[#23331F]">Перевірені</div>
-                      <div className="text-sm text-[#24421B]">сертифіковані викладачі</div>
+                      <div className="text-lg font-bold text-slate-800">Перевірені</div>
+                      <div className="text-sm text-slate-600">сертифіковані викладачі</div>
                     </div>
                   </div>
                 </div>
@@ -271,11 +271,11 @@ export default function HomePageClient() {
             {/* Features row below */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
               {features.map((feature, i) => (
-                <div key={i} className="bg-white rounded-2xl p-5 border border-[#d4f0cc] flex items-center gap-4 hover:border-[#25A901] transition-colors">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-5 border border-slate-100 flex items-center gap-4 hover:bg-white transition-colors">
                   <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
-                  <span className="text-sm font-medium text-[#2B3329]">{feature.title}</span>
+                  <span className="text-sm font-medium text-slate-700">{feature.title}</span>
                 </div>
               ))}
             </div>
@@ -286,24 +286,24 @@ export default function HomePageClient() {
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
             <div className="text-center mb-14">
-              <p className="text-sm font-medium text-[#25A901] mb-4 uppercase tracking-wider">{t("about.label")}</p>
-              <h2 className="text-3xl lg:text-5xl font-bold text-[#23331F] font-heading mb-5 tracking-tight">
+              <p className="text-sm font-medium text-[#4E996D] mb-4 uppercase tracking-wider">{t("about.label")}</p>
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Категорії спеціалістів
               </h2>
-              <p className="text-[#2B3329]/70 max-w-2xl mx-auto text-lg">{t("specialists.subtitle")}</p>
+              <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("specialists.subtitle")}</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {categories.map((cat, i) => (
-                <div key={i} className="bg-white rounded-3xl p-8 border border-[#d4f0cc] hover:border-[#25A901] transition-colors">
+                <div key={i} className="bg-[#fafaf8] rounded-3xl p-8 border border-slate-100 hover:bg-white transition-colors">
                   <div className={`h-14 w-14 ${cat.colorBg} rounded-2xl flex items-center justify-center mb-6`}>
                     <div className={cat.colorText}>
                       {cat.icon}
                     </div>
                   </div>
-                  <h3 className="text-xl font-bold text-[#23331F] mb-3">{cat.title}</h3>
-                  <p className="text-[#2B3329]/70 text-sm mb-5 leading-relaxed">{cat.desc}</p>
-                  <div className="text-sm font-semibold text-[#25A901]">{cat.stat}</div>
+                  <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
+                  <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
+                  <div className="text-sm font-semibold text-[#4E996D]">{cat.stat}</div>
                 </div>
               ))}
             </div>
@@ -313,29 +313,29 @@ export default function HomePageClient() {
         {/* How it works */}
         <section id="how" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#e6f5e0] rounded-[2.5rem] p-10 lg:p-16">
+            <div className="bg-[#f5f5f0] rounded-[2.5rem] p-10 lg:p-16">
               <div className="text-center mb-14">
-                <h2 className="text-3xl lg:text-5xl font-bold text-[#23331F] font-heading mb-5 tracking-tight">
+                <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                   {t("nav.how_it_works")}
                 </h2>
-                <p className="text-[#24421B] max-w-2xl mx-auto text-lg">{t("how.subtitle")}</p>
+                <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("how.subtitle")}</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-10">
                 {steps.map((step, i) => (
                   <div key={i} className="text-center">
-                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border border-[#d4f0cc]">
-                      <span className="text-2xl font-bold text-[#25A901]">{step.num}</span>
+                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border border-slate-100">
+                      <span className="text-2xl font-bold text-[#18EB6F]">{step.num}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-[#23331F] mb-3">{step.title}</h3>
-                    <p className="text-[#24421B] leading-relaxed">{step.desc}</p>
+                    <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
+                    <p className="text-slate-500 leading-relaxed">{step.desc}</p>
                   </div>
                 ))}
               </div>
 
               <div className="text-center mt-12">
                 <Link href={specialistHref}>
-                  <Button className="h-14 rounded-full bg-[#25A901] px-10 text-base font-semibold text-white hover:bg-[#2D7519]">
+                  <Button className="h-14 rounded-full bg-[#18EB6F] px-10 text-base font-semibold text-slate-900 hover:bg-[#18EB6F]/85">
                     {t("hero.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -349,10 +349,10 @@ export default function HomePageClient() {
         <section id="plans" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-5xl font-bold text-[#23331F] font-heading mb-5 tracking-tight">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
                 Обери свій план
               </h2>
-              <p className="text-[#2B3329]/70 text-lg">{t("pricing.subtitle")}</p>
+              <p className="text-slate-500 text-lg">{t("pricing.subtitle")}</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -361,41 +361,41 @@ export default function HomePageClient() {
                   key={i} 
                   className={`relative rounded-3xl p-8 ${
                     plan.highlight 
-                      ? "bg-[#e6f5e0] border-2 border-[#25A901]" 
-                      : "bg-white border border-[#d4f0cc]"
+                      ? "bg-[#e6fbee] border-2 border-[#18EB6F]" 
+                      : "bg-[#fafaf8] border border-slate-100"
                   }`}
                 >
                   {plan.badge && (
-                    <div className="absolute -top-3 left-6 bg-[#25A901] text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                    <div className="absolute -top-3 left-6 bg-[#18EB6F] text-slate-900 text-xs font-bold px-4 py-1.5 rounded-full">
                       {plan.badge}
                     </div>
                   )}
 
                   <div className={`inline-block px-5 py-2 rounded-full text-xs font-bold mb-5 ${
-                    plan.highlight ? "bg-[#25A901] text-white" : "bg-[#e6f5e0] text-[#2D7519]"
+                    plan.highlight ? "bg-[#18EB6F] text-slate-900" : "bg-[#e6fbee] text-[#4E996D]"
                   }`}>
                     {plan.lessons}
                   </div>
 
-                  <h3 className="text-lg font-bold mb-3 text-[#2D7519]">
+                  <h3 className="text-lg font-bold mb-3 text-[#4E996D]">
                     {plan.name}
                   </h3>
 
                   <div className="flex items-baseline gap-2 mb-8">
                     {plan.oldPrice && (
-                      <span className="text-sm line-through text-[#2B3329]/40">
+                      <span className="text-sm line-through text-slate-400">
                         {plan.oldPrice}
                       </span>
                     )}
-                    <span className="text-3xl font-bold text-[#23331F]">
+                    <span className="text-3xl font-bold text-slate-800">
                       {plan.price}
                     </span>
                   </div>
 
                   <Button className={`w-full h-12 rounded-full font-semibold mb-8 ${
                     plan.highlight 
-                      ? "bg-[#25A901] text-white hover:bg-[#2D7519]" 
-                      : "bg-[#23331F] text-white hover:bg-[#2B3329]"
+                      ? "bg-[#18EB6F] text-slate-900 hover:bg-[#18EB6F]/85" 
+                      : "bg-slate-800 text-white hover:bg-slate-700"
                   }`}>
                     Обрати
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -404,8 +404,8 @@ export default function HomePageClient() {
                   <div className="space-y-4">
                     {plan.features.map((feature, j) => (
                       <div key={j} className="flex items-start gap-3">
-                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#25A901]" />
-                        <span className="text-sm text-[#2B3329]/80">
+                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#18EB6F]" />
+                        <span className="text-sm text-slate-600">
                           {feature}
                         </span>
                       </div>
@@ -421,22 +421,22 @@ export default function HomePageClient() {
         <section id="reviews" className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
             <div className="text-center mb-14">
-              <h2 className="text-3xl lg:text-5xl font-bold text-[#23331F] font-heading mb-4 tracking-tight">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
                 {t("nav.reviews")}
               </h2>
-              <p className="text-[#2B3329]/70 text-lg">{t("reviews.subtitle")}</p>
+              <p className="text-slate-500 text-lg">{t("reviews.subtitle")}</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map((review, i) => (
-                <div key={i} className="bg-white rounded-2xl p-7 border border-[#d4f0cc]">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl p-7 border border-slate-100">
                   <div className="flex gap-1 mb-5">
                     {[...Array(review.rating)].map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-[#25A901] text-[#25A901]" />
+                      <Star key={j} className="h-5 w-5 fill-[#EB9E1A] text-[#EB9E1A]" />
                     ))}
                   </div>
-                  <p className="text-[#2B3329]/80 mb-5 leading-relaxed">{'"'}{review.text}{'"'}</p>
-                  <div className="text-sm font-semibold text-[#23331F]">{review.name}</div>
+                  <p className="text-slate-600 mb-5 leading-relaxed">{'"'}{review.text}{'"'}</p>
+                  <div className="text-sm font-semibold text-slate-800">{review.name}</div>
                 </div>
               ))}
             </div>
@@ -447,24 +447,24 @@ export default function HomePageClient() {
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto max-w-3xl">
             <div className="text-center mb-14">
-              <h2 className="text-3xl lg:text-5xl font-bold text-[#23331F] font-heading mb-4 tracking-tight">
+              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
                 Часті запитання
               </h2>
-              <p className="text-[#2B3329]/70 text-lg">{t("faq.subtitle")}</p>
+              <p className="text-slate-500 text-lg">{t("faq.subtitle")}</p>
             </div>
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className="bg-white rounded-2xl overflow-hidden border border-[#d4f0cc]">
+                <div key={i} className="bg-[#fafaf8] rounded-2xl overflow-hidden border border-slate-100">
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-[#e6f5e0]/50 transition-colors"
+                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors"
                   >
-                    <span className="font-semibold text-[#23331F]">{faq.q}</span>
-                    <ChevronDown className={`h-5 w-5 text-[#2D7519] transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                    <span className="font-semibold text-slate-800">{faq.q}</span>
+                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
                   </button>
                   {openFaq === i && (
-                    <div className="px-7 pb-5 text-[#2B3329]/80 leading-relaxed">
+                    <div className="px-7 pb-5 text-slate-600 leading-relaxed">
                       {faq.a}
                     </div>
                   )}
@@ -477,15 +477,15 @@ export default function HomePageClient() {
         {/* CTA */}
         <section className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className="bg-[#e6f5e0] rounded-[2rem] p-10 lg:p-14 text-center border border-[#d4f0cc]">
-              <h2 className="text-3xl lg:text-4xl font-bold text-[#23331F] mb-5 font-heading tracking-tight">
+            <div className="bg-[#e6fbee] rounded-[2rem] p-10 lg:p-14 text-center border border-[#18EB6F]/30">
+              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
                 {t("cta.title")}
               </h2>
-              <p className="text-[#24421B] mb-10 max-w-xl mx-auto text-lg">
+              <p className="text-slate-600 mb-10 max-w-xl mx-auto text-lg">
                 {t("cta.subtitle")}
               </p>
               <Link href={specialistHref}>
-                <Button className="h-14 rounded-full bg-[#25A901] px-10 text-base font-semibold text-white hover:bg-[#2D7519]">
+                <Button className="h-14 rounded-full bg-[#18EB6F] px-10 text-base font-semibold text-slate-900 hover:bg-[#18EB6F]/85">
                   {t("cta.button")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -496,7 +496,7 @@ export default function HomePageClient() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#23331F] text-white py-14 px-4 lg:px-8 rounded-t-[2rem]">
+      <footer className="bg-slate-800 text-white py-14 px-4 lg:px-8 rounded-t-[2rem]">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
@@ -506,12 +506,12 @@ export default function HomePageClient() {
                 </div>
                 <span className="text-lg font-bold">LIBITUM</span>
               </Link>
-              <p className="text-[#d4f0cc]/60 text-sm">{t("about.desc")}</p>
+              <p className="text-slate-400 text-sm">{t("about.desc")}</p>
             </div>
 
             <div>
               <h4 className="font-semibold mb-4">{t("contact.title")}</h4>
-              <div className="space-y-2 text-sm text-[#d4f0cc]/60">
+              <div className="space-y-2 text-sm text-slate-400">
                 <p>{t("contact.email")}</p>
                 <p>{t("contact.telegram")}</p>
                 <p>{t("contact.hours")}</p>
@@ -520,7 +520,7 @@ export default function HomePageClient() {
 
             <div>
               <h4 className="font-semibold mb-4">{t("rules.title")}</h4>
-              <div className="space-y-2 text-sm text-[#d4f0cc]/60">
+              <div className="space-y-2 text-sm text-slate-400">
                 <p>{t("rules.item1")}</p>
                 <p>{t("rules.item2")}</p>
               </div>
@@ -529,14 +529,14 @@ export default function HomePageClient() {
             <div>
               <h4 className="font-semibold mb-4">Навігація</h4>
               <div className="space-y-2 text-sm">
-                <Link href={specialistHref} className="block text-[#d4f0cc]/60 hover:text-[#25A901]">{t("nav.specialists")}</Link>
-                <Link href="#how" className="block text-[#d4f0cc]/60 hover:text-[#25A901]">{t("nav.how_it_works")}</Link>
-                <Link href="#reviews" className="block text-[#d4f0cc]/60 hover:text-[#25A901]">{t("nav.reviews")}</Link>
+                <Link href={specialistHref} className="block text-slate-400 hover:text-white">{t("nav.specialists")}</Link>
+                <Link href="#how" className="block text-slate-400 hover:text-white">{t("nav.how_it_works")}</Link>
+                <Link href="#reviews" className="block text-slate-400 hover:text-white">{t("nav.reviews")}</Link>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-[#2B3329] pt-8 text-center text-sm text-[#d4f0cc]/40">
+          <div className="border-t border-slate-700 pt-8 text-center text-sm text-slate-400">
             © 2024 Libitum Education. {t("footer.rights")}
           </div>
         </div>
