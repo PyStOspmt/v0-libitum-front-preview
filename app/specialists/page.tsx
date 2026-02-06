@@ -258,7 +258,7 @@ export default function SpecialistsPage() {
               return (
                 <div
                   key={specialist.id}
-                  className={`relative bg-white rounded-2xl border-2 transition-colors cursor-pointer ${
+                  className={`relative bg-white rounded-2xl border-4 transition-colors cursor-pointer ${
                     isHovered ? "border-black" : "border-slate-200"
                   }`}
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
@@ -275,7 +275,7 @@ export default function SpecialistsPage() {
                           </Avatar>
                         )}
                         {specialist.online && (
-                          <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-2 border-white" />
+                          <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-4 border-white" />
                         )}
                       </div>
                     </div>
@@ -394,7 +394,7 @@ export default function SpecialistsPage() {
               {hoveredData && (
                 <div className="flex flex-col gap-3 animate-scale-in" key={hoveredData.id}>
                   {/* Video preview card */}
-                  <div className={`relative rounded-2xl overflow-hidden border-2 border-slate-200 ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
+                  <div className={`relative rounded-2xl overflow-hidden border-4 border-slate-200 ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
                     {/* Floating tags */}
                     <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
                       {hoveredData.videoTags?.map((tag, i) => (
@@ -414,7 +414,7 @@ export default function SpecialistsPage() {
                     </div>
 
                     {/* Small tutor photo */}
-                    <div className="absolute bottom-4 right-4 w-20 h-20 rounded-xl overflow-hidden border-2 border-white">
+                    <div className="absolute bottom-4 right-4 w-20 h-20 rounded-xl overflow-hidden border-4 border-white">
                       <Image
                         src={hoveredData.image}
                         alt={hoveredData.name}
@@ -434,13 +434,13 @@ export default function SpecialistsPage() {
 
                   {/* Action buttons */}
                   <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-2 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-4 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
                       <Calendar className="h-4 w-4 mr-2" />
                       Переглянути розклад
                     </Button>
                   </Link>
                   <Link href={`/specialists/${hoveredData.id}`} className="w-full">
-                    <Button variant="outline" className="w-full h-11 rounded-xl border-2 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
+                    <Button variant="outline" className="w-full h-11 rounded-xl border-4 border-slate-200 text-slate-700 font-semibold hover:border-black hover:bg-white cursor-pointer text-sm transition-colors">
                       <User className="h-4 w-4 mr-2" />
                       {"Профіль " + hoveredData.name.split(" ")[0]}
                     </Button>

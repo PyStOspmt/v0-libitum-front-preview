@@ -193,7 +193,7 @@ export default function HomePageClient() {
           <div className="container mx-auto">
             <div className="grid lg:grid-cols-12 gap-5">
               {/* Main Hero Card */}
-              <div className={`lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <div className={`lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
                 <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fff8e1] rounded-full -translate-x-1/4 translate-y-1/4" />
                 <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#e0f2f1] rounded-full" />
@@ -223,10 +223,10 @@ export default function HomePageClient() {
 
                   <div className="flex items-center mt-10">
                     <div className="flex -space-x-3">
-                      <div className="w-11 h-11 rounded-full bg-[#c8e6c9] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#2e7d32]">ОК</div>
-                      <div className="w-11 h-11 rounded-full bg-[#fff8e1] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#f9a825]">МШ</div>
-                      <div className="w-11 h-11 rounded-full bg-[#e8eaf6] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#5c6bc0]">АП</div>
-                      <div className="w-11 h-11 rounded-full bg-[#ffccbc] border-2 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#e64a19]">+</div>
+                      <div className="w-11 h-11 rounded-full bg-[#c8e6c9] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#2e7d32]">ОК</div>
+                      <div className="w-11 h-11 rounded-full bg-[#fff8e1] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#f9a825]">МШ</div>
+                      <div className="w-11 h-11 rounded-full bg-[#e8eaf6] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#5c6bc0]">АП</div>
+                      <div className="w-11 h-11 rounded-full bg-[#ffccbc] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#e64a19]">+</div>
                     </div>
                     <div className="ml-4">
                       <div className="text-xl font-bold text-slate-800">500+</div>
@@ -238,7 +238,7 @@ export default function HomePageClient() {
 
               {/* Right column - Bento cards */}
               <div className="lg:col-span-5 grid grid-rows-2 gap-5">
-                <div className={`bg-[#fafaf8] rounded-[2rem] p-6 border-2 border-slate-100 flex items-center gap-5 group hover:border-black card-hover cursor-pointer ${hero.visible ? "animate-slide-in-right delay-200" : "opacity-0"}`}>
+                <div className={`bg-[#fafaf8] rounded-[2rem] p-6 border-4 border-slate-100 flex items-center gap-5 group hover:border-black card-hover cursor-pointer ${hero.visible ? "animate-slide-in-right delay-200" : "opacity-0"}`}>
                   <div className="relative w-28 h-28 bg-[#e8f5e9] rounded-2xl overflow-hidden flex-shrink-0">
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-[#43a047] flex items-center justify-center">
@@ -265,7 +265,7 @@ export default function HomePageClient() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-5">
-                  <div className={`bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-300" : "opacity-0"}`}>
+                  <div className={`bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-300" : "opacity-0"}`}>
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <TrendingUp className="h-6 w-6 text-[#f9a825]" />
                     </div>
@@ -275,7 +275,7 @@ export default function HomePageClient() {
                     </div>
                   </div>
 
-                  <div className={`bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-2 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-400" : "opacity-0"}`}>
+                  <div className={`bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-400" : "opacity-0"}`}>
                     <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
                       <Shield className="h-6 w-6 text-[#43a047]" />
                     </div>
@@ -291,7 +291,7 @@ export default function HomePageClient() {
             {/* Features row */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
               {features.map((feature, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-5 border-2 border-transparent flex items-center gap-4 hover:border-black card-hover ${hero.visible ? `animate-slide-up delay-${(i + 4) * 100}` : "opacity-0"}`} style={{ animationDelay: `${(i + 4) * 100}ms` }}>
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-5 border-4 border-transparent flex items-center gap-4 hover:border-black card-hover ${hero.visible ? `animate-slide-up delay-${(i + 4) * 100}` : "opacity-0"}`} style={{ animationDelay: `${(i + 4) * 100}ms` }}>
                   <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
@@ -315,7 +315,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {categories.map((cat, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-3xl p-8 border-2 border-transparent hover:border-black card-hover ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                <div key={i} className={`bg-[#fafaf8] rounded-3xl p-8 border-4 border-transparent hover:border-black card-hover ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
                   <div className={`h-14 w-14 ${cat.iconBg} rounded-2xl flex items-center justify-center mb-6`}>
                     <div className={cat.iconColor}>{cat.icon}</div>
                   </div>
@@ -342,7 +342,7 @@ export default function HomePageClient() {
               <div className="grid md:grid-cols-3 gap-10">
                 {steps.map((step, i) => (
                   <div key={i} className={`text-center ${how.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 200}ms` }}>
-                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border-2 border-transparent hover:border-black transition-all">
+                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border-4 border-transparent hover:border-black transition-all">
                       <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
                     </div>
                     <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
@@ -377,7 +377,7 @@ export default function HomePageClient() {
               {pricing.map((plan, i) => (
                 <div
                   key={i}
-                  className={`relative rounded-3xl p-8 border-2 hover:border-black card-hover ${
+                  className={`relative rounded-3xl p-8 border-4 hover:border-black card-hover ${
                     plan.highlight
                       ? "bg-[#e8f5e9] border-[#43a047]"
                       : "bg-[#fafaf8] border-transparent"
@@ -448,7 +448,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map((review, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-7 border-2 border-transparent hover:border-black card-hover ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-7 border-4 border-transparent hover:border-black card-hover ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
                   <div className="flex gap-1 mb-5">
                     {[...Array(review.rating)].map((_, j) => (
                       <Star key={j} className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
@@ -474,7 +474,7 @@ export default function HomePageClient() {
 
             <div className="space-y-4">
               {faqs.map((faq, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl overflow-hidden border-2 border-transparent hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                <div key={i} className={`bg-[#fafaf8] rounded-2xl overflow-hidden border-4 border-transparent hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors cursor-pointer"
@@ -498,7 +498,7 @@ export default function HomePageClient() {
         {/* ═══ CTA ═══ */}
         <section ref={ctaSec.ref} className="py-20 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-2 border-transparent hover:border-black card-hover ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
+            <div className={`bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-4 border-transparent hover:border-black card-hover ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
               <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
                 {t("cta.title")}
               </h2>

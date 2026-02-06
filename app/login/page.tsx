@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[440px]">
           {/* Card */}
-          <div className="bg-[#f5f5f0] rounded-3xl border-2 border-transparent hover:border-black transition-all overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-3xl border-4 border-transparent hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">З поверненням</h1>

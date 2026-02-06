@@ -78,7 +78,7 @@ export default function RegisterPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[480px]">
           {/* Card */}
-          <div className="bg-[#f5f5f0] rounded-3xl border-2 border-transparent hover:border-black transition-all overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-3xl border-4 border-transparent hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Створити акаунт</h1>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-slate-700">Я хочу</Label>
                   <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "client" | "specialist")} className="grid grid-cols-2 gap-4">
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === "client" ? "border-[#43a047] bg-[#e8f5e9]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-2xl border-4 p-5 transition-all cursor-pointer ${userType === "client" ? "border-[#43a047] bg-[#e8f5e9]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="client" id="client" className="sr-only" />
                       <Label htmlFor="client" className="cursor-pointer text-center">
                         <span className="text-3xl mb-3 block">&#127891;</span>
@@ -98,7 +98,7 @@ export default function RegisterPage() {
                         <span className="text-xs text-slate-500 mt-1 block">Для учнів</span>
                       </Label>
                     </div>
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f9a825] bg-[#fff8e1]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-2xl border-4 p-5 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f9a825] bg-[#fff8e1]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="specialist" id="specialist" className="sr-only" />
                       <Label htmlFor="specialist" className="cursor-pointer text-center">
                         <span className="text-3xl mb-3 block">&#128104;&#8205;&#127979;</span>
@@ -234,7 +234,7 @@ export default function RegisterPage() {
 
       {/* Rules Dialog */}
       <Dialog open={showRules} onOpenChange={setShowRules}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border-2 border-transparent">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border-4 border-transparent">
           <DialogHeader className="pb-5 border-b border-slate-100">
             <DialogTitle className="text-2xl font-bold text-slate-800">Правила платформи</DialogTitle>
             <DialogDescription className="text-slate-500">Будь ласка, ознайомтесь перед реєстрацією</DialogDescription>
