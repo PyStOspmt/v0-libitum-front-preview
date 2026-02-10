@@ -137,7 +137,7 @@ export default function SpecialistsPage() {
                 </Button>
               </Link>
               <Link href="/register">
-                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
+                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2' }}>
                   Реєстрація
                 </button>
               </Link>
@@ -369,7 +369,7 @@ export default function SpecialistsPage() {
 
                       <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
                         <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
+                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#0891b2' }}>
                             Записатись
                           </button>
                         </Link>
