@@ -132,12 +132,12 @@ export default function SpecialistsPage() {
             </div>
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="outline" className="h-9 rounded-lg px-5 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
+                <Button variant="outline" className="h-9 rounded-md px-5 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
                   Увійти
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="h-9 rounded-lg bg-[#0891b2] px-5 text-sm font-medium text-white hover:bg-[#0e7490] cursor-pointer">
+                <Button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid black' }}>
                   Реєстрація
                 </Button>
               </Link>
@@ -211,15 +211,15 @@ export default function SpecialistsPage() {
 
           {/* Secondary chips row */}
           <div className="flex items-center gap-2 pb-2.5 overflow-x-auto">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Предмети
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Рідна мова
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Супер-спеціаліст
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
@@ -230,7 +230,7 @@ export default function SpecialistsPage() {
                   placeholder="Пошук за ім'ям..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-8 w-44 rounded-lg border-slate-200 pl-9 text-sm focus:border-[#0891b2] focus:ring-1 focus:ring-[#b2ebf2]"
+                  className="h-8 w-44 rounded-md border-slate-200 pl-9 text-sm focus:border-[#0891b2] focus:ring-1 focus:ring-[#b2ebf2]"
                 />
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function SpecialistsPage() {
               return (
                 <div
                   key={specialist.id}
-                  className="relative bg-white rounded-lg border-2 border-slate-200 hover:border-black transition-colors cursor-pointer"
+                  className="relative bg-white rounded-lg border border-slate-200 hover:border-[3px] hover:border-black hover:m-[-2px] transition-all cursor-pointer"
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                 >
                   <div className="flex flex-col md:flex-row p-4 lg:p-5 gap-4">
@@ -369,11 +369,11 @@ export default function SpecialistsPage() {
 
                       <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
                         <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                          <Button className="w-full h-10 rounded-lg bg-[#0891b2] text-white font-semibold hover:bg-[#0e7490] cursor-pointer text-sm">
+                          <Button className="w-full h-10 rounded-md bg-[#0891b2] border-2 border-black text-white font-semibold hover:bg-[#0e7490] cursor-pointer text-sm">
                             Записатись
                           </Button>
                         </Link>
-                        <Button variant="outline" className="flex-1 md:w-full h-10 rounded-lg border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                        <Button variant="outline" className="flex-1 md:w-full h-10 rounded-md border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
                           <MessageCircle className="h-4 w-4 mr-1.5" />
                           Написати
                         </Button>
