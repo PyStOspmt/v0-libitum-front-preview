@@ -4,6 +4,7 @@
 
 @theme inline {
   --font-sans: "Helvetica Neue", "Helvetica", "Arial", system-ui, -apple-system, sans-serif;
+  --font-serif: "Georgia", "Times New Roman", "Times", serif;
   --font-mono: "JetBrains Mono", "Geist Mono", monospace;
 
   --radius: 1rem;
@@ -300,6 +301,56 @@ button:active:not(:disabled),
 .delay-500 { animation-delay: 500ms; }
 .delay-600 { animation-delay: 600ms; }
 .delay-700 { animation-delay: 700ms; }
+
+/* Paper glitch effect */
+@keyframes paper-glitch {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  5% { clip-path: inset(40% 0 20% 0); transform: translate(-2px, 0); }
+  10% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  15% { clip-path: inset(80% 0 0% 0); transform: translate(1px, 0); }
+  20% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  55% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  60% { clip-path: inset(10% 0 60% 0); transform: translate(-1px, 0); }
+  65% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+
+@keyframes paper-glitch-2 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  7% { clip-path: inset(60% 0 10% 0); transform: translate(2px, 0); }
+  12% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  50% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  52% { clip-path: inset(20% 0 50% 0); transform: translate(1px, 0); }
+  57% { clip-path: inset(0 0 0 0); transform: translate(0); }
+}
+
+@keyframes paper-scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.paper-glitch-layer::before,
+.paper-glitch-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.paper-glitch-layer::before {
+  animation: paper-glitch 8s infinite steps(1);
+  mix-blend-mode: screen;
+  opacity: 0.03;
+  background-color: rgba(255, 50, 50, 0.04);
+}
+
+.paper-glitch-layer::after {
+  animation: paper-glitch-2 8s 0.3s infinite steps(1);
+  mix-blend-mode: multiply;
+  opacity: 0.03;
+  background-color: rgba(50, 50, 255, 0.04);
+}
 
 /* Font Heading */
 .font-heading {

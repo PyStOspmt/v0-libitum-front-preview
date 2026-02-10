@@ -7,6 +7,8 @@ import {
   ArrowRight,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Play,
   Star,
   Users,
@@ -41,11 +43,13 @@ export default function HomePageClient() {
   const { user } = useAuth()
   const { t } = useTranslation(user?.language || "UA")
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const sliderRef = useRef<HTMLDivElement>(null)
 
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
   /* section observers */
   const hero = useInView(0.1)
+  const slider = useInView()
   const cats = useInView()
   const how  = useInView()
   const price = useInView()
@@ -54,10 +58,18 @@ export default function HomePageClient() {
   const ctaSec = useInView()
 
   const features = [
-    { icon: <Shield className="h-5 w-5 text-[#43a047]" />, title: t("features.verified.title"), color: "bg-[#e8f5e9]" },
-    { icon: <Star className="h-5 w-5 text-[#f9a825]" />, title: t("features.ratings.title"), color: "bg-[#fff8e1]" },
-    { icon: <TrendingUp className="h-5 w-5 text-[#43a047]" />, title: t("features.progress.title"), color: "bg-[#e8f5e9]" },
-    { icon: <Users className="h-5 w-5 text-[#5c6bc0]" />, title: "Групові заняття", color: "bg-[#e8eaf6]" },
+    { icon: <Shield className="h-5 w-5 text-[#0891b2]" />, title: t("features.verified.title"), color: "bg-[#e0f7fa]" },
+    { icon: <Star className="h-5 w-5 text-[#f59e0b]" />, title: t("features.ratings.title"), color: "bg-[#fef3c7]" },
+    { icon: <TrendingUp className="h-5 w-5 text-[#0891b2]" />, title: t("features.progress.title"), color: "bg-[#e0f7fa]" },
+    { icon: <Users className="h-5 w-5 text-[#6366f1]" />, title: "Групові заняття", color: "bg-[#eef2ff]" },
+  ]
+
+  const tutorSlides = [
+    { name: "Олена Іваненко", subject: "Англійська мова", rating: 4.9, reviews: 48, price: 400, image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80", badge: "Супер-спеціаліст" },
+    { name: "Марія Коваленко", subject: "Психологія", rating: 5.0, reviews: 62, price: 600, image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80", badge: "TOP" },
+    { name: "Анна Мельник", subject: "Логопедія", rating: 4.9, reviews: 41, price: 500, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80", badge: null },
+    { name: "Ірина Бондар", subject: "Математика", rating: 4.8, reviews: 35, price: 350, image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80", badge: "Супер-спеціаліст" },
+    { name: "Тетяна Шевченко", subject: "Хімія", rating: 4.7, reviews: 28, price: 380, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80", badge: null },
   ]
 
   const categories = [
@@ -65,24 +77,24 @@ export default function HomePageClient() {
       title: t("categories.tutor.title"),
       desc: t("categories.tutor.desc"),
       stat: t("categories.tutor.stat"),
-      iconBg: "bg-[#e8f5e9]",
-      iconColor: "text-[#43a047]",
+      iconBg: "bg-[#e0f7fa]",
+      iconColor: "text-[#0891b2]",
       icon: <BookOpen className="h-6 w-6" />,
     },
     {
       title: t("categories.psychologist.title"),
       desc: t("categories.psychologist.desc"),
       stat: t("categories.psychologist.stat"),
-      iconBg: "bg-[#e8eaf6]",
-      iconColor: "text-[#5c6bc0]",
+      iconBg: "bg-[#eef2ff]",
+      iconColor: "text-[#6366f1]",
       icon: <Users className="h-6 w-6" />,
     },
     {
       title: t("categories.speech.title"),
       desc: t("categories.speech.desc"),
       stat: t("categories.speech.stat"),
-      iconBg: "bg-[#fff8e1]",
-      iconColor: "text-[#f9a825]",
+      iconBg: "bg-[#fef3c7]",
+      iconColor: "text-[#f59e0b]",
       icon: <Star className="h-6 w-6" />,
     },
   ]
@@ -135,20 +147,26 @@ export default function HomePageClient() {
     { q: t("faq.q4.q"), a: t("faq.q4.a") },
   ]
 
+  const scrollSlider = (dir: "left" | "right") => {
+    if (!sliderRef.current) return
+    const amount = 320
+    sliderRef.current.scrollBy({ left: dir === "left" ? -amount : amount, behavior: "smooth" })
+  }
+
   return (
     <div className="min-h-screen bg-[#fafaf8]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-100/80">
+      <header className="sticky top-0 z-50 bg-white/95 border-b border-slate-200">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-18 items-center justify-between">
+          <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+              <div className="relative h-9 w-9 overflow-hidden rounded-lg">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
               <span className="text-lg font-bold text-slate-800">LIBITUM</span>
             </Link>
 
-            <nav className="hidden lg:flex items-center gap-10">
+            <nav className="hidden lg:flex items-center gap-8">
               <Link href={specialistHref} className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors">
                 {t("nav.specialists")}
               </Link>
@@ -164,19 +182,19 @@ export default function HomePageClient() {
             <div className="flex items-center gap-3">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
+                  <Button className="h-10 rounded-lg bg-[#0891b2] px-6 text-sm font-medium text-white hover:bg-[#0e7490] cursor-pointer">
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
+                    <Button variant="outline" className="h-10 rounded-lg px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
                       {t("btn.login")}
                     </Button>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
+                    <Button className="h-10 rounded-lg bg-[#0891b2] px-6 text-sm font-medium text-white hover:bg-[#0e7490] cursor-pointer">
                       {t("btn.register")}
                     </Button>
                   </Link>
@@ -188,111 +206,77 @@ export default function HomePageClient() {
       </header>
 
       <main>
-        {/* ═══ HERO ═══ */}
-        <section ref={hero.ref} className="relative py-8 px-4 lg:px-8">
+        {/* === HERO === Simple full-width banner */}
+        <section ref={hero.ref} className="px-4 lg:px-8 pt-8 pb-4">
           <div className="container mx-auto">
-            <div className="grid lg:grid-cols-12 gap-5">
-              {/* Main Hero Card */}
-              <div className={`lg:col-span-7 relative bg-[#f5f5f0] rounded-[2rem] p-8 lg:p-12 overflow-hidden min-h-[500px] border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
-                <div className="absolute top-0 right-0 w-80 h-80 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
-                <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#fff8e1] rounded-full -translate-x-1/4 translate-y-1/4" />
-                <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-[#e0f2f1] rounded-full" />
-
-                <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 bg-[#e8f5e9] text-[#2e7d32] px-4 py-2 rounded-full text-sm font-medium mb-8">
-                    <Star className="h-4 w-4 fill-[#66bb6a] text-[#66bb6a]" />
-                    {t("hero.tagline")}
-                  </div>
-
-                  <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-800 mb-6 leading-[1.1] font-heading tracking-tight max-w-xl">
-                    {t("hero.title")}
-                  </h1>
-
-                  <p className="text-lg text-slate-600 mb-10 max-w-md leading-relaxed">
-                    {t("hero.subtitle")}
-                  </p>
-
-                  <Link href={specialistHref}>
-                    <Button className="h-14 rounded-full bg-[#43a047] text-white pl-8 pr-6 text-base font-semibold hover:bg-[#388e3c] gap-3 cursor-pointer">
-                      {t("hero.cta")}
-                      <span className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center">
-                        <ArrowRight className="h-5 w-5" />
-                      </span>
-                    </Button>
-                  </Link>
-
-                  <div className="flex items-center mt-10">
-                    <div className="flex -space-x-3">
-                      <div className="w-11 h-11 rounded-full bg-[#c8e6c9] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#2e7d32]">ОК</div>
-                      <div className="w-11 h-11 rounded-full bg-[#fff8e1] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#f9a825]">МШ</div>
-                      <div className="w-11 h-11 rounded-full bg-[#e8eaf6] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#5c6bc0]">АП</div>
-                      <div className="w-11 h-11 rounded-full bg-[#ffccbc] border-4 border-[#f5f5f0] flex items-center justify-center text-sm font-medium text-[#e64a19]">+</div>
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-xl font-bold text-slate-800">500+</div>
-                      <div className="text-sm text-slate-500">спеціалістів онлайн</div>
-                    </div>
-                  </div>
-                </div>
+            <div
+              className={`paper-glitch-layer relative bg-[#0891b2] rounded-lg px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}
+              style={{
+                backgroundImage: `
+                  url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.12'/%3E%3C/svg%3E"),
+                  repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px),
+                  linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(0,0,0,0.04) 100%)
+                `,
+                backgroundSize: "200px 200px, 100% 4px, 100% 100%",
+                boxShadow: "inset 0 0 80px rgba(0,0,0,0.1)",
+              }}
+            >
+              {/* Paper fold crease lines */}
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                <div className="absolute top-0 left-1/2 w-px h-full bg-white/[0.05]" />
+                <div className="absolute top-1/2 left-0 w-full h-px bg-white/[0.05]" />
+                {/* Diagonal fold */}
+                <div className="absolute top-0 right-0 w-full h-full" style={{ background: "linear-gradient(135deg, transparent 48%, rgba(255,255,255,0.02) 49%, rgba(255,255,255,0.02) 51%, transparent 52%)" }} />
               </div>
 
-              {/* Right column - Bento cards */}
-              <div className="lg:col-span-5 grid grid-rows-2 gap-5">
-                <div className={`bg-[#fafaf8] rounded-[2rem] p-6 border-4 border-slate-100 flex items-center gap-5 group hover:border-black card-hover cursor-pointer ${hero.visible ? "animate-slide-in-right delay-200" : "opacity-0"}`}>
-                  <div className="relative w-28 h-28 bg-[#e8f5e9] rounded-2xl overflow-hidden flex-shrink-0">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-12 h-12 rounded-full bg-[#43a047] flex items-center justify-center">
-                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
-                      </div>
-                    </div>
-                    <div className="absolute bottom-2 right-2 bg-slate-800/80 text-white text-[10px] px-2 py-1 rounded-full font-medium">
-                      2:30
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs font-semibold text-[#2e7d32] bg-[#e8f5e9] px-2.5 py-1 rounded-full">TOP</span>
-                      <span className="flex items-center gap-1 text-sm text-slate-500">
-                        <Star className="h-3.5 w-3.5 fill-[#ffc107] text-[#ffc107]" />
-                        4.9
-                      </span>
-                    </div>
-                    <div className="font-bold text-slate-800 text-lg mb-0.5">Олена Коваленко</div>
-                    <div className="text-sm text-slate-500 mb-2">Репетитор англійської</div>
-                    <div className="text-sm font-semibold text-[#43a047]">від 350 ₴/год</div>
-                  </div>
-                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-[#43a047] group-hover:translate-x-1 transition-all flex-shrink-0" />
-                </div>
+              {/* Scanline sweep */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-lg" aria-hidden="true">
+                <div className="absolute left-0 w-full h-8 opacity-[0.03]" style={{ background: "linear-gradient(180deg, transparent, white, transparent)", animation: "paper-scanline 6s linear infinite" }} />
+              </div>
 
-                <div className="grid grid-cols-2 gap-5">
-                  <div className={`bg-[#fff8e1] rounded-[2rem] p-6 flex flex-col justify-between border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-300" : "opacity-0"}`}>
-                    <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <TrendingUp className="h-6 w-6 text-[#f9a825]" />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-bold text-slate-800">98%</div>
-                      <div className="text-sm text-slate-600">задоволених учнів</div>
-                    </div>
-                  </div>
+              {/* Worn edge highlight */}
+              <div className="absolute inset-0 pointer-events-none rounded-lg" style={{ boxShadow: "inset 2px 2px 0 rgba(255,255,255,0.1), inset -2px -2px 0 rgba(0,0,0,0.08)" }} aria-hidden="true" />
 
-                  <div className={`bg-[#e8f5e9] rounded-[2rem] p-6 flex flex-col justify-between border-4 border-transparent hover:border-black card-hover ${hero.visible ? "animate-slide-up delay-400" : "opacity-0"}`}>
-                    <div className="w-12 h-12 bg-white/80 rounded-2xl flex items-center justify-center mb-4">
-                      <Shield className="h-6 w-6 text-[#43a047]" />
+              {/* Ink blot decorations */}
+              <div className="absolute top-0 right-0 w-72 h-72 translate-x-1/3 -translate-y-1/3 opacity-[0.06]" style={{ background: "radial-gradient(ellipse at 40% 50%, white 0%, transparent 70%)", borderRadius: "43% 57% 51% 49% / 42% 55% 45% 58%" }} />
+              <div className="absolute bottom-0 left-0 w-48 h-48 -translate-x-1/4 translate-y-1/4 opacity-[0.04]" style={{ background: "radial-gradient(ellipse at 60% 40%, white 0%, transparent 70%)", borderRadius: "57% 43% 49% 51% / 55% 42% 58% 45%" }} />
+
+              <div className="relative z-10 max-w-2xl">
+                <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight font-serif" style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.1)" }}>
+                  {t("hero.title")}
+                </h1>
+                <div className="w-24 h-0.5 bg-white/30 mb-5" />
+                <p className="text-lg text-white/80 mb-8 max-w-lg leading-relaxed" style={{ textShadow: "0.5px 0.5px 0 rgba(0,0,0,0.08)" }}>
+                  {t("hero.subtitle")}
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <Link href={specialistHref}>
+                    <Button className="h-13 rounded-lg bg-white text-[#0891b2] pl-7 pr-5 text-base font-semibold hover:bg-white/90 gap-3 cursor-pointer">
+                      {t("hero.cta")}
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                  <div className="flex items-center gap-3 text-white/70">
+                    <div className="flex -space-x-2">
+                      <div className="w-9 h-9 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xs font-medium text-white">ОК</div>
+                      <div className="w-9 h-9 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xs font-medium text-white">МШ</div>
+                      <div className="w-9 h-9 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xs font-medium text-white">АП</div>
                     </div>
-                    <div>
-                      <div className="text-lg font-bold text-slate-800">Перевірені</div>
-                      <div className="text-sm text-slate-600">сертифіковані викладачі</div>
-                    </div>
+                    <span className="text-sm font-medium text-white">500+ спеціалістів</span>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Features row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+        {/* Features row */}
+        <section className="px-4 lg:px-8 py-4">
+          <div className="container mx-auto">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {features.map((feature, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-5 border-4 border-transparent flex items-center gap-4 hover:border-black card-hover ${hero.visible ? `animate-slide-up delay-${(i + 4) * 100}` : "opacity-0"}`} style={{ animationDelay: `${(i + 4) * 100}ms` }}>
-                  <div className={`h-12 w-12 rounded-2xl ${feature.color} flex items-center justify-center flex-shrink-0`}>
+                <div key={i} className={`bg-white rounded-lg p-4 border border-slate-200 flex items-center gap-3 hover:border-black transition-colors ${hero.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 2) * 100}ms` }}>
+                  <div className={`h-10 w-10 rounded-lg ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
                   <span className="text-sm font-medium text-slate-700">{feature.title}</span>
@@ -302,58 +286,120 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ═══ CATEGORIES ═══ */}
-        <section ref={cats.ref} className="py-20 px-4 lg:px-8">
+        {/* === TUTORS SLIDER === */}
+        <section ref={slider.ref} className="py-14 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`text-center mb-14 ${cats.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <p className="text-sm font-medium text-[#43a047] mb-4 uppercase tracking-wider">{t("about.label")}</p>
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
-                Категорії спеціалістів
-              </h2>
-              <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("specialists.subtitle")}</p>
+            <div className={`flex items-end justify-between mb-8 ${slider.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <div>
+                <p className="text-sm font-medium text-[#0891b2] mb-2 uppercase tracking-wider">Наші спеціалісти</p>
+                <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight">
+                  Найкращі репетитори
+                </h2>
+              </div>
+              <div className="hidden sm:flex items-center gap-2">
+                <button onClick={() => scrollSlider("left")} className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:border-black hover:text-black transition-colors cursor-pointer">
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button onClick={() => scrollSlider("right")} className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:border-black hover:text-black transition-colors cursor-pointer">
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div ref={sliderRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 snap-x snap-mandatory" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
+              {tutorSlides.map((tutor, i) => (
+                <Link href="/specialists" key={i} className="flex-shrink-0 w-72 snap-start">
+                  <div className={`bg-white rounded-lg border border-slate-200 overflow-hidden hover:border-black transition-colors group ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                    <div className="relative h-48 bg-slate-100 overflow-hidden">
+                      <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-top group-hover:scale-105 transition-transform duration-300" crossOrigin="anonymous" />
+                      {tutor.badge && (
+                        <div className="absolute top-3 left-3 bg-[#0891b2] text-white text-xs font-semibold px-2.5 py-1 rounded-md">
+                          {tutor.badge}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-slate-800 mb-1">{tutor.name}</h3>
+                      <p className="text-sm text-slate-500 mb-3">{tutor.subject}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5">
+                          <Star className="h-4 w-4 fill-[#f59e0b] text-[#f59e0b]" />
+                          <span className="text-sm font-semibold text-slate-800">{tutor.rating}</span>
+                          <span className="text-xs text-slate-400">({tutor.reviews})</span>
+                        </div>
+                        <span className="text-sm font-bold text-[#0891b2]">{"від ₴"}{tutor.price}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+
+              {/* Last card - View All */}
+              <Link href="/specialists" className="flex-shrink-0 w-72 snap-start">
+                <div className={`bg-[#e0f7fa] rounded-lg border border-[#b2ebf2] overflow-hidden hover:border-black transition-colors h-full flex flex-col items-center justify-center min-h-[304px] group cursor-pointer ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: "600ms" }}>
+                  <div className="h-14 w-14 rounded-lg bg-[#0891b2] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <ArrowRight className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="text-lg font-bold text-[#0891b2]">Дивитись весь каталог</span>
+                  <span className="text-sm text-[#0e7490] mt-1">500+ спеціалістів</span>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* === CATEGORIES === */}
+        <section ref={cats.ref} className="py-16 px-4 lg:px-8">
+          <div className="container mx-auto">
+            <div className={`text-center mb-12 ${cats.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <p className="text-sm font-medium text-[#0891b2] mb-3 uppercase tracking-wider">{t("about.label")}</p>
+              <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
+                Категорії спеціалістів
+              </h2>
+              <p className="text-slate-500 max-w-2xl mx-auto">{t("specialists.subtitle")}</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-5">
               {categories.map((cat, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-3xl p-8 border-4 border-transparent hover:border-black card-hover ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
-                  <div className={`h-14 w-14 ${cat.iconBg} rounded-2xl flex items-center justify-center mb-6`}>
+                <div key={i} className={`bg-white rounded-lg p-7 border border-slate-200 hover:border-black transition-colors ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                  <div className={`h-12 w-12 ${cat.iconBg} rounded-lg flex items-center justify-center mb-5`}>
                     <div className={cat.iconColor}>{cat.icon}</div>
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-3">{cat.title}</h3>
-                  <p className="text-slate-500 text-sm mb-5 leading-relaxed">{cat.desc}</p>
-                  <div className="text-sm font-semibold text-[#43a047]">{cat.stat}</div>
+                  <h3 className="text-lg font-bold text-slate-800 mb-2">{cat.title}</h3>
+                  <p className="text-slate-500 text-sm mb-4 leading-relaxed">{cat.desc}</p>
+                  <div className="text-sm font-semibold text-[#0891b2]">{cat.stat}</div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ═══ HOW IT WORKS ═══ */}
-        <section ref={how.ref} id="how" className="py-20 px-4 lg:px-8">
+        {/* === HOW IT WORKS === */}
+        <section ref={how.ref} id="how" className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-[#f5f5f0] rounded-[2.5rem] p-10 lg:p-16 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
-              <div className="text-center mb-14">
-                <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
+            <div className={`bg-slate-50 rounded-lg p-8 lg:p-14 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
+              <div className="text-center mb-12">
+                <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                   {t("nav.how_it_works")}
                 </h2>
-                <p className="text-slate-500 max-w-2xl mx-auto text-lg">{t("how.subtitle")}</p>
+                <p className="text-slate-500 max-w-2xl mx-auto">{t("how.subtitle")}</p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-10">
+              <div className="grid md:grid-cols-3 gap-8">
                 {steps.map((step, i) => (
                   <div key={i} className={`text-center ${how.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 200}ms` }}>
-                    <div className="h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-6 border-4 border-transparent hover:border-black transition-all">
-                      <span className="text-2xl font-bold text-[#43a047]">{step.num}</span>
+                    <div className="h-16 w-16 rounded-lg bg-white flex items-center justify-center mx-auto mb-5 border border-slate-200 hover:border-black transition-colors">
+                      <span className="text-xl font-bold text-[#0891b2]">{step.num}</span>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-800 mb-3">{step.title}</h3>
-                    <p className="text-slate-500 leading-relaxed">{step.desc}</p>
+                    <h3 className="text-lg font-bold text-slate-800 mb-2">{step.title}</h3>
+                    <p className="text-slate-500 leading-relaxed text-sm">{step.desc}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="text-center mt-12">
+              <div className="text-center mt-10">
                 <Link href={specialistHref}>
-                  <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer">
+                  <Button className="h-12 rounded-lg bg-[#0891b2] px-8 text-base font-semibold text-white hover:bg-[#0e7490] cursor-pointer">
                     {t("hero.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -363,44 +409,44 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ═══ PRICING ═══ */}
-        <section ref={price.ref} id="plans" className="py-20 px-4 lg:px-8">
+        {/* === PRICING === */}
+        <section ref={price.ref} id="plans" className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`text-center mb-16 ${price.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-5 tracking-tight">
+            <div className={`text-center mb-14 ${price.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                 Обери свій план
               </h2>
-              <p className="text-slate-500 text-lg">{t("pricing.subtitle")}</p>
+              <p className="text-slate-500">{t("pricing.subtitle")}</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto">
               {pricing.map((plan, i) => (
                 <div
                   key={i}
-                  className={`relative rounded-3xl p-8 border-4 hover:border-black card-hover ${
+                  className={`relative rounded-lg p-7 border hover:border-black transition-colors ${
                     plan.highlight
-                      ? "bg-[#e8f5e9] border-[#43a047]"
-                      : "bg-[#fafaf8] border-transparent"
+                      ? "bg-[#e0f7fa] border-[#0891b2]"
+                      : "bg-white border-slate-200"
                   } ${price.visible ? "animate-slide-up" : "opacity-0"}`}
                   style={{ animationDelay: `${(i + 1) * 150}ms` }}
                 >
                   {plan.badge && (
-                    <div className="absolute -top-3 left-6 bg-[#43a047] text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                    <div className="absolute -top-3 left-5 bg-[#0891b2] text-white text-xs font-bold px-3 py-1 rounded-md">
                       {plan.badge}
                     </div>
                   )}
 
-                  <div className={`inline-block px-5 py-2 rounded-full text-xs font-bold mb-5 ${
-                    plan.highlight ? "bg-[#43a047] text-white" : "bg-[#e8f5e9] text-[#2e7d32]"
+                  <div className={`inline-block px-4 py-1.5 rounded-md text-xs font-bold mb-4 ${
+                    plan.highlight ? "bg-[#0891b2] text-white" : "bg-[#e0f7fa] text-[#0891b2]"
                   }`}>
                     {plan.lessons}
                   </div>
 
-                  <h3 className="text-lg font-bold mb-3 text-[#2e7d32]">
+                  <h3 className="text-lg font-bold mb-2 text-[#0891b2]">
                     {plan.name}
                   </h3>
 
-                  <div className="flex items-baseline gap-2 mb-8">
+                  <div className="flex items-baseline gap-2 mb-6">
                     {plan.oldPrice && (
                       <span className="text-sm line-through text-slate-400">
                         {plan.oldPrice}
@@ -411,19 +457,19 @@ export default function HomePageClient() {
                     </span>
                   </div>
 
-                  <Button className={`w-full h-12 rounded-full font-semibold mb-8 cursor-pointer ${
+                  <Button className={`w-full h-11 rounded-lg font-semibold mb-6 cursor-pointer ${
                     plan.highlight
-                      ? "bg-[#43a047] text-white hover:bg-[#388e3c]"
+                      ? "bg-[#0891b2] text-white hover:bg-[#0e7490]"
                       : "bg-slate-800 text-white hover:bg-slate-700"
                   }`}>
                     Обрати
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {plan.features.map((feature, j) => (
-                      <div key={j} className="flex items-start gap-3">
-                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#43a047]" />
+                      <div key={j} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 mt-0.5 flex-shrink-0 text-[#0891b2]" />
                         <span className="text-sm text-slate-600">
                           {feature}
                         </span>
@@ -436,25 +482,25 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ═══ REVIEWS ═══ */}
-        <section ref={revs.ref} id="reviews" className="py-20 px-4 lg:px-8">
+        {/* === REVIEWS === */}
+        <section ref={revs.ref} id="reviews" className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`text-center mb-14 ${revs.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
+            <div className={`text-center mb-12 ${revs.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                 {t("nav.reviews")}
               </h2>
-              <p className="text-slate-500 text-lg">{t("reviews.subtitle")}</p>
+              <p className="text-slate-500">{t("reviews.subtitle")}</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-5">
               {reviews.map((review, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl p-7 border-4 border-transparent hover:border-black card-hover ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
-                  <div className="flex gap-1 mb-5">
+                <div key={i} className={`bg-white rounded-lg p-6 border border-slate-200 hover:border-black transition-colors ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                  <div className="flex gap-1 mb-4">
                     {[...Array(review.rating)].map((_, j) => (
-                      <Star key={j} className="h-5 w-5 fill-[#ffc107] text-[#ffc107]" />
+                      <Star key={j} className="h-4 w-4 fill-[#f59e0b] text-[#f59e0b]" />
                     ))}
                   </div>
-                  <p className="text-slate-600 mb-5 leading-relaxed">{'"'}{review.text}{'"'}</p>
+                  <p className="text-slate-600 mb-4 leading-relaxed text-sm">{'"'}{review.text}{'"'}</p>
                   <div className="text-sm font-semibold text-slate-800">{review.name}</div>
                 </div>
               ))}
@@ -462,29 +508,29 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ═══ FAQ ═══ */}
-        <section ref={faqSec.ref} className="py-20 px-4 lg:px-8">
+        {/* === FAQ === */}
+        <section ref={faqSec.ref} className="py-16 px-4 lg:px-8">
           <div className="container mx-auto max-w-3xl">
-            <div className={`text-center mb-14 ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="text-3xl lg:text-5xl font-bold text-slate-800 font-heading mb-4 tracking-tight">
+            <div className={`text-center mb-12 ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`}>
+              <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                 Часті запитання
               </h2>
-              <p className="text-slate-500 text-lg">{t("faq.subtitle")}</p>
+              <p className="text-slate-500">{t("faq.subtitle")}</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {faqs.map((faq, i) => (
-                <div key={i} className={`bg-[#fafaf8] rounded-2xl overflow-hidden border-4 border-transparent hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                <div key={i} className={`bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-7 py-5 flex items-center justify-between text-left hover:bg-white transition-colors cursor-pointer"
+                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
                   >
-                    <span className="font-semibold text-slate-800">{faq.q}</span>
-                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform duration-300 ${openFaq === i ? "rotate-180" : ""}`} />
+                    <span className="font-semibold text-slate-800 text-sm">{faq.q}</span>
+                    <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform duration-300 flex-shrink-0 ml-4 ${openFaq === i ? "rotate-180" : ""}`} />
                   </button>
                   <div className={`grid transition-all duration-300 ease-in-out ${openFaq === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                     <div className="overflow-hidden">
-                      <div className="px-7 pb-5 text-slate-600 leading-relaxed">
+                      <div className="px-6 pb-4 text-slate-600 leading-relaxed text-sm">
                         {faq.a}
                       </div>
                     </div>
@@ -495,18 +541,18 @@ export default function HomePageClient() {
           </div>
         </section>
 
-        {/* ═══ CTA ═══ */}
-        <section ref={ctaSec.ref} className="py-20 px-4 lg:px-8">
+        {/* === CTA === */}
+        <section ref={ctaSec.ref} className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-[#e8f5e9] rounded-[2rem] p-10 lg:p-14 text-center border-4 border-transparent hover:border-black card-hover ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
-              <h2 className="text-3xl lg:text-4xl font-bold text-slate-800 mb-5 font-heading tracking-tight">
+            <div className={`bg-[#e0f7fa] rounded-lg p-10 lg:p-14 text-center border border-[#b2ebf2] hover:border-black transition-colors ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
+              <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 mb-4 tracking-tight">
                 {t("cta.title")}
               </h2>
-              <p className="text-slate-600 mb-10 max-w-xl mx-auto text-lg">
+              <p className="text-slate-600 mb-8 max-w-xl mx-auto">
                 {t("cta.subtitle")}
               </p>
               <Link href={specialistHref}>
-                <Button className="h-14 rounded-full bg-[#43a047] px-10 text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer">
+                <Button className="h-12 rounded-lg bg-[#0891b2] px-8 text-base font-semibold text-white hover:bg-[#0e7490] cursor-pointer">
                   {t("cta.button")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -517,12 +563,12 @@ export default function HomePageClient() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-white py-14 px-4 lg:px-8 rounded-t-[2rem]">
+      <footer className="bg-slate-800 text-white py-12 px-4 lg:px-8 rounded-t-xl">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <Link href="/" className="flex items-center gap-2 mb-4">
-                <div className="relative h-9 w-9 overflow-hidden rounded-xl">
+                <div className="relative h-8 w-8 overflow-hidden rounded-lg">
                   <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                 </div>
                 <span className="text-lg font-bold">LIBITUM</span>

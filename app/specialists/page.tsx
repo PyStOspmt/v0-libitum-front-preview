@@ -95,15 +95,15 @@ export default function SpecialistsPage() {
   ]
 
   const getAccentColor = (type: string) => {
-    if (type === "Репетитор") return { bg: "bg-[#e8f5e9]", text: "text-[#43a047]" }
-    if (type === "Психолог") return { bg: "bg-[#e8eaf6]", text: "text-[#5c6bc0]" }
-    return { bg: "bg-[#fff8e1]", text: "text-[#f9a825]" }
+    if (type === "Репетитор") return { bg: "bg-[#e0f7fa]", text: "text-[#0891b2]" }
+    if (type === "Психолог") return { bg: "bg-[#eef2ff]", text: "text-[#6366f1]" }
+    return { bg: "bg-[#fef3c7]", text: "text-[#f59e0b]" }
   }
 
   const getVideoColor = (type: string) => {
-    if (type === "Репетитор") return "bg-[#c8e6c9]"
-    if (type === "Психолог") return "bg-[#c5cae9]"
-    return "bg-[#fff9c4]"
+    if (type === "Репетитор") return "bg-[#b2ebf2]"
+    if (type === "Психолог") return "bg-[#c7d2fe]"
+    return "bg-[#fde68a]"
   }
 
   const toggleFavorite = (id: number) => {
@@ -117,10 +117,10 @@ export default function SpecialistsPage() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-14 items-center justify-between">
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center gap-2.5">
-                <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+                <div className="relative h-9 w-9 overflow-hidden rounded-lg">
                   <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                 </div>
                 <span className="text-lg font-bold text-slate-800">LIBITUM</span>
@@ -132,14 +132,14 @@ export default function SpecialistsPage() {
             </div>
             <div className="flex items-center gap-3">
               <Link href="/login">
-                <Button variant="outline" className="h-10 rounded-full px-6 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
+                <Button variant="outline" className="h-9 rounded-md px-5 text-sm font-medium border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
                   Увійти
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c] cursor-pointer">
+                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
                   Реєстрація
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -147,12 +147,12 @@ export default function SpecialistsPage() {
       </header>
 
       {/* Top Filter Bar */}
-      <div className="sticky top-16 z-40 bg-white border-b border-slate-200">
+      <div className="sticky top-14 z-40 bg-white border-b border-slate-200">
         <div className="container mx-auto px-4 lg:px-8">
           {/* Primary filters row */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-slate-200 py-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-slate-200 py-2.5">
             <div className="px-4 first:pl-0">
-              <div className="text-xs font-medium text-slate-400 mb-1">Спеціальність</div>
+              <div className="text-xs font-medium text-slate-400 mb-0.5">Спеціальність</div>
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
                   <SelectValue />
@@ -166,7 +166,7 @@ export default function SpecialistsPage() {
               </Select>
             </div>
             <div className="px-4">
-              <div className="text-xs font-medium text-slate-400 mb-1">Ціна за заняття</div>
+              <div className="text-xs font-medium text-slate-400 mb-0.5">Ціна за заняття</div>
               <Select value={priceFilter} onValueChange={setPriceFilter}>
                 <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
                   <SelectValue />
@@ -180,7 +180,7 @@ export default function SpecialistsPage() {
               </Select>
             </div>
             <div className="px-4">
-              <div className="text-xs font-medium text-slate-400 mb-1">Формат</div>
+              <div className="text-xs font-medium text-slate-400 mb-0.5">Формат</div>
               <Select value={formatFilter} onValueChange={setFormatFilter}>
                 <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
                   <SelectValue />
@@ -193,7 +193,7 @@ export default function SpecialistsPage() {
               </Select>
             </div>
             <div className="px-4">
-              <div className="text-xs font-medium text-slate-400 mb-1">Сортувати</div>
+              <div className="text-xs font-medium text-slate-400 mb-0.5">Сортувати</div>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
                   <SelectValue />
@@ -210,16 +210,16 @@ export default function SpecialistsPage() {
           </div>
 
           {/* Secondary chips row */}
-          <div className="flex items-center gap-3 pb-3 overflow-x-auto">
-            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+          <div className="flex items-center gap-2 pb-2.5 overflow-x-auto">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Предмети
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
-            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Рідна мова
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
-            <button className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
+            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-slate-200 text-sm text-slate-700 hover:bg-slate-50 transition-colors whitespace-nowrap cursor-pointer">
               Супер-спеціаліст
               <ChevronDown className="h-3.5 w-3.5" />
             </button>
@@ -230,7 +230,7 @@ export default function SpecialistsPage() {
                   placeholder="Пошук за ім'ям..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-9 w-48 rounded-full border-slate-200 pl-9 text-sm focus:border-[#43a047] focus:ring-1 focus:ring-[#c8e6c9]"
+                  className="h-8 w-44 rounded-md border-slate-200 pl-9 text-sm focus:border-[#0891b2] focus:ring-1 focus:ring-[#b2ebf2]"
                 />
               </div>
             </div>
@@ -239,15 +239,15 @@ export default function SpecialistsPage() {
       </div>
 
       {/* Title */}
-      <div className="container mx-auto px-4 lg:px-8 pt-6 pb-2">
-        <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">
+      <div className="container mx-auto px-4 lg:px-8 pt-5 pb-2">
+        <h1 className="text-xl lg:text-2xl font-bold text-slate-900">
           <span className="italic">{specialists.length}</span> спеціалістів для вашого розвитку
         </h1>
       </div>
 
       {/* Two-column layout: Cards + Video Sidebar */}
       <div className="container mx-auto px-4 lg:px-8 py-4">
-        <div className="flex gap-6">
+        <div className="flex gap-5">
           {/* Left column - Specialist cards */}
           <div className="flex-1 min-w-0 flex flex-col gap-4">
             {specialists.map((specialist) => {
@@ -257,22 +257,22 @@ export default function SpecialistsPage() {
               return (
                 <div
                   key={specialist.id}
-                  className="relative bg-white rounded-2xl border-4 border-slate-200 hover:border-black transition-colors cursor-pointer"
+                  className="relative bg-white rounded-lg border border-slate-200 hover:border-[3px] hover:border-black hover:m-[-2px] transition-all cursor-pointer"
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                 >
-                  <div className="flex flex-col md:flex-row p-5 lg:p-6 gap-5">
+                  <div className="flex flex-col md:flex-row p-4 lg:p-5 gap-4">
                     {/* Photo */}
-                    <div className="relative w-full md:w-40 lg:w-44 flex-shrink-0">
-                      <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-xl bg-slate-100">
+                    <div className="relative w-full md:w-36 lg:w-40 flex-shrink-0">
+                      <div className="relative aspect-[4/5] md:aspect-square overflow-hidden rounded-lg bg-slate-100">
                         {specialist.image ? (
                           <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-top" crossOrigin="anonymous" />
                         ) : (
-                          <Avatar className="h-full w-full rounded-xl">
+                          <Avatar className="h-full w-full rounded-lg">
                             <AvatarFallback className="bg-slate-50 text-2xl font-bold text-slate-700">{specialist.name[0]}</AvatarFallback>
                           </Avatar>
                         )}
                         {specialist.online && (
-                          <div className="absolute bottom-2 right-2 w-3.5 h-3.5 rounded-full bg-[#43a047] border-4 border-white" />
+                          <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#0891b2] border-2 border-white" />
                         )}
                       </div>
                     </div>
@@ -282,18 +282,18 @@ export default function SpecialistsPage() {
                       <div className="flex items-start gap-4 mb-2">
                         <div>
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-bold text-slate-900">{specialist.name}</h3>
+                            <h3 className="text-lg font-bold text-slate-900">{specialist.name}</h3>
                             {specialist.verified && (
-                              <Award className="h-5 w-5 text-[#43a047]" />
+                              <Award className="h-4 w-4 text-[#0891b2]" />
                             )}
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
                             {specialist.superTutor && (
-                              <span className="text-xs font-bold text-white bg-[#43a047] px-2.5 py-1 rounded">
+                              <span className="text-xs font-bold text-white bg-[#0891b2] px-2 py-0.5 rounded-md">
                                 Супер-спеціаліст
                               </span>
                             )}
-                            <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2.5 py-1 rounded`}>
+                            <span className={`text-xs font-semibold ${accent.text} ${accent.bg} px-2 py-0.5 rounded-md`}>
                               {specialist.specialization}
                             </span>
                           </div>
@@ -301,7 +301,7 @@ export default function SpecialistsPage() {
                       </div>
 
                       {/* Subjects & Languages */}
-                      <div className="flex flex-col gap-1 mb-3 text-sm text-slate-600">
+                      <div className="flex flex-col gap-1 mb-2 text-sm text-slate-600">
                         <div className="flex items-center gap-2">
                           <BookOpen className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
                           <span>{specialist.subjects.join(", ")}</span>
@@ -313,10 +313,10 @@ export default function SpecialistsPage() {
                       </div>
 
                       {/* Stats row */}
-                      <div className="flex items-center gap-5 mb-3">
+                      <div className="flex items-center gap-4 mb-2">
                         <div className="flex items-center gap-1">
-                          <span className="text-base font-bold text-slate-900">{specialist.rating}</span>
-                          <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
+                          <span className="text-sm font-bold text-slate-900">{specialist.rating}</span>
+                          <Star className="h-3.5 w-3.5 fill-[#f59e0b] text-[#f59e0b]" />
                         </div>
                         <div>
                           <span className="text-sm font-bold text-slate-900">{specialist.reviews}</span>
@@ -333,12 +333,12 @@ export default function SpecialistsPage() {
                       </div>
 
                       {/* Bio */}
-                      <p className={`text-sm text-slate-600 leading-relaxed mb-1.5 ${isExpanded ? "" : "line-clamp-2"}`}>
+                      <p className={`text-sm text-slate-600 leading-relaxed mb-1 ${isExpanded ? "" : "line-clamp-2"}`}>
                         {specialist.bio}
                       </p>
                       <button
                         onClick={(e) => { e.stopPropagation(); setExpandedBio(isExpanded ? null : specialist.id) }}
-                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#43a047] transition-colors cursor-pointer mb-2"
+                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#0891b2] transition-colors cursor-pointer mb-1.5"
                       >
                         {isExpanded ? "Згорнути" : "Дізнатись більше"}
                       </button>
@@ -346,14 +346,14 @@ export default function SpecialistsPage() {
                       {/* Popular badge */}
                       {specialist.popular && specialist.bookedRecently > 0 && (
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
-                          <TrendingUp className="h-3.5 w-3.5 text-[#43a047]" />
+                          <TrendingUp className="h-3.5 w-3.5 text-[#0891b2]" />
                           <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
                         </div>
                       )}
                     </div>
 
                     {/* Price & Actions */}
-                    <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:w-48 flex-shrink-0 border-t md:border-t-0 pt-4 md:pt-0">
+                    <div className="flex flex-row md:flex-col items-center md:items-end gap-3 md:w-44 flex-shrink-0 border-t md:border-t-0 pt-3 md:pt-0">
                       <div className="flex items-center gap-2 md:flex-col md:items-end">
                         <span className="text-2xl font-bold text-slate-900">{"₴"}{specialist.priceOnline}</span>
                         <span className="text-xs text-slate-400">50-хв заняття</span>
@@ -361,19 +361,19 @@ export default function SpecialistsPage() {
 
                       <button
                         onClick={(e) => { e.stopPropagation(); toggleFavorite(specialist.id) }}
-                        className="md:absolute md:top-5 md:right-5 p-0 cursor-pointer"
+                        className="md:absolute md:top-4 md:right-4 p-0 cursor-pointer"
                         aria-label="Додати в обране"
                       >
-                        <Heart className={`h-6 w-6 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
+                        <Heart className={`h-5 w-5 transition-colors ${isFav ? "fill-red-500 text-red-500" : "text-slate-300 hover:text-slate-500"}`} />
                       </button>
 
                       <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
                         <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                          <Button className="w-full h-11 rounded-xl bg-[#43a047] text-white font-semibold hover:bg-[#388e3c] cursor-pointer text-sm">
+                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
                             Записатись
-                          </Button>
+                          </button>
                         </Link>
-                        <Button variant="outline" className="flex-1 md:w-full h-11 rounded-xl border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
+                        <Button variant="outline" className="flex-1 md:w-full h-10 rounded-md border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
                           <MessageCircle className="h-4 w-4 mr-1.5" />
                           Написати
                         </Button>
@@ -386,22 +386,22 @@ export default function SpecialistsPage() {
           </div>
 
           {/* Right column - Video Sidebar (sticky, desktop only) */}
-          <div className="hidden lg:block w-80 xl:w-96 flex-shrink-0">
-            <div className="sticky top-44">
+          <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
+            <div className="sticky top-36">
               {hoveredData && (
-                <div className="rounded-2xl border-4 border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
+                <div className="rounded-lg border border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
                   {/* Video preview */}
                   <div className={`relative ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
                     {/* Floating tags */}
-                    <div className="absolute inset-0 p-4 flex flex-wrap content-start gap-2">
+                    <div className="absolute inset-0 p-3 flex flex-wrap content-start gap-1.5">
                       {hoveredData.videoTags?.map((tag, i) => (
                         <span
                           key={tag}
-                          className={`px-3 py-1.5 rounded-full text-xs font-semibold ${
+                          className={`px-2.5 py-1 rounded-md text-xs font-semibold ${
                             i % 3 === 0
                               ? "bg-white/90 text-slate-800"
                               : i % 3 === 1
-                              ? "bg-[#43a047] text-white"
+                              ? "bg-[#0891b2] text-white"
                               : "bg-slate-800 text-white"
                           }`}
                         >
@@ -411,7 +411,7 @@ export default function SpecialistsPage() {
                     </div>
 
                     {/* Small tutor photo */}
-                    <div className="absolute bottom-4 right-4 w-20 h-20 rounded-xl overflow-hidden border-4 border-white">
+                    <div className="absolute bottom-3 right-3 w-16 h-16 rounded-lg overflow-hidden border-2 border-white">
                       <Image
                         src={hoveredData.image}
                         alt={hoveredData.name}
@@ -422,9 +422,9 @@ export default function SpecialistsPage() {
                     </div>
 
                     {/* Play button */}
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-                      <div className="w-14 h-14 rounded-full bg-[#43a047] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
-                        <Play className="h-6 w-6 text-white fill-white ml-0.5" />
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                      <div className="w-12 h-12 rounded-full bg-[#0891b2] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                        <Play className="h-5 w-5 text-white fill-white ml-0.5" />
                       </div>
                     </div>
                   </div>
@@ -432,13 +432,13 @@ export default function SpecialistsPage() {
                   {/* Action buttons inside the same border block */}
                   <div className="flex flex-col">
                     <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
-                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                      <button className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
                         <Calendar className="h-4 w-4" />
                         Переглянути розклад
                       </button>
                     </Link>
                     <Link href={`/specialists/${hoveredData.id}`} className="w-full border-t border-slate-200 block">
-                      <button className="w-full h-12 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
+                      <button className="w-full h-11 flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 cursor-pointer transition-colors">
                         <User className="h-4 w-4" />
                         {"Профіль " + hoveredData.name.split(" ")[0]}
                       </button>
