@@ -137,7 +137,7 @@ export default function SpecialistsPage() {
                 </Button>
               </Link>
               <Link href="/register">
-                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer !border-2 !border-black" style={{ backgroundColor: '#0891b2' }}>
+                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
                   Реєстрація
                 </button>
               </Link>
