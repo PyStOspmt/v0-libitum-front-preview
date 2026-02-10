@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[440px]">
           {/* Card */}
-          <div className="bg-[#f5f5f0] rounded-3xl border-4 border-transparent hover:border-black transition-all overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-xl border border-slate-200 hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">З поверненням</h1>
@@ -81,7 +81,7 @@ export default function LoginPage() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      className="h-9 rounded-full text-xs border-slate-200 hover:bg-[#e8f5e9] hover:text-[#2e7d32] hover:border-[#c8e6c9] cursor-pointer"
+                      className="h-9 rounded-lg text-xs border-slate-200 hover:bg-[#e0f7fa] hover:text-[#0891b2] hover:border-[#b2ebf2] cursor-pointer"
                       onClick={() => quickLogin(account.email, account.password)}
                     >
                       {account.role}
@@ -100,7 +100,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                   />
                 </div>
 
@@ -114,7 +114,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="h-13 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                      className="h-13 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                     />
                     <button
                       type="button"
@@ -129,17 +129,17 @@ export default function LoginPage() {
 
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2.5 cursor-pointer">
-                    <Checkbox className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]" />
+                    <Checkbox className="border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]" />
                     <span className="text-sm text-slate-600">Запам{"'"}ятати мене</span>
                   </label>
-                  <Link href="/forgot-password" className="text-sm font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
+                  <Link href="/forgot-password" className="text-sm font-semibold text-[#0891b2] hover:text-[#155e75]">
                     Забули пароль?
                   </Link>
                 </div>
 
                 <Button
                   type="submit"
-                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer"
+                  className="h-13 w-full rounded-xl bg-[#0891b2] text-base font-semibold text-white hover:bg-[#0e7490] cursor-pointer"
                   disabled={isLoading}
                 >
                   {isLoading ? "Завантаження..." : "Увійти"}
@@ -166,7 +166,7 @@ export default function LoginPage() {
 
               <div className="mt-10 text-center text-sm text-slate-500">
                 Ще немає акаунту?{" "}
-                <Link href="/register" className="font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
+                <Link href="/register" className="font-semibold text-[#0891b2] hover:text-[#155e75]">
                   Зареєструватись
                 </Link>
               </div>

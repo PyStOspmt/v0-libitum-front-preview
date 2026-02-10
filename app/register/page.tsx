@@ -78,7 +78,7 @@ export default function RegisterPage() {
       <div className="flex min-h-[calc(100vh-80px)] items-center justify-center px-4 py-12">
         <div className="w-full max-w-[480px]">
           {/* Card */}
-          <div className="bg-[#f5f5f0] rounded-3xl border-4 border-transparent hover:border-black transition-all overflow-hidden">
+          <div className="bg-[#f5f5f0] rounded-xl border border-slate-200 hover:border-black transition-all overflow-hidden">
             <div className="p-8 sm:p-10">
               <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Створити акаунт</h1>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                 <div className="space-y-3">
                   <Label className="text-sm font-medium text-slate-700">Я хочу</Label>
                   <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "client" | "specialist")} className="grid grid-cols-2 gap-4">
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-4 p-5 transition-all cursor-pointer ${userType === "client" ? "border-[#43a047] bg-[#e8f5e9]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-2xl border border-slate-200 p-5 transition-all cursor-pointer ${userType === "client" ? "border-[#0891b2] bg-[#e0f7fa]" : "bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="client" id="client" className="sr-only" />
                       <Label htmlFor="client" className="cursor-pointer text-center">
                         <span className="text-3xl mb-3 block">&#127891;</span>
@@ -98,7 +98,7 @@ export default function RegisterPage() {
                         <span className="text-xs text-slate-500 mt-1 block">Для учнів</span>
                       </Label>
                     </div>
-                    <div className={`flex flex-col items-center justify-center rounded-2xl border-4 p-5 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f9a825] bg-[#fff8e1]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                    <div className={`flex flex-col items-center justify-center rounded-xl border p-5 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f59e0b] bg-[#fef3c7]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                       <RadioGroupItem value="specialist" id="specialist" className="sr-only" />
                       <Label htmlFor="specialist" className="cursor-pointer text-center">
                         <span className="text-3xl mb-3 block">&#128104;&#8205;&#127979;</span>
@@ -118,7 +118,7 @@ export default function RegisterPage() {
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
-                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                   />
                 </div>
 
@@ -131,7 +131,7 @@ export default function RegisterPage() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                    className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                   />
                 </div>
 
@@ -147,7 +147,7 @@ export default function RegisterPage() {
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         required
                         minLength={8}
-                        className="h-13 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                        className="h-13 rounded-xl border-slate-200 bg-white px-4 pr-12 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                       />
                       <button
                         type="button"
@@ -169,7 +169,7 @@ export default function RegisterPage() {
                       onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                       required
                       minLength={8}
-                      className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#43a047] focus:ring-2 focus:ring-[#c8e6c9]"
+                      className="h-13 rounded-xl border-slate-200 bg-white px-4 text-base focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
                     />
                   </div>
                 </div>
@@ -179,11 +179,11 @@ export default function RegisterPage() {
                     id="rules"
                     checked={acceptedRules}
                     onCheckedChange={(checked) => setAcceptedRules(checked as boolean)}
-                    className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
+                    className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]"
                   />
                   <label htmlFor="rules" className="text-sm leading-relaxed text-slate-500">
                     Я приймаю{" "}
-                    <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#2e7d32] hover:underline cursor-pointer">
+                    <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#0891b2] hover:underline cursor-pointer">
                       правила платформи
                     </button>{" "}
                     та політику конфіденційності
@@ -192,7 +192,7 @@ export default function RegisterPage() {
 
                 <Button
                   type="submit"
-                  className="h-13 w-full rounded-xl bg-[#43a047] text-base font-semibold text-white hover:bg-[#388e3c] cursor-pointer"
+                  className="h-13 w-full rounded-xl bg-[#0891b2] text-base font-semibold text-white hover:bg-[#0e7490] cursor-pointer"
                   disabled={isLoading}
                 >
                   {isLoading ? "Створення акаунту..." : "Створити акаунт"}
@@ -219,7 +219,7 @@ export default function RegisterPage() {
 
               <div className="mt-10 text-center text-sm text-slate-500">
                 Вже маєте акаунт?{" "}
-                <Link href="/login" className="font-semibold text-[#2e7d32] hover:text-[#1b5e20]">
+                <Link href="/login" className="font-semibold text-[#0891b2] hover:text-[#155e75]">
                   Увійти
                 </Link>
               </div>
@@ -234,7 +234,7 @@ export default function RegisterPage() {
 
       {/* Rules Dialog */}
       <Dialog open={showRules} onOpenChange={setShowRules}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl border-4 border-transparent">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl border border-slate-200">
           <DialogHeader className="pb-5 border-b border-slate-100">
             <DialogTitle className="text-2xl font-bold text-slate-800">Правила платформи</DialogTitle>
             <DialogDescription className="text-slate-500">Будь ласка, ознайомтесь перед реєстрацією</DialogDescription>
@@ -243,20 +243,20 @@ export default function RegisterPage() {
           <div className="space-y-6 py-5 text-sm text-slate-600">
             <section className="space-y-4">
               <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e8f5e9] text-[#2e7d32] text-xs font-bold">1</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e0f7fa] text-[#0891b2] text-xs font-bold">1</span>
                 Для спеціалістів
               </h3>
               <ul className="space-y-3 pl-2">
                 <li className="flex gap-3">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
                   <span><strong className="text-slate-700">Час відповіді:</strong> 3 години для прийняття/відхилення заявок.</span>
                 </li>
                 <li className="flex gap-3">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
                   <span><strong className="text-slate-700">Оновлення статусу:</strong> 2 години після прийняття для оновлення статусу комунікації.</span>
                 </li>
                 <li className="flex gap-3">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
                   <span><strong className="text-slate-700">Результат пробного уроку:</strong> 2 години після пробного уроку для звіту про результат.</span>
                 </li>
               </ul>
@@ -264,16 +264,16 @@ export default function RegisterPage() {
 
             <section className="space-y-4">
               <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e8f5e9] text-[#2e7d32] text-xs font-bold">2</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e0f7fa] text-[#0891b2] text-xs font-bold">2</span>
                 Для учнів
               </h3>
               <ul className="space-y-3 pl-2">
                 <li className="flex gap-3">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
                   <span><strong className="text-slate-700">Ліміт бронювань:</strong> Максимум 3 активні заявки одночасно.</span>
                 </li>
                 <li className="flex gap-3">
-                  <div className="h-1.5 w-1.5 rounded-full bg-[#66bb6a] mt-2 shrink-0" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
                   <span><strong className="text-slate-700">Пробні уроки:</strong> Будь ласка, повідомте репетитора про ваше рішення після пробного уроку.</span>
                 </li>
               </ul>
@@ -302,7 +302,7 @@ export default function RegisterPage() {
                   setShowRules(false)
                 }
               }}
-              className="border-slate-300 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047]"
+              className="border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]"
             />
             <label htmlFor="rules-dialog" className="text-sm font-medium text-slate-700 cursor-pointer select-none">
               Я прочитав та приймаю правила платформи
