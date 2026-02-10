@@ -209,16 +209,36 @@ export default function HomePageClient() {
         {/* === HERO === Simple full-width banner */}
         <section ref={hero.ref} className="px-4 lg:px-8 pt-8 pb-4">
           <div className="container mx-auto">
-            <div className={`relative bg-[#0891b2] rounded-lg px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
-              {/* Decorative circles */}
-              <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full translate-x-1/3 -translate-y-1/3" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-1/4 translate-y-1/4" />
+            <div
+              className={`relative bg-[#0891b2] rounded-lg px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}
+              style={{
+                backgroundImage: `
+                  url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
+                  linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 50%, rgba(0,0,0,0.04) 100%)
+                `,
+                backgroundSize: "180px 180px, 100% 100%",
+                boxShadow: "inset 0 0 80px rgba(0,0,0,0.08)",
+              }}
+            >
+              {/* Paper fold crease lines */}
+              <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                <div className="absolute top-0 left-1/2 w-px h-full bg-white/[0.04]" />
+                <div className="absolute top-1/2 left-0 w-full h-px bg-white/[0.04]" />
+              </div>
+
+              {/* Worn edge highlight */}
+              <div className="absolute inset-0 pointer-events-none rounded-lg" style={{ boxShadow: "inset 2px 2px 0 rgba(255,255,255,0.08), inset -2px -2px 0 rgba(0,0,0,0.06)" }} aria-hidden="true" />
+
+              {/* Subtle ink blot decorations instead of smooth circles */}
+              <div className="absolute top-0 right-0 w-72 h-72 translate-x-1/3 -translate-y-1/3 opacity-[0.06]" style={{ background: "radial-gradient(ellipse at 40% 50%, white 0%, transparent 70%)", borderRadius: "43% 57% 51% 49% / 42% 55% 45% 58%" }} />
+              <div className="absolute bottom-0 left-0 w-48 h-48 -translate-x-1/4 translate-y-1/4 opacity-[0.04]" style={{ background: "radial-gradient(ellipse at 60% 40%, white 0%, transparent 70%)", borderRadius: "57% 43% 49% 51% / 55% 42% 58% 45%" }} />
 
               <div className="relative z-10 max-w-2xl">
-                <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight">
+                <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight font-serif" style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.1)" }}>
                   {t("hero.title")}
                 </h1>
-                <p className="text-lg text-white/80 mb-8 max-w-lg leading-relaxed">
+                <div className="w-24 h-0.5 bg-white/30 mb-5" />
+                <p className="text-lg text-white/80 mb-8 max-w-lg leading-relaxed" style={{ textShadow: "0.5px 0.5px 0 rgba(0,0,0,0.08)" }}>
                   {t("hero.subtitle")}
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
