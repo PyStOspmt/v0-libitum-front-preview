@@ -257,7 +257,7 @@ export default function SpecialistsPage() {
               return (
                 <div
                   key={specialist.id}
-                  className="relative bg-white rounded-lg border border-slate-200 hover:border-black transition-colors cursor-pointer"
+                  className="relative bg-white rounded-lg border-2 border-slate-200 hover:border-black transition-colors cursor-pointer"
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                 >
                   <div className="flex flex-col md:flex-row p-4 lg:p-5 gap-4">
