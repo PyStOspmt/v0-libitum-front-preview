@@ -311,13 +311,13 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleWishlist}
-                      className="h-10 w-10 rounded-xl border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
+                      className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
                     >
                       <Heart className={`h-5 w-5 ${wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"}`} />
                     </button>
                     <button
                       onClick={handleShare}
-                      className="h-10 w-10 rounded-xl border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
+                      className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
                     >
                       <Share className="h-5 w-5 text-slate-400" />
                     </button>
@@ -399,7 +399,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <section className="bg-[#fafaf8] rounded-xl p-6 border border-transparent hover:border-black transition-colors">
                     <h3 className="text-lg font-bold text-slate-800 mb-4">Освіта</h3>
                     <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-[#0891b2] border border-slate-100">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#0891b2] border border-slate-100">
                         <GraduationCap className="h-6 w-6" />
                       </div>
                       <div>
@@ -415,7 +415,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <div className="space-y-4">
                       {specialist.certificates.map((cert: { title: string; description: string }) => (
                         <div key={cert.title} className="flex gap-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-[#0891b2] border border-slate-100">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#0891b2] border border-slate-100">
                             <Award className="h-6 w-6" />
                           </div>
                           <div>
@@ -548,7 +548,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between rounded-xl bg-[#fafaf8] p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#0891b2]">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#0891b2] flex-shrink-0">
                           <Video className="h-4 w-4" />
                         </div>
                         <span className="font-medium text-slate-700 text-sm">Онлайн</span>
@@ -557,7 +557,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </div>
                     <div className="flex items-center justify-between rounded-xl bg-[#fafaf8] p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#0891b2]">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#0891b2] flex-shrink-0">
                           <HomeIcon className="h-4 w-4" />
                         </div>
                         <span className="font-medium text-slate-700 text-sm">Офлайн</span>
@@ -576,7 +576,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="flex flex-col gap-2 pt-2">
                     <Button
-                      className="w-full h-12 rounded-xl bg-[#0891b2] text-white text-base font-semibold hover:bg-[#0e7490] cursor-pointer"
+                      className="w-full h-12 rounded-lg bg-[#0891b2] text-white text-base font-semibold hover:bg-[#0e7490] cursor-pointer"
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
@@ -584,7 +584,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full h-11 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:border-black transition-colors cursor-pointer"
+                      className="w-full h-11 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:border-black transition-colors cursor-pointer"
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Написати

@@ -209,7 +209,7 @@ export default function HomePageClient() {
         {/* === HERO === Simple full-width banner */}
         <section ref={hero.ref} className="px-4 lg:px-8 pt-8 pb-4">
           <div className="container mx-auto">
-            <div className={`relative bg-[#0891b2] rounded-2xl px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
+            <div className={`relative bg-[#0891b2] rounded-xl px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
               {/* Decorative circles */}
               <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full translate-x-1/3 -translate-y-1/3" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-1/4 translate-y-1/4" />
@@ -349,7 +349,7 @@ export default function HomePageClient() {
         {/* === HOW IT WORKS === */}
         <section ref={how.ref} id="how" className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-slate-50 rounded-2xl p-8 lg:p-14 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
+            <div className={`bg-slate-50 rounded-xl p-8 lg:p-14 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
               <div className="text-center mb-12">
                 <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                   {t("nav.how_it_works")}
@@ -516,7 +516,7 @@ export default function HomePageClient() {
         {/* === CTA === */}
         <section ref={ctaSec.ref} className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-[#e0f7fa] rounded-2xl p-10 lg:p-14 text-center border border-[#b2ebf2] hover:border-black transition-colors ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
+            <div className={`bg-[#e0f7fa] rounded-xl p-10 lg:p-14 text-center border border-[#b2ebf2] hover:border-black transition-colors ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
               <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 mb-4 tracking-tight">
                 {t("cta.title")}
               </h2>
@@ -535,7 +535,7 @@ export default function HomePageClient() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-800 text-white py-12 px-4 lg:px-8 rounded-t-2xl">
+      <footer className="bg-slate-800 text-white py-12 px-4 lg:px-8 rounded-t-xl">
         <div className="container mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
