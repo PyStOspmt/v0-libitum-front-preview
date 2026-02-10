@@ -82,7 +82,7 @@ export default function RegisterPage() {
         </div>
 
         <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <Check className="h-5 w-5 text-white" />
             </div>
@@ -91,7 +91,7 @@ export default function RegisterPage() {
               <p className="text-white/60 text-xs">Перше заняття з кожним спеціалістом</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <Users className="h-5 w-5 text-white" />
             </div>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
               <p className="text-white/60 text-xs">Індивідуальна програма навчання</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <TrendingUp className="h-5 w-5 text-white" />
             </div>
@@ -150,7 +150,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-slate-700">Я хочу</Label>
                 <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "client" | "specialist")} className="grid grid-cols-2 gap-3">
-                  <div className={`flex flex-col items-center justify-center rounded-xl border p-4 transition-all cursor-pointer ${userType === "client" ? "border-[#0891b2] bg-[#e0f7fa]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                  <div className={`flex flex-col items-center justify-center rounded-lg border p-4 transition-all cursor-pointer ${userType === "client" ? "border-[#0891b2] bg-[#e0f7fa]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                     <RadioGroupItem value="client" id="client" className="sr-only" />
                     <Label htmlFor="client" className="cursor-pointer text-center">
                       <span className="text-2xl mb-2 block">&#127891;</span>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
                       <span className="text-xs text-slate-500 mt-0.5 block">Для учнів</span>
                     </Label>
                   </div>
-                  <div className={`flex flex-col items-center justify-center rounded-xl border p-4 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f59e0b] bg-[#fef3c7]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                  <div className={`flex flex-col items-center justify-center rounded-lg border p-4 transition-all cursor-pointer ${userType === "specialist" ? "border-[#f59e0b] bg-[#fef3c7]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                     <RadioGroupItem value="specialist" id="specialist" className="sr-only" />
                     <Label htmlFor="specialist" className="cursor-pointer text-center">
                       <span className="text-2xl mb-2 block">&#128104;&#8205;&#127979;</span>
@@ -178,7 +178,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="h-11 rounded-lg border-slate-200 bg-white px-4 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="h-11 rounded-lg border-slate-200 bg-white px-4 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function RegisterPage() {
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       required
                       minLength={8}
-                      className="h-11 rounded-lg border-slate-200 bg-white px-4 pr-11 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                      className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                     />
                     <button
                       type="button"
@@ -229,7 +229,7 @@ export default function RegisterPage() {
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     required
                     minLength={8}
-                    className="h-11 rounded-lg border-slate-200 bg-white px-4 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                   />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export default function RegisterPage() {
 
       {/* Rules Dialog */}
       <Dialog open={showRules} onOpenChange={setShowRules}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-xl border border-slate-200">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-lg border border-slate-200">
           <DialogHeader className="pb-5 border-b border-slate-100">
             <DialogTitle className="text-2xl font-bold text-slate-800">Правила платформи</DialogTitle>
             <DialogDescription className="text-slate-500">Будь ласка, ознайомтесь перед реєстрацією</DialogDescription>
@@ -338,7 +338,7 @@ export default function RegisterPage() {
               </ul>
             </section>
 
-            <section className="bg-[#fff8e1] p-5 rounded-xl">
+            <section className="bg-[#fff8e1] p-5 rounded-lg">
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-[#f9a825] mt-0.5 shrink-0" />
                 <div>

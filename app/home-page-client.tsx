@@ -209,7 +209,7 @@ export default function HomePageClient() {
         {/* === HERO === Simple full-width banner */}
         <section ref={hero.ref} className="px-4 lg:px-8 pt-8 pb-4">
           <div className="container mx-auto">
-            <div className={`relative bg-[#0891b2] rounded-xl px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
+            <div className={`relative bg-[#0891b2] rounded-lg px-8 py-14 lg:px-16 lg:py-20 overflow-hidden ${hero.visible ? "animate-slide-up" : "opacity-0"}`}>
               {/* Decorative circles */}
               <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full translate-x-1/3 -translate-y-1/3" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -translate-x-1/4 translate-y-1/4" />
@@ -247,7 +247,7 @@ export default function HomePageClient() {
           <div className="container mx-auto">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               {features.map((feature, i) => (
-                <div key={i} className={`bg-white rounded-xl p-4 border border-slate-200 flex items-center gap-3 hover:border-black transition-colors ${hero.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 2) * 100}ms` }}>
+                <div key={i} className={`bg-white rounded-lg p-4 border border-slate-200 flex items-center gap-3 hover:border-black transition-colors ${hero.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 2) * 100}ms` }}>
                   <div className={`h-10 w-10 rounded-lg ${feature.color} flex items-center justify-center flex-shrink-0`}>
                     {feature.icon}
                   </div>
@@ -281,7 +281,7 @@ export default function HomePageClient() {
             <div ref={sliderRef} className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-4 px-4 snap-x snap-mandatory" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
               {tutorSlides.map((tutor, i) => (
                 <Link href="/specialists" key={i} className="flex-shrink-0 w-72 snap-start">
-                  <div className={`bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-black transition-colors group ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                  <div className={`bg-white rounded-lg border border-slate-200 overflow-hidden hover:border-black transition-colors group ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
                     <div className="relative h-48 bg-slate-100 overflow-hidden">
                       <Image src={tutor.image} alt={tutor.name} fill className="object-cover object-top group-hover:scale-105 transition-transform duration-300" crossOrigin="anonymous" />
                       {tutor.badge && (
@@ -308,8 +308,8 @@ export default function HomePageClient() {
 
               {/* Last card - View All */}
               <Link href="/specialists" className="flex-shrink-0 w-72 snap-start">
-                <div className={`bg-[#e0f7fa] rounded-xl border border-[#b2ebf2] overflow-hidden hover:border-black transition-colors h-full flex flex-col items-center justify-center min-h-[304px] group cursor-pointer ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: "600ms" }}>
-                  <div className="h-14 w-14 rounded-xl bg-[#0891b2] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <div className={`bg-[#e0f7fa] rounded-lg border border-[#b2ebf2] overflow-hidden hover:border-black transition-colors h-full flex flex-col items-center justify-center min-h-[304px] group cursor-pointer ${slider.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: "600ms" }}>
+                  <div className="h-14 w-14 rounded-lg bg-[#0891b2] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <ArrowRight className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-lg font-bold text-[#0891b2]">Дивитись весь каталог</span>
@@ -333,7 +333,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-5">
               {categories.map((cat, i) => (
-                <div key={i} className={`bg-white rounded-xl p-7 border border-slate-200 hover:border-black transition-colors ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                <div key={i} className={`bg-white rounded-lg p-7 border border-slate-200 hover:border-black transition-colors ${cats.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
                   <div className={`h-12 w-12 ${cat.iconBg} rounded-lg flex items-center justify-center mb-5`}>
                     <div className={cat.iconColor}>{cat.icon}</div>
                   </div>
@@ -349,7 +349,7 @@ export default function HomePageClient() {
         {/* === HOW IT WORKS === */}
         <section ref={how.ref} id="how" className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-slate-50 rounded-xl p-8 lg:p-14 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
+            <div className={`bg-slate-50 rounded-lg p-8 lg:p-14 ${how.visible ? "animate-scale-in" : "opacity-0"}`}>
               <div className="text-center mb-12">
                 <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 tracking-tight mb-4">
                   {t("nav.how_it_works")}
@@ -360,7 +360,7 @@ export default function HomePageClient() {
               <div className="grid md:grid-cols-3 gap-8">
                 {steps.map((step, i) => (
                   <div key={i} className={`text-center ${how.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 200}ms` }}>
-                    <div className="h-16 w-16 rounded-xl bg-white flex items-center justify-center mx-auto mb-5 border border-slate-200 hover:border-black transition-colors">
+                    <div className="h-16 w-16 rounded-lg bg-white flex items-center justify-center mx-auto mb-5 border border-slate-200 hover:border-black transition-colors">
                       <span className="text-xl font-bold text-[#0891b2]">{step.num}</span>
                     </div>
                     <h3 className="text-lg font-bold text-slate-800 mb-2">{step.title}</h3>
@@ -395,7 +395,7 @@ export default function HomePageClient() {
               {pricing.map((plan, i) => (
                 <div
                   key={i}
-                  className={`relative rounded-xl p-7 border hover:border-black transition-colors ${
+                  className={`relative rounded-lg p-7 border hover:border-black transition-colors ${
                     plan.highlight
                       ? "bg-[#e0f7fa] border-[#0891b2]"
                       : "bg-white border-slate-200"
@@ -466,7 +466,7 @@ export default function HomePageClient() {
 
             <div className="grid md:grid-cols-3 gap-5">
               {reviews.map((review, i) => (
-                <div key={i} className={`bg-white rounded-xl p-6 border border-slate-200 hover:border-black transition-colors ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
+                <div key={i} className={`bg-white rounded-lg p-6 border border-slate-200 hover:border-black transition-colors ${revs.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
                   <div className="flex gap-1 mb-4">
                     {[...Array(review.rating)].map((_, j) => (
                       <Star key={j} className="h-4 w-4 fill-[#f59e0b] text-[#f59e0b]" />
@@ -492,7 +492,7 @@ export default function HomePageClient() {
 
             <div className="space-y-3">
               {faqs.map((faq, i) => (
-                <div key={i} className={`bg-white rounded-xl overflow-hidden border border-slate-200 hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
+                <div key={i} className={`bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-black transition-all ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 100}ms` }}>
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                     className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
@@ -516,7 +516,7 @@ export default function HomePageClient() {
         {/* === CTA === */}
         <section ref={ctaSec.ref} className="py-16 px-4 lg:px-8">
           <div className="container mx-auto">
-            <div className={`bg-[#e0f7fa] rounded-xl p-10 lg:p-14 text-center border border-[#b2ebf2] hover:border-black transition-colors ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
+            <div className={`bg-[#e0f7fa] rounded-lg p-10 lg:p-14 text-center border border-[#b2ebf2] hover:border-black transition-colors ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}>
               <h2 className="text-2xl lg:text-4xl font-bold text-slate-800 mb-4 tracking-tight">
                 {t("cta.title")}
               </h2>

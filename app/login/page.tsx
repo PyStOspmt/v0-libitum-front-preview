@@ -68,7 +68,7 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 space-y-4">
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <Shield className="h-5 w-5 text-white" />
             </div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
               <p className="text-white/60 text-xs">Кожен проходить верифікацію</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <Star className="h-5 w-5 text-white" />
             </div>
@@ -86,7 +86,7 @@ export default function LoginPage() {
               <p className="text-white/60 text-xs">Середня оцінка від учнів</p>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-white/10 rounded-xl p-4">
+          <div className="flex items-center gap-4 bg-white/10 rounded-lg p-4">
             <div className="h-10 w-10 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
               <BookOpen className="h-5 w-5 text-white" />
             </div>
@@ -132,7 +132,7 @@ export default function LoginPage() {
             </div>
 
             {/* Test Accounts */}
-            <div className="mb-6 rounded-xl bg-slate-50 border border-slate-100 p-4">
+            <div className="mb-6 rounded-lg bg-slate-50 border border-slate-100 p-4">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Тестові акаунти</p>
               <div className="flex flex-wrap gap-2">
                 {testAccounts.map((account) => (
@@ -160,7 +160,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 rounded-lg border-slate-200 bg-white px-4 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -174,7 +174,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-11 rounded-lg border-slate-200 bg-white px-4 pr-11 text-sm focus:border-[#0891b2] focus:ring-2 focus:ring-[#b2ebf2]"
+                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
                   />
                   <button
                     type="button"

@@ -257,7 +257,7 @@ export default function SpecialistsPage() {
               return (
                 <div
                   key={specialist.id}
-                  className="relative bg-white rounded-xl border border-slate-200 hover:border-black transition-colors cursor-pointer"
+                  className="relative bg-white rounded-lg border border-slate-200 hover:border-black transition-colors cursor-pointer"
                   onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                 >
                   <div className="flex flex-col md:flex-row p-4 lg:p-5 gap-4">
@@ -389,7 +389,7 @@ export default function SpecialistsPage() {
           <div className="hidden lg:block w-72 xl:w-80 flex-shrink-0">
             <div className="sticky top-36">
               {hoveredData && (
-                <div className="rounded-xl border border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
+                <div className="rounded-lg border border-slate-200 overflow-hidden animate-scale-in" key={hoveredData.id}>
                   {/* Video preview */}
                   <div className={`relative ${getVideoColor(hoveredData.specialization)} aspect-[4/3]`}>
                     {/* Floating tags */}
