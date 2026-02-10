@@ -242,7 +242,7 @@ export default function HomePageClient() {
               <div className="absolute bottom-0 left-0 w-48 h-48 -translate-x-1/4 translate-y-1/4 opacity-[0.04]" style={{ background: "radial-gradient(ellipse at 60% 40%, white 0%, transparent 70%)", borderRadius: "57% 43% 49% 51% / 55% 42% 58% 45%" }} />
 
               <div className="relative z-10 max-w-2xl">
-                <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight font-serif" style={{ textShadow: "1px 1px 0 rgba(0,0,0,0.1)" }}>
+                <h1 className="text-3xl lg:text-5xl xl:text-6xl font-bold text-white mb-5 leading-[1.1] tracking-tight font-sans">
                   {t("hero.title")}
                 </h1>
                 <div className="w-24 h-0.5 bg-white/30 mb-5" />
