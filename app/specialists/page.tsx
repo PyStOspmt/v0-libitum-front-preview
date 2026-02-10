@@ -137,9 +137,9 @@ export default function SpecialistsPage() {
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid black' }}>
+                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
                   Реєстрація
-                </Button>
+                </button>
               </Link>
             </div>
           </div>
@@ -369,9 +369,9 @@ export default function SpecialistsPage() {
 
                       <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
                         <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                          <Button className="w-full h-10 rounded-md bg-[#0891b2] border-2 border-black text-white font-semibold hover:bg-[#0e7490] cursor-pointer text-sm">
+                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#0891b2', border: '2px solid #000000' }}>
                             Записатись
-                          </Button>
+                          </button>
                         </Link>
                         <Button variant="outline" className="flex-1 md:w-full h-10 rounded-md border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 cursor-pointer text-sm">
                           <MessageCircle className="h-4 w-4 mr-1.5" />
