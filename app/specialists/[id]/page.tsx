@@ -252,7 +252,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="h-9 rounded-lg bg-[#00897B] px-5 text-sm font-medium text-white hover:bg-[#00796B] cursor-pointer">
+                <Button className="h-9 rounded-lg bg-[#009688] px-5 text-sm font-medium text-white hover:bg-[#00796B] cursor-pointer">
                   Реєстрація
                 </Button>
               </Link>
@@ -287,7 +287,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                 </Avatar>
                 {specialist.verified && (
                   <div className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white border border-slate-200">
-                    <Award className="h-5 w-5 text-[#00897B]" />
+                    <Award className="h-5 w-5 text-[#009688]" />
                   </div>
                 )}
               </div>
@@ -297,7 +297,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div className="space-y-3">
                     <h1 className="text-3xl font-bold text-slate-800">{specialist.name}</h1>
                     <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                      <span className="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-[#E0F2F1] text-[#00897B]">
+                      <span className="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-[#E0F2F1] text-[#009688]">
                         {specialist.specialization}
                       </span>
                       {specialist.badges.map((badge: string) => (
@@ -355,19 +355,19 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               <TabsList className="w-full justify-start border-b border-slate-200 bg-transparent p-0 h-auto gap-8 rounded-none">
                 <TabsTrigger
                   value="about"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#00897B] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
                 >
                   Про спеціаліста
                 </TabsTrigger>
                 <TabsTrigger
                   value="reviews"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#00897B] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
                 >
                   Відгуки ({specialist.reviews})
                 </TabsTrigger>
                 <TabsTrigger
                   value="schedule"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#00897B] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
                 >
                   Розклад
                 </TabsTrigger>
@@ -399,7 +399,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <section className="bg-[#fafaf8] rounded-lg p-6 border border-transparent hover:border-black transition-colors">
                     <h3 className="text-lg font-bold text-slate-800 mb-4">Освіта</h3>
                     <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#00897B] border border-slate-100">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#009688] border border-slate-100">
                         <GraduationCap className="h-6 w-6" />
                       </div>
                       <div>
@@ -415,7 +415,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <div className="space-y-4">
                       {specialist.certificates.map((cert: { title: string; description: string }) => (
                         <div key={cert.title} className="flex gap-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#00897B] border border-slate-100">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#009688] border border-slate-100">
                             <Award className="h-6 w-6" />
                           </div>
                           <div>
@@ -442,7 +442,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                         <div className="mb-4 flex items-center justify-between">
                           <h4 className="text-lg font-bold text-slate-800">{subject.subject}</h4>
                           {subject.groupAvailable && (
-                            <span className="inline-flex items-center rounded-lg bg-[#E0F2F1] px-2.5 py-1 text-xs font-semibold text-[#00897B]">
+                            <span className="inline-flex items-center rounded-lg bg-[#E0F2F1] px-2.5 py-1 text-xs font-semibold text-[#009688]">
                               Групові доступні
                             </span>
                           )}
@@ -476,7 +476,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div key={review.id} className="rounded-lg border border-slate-200 bg-white p-6 hover:border-black transition-colors">
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E0F2F1] font-bold text-[#00897B]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E0F2F1] font-bold text-[#009688]">
                           {review.clientName[0]}
                         </div>
                         <div>
@@ -517,7 +517,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {day.slots.map((slot) => (
-                            <button key={slot} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-[#00897B] hover:text-[#00897B] transition-colors cursor-pointer">
+                            <button key={slot} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-[#009688] hover:text-[#009688] transition-colors cursor-pointer">
                               {slot}
                             </button>
                           ))}
@@ -537,7 +537,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               <div className="rounded-lg border border-slate-200 bg-white overflow-hidden hover:border-black transition-colors">
                 <div className="bg-[#fafaf8] p-6 border-b border-slate-100 text-center">
                   <p className="text-sm font-medium text-slate-500 mb-1">Вартість заняття</p>
-                  <div className="text-3xl font-bold text-[#00897B]">
+                  <div className="text-3xl font-bold text-[#009688]">
                     {specialist.priceOnline} ₴
                     <span className="text-lg text-slate-400 font-medium ml-1">/ год</span>
                   </div>
@@ -548,7 +548,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between rounded-lg bg-[#fafaf8] p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#00897B] flex-shrink-0">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#009688] flex-shrink-0">
                           <Video className="h-4 w-4" />
                         </div>
                         <span className="font-medium text-slate-700 text-sm">Онлайн</span>
@@ -557,7 +557,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </div>
                     <div className="flex items-center justify-between rounded-lg bg-[#fafaf8] p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#00897B] flex-shrink-0">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#009688] flex-shrink-0">
                           <HomeIcon className="h-4 w-4" />
                         </div>
                         <span className="font-medium text-slate-700 text-sm">Офлайн</span>
@@ -576,7 +576,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="flex flex-col gap-2 pt-2">
                     <Button
-                      className="w-full h-12 rounded-lg bg-[#00897B] text-white text-base font-semibold hover:bg-[#00796B] cursor-pointer"
+                      className="w-full h-12 rounded-lg bg-[#009688] text-white text-base font-semibold hover:bg-[#00796B] cursor-pointer"
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
@@ -614,7 +614,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <div className="text-xs text-slate-500 mt-0.5">час відповіді</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#00897B]">{specialist.completedSessions}</div>
+                    <div className="text-2xl font-bold text-[#009688]">{specialist.completedSessions}</div>
                     <div className="text-xs text-slate-500 mt-0.5">проведено занять</div>
                   </div>
                 </div>
@@ -623,10 +623,10 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               {/* Guarantee */}
               <div className="rounded-lg bg-[#E0F2F1] p-4 text-center border border-[#b2ebf2]">
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <Check className="h-4 w-4 text-[#00897B]" />
-                  <span className="text-sm font-semibold text-[#00897B]">Гарантія якості</span>
+                  <Check className="h-4 w-4 text-[#009688]" />
+                  <span className="text-sm font-semibold text-[#009688]">Гарантія якості</span>
                 </div>
-                <p className="text-xs text-[#00897B] leading-relaxed">
+                <p className="text-xs text-[#009688] leading-relaxed">
                   Повернення коштів, якщо заняття не відбудеться або не сподобається.
                 </p>
               </div>

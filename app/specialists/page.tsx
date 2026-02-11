@@ -95,7 +95,7 @@ export default function SpecialistsPage() {
   ]
 
   const getAccentColor = (type: string) => {
-    if (type === "Репетитор") return { bg: "bg-[#e0f7fa]", text: "text-[#00897B]" }
+    if (type === "Репетитор") return { bg: "bg-[#e0f7fa]", text: "text-[#009688]" }
     if (type === "Психолог") return { bg: "bg-[#eef2ff]", text: "text-[#6366f1]" }
     return { bg: "bg-[#fef3c7]", text: "text-[#f59e0b]" }
   }
@@ -137,7 +137,7 @@ export default function SpecialistsPage() {
                 </Button>
               </Link>
               <Link href="/register">
-                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#00897B' }}>
+                <button className="h-9 rounded-md px-5 text-sm font-medium text-white hover:opacity-90 cursor-pointer" style={{ backgroundColor: '#009688' }}>
                   Реєстрація
                 </button>
               </Link>
@@ -152,7 +152,7 @@ export default function SpecialistsPage() {
           {/* Primary filters row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-slate-200 py-2.5">
             <div className="px-4 first:pl-0">
-              <div className="text-xs font-medium text-slate-400 mb-0.5">Спеціальні��ть</div>
+              <div className="text-xs font-medium text-slate-400 mb-0.5">Спеціальні����ть</div>
               <Select value={category} onValueChange={setCategory}>
                 <SelectTrigger className="h-auto border-0 p-0 shadow-none text-sm font-semibold text-slate-800 focus:ring-0">
                   <SelectValue />
@@ -230,7 +230,7 @@ export default function SpecialistsPage() {
                   placeholder="Пошук за ім'ям..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="h-8 w-44 rounded-md border-slate-200 pl-9 text-sm focus:border-[#00897B] focus:ring-1 focus:ring-[#b2ebf2]"
+                  className="h-8 w-44 rounded-md border-slate-200 pl-9 text-sm focus:border-[#009688] focus:ring-1 focus:ring-[#b2ebf2]"
                 />
               </div>
             </div>
@@ -272,7 +272,7 @@ export default function SpecialistsPage() {
                           </Avatar>
                         )}
                         {specialist.online && (
-                          <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#00897B] border-2 border-white" />
+                          <div className="absolute bottom-2 right-2 w-3 h-3 rounded-full bg-[#009688] border-2 border-white" />
                         )}
                       </div>
                     </div>
@@ -284,12 +284,12 @@ export default function SpecialistsPage() {
                           <div className="flex items-center gap-2 mb-1">
                             <h3 className="text-lg font-bold text-slate-900">{specialist.name}</h3>
                             {specialist.verified && (
-                              <Award className="h-4 w-4 text-[#00897B]" />
+                              <Award className="h-4 w-4 text-[#009688]" />
                             )}
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
                             {specialist.superTutor && (
-                              <span className="text-xs font-bold text-white bg-[#00897B] px-2 py-0.5 rounded-md">
+                              <span className="text-xs font-bold text-white bg-[#009688] px-2 py-0.5 rounded-md">
                                 Супер-спеціаліст
                               </span>
                             )}
@@ -338,7 +338,7 @@ export default function SpecialistsPage() {
                       </p>
                       <button
                         onClick={(e) => { e.stopPropagation(); setExpandedBio(isExpanded ? null : specialist.id) }}
-                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#00897B] transition-colors cursor-pointer mb-1.5"
+                        className="text-sm font-semibold text-slate-900 underline underline-offset-2 hover:text-[#009688] transition-colors cursor-pointer mb-1.5"
                       >
                         {isExpanded ? "Згорнути" : "Дізнатись більше"}
                       </button>
@@ -346,7 +346,7 @@ export default function SpecialistsPage() {
                       {/* Popular badge */}
                       {specialist.popular && specialist.bookedRecently > 0 && (
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-1">
-                          <TrendingUp className="h-3.5 w-3.5 text-[#00897B]" />
+                          <TrendingUp className="h-3.5 w-3.5 text-[#009688]" />
                           <span>Популярний. Записалось <span className="font-semibold">{specialist.bookedRecently}</span> разів нещодавно</span>
                         </div>
                       )}
@@ -369,7 +369,7 @@ export default function SpecialistsPage() {
 
                       <div className="flex flex-row md:flex-col gap-2 flex-1 md:flex-initial md:w-full mt-1">
                         <Link href={`/specialists/${specialist.id}`} className="flex-1 md:w-full">
-                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#00897B' }}>
+                          <button className="w-full h-10 rounded-md text-white font-semibold hover:opacity-90 cursor-pointer text-sm" style={{ backgroundColor: '#009688' }}>
                             Записатись
                           </button>
                         </Link>
@@ -401,7 +401,7 @@ export default function SpecialistsPage() {
                             i % 3 === 0
                               ? "bg-white/90 text-slate-800"
                               : i % 3 === 1
-                              ? "bg-[#00897B] text-white"
+                              ? "bg-[#009688] text-white"
                               : "bg-slate-800 text-white"
                           }`}
                         >
@@ -423,7 +423,7 @@ export default function SpecialistsPage() {
 
                     {/* Play button */}
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                      <div className="w-12 h-12 rounded-full bg-[#00897B] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                      <div className="w-12 h-12 rounded-full bg-[#009688] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
                         <Play className="h-5 w-5 text-white fill-white ml-0.5" />
                       </div>
                     </div>
