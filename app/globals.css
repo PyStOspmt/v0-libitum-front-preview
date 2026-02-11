@@ -359,25 +359,6 @@ button:active:not(:disabled),
   letter-spacing: -0.02em;
 }
 
-/* Large Modern Typography */
-h1, .h1 {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-h2, .h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-}
-
-h3, .h3 {
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
 /* Text balance for better line breaks */
 h1, h2, h3 {
   text-wrap: balance;

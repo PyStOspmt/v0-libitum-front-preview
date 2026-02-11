@@ -59,7 +59,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left decorative panel - hidden on mobile */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] flex-shrink-0 bg-[#0891b2] relative overflow-hidden flex-col justify-between p-10">
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] flex-shrink-0 bg-[#009688] relative overflow-hidden flex-col justify-between p-10">
         {/* Decorative circles */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-56 h-56 bg-white/5 rounded-full -translate-x-1/4 translate-y-1/4" />
@@ -150,7 +150,7 @@ export default function RegisterPage() {
               <div className="space-y-2">
                 <Label className="text-sm font-medium text-slate-700">Я хочу</Label>
                 <RadioGroup value={userType} onValueChange={(value) => setUserType(value as "client" | "specialist")} className="grid grid-cols-2 gap-3">
-                  <div className={`flex flex-col items-center justify-center rounded-lg border p-4 transition-all cursor-pointer ${userType === "client" ? "border-[#0891b2] bg-[#e0f7fa]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
+                  <div className={`flex flex-col items-center justify-center rounded-lg border p-4 transition-all cursor-pointer ${userType === "client" ? "border-[#009688] bg-[#E0F2F1]" : "border-slate-200 bg-white hover:bg-slate-50"}`}>
                     <RadioGroupItem value="client" id="client" className="sr-only" />
                     <Label htmlFor="client" className="cursor-pointer text-center">
                       <span className="text-2xl mb-2 block">&#127891;</span>
@@ -178,7 +178,7 @@ export default function RegisterPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
-                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -191,7 +191,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
-                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -207,7 +207,7 @@ export default function RegisterPage() {
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                       required
                       minLength={8}
-                      className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                      className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
                     />
                     <button
                       type="button"
@@ -229,7 +229,7 @@ export default function RegisterPage() {
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     required
                     minLength={8}
-                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
                   />
                 </div>
               </div>
@@ -239,11 +239,11 @@ export default function RegisterPage() {
                   id="rules"
                   checked={acceptedRules}
                   onCheckedChange={(checked) => setAcceptedRules(checked as boolean)}
-                  className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]"
+                  className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
                 />
                 <label htmlFor="rules" className="text-sm leading-relaxed text-slate-500">
                   Я приймаю{" "}
-                  <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#0891b2] hover:underline cursor-pointer">
+                  <button type="button" onClick={() => setShowRules(true)} className="font-semibold text-[#009688] hover:underline cursor-pointer">
                     правила платформи
                   </button>{" "}
                   та політику конфіденційності
@@ -252,7 +252,7 @@ export default function RegisterPage() {
 
               <Button
                 type="submit"
-                className="h-11 w-full rounded-lg bg-[#0891b2] text-sm font-semibold text-white hover:bg-[#0e7490] cursor-pointer"
+                className="h-11 w-full rounded-lg bg-[#009688] text-sm font-semibold text-white hover:bg-[#00796B] cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Створення акаунту..." : "Створити акаунт"}
@@ -279,7 +279,7 @@ export default function RegisterPage() {
 
             <div className="mt-8 text-center text-sm text-slate-500">
               Вже маєте акаунт?{" "}
-              <Link href="/login" className="font-semibold text-[#0891b2] hover:text-[#0e7490]">
+              <Link href="/login" className="font-semibold text-[#009688] hover:text-[#00796B]">
                 Увійти
               </Link>
             </div>
@@ -302,7 +302,7 @@ export default function RegisterPage() {
           <div className="space-y-6 py-5 text-sm text-slate-600">
             <section className="space-y-4">
               <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e0f7fa] text-[#0891b2] text-xs font-bold">1</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">1</span>
                 Для спеціалістів
               </h3>
               <ul className="space-y-3 pl-2">
@@ -323,7 +323,7 @@ export default function RegisterPage() {
 
             <section className="space-y-4">
               <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e0f7fa] text-[#0891b2] text-xs font-bold">2</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">2</span>
                 Для учнів
               </h3>
               <ul className="space-y-3 pl-2">
@@ -361,7 +361,7 @@ export default function RegisterPage() {
                   setShowRules(false)
                 }
               }}
-              className="border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]"
+              className="border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
             />
             <label htmlFor="rules-dialog" className="text-sm font-medium text-slate-700 cursor-pointer select-none">
               Я прочитав та приймаю правила платформи
