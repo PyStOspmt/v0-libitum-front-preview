@@ -2,52 +2,38 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import {
   ArrowRight,
   Check,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   Star,
+  GraduationCap,
+  Brain,
+  MessageCircle,
 } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { HeroSpotlight } from "@/components/home/hero-spotlight"
+import { SpecialistSlider } from "@/components/home/specialist-slider"
+import { SquishyButton } from "@/components/home/squishy-button"
+import { AnimatedCounter } from "@/components/home/animated-counter"
+import { TrustMarquee } from "@/components/home/trust-marquee"
+import { TextScramble } from "@/components/home/text-scramble"
+import { MorphBlob } from "@/components/home/morph-blob"
+import { InkRippleLayer } from "@/components/home/ink-ripple"
+import { TiltCard } from "@/components/home/tilt-card"
 
 /* ── Brand palette ── */
 const B = {
-  pri:   "#009688",
-  dark:  "#00796B",
+  pri: "#009688",
+  dark: "#00796B",
   light: "#E0F2F1",
-  mid:   "#B2DFDB",
+  mid: "#B2DFDB",
 } as const
-
-/* ── Accent palettes per specialist type ── */
-type Palette = { button: string; price: string; glow: string; soft: string; ring: string }
-const PALETTES: Record<string, Palette> = {
-  tutor:  { button: B.pri, price: B.pri, glow: "rgba(0,150,136,0.07)", soft: "rgba(0,150,136,0.04)", ring: B.mid },
-  health: { button: "#f59e0b", price: "#d97706", glow: "rgba(245,158,11,0.07)", soft: "rgba(245,158,11,0.04)", ring: "#fde68a" },
-}
-
-function getPalette(type: string): Palette {
-  if (type === "tutor") return PALETTES.tutor
-  return PALETTES.health
-}
-
-/* Diffuse background for cards */
-function getDiffuseBg(palette: Palette, idx: number) {
-  const offset = idx * 30
-  return {
-    backgroundImage: `
-      radial-gradient(ellipse at ${20 + offset}% 0%, ${palette.glow} 0%, transparent 60%),
-      radial-gradient(ellipse at ${80 - offset}% 100%, ${palette.soft} 0%, transparent 50%),
-      linear-gradient(135deg, ${palette.soft} 0%, transparent 100%)
-    `,
-  }
-}
 
 /* ── Intersection observer hook ── */
 function useInView(threshold = 0.1) {
@@ -66,156 +52,8 @@ function useInView(threshold = 0.1) {
   return { ref, visible }
 }
 
-/* ═══════════════════════════════════════════════
-   Specialist Card
-   ═══════════════════════════════════════════════ */
-function SpecialistCard({
-  s, palette, idx, visible, delay,
-}: {
-  s: { name: string; subject: string; rating: number; reviews: number; price: number; image: string; badge: string | null }
-  palette: Palette
-  idx: number
-  visible: boolean
-  delay: number
-}) {
-  return (
-    <Link href="/specialists" className="flex-shrink-0 w-[180px] sm:w-[200px] lg:w-[210px] snap-start">
-      <div
-        className={`group bg-white rounded-lg border border-slate-200 overflow-hidden
-          hover:border-slate-900 hover:shadow-lg hover:-translate-y-0.5
-          transition-all duration-200 h-full flex flex-col
-          ${visible ? "animate-slide-up" : "opacity-0"}`}
-        style={{ animationDelay: `${delay}ms`, ...getDiffuseBg(palette, idx) }}
-      >
-        {/* Image */}
-        <div className="relative aspect-[3/4] bg-slate-100 overflow-hidden">
-          <Image
-            src={s.image}
-            alt={s.name}
-            fill
-            className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
-            crossOrigin="anonymous"
-            sizes="(max-width: 640px) 180px, 210px"
-          />
-          {s.badge && (
-            <span
-              className="absolute top-2 left-2 text-white text-[10px] font-bold tracking-wide px-2 py-0.5 rounded"
-              style={{ backgroundColor: palette.button }}
-            >
-              {s.badge}
-            </span>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-3 flex flex-col flex-1">
-          <h3 className="font-bold text-slate-800 text-[13px] leading-tight truncate">{s.name}</h3>
-          <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-1">{s.subject}</p>
-
-          <div className="flex items-center justify-between mt-auto pt-2.5">
-            <div className="flex items-center gap-1">
-              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-              <span className="text-[11px] font-semibold text-slate-700">{s.rating}</span>
-              <span className="text-[10px] text-slate-400">({s.reviews})</span>
-            </div>
-            <span className="text-[12px] font-bold" style={{ color: palette.price }}>
-              {"\u20B4"}{s.price}
-            </span>
-          </div>
-        </div>
-      </div>
-    </Link>
-  )
-}
-
-/* ═══════════════════════════════════════════════
-   Horizontal Snap Slider
-   ═══════════════════════════════════════════════ */
-function SpecialistSlider({
-  title, type, specialists, visible, catalogHref, catalogLabel,
-}: {
-  title: string
-  type: string
-  specialists: { name: string; subject: string; rating: number; reviews: number; price: number; image: string; badge: string | null }[]
-  visible: boolean
-  catalogHref: string
-  catalogLabel: string
-}) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const palette = getPalette(type)
-
-  const scroll = useCallback((dir: "left" | "right") => {
-    scrollRef.current?.scrollBy({ left: dir === "left" ? -240 : 240, behavior: "smooth" })
-  }, [])
-
-  return (
-    <div>
-      {/* Section header */}
-      <div className={`flex items-end justify-between mb-4 ${visible ? "animate-slide-up" : "opacity-0"}`}>
-        <div>
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-800 !text-[length:inherit]" style={{ fontSize: "clamp(1rem, 2vw, 1.25rem)", lineHeight: 1.3, letterSpacing: "-0.01em" }}>
-            {title}
-          </h2>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => scroll("left")}
-            className="h-7 w-7 rounded border border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-colors cursor-pointer"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft className="h-3.5 w-3.5" />
-          </button>
-          <button
-            onClick={() => scroll("right")}
-            className="h-7 w-7 rounded border border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-900 hover:text-slate-900 transition-colors cursor-pointer"
-            aria-label="Scroll right"
-          >
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-          <Link
-            href={catalogHref}
-            className="hidden sm:flex items-center gap-1 ml-2 text-xs font-semibold hover:underline"
-            style={{ color: palette.button }}
-          >
-            {catalogLabel}
-            <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Scrollable row */}
-      <div
-        ref={scrollRef}
-        className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory scrollbar-hide"
-        style={{ scrollbarWidth: "none" }}
-      >
-        {specialists.map((s, i) => (
-          <SpecialistCard key={i} s={s} palette={palette} idx={i} visible={visible} delay={(i + 1) * 80} />
-        ))}
-
-        {/* "View all" card */}
-        <Link href={catalogHref} className="flex-shrink-0 w-[180px] sm:w-[200px] lg:w-[210px] snap-start">
-          <div
-            className={`rounded-lg border overflow-hidden hover:border-slate-900 transition-all h-full flex flex-col items-center justify-center min-h-[300px] sm:min-h-[330px] group cursor-pointer
-              ${visible ? "animate-slide-up" : "opacity-0"}`}
-            style={{ backgroundColor: B.light, borderColor: B.mid, animationDelay: "500ms" }}
-          >
-            <div
-              className="h-10 w-10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
-              style={{ backgroundColor: palette.button }}
-            >
-              <ArrowRight className="h-4 w-4 text-white" />
-            </div>
-            <span className="text-xs font-bold" style={{ color: palette.button }}>{catalogLabel}</span>
-          </div>
-        </Link>
-      </div>
-    </div>
-  )
-}
-
 /* ══════════════════════════════════════════════════════════
-   Home Page
+   Home Page — Premium Orchestrator
    ══════════════════════════════════════════════════════════ */
 export default function HomePageClient() {
   const { user } = useAuth()
@@ -225,14 +63,13 @@ export default function HomePageClient() {
 
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
-  /* Header scroll state */
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 10)
     window.addEventListener("scroll", handler, { passive: true })
     return () => window.removeEventListener("scroll", handler)
   }, [])
 
-  /* Section observers */
+  const stats = useInView(0.2)
   const tutors = useInView()
   const psychologists = useInView()
   const speechTherapists = useInView()
@@ -308,7 +145,13 @@ export default function HomePageClient() {
   return (
     <div className="min-h-screen bg-white">
       {/* ═══ Sticky Header ═══ */}
-      <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-sm transition-shadow duration-200 ${scrolled ? "shadow-sm border-b border-slate-100" : ""}`}>
+      <header
+        className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 ${
+          scrolled
+            ? "bg-white/80 shadow-sm border-b border-slate-100/80"
+            : "bg-white/95"
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-14 items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5">
@@ -328,21 +171,21 @@ export default function HomePageClient() {
             <div className="flex items-center gap-2">
               {user ? (
                 <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <Button className="h-8 rounded-md px-4 text-xs font-semibold text-white cursor-pointer" style={{ backgroundColor: B.pri }}>
+                  <SquishyButton bgColor={B.pri} className="h-8 rounded-md px-4 text-xs">
                     Dashboard
-                  </Button>
+                  </SquishyButton>
                 </Link>
               ) : (
                 <>
                   <Link href="/login">
-                    <Button variant="outline" className="h-8 rounded-md px-4 text-xs text-slate-600 border-slate-200 hover:bg-slate-50 cursor-pointer">
+                    <SquishyButton variant="outline" className="h-8 rounded-md px-4 text-xs">
                       {t("btn.login")}
-                    </Button>
+                    </SquishyButton>
                   </Link>
                   <Link href="/register">
-                    <Button className="h-8 rounded-md px-4 text-xs font-semibold text-white cursor-pointer" style={{ backgroundColor: B.pri }}>
+                    <SquishyButton bgColor={B.pri} className="h-8 rounded-md px-4 text-xs">
                       {t("btn.register")}
-                    </Button>
+                    </SquishyButton>
                   </Link>
                 </>
               )}
@@ -352,119 +195,195 @@ export default function HomePageClient() {
       </header>
 
       <main>
-        {/* ═══ Hero headline ═══ */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-10 pb-2">
-          <p className="text-[13px] font-bold tracking-widest uppercase mb-2" style={{ color: B.pri }}>
-            Libitum Education
-          </p>
-          <h1
-            className="font-bold text-slate-900 tracking-tight text-balance"
-            style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", lineHeight: 1.15, letterSpacing: "-0.02em" }}
-          >
-            {"Професійні репетитори, психологи"}
-            <br className="hidden sm:block" />
-            {" та логопеди"}
-          </h1>
-          <p className="text-slate-500 mt-2 text-sm max-w-lg leading-relaxed">{t("hero.subtitle")}</p>
-        </section>
+        {/* ═══ Hero with Spotlight + Ink Ripple + Scramble Text ═══ */}
+        <HeroSpotlight>
+          {/* Ink ripple — click anywhere in hero to see expanding teal rings */}
+          <InkRippleLayer />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-4 relative z-10">
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-[13px] font-bold tracking-widest uppercase mb-3"
+              style={{ color: B.pri }}
+            >
+              Libitum Education
+            </motion.p>
+
+            {/* Cipher-decode text scramble effect on hero title */}
+            <h1
+              className="font-bold text-slate-900 tracking-tight text-balance leading-tight"
+              style={{ fontSize: "clamp(1.5rem, 4vw, 2.75rem)", letterSpacing: "-0.025em" }}
+            >
+              <TextScramble text="Професійні репетитори, психологи" delay={200} speed={35} />
+              <br className="hidden sm:block" />
+              <TextScramble text=" та логопеди" delay={1200} speed={40} />
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              className="text-slate-500 mt-3 text-sm max-w-lg leading-relaxed"
+            >
+              {t("hero.subtitle")}
+            </motion.p>
+
+            {/* CTA with morphing blob behind it */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.0 }}
+              className="mt-6 relative inline-block"
+            >
+              <MorphBlob
+                color="rgba(0,150,136,0.07)"
+                size={200}
+                className="absolute -top-16 -left-16 z-0"
+              />
+              <Link href={specialistHref} className="relative z-10">
+                <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
+                  {t("hero.cta")}
+                  <ArrowRight className="h-4 w-4" />
+                </SquishyButton>
+              </Link>
+            </motion.div>
+          </div>
+        </HeroSpotlight>
 
         {/* ═══ Tutors ═══ */}
-        <section ref={tutors.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-          <SpecialistSlider title="Репетитори" type="tutor" specialists={tutorSlides} visible={tutors.visible} catalogHref="/specialists" catalogLabel="Всі репетитори" />
+        <section ref={tutors.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+          <SpecialistSlider title="Репетитори" type="tutor" icon={GraduationCap} specialists={tutorSlides} visible={tutors.visible} catalogHref="/specialists" catalogLabel="Всі репетитори" />
         </section>
 
         {/* ═══ Psychologists ═══ */}
-        <section ref={psychologists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <SpecialistSlider title="Психологи" type="health" specialists={psychologistSlides} visible={psychologists.visible} catalogHref="/specialists" catalogLabel="Всі психологи" />
+        <section ref={psychologists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <SpecialistSlider title="Психологи" type="health" icon={Brain} specialists={psychologistSlides} visible={psychologists.visible} catalogHref="/specialists" catalogLabel="Всі психологи" />
         </section>
 
         {/* ═══ Speech Therapists ═══ */}
-        <section ref={speechTherapists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 pb-10">
-          <SpecialistSlider title="Логопеди" type="health" specialists={speechSlides} visible={speechTherapists.visible} catalogHref="/specialists" catalogLabel="Всі логопеди" />
+        <section ref={speechTherapists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-6">
+          <SpecialistSlider title="Логопеди" type="health" icon={MessageCircle} specialists={speechSlides} visible={speechTherapists.visible} catalogHref="/specialists" catalogLabel="Всі логопеди" />
         </section>
 
+        {/* ═══ Stats Counter ═══ */}
+        <section ref={stats.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <AnimatedCounter visible={stats.visible} />
+        </section>
+
+        {/* ═══ Trust Marquee ═══ */}
+        <TrustMarquee />
+
         {/* ═══ How it works ═══ */}
-        <section ref={how.ref} id="how" className="py-14 sm:py-20" style={{ backgroundColor: B.light }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center mb-10 ${how.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="font-bold text-slate-800 text-balance" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
+        <section ref={how.ref} id="how" className="py-14 sm:py-20 relative grain-overlay" style={{ backgroundColor: B.light }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={how.visible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-10"
+            >
+              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
                 {t("nav.how_it_works")}
               </h2>
               <p className="text-slate-500 text-sm mt-1.5 max-w-md mx-auto">{t("how.subtitle")}</p>
-            </div>
+            </motion.div>
 
-            <div className="grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="relative grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              {/* Connecting line between steps (desktop) */}
+              <div className="hidden sm:block absolute top-[22px] left-[16.67%] right-[16.67%] h-[2px] bg-gradient-to-r from-transparent via-teal-200 to-transparent z-0" />
+
               {steps.map((step, i) => (
-                <div key={i} className={`text-center ${how.visible ? "animate-slide-up" : "opacity-0"}`} style={{ animationDelay: `${(i + 1) * 150}ms` }}>
-                  <div className="h-11 w-11 rounded-lg flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: B.pri }}>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={how.visible ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: (i + 1) * 0.15, duration: 0.5 }}
+                  className="text-center relative z-10"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 3 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    className="h-11 w-11 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md"
+                    style={{ backgroundColor: B.pri }}
+                  >
                     <span className="text-sm font-bold text-white">{step.num}</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-slate-800 mb-1 !text-[14px]">{step.title}</h3>
+                  </motion.div>
+                  <h3 className="text-sm font-bold text-slate-800 mb-1 tracking-tight">{step.title}</h3>
                   <p className="text-slate-500 text-xs leading-relaxed">{step.desc}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             <div className="text-center mt-10">
               <Link href={specialistHref}>
-                <Button className="h-10 rounded-md px-6 text-sm font-semibold text-white cursor-pointer" style={{ backgroundColor: B.pri }}>
+                <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
                   {t("hero.cta")}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                  <ArrowRight className="h-4 w-4" />
+                </SquishyButton>
               </Link>
             </div>
           </div>
         </section>
 
         {/* ═══ Pricing ═══ */}
-        <section ref={price.ref} id="plans" className="py-14 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center mb-10 ${price.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="font-bold text-slate-800 text-balance" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
+        <section ref={price.ref} id="plans" className="py-14 sm:py-20 relative overflow-hidden">
+          {/* Floating gradient orbs */}
+          <div className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+          <div className="absolute bottom-20 -right-32 w-72 h-72 rounded-full bg-amber-100/30 blur-3xl animate-orb-slow pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={price.visible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-10"
+            >
+              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
                 {"Обери свій план"}
               </h2>
               <p className="text-slate-500 text-sm mt-1.5">{t("pricing.subtitle")}</p>
-            </div>
+            </motion.div>
 
             <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {pricing.map((plan, i) => (
-                <div
-                  key={i}
-                  className={`relative rounded-lg p-5 border transition-colors hover:border-slate-900
-                    ${plan.highlight ? "border-2 bg-white" : "bg-white border-slate-200"}
-                    ${price.visible ? "animate-slide-up" : "opacity-0"}`}
-                  style={{
-                    animationDelay: `${(i + 1) * 120}ms`,
-                    ...(plan.highlight ? { borderColor: B.pri } : {}),
-                  }}
-                >
+                <TiltCard key={i} className="rounded-xl" intensity={6}>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={price.visible ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: (i + 1) * 0.12, duration: 0.5 }}
+                    className={`relative rounded-xl p-5 border transition-colors backdrop-blur-sm h-full
+                      ${plan.highlight ? "border-2 bg-white/80 shadow-lg" : "bg-white/70 border-slate-200 hover:border-slate-300"}`}
+                    style={plan.highlight ? { borderColor: B.pri } : {}}
+                  >
                   {plan.badge && (
-                    <div className="absolute -top-3 left-4 text-white text-[10px] font-bold px-2.5 py-0.5 rounded" style={{ backgroundColor: B.pri }}>
+                    <div className="absolute -top-3 left-4 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md" style={{ backgroundColor: B.pri }}>
                       {plan.badge}
                     </div>
                   )}
 
                   <div
-                    className="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold mb-3"
+                    className="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold mb-3"
                     style={plan.highlight ? { backgroundColor: B.pri, color: "white" } : { backgroundColor: B.light, color: B.pri }}
                   >
                     {plan.lessons}
                   </div>
 
-                  <h3 className="text-sm font-bold mb-1.5 !text-[14px]" style={{ color: B.pri }}>{plan.name}</h3>
+                  <h3 className="text-sm font-bold mb-1.5 tracking-tight" style={{ color: B.pri }}>{plan.name}</h3>
 
                   <div className="flex items-baseline gap-2 mb-4">
                     {plan.oldPrice && <span className="text-xs line-through text-slate-400">{plan.oldPrice}</span>}
-                    <span className="text-xl font-bold text-slate-800">{plan.price}</span>
+                    <span className="text-xl font-bold text-slate-800 tracking-tight">{plan.price}</span>
                   </div>
 
-                  <Button
-                    className="w-full h-9 rounded-md font-semibold mb-4 cursor-pointer text-sm text-white"
-                    style={plan.highlight ? { backgroundColor: B.pri } : { backgroundColor: "#1e293b" }}
+                  <SquishyButton
+                    bgColor={plan.highlight ? B.pri : "#1e293b"}
+                    className="w-full h-9 rounded-lg mb-4 text-sm inline-flex items-center justify-center gap-1.5"
                   >
                     {"Обрати"}
-                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-                  </Button>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </SquishyButton>
 
                   <div className="space-y-2">
                     {plan.features.map((f, j) => (
@@ -474,29 +393,37 @@ export default function HomePageClient() {
                       </div>
                     ))}
                   </div>
-                </div>
+                  </motion.div>
+                </TiltCard>
               ))}
             </div>
           </div>
         </section>
 
         {/* ═══ Reviews ═══ */}
-        <section ref={revs.ref} id="reviews" className="py-14 sm:py-20 bg-slate-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className={`text-center mb-8 ${revs.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="font-bold text-slate-800 text-balance" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
+        <section ref={revs.ref} id="reviews" className="py-14 sm:py-20 bg-slate-50/80 relative grain-overlay">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={revs.visible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-8"
+            >
+              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
                 {t("nav.reviews")}
               </h2>
               <p className="text-slate-500 text-sm mt-1.5">{t("reviews.subtitle")}</p>
-            </div>
+            </motion.div>
 
             <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
               {reviews.map((review, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className={`bg-white rounded-lg p-4 border border-slate-200 hover:border-slate-900 transition-colors
-                    ${revs.visible ? "animate-slide-up" : "opacity-0"}`}
-                  style={{ animationDelay: `${(i + 1) * 120}ms` }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={revs.visible ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: (i + 1) * 0.12, duration: 0.5 }}
+                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
+                  className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200/80 hover:border-slate-300 hover:shadow-md transition-shadow"
                 >
                   <div className="flex gap-0.5 mb-2">
                     {[...Array(review.rating)].map((_, j) => (
@@ -505,7 +432,7 @@ export default function HomePageClient() {
                   </div>
                   <p className="text-slate-600 mb-2 leading-relaxed text-xs">{'"'}{review.text}{'"'}</p>
                   <div className="text-xs font-semibold text-slate-800">{review.name}</div>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -514,34 +441,53 @@ export default function HomePageClient() {
         {/* ═══ FAQ ═══ */}
         <section ref={faqSec.ref} className="py-14 sm:py-20">
           <div className="max-w-2xl mx-auto px-4 sm:px-6">
-            <div className={`text-center mb-8 ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`}>
-              <h2 className="font-bold text-slate-800 text-balance" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={faqSec.visible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6 }}
+              className="text-center mb-8"
+            >
+              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
                 {"Часті запитання"}
               </h2>
               <p className="text-slate-500 text-sm mt-1.5">{t("faq.subtitle")}</p>
-            </div>
+            </motion.div>
 
             <div className="space-y-2">
               {faqs.map((faq, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className={`bg-white rounded-lg overflow-hidden border border-slate-200 hover:border-slate-900 transition-all
-                    ${faqSec.visible ? "animate-slide-up" : "opacity-0"}`}
-                  style={{ animationDelay: `${(i + 1) * 80}ms` }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={faqSec.visible ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: (i + 1) * 0.08, duration: 0.4 }}
+                  className="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-200/80 hover:border-slate-300 transition-all"
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
                   >
-                    <span className="font-semibold text-slate-800 text-sm">{faq.q}</span>
-                    <ChevronDown className={`h-4 w-4 text-slate-400 transition-transform duration-300 flex-shrink-0 ml-3 ${openFaq === i ? "rotate-180" : ""}`} />
+                    <span className="font-semibold text-slate-800 text-sm tracking-tight">{faq.q}</span>
+                    <motion.div
+                      animate={{ rotate: openFaq === i ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0 ml-3" />
+                    </motion.div>
                   </button>
-                  <div className={`grid transition-all duration-300 ease-in-out ${openFaq === i ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
-                    <div className="overflow-hidden">
-                      <div className="px-4 pb-3 text-slate-600 leading-relaxed text-sm">{faq.a}</div>
-                    </div>
-                  </div>
-                </div>
+                  <AnimatePresence initial={false}>
+                    {openFaq === i && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-3 text-slate-600 leading-relaxed text-sm">{faq.a}</div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -550,21 +496,31 @@ export default function HomePageClient() {
         {/* ═══ CTA ═══ */}
         <section ref={ctaSec.ref} className="py-14 sm:py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div
-              className={`rounded-lg p-8 sm:p-12 text-center ${ctaSec.visible ? "animate-scale-in" : "opacity-0"}`}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={ctaSec.visible ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden grain-overlay"
               style={{ backgroundColor: B.light, border: `1px solid ${B.mid}` }}
             >
-              <h2 className="font-bold text-slate-800 mb-2 text-balance" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                {t("cta.title")}
-              </h2>
-              <p className="text-slate-600 mb-6 max-w-md mx-auto text-sm">{t("cta.subtitle")}</p>
-              <Link href={specialistHref}>
-                <Button className="h-10 rounded-md px-6 text-sm font-semibold text-white cursor-pointer" style={{ backgroundColor: B.pri }}>
-                  {t("cta.button")}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
+              {/* Shimmer glow behind CTA */}
+              <div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full shimmer-glow -z-0"
+                style={{ backgroundColor: B.pri }}
+              />
+              <div className="relative z-10">
+                <h2 className="font-bold text-slate-800 mb-2 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
+                  {t("cta.title")}
+                </h2>
+                <p className="text-slate-600 mb-6 max-w-md mx-auto text-sm">{t("cta.subtitle")}</p>
+                <Link href={specialistHref}>
+                  <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
+                    {t("cta.button")}
+                    <ArrowRight className="h-4 w-4" />
+                  </SquishyButton>
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>
@@ -578,7 +534,7 @@ export default function HomePageClient() {
                 <div className="relative h-7 w-7 overflow-hidden rounded-md flex-shrink-0">
                   <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
                 </div>
-                <span className="font-bold text-sm">LIBITUM</span>
+                <span className="font-bold text-sm tracking-tight">LIBITUM</span>
               </Link>
               <p className="text-slate-400 text-xs leading-relaxed">{t("about.desc")}</p>
             </div>
