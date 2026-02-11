@@ -22,7 +22,6 @@ import { SpecialistSlider } from "@/components/home/specialist-slider"
 import { SquishyButton } from "@/components/home/squishy-button"
 import { AnimatedCounter } from "@/components/home/animated-counter"
 import { TrustMarquee } from "@/components/home/trust-marquee"
-import { TextScramble } from "@/components/home/text-scramble"
 import { MorphBlob } from "@/components/home/morph-blob"
 import { InkRippleLayer } from "@/components/home/ink-ripple"
 import { TiltCard } from "@/components/home/tilt-card"
@@ -211,14 +210,13 @@ export default function HomePageClient() {
               Libitum Education
             </motion.p>
 
-            {/* Cipher-decode text scramble effect on hero title */}
             <h1
               className="font-bold text-slate-900 tracking-tight text-balance leading-tight"
               style={{ fontSize: "clamp(1.5rem, 4vw, 2.75rem)", letterSpacing: "-0.025em" }}
             >
-              <TextScramble text="Професійні репетитори, психологи" delay={200} speed={35} />
+              Професійні репетитори, психологи
               <br className="hidden sm:block" />
-              <TextScramble text=" та логопеди" delay={1200} speed={40} />
+              та логопеди
             </h1>
 
             <motion.p
