@@ -45,7 +45,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left decorative panel - hidden on mobile */}
-      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] flex-shrink-0 bg-[#0891b2] relative overflow-hidden flex-col justify-between p-10">
+      <div className="hidden lg:flex lg:w-[480px] xl:w-[540px] flex-shrink-0 bg-[#00897B] relative overflow-hidden flex-col justify-between p-10">
         {/* Decorative circles */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3" />
         <div className="absolute bottom-0 left-0 w-56 h-56 bg-white/5 rounded-full -translate-x-1/4 translate-y-1/4" />
@@ -141,7 +141,7 @@ export default function LoginPage() {
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="h-8 rounded-lg text-xs border-slate-200 bg-white hover:bg-[#e0f7fa] hover:text-[#0891b2] hover:border-[#b2ebf2] cursor-pointer"
+                    className="h-8 rounded-lg text-xs border-slate-200 bg-white hover:bg-[#E0F2F1] hover:text-[#00897B] hover:border-[#b2ebf2] cursor-pointer"
                     onClick={() => quickLogin(account.email, account.password)}
                   >
                     {account.role}
@@ -160,7 +160,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#00897B] focus:ring-0 transition-colors"
                 />
               </div>
 
@@ -174,7 +174,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#0891b2] focus:ring-0 transition-colors"
+                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#00897B] focus:ring-0 transition-colors"
                   />
                   <button
                     type="button"
@@ -188,17 +188,17 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox className="border-slate-300 data-[state=checked]:bg-[#0891b2] data-[state=checked]:border-[#0891b2]" />
+                  <Checkbox className="border-slate-300 data-[state=checked]:bg-[#00897B] data-[state=checked]:border-[#00897B]" />
                   <span className="text-sm text-slate-600">Запам{"'"}ятати мене</span>
                 </label>
-                <Link href="/forgot-password" className="text-sm font-semibold text-[#0891b2] hover:text-[#0e7490]">
+                <Link href="/forgot-password" className="text-sm font-semibold text-[#00897B] hover:text-[#00796B]">
                   Забули пароль?
                 </Link>
               </div>
 
               <Button
                 type="submit"
-                className="h-11 w-full rounded-lg bg-[#0891b2] text-sm font-semibold text-white hover:bg-[#0e7490] cursor-pointer"
+                className="h-11 w-full rounded-lg bg-[#00897B] text-sm font-semibold text-white hover:bg-[#00796B] cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? "Завантаження..." : "Увійти"}
@@ -225,7 +225,7 @@ export default function LoginPage() {
 
             <div className="mt-8 text-center text-sm text-slate-500">
               Ще немає акаунту?{" "}
-              <Link href="/register" className="font-semibold text-[#0891b2] hover:text-[#0e7490]">
+              <Link href="/register" className="font-semibold text-[#00897B] hover:text-[#00796B]">
                 Зареєструватись
               </Link>
             </div>
