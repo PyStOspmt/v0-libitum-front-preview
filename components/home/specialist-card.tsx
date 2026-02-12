@@ -28,12 +28,12 @@ export function SpecialistCard({
   return (
     <Link
       href="/specialists"
-      className="flex-shrink-0 snap-start w-[170px] sm:w-[190px] lg:w-[200px]"
+      className="flex-shrink-0 snap-start w-[150px] sm:w-[185px] lg:w-[200px]"
     >
       <div
         className="group relative bg-white rounded-xl border border-slate-200
-          overflow-hidden h-full flex flex-col
-          hover:border-slate-300 hover:shadow-lg hover:-translate-y-1
+          h-full flex flex-col shadow-sm
+          hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 lg:hover:shadow-xl
           transition-all duration-300"
         style={{
           opacity: visible ? 1 : 0,
@@ -42,14 +42,14 @@ export function SpecialistCard({
         }}
       >
         {/* Photo — square ratio, handles any real photo gracefully */}
-        <div className="relative aspect-square bg-slate-100 overflow-hidden">
+        <div className="relative aspect-square bg-slate-100 overflow-hidden rounded-t-xl">
           <Image
             src={s.image}
             alt={s.name}
             fill
             className="object-cover object-top group-hover:scale-[1.03] transition-transform duration-500"
             crossOrigin="anonymous"
-            sizes="(max-width: 640px) 170px, 200px"
+            sizes="(max-width: 640px) 150px, (max-width: 1024px) 185px, 200px"
           />
 
           {/* Badge */}

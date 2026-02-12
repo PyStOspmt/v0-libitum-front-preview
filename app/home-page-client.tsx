@@ -251,18 +251,18 @@ export default function HomePageClient() {
         </HeroSpotlight>
 
         {/* ═══ Tutors ═══ */}
-        <section ref={tutors.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+        <section ref={tutors.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-1">
           <SpecialistSlider title="Репетитори" type="tutor" icon={GraduationCap} specialists={tutorSlides} visible={tutors.visible} catalogHref="/specialists" catalogLabel="Всі репетитори" />
         </section>
 
         {/* ═══ Psychologists ═══ */}
-        <section ref={psychologists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <section ref={psychologists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
           <SpecialistSlider title="Психологи" type="health" icon={Brain} specialists={psychologistSlides} visible={psychologists.visible} catalogHref="/specialists" catalogLabel="Всі психологи" />
         </section>
 
         {/* ═══ Speech Therapists ═══ */}
-        <section ref={speechTherapists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-6">
-          <SpecialistSlider title="Логопеди" type="health" icon={MessageCircle} specialists={speechSlides} visible={speechTherapists.visible} catalogHref="/specialists" catalogLabel="Всі логопеди" />
+        <section ref={speechTherapists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 pb-2">
+          <SpecialistSlider title="Логопеди" type="speech-therapist" icon={MessageCircle} specialists={speechSlides} visible={speechTherapists.visible} catalogHref="/specialists" catalogLabel="Всі логопеди" />
         </section>
 
         {/* ═══ Stats Counter ═══ */}

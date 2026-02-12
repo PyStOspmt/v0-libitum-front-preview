@@ -19,13 +19,15 @@ const PALETTES: Record<string, Palette> = {
 }
 
 export function getPalette(type: string): Palette {
-  return type === "tutor" ? PALETTES.tutor : PALETTES.health
+  if (type === "tutor") return PALETTES.tutor
+  return PALETTES.health // Both health and speech-therapist use health palette
 }
 
-/* Gradient colors for accent types */
+/* Gradient colors for accent types (slightly darker) */
 const GRADIENTS: Record<string, string> = {
-  tutor: "linear-gradient(135deg, #009688, #10b981, #34d399)",
+  tutor: "linear-gradient(135deg, #00796b, #009688, #0f766e)",
   health: "linear-gradient(135deg, #f59e0b, #f97316, #fb923c)",
+  "speech-therapist": "linear-gradient(135deg, #f59e0b, #f97316, #fb923c)",
 }
 
 /* ═══════════════════════════════════════════════
@@ -55,8 +57,20 @@ function SectionHeader({
 
   const gradient = GRADIENTS[type] || GRADIENTS.tutor
 
+  // Map type to category filter value
+  const getCategoryFilter = (type: string) => {
+    switch (type) {
+      case "tutor": return "tutor"
+      case "health": return "psychologist" 
+      case "speech-therapist": return "speech-therapist"
+      default: return "all"
+    }
+  }
+
+  const hrefWithFilter = `/specialists?category=${getCategoryFilter(type)}`
+
   return (
-    <Link href={catalogHref}>
+    <Link href={hrefWithFilter}>
       <motion.div
         ref={ref}
         onMouseMove={handleMouse}
@@ -87,15 +101,10 @@ function SectionHeader({
 
         {/* Arrow hint */}
         <ArrowRight
-          className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-60 group-hover:translate-x-0 transition-all duration-200"
+          className="h-4 w-4 transition-all duration-200 sm:opacity-0 sm:-translate-x-2 sm:group-hover:opacity-60 sm:group-hover:translate-x-0 opacity-60 translate-x-0"
           style={{ color: palette.button }}
         />
 
-        {/* Pulse dot */}
-        <span
-          className="inline-block h-1.5 w-1.5 rounded-full pulse-dot ml-1"
-          style={{ backgroundColor: palette.button }}
-        />
       </motion.div>
     </Link>
   )
@@ -118,18 +127,31 @@ export function SpecialistSlider({
   const scrollRef = useRef<HTMLDivElement>(null)
   const palette = getPalette(type)
 
+  // Sort specialists: TOP specialists first, then by rating
+  const sortedSpecialists = [...specialists].sort((a, b) => {
+    // First, prioritize TOP specialists
+    const aIsTop = a.badge === "TOP"
+    const bIsTop = b.badge === "TOP"
+    
+    if (aIsTop && !bIsTop) return -1
+    if (!aIsTop && bIsTop) return 1
+    
+    // Then sort by rating (highest first)
+    return b.rating - a.rating
+  })
+
   const scroll = useCallback((dir: "left" | "right") => {
     scrollRef.current?.scrollBy({ left: dir === "left" ? -260 : 260, behavior: "smooth" })
   }, [])
 
   return (
-    <div className="py-1">
+    <div className="py-0.5">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={visible ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5 }}
-        className="flex items-end justify-between mb-4"
+        className="flex items-end justify-between mb-3"
       >
         <SectionHeader title={title} icon={icon} palette={palette} type={type} catalogHref={catalogHref} />
 
@@ -155,10 +177,10 @@ export function SpecialistSlider({
       <div className="relative">
         <div
           ref={scrollRef}
-          className="flex gap-3.5 overflow-x-auto pb-3 snap-x snap-mandatory scrollbar-hide"
+          className="flex gap-3.5 overflow-x-auto pt-3 -mt-3 pb-3 snap-x snap-mandatory scrollbar-hide"
           style={{ scrollbarWidth: "none" }}
         >
-          {specialists.map((s, i) => (
+          {sortedSpecialists.map((s, i) => (
             <SpecialistCard
               key={i}
               s={s}
