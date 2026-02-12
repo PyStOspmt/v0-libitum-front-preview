@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye } from "lucide-react"
+import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye, SlidersHorizontal } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
 /* ═══════════════════════════════════════════════════
@@ -174,7 +174,7 @@ function getDiffuseBackground(index: number, accents: AccentKey[]) {
 function FilterBox({ label, children, onClick }: { label: string; children: React.ReactNode; onClick?: () => void }) {
   return (
     <div 
-      className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors cursor-pointer bg-white min-w-[140px] flex-shrink-0 sm:min-w-0 sm:flex-shrink"
+      className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors cursor-pointer bg-white"
       onClick={onClick}
     >
       <div className="text-[10px] text-slate-400 leading-none mb-1">{label}</div>
@@ -297,6 +297,8 @@ export default function SpecialistsPage() {
   const [videoPlaying, setVideoPlaying] = useState<number | null>(null)
   const [showVerifiedTooltip, setShowVerifiedTooltip] = useState<number | null>(null)
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
+  const [showMobileFilters, setShowMobileFilters] = useState(false)
+  const [showMobileSearch, setShowMobileSearch] = useState(false)
 
   // Refs for Select triggers
   const categorySelectRef = useRef<HTMLButtonElement>(null)
@@ -458,7 +460,7 @@ export default function SpecialistsPage() {
     })
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-clip">
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
@@ -499,129 +501,254 @@ export default function SpecialistsPage() {
         {/* ── Sticky Filters Container ── */}
         <div className="sticky top-14 z-40 bg-white pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100 [&.stuck]:shadow-sm" ref={stickyFiltersRef}>
 
-        {/* ── Filter Row 1: Labeled dropdowns ── */}
-        <div className="flex sm:grid sm:grid-cols-4 gap-3 mb-3 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
-          <FilterBox label="Спеціалізація" onClick={() => categorySelectRef.current?.click()}>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger
-                ref={categorySelectRef}
-                className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Всі спеціалісти</SelectItem>
-                <SelectItem value="tutor">Репетитори</SelectItem>
-                <SelectItem value="psychologist">Психологи</SelectItem>
-                <SelectItem value="speech-therapist">Логопеди</SelectItem>
-              </SelectContent>
-            </Select>
-          </FilterBox>
-          <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
-            <Select value={priceRange} onValueChange={setPriceRange}>
-              <SelectTrigger
-                ref={priceSelectRef}
-                className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
-              >
-                <SelectValue placeholder="Будь-яка" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Будь-яка</SelectItem>
-                {PRICE_RANGES.slice(1).map((r, i) => (
-                  <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FilterBox>
-          <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
-            <Select value={city} onValueChange={setCity}>
-              <SelectTrigger
-                ref={citySelectRef}
-                className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
-              >
-                <SelectValue placeholder="Будь-яке" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Будь-яке</SelectItem>
-                {ALL_CITIES.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FilterBox>
-          <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
-            <Select value={format} onValueChange={setFormat}>
-              <SelectTrigger
-                ref={formatSelectRef}
-                className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Будь-який</SelectItem>
-                <SelectItem value="online">Онлайн</SelectItem>
-                <SelectItem value="offline">Офлайн</SelectItem>
-              </SelectContent>
-            </Select>
-          </FilterBox>
+        {/* ── MOBILE: Compact filter bar (Preply-style) ── */}
+        <div className="sm:hidden">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex-1 min-w-0">
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger className="h-10 rounded-full border-slate-200 text-sm font-medium text-slate-800 bg-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Всі спеціалісти</SelectItem>
+                  <SelectItem value="tutor">Репетитори</SelectItem>
+                  <SelectItem value="psychologist">Психологи</SelectItem>
+                  <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <button
+              onClick={() => setShowMobileFilters(!showMobileFilters)}
+              className={`flex items-center justify-center h-10 w-10 rounded-full border transition-colors flex-shrink-0 ${
+                showMobileFilters ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+              }`}
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setShowMobileSearch(!showMobileSearch)}
+              className={`flex items-center justify-center h-10 w-10 rounded-full border transition-colors flex-shrink-0 ${
+                showMobileSearch ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+              }`}
+            >
+              <Search className="h-4 w-4" />
+            </button>
+          </div>
+
+          {/* Mobile search input */}
+          {showMobileSearch && (
+            <div className="relative mb-2">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <Input
+                autoFocus
+                placeholder="Пошук за ім'ям"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-10 rounded-full border-slate-200 bg-white pl-10 text-sm focus-visible:ring-slate-300"
+              />
+            </div>
+          )}
+
+          {/* Mobile expanded filters panel */}
+          {showMobileFilters && (
+            <div className="space-y-3 pb-2 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-2 gap-2">
+                <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
+                  <Select value={priceRange} onValueChange={setPriceRange}>
+                    <SelectTrigger ref={priceSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                      <SelectValue placeholder="Будь-яка" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Будь-яка</SelectItem>
+                      {PRICE_RANGES.slice(1).map((r, i) => (
+                        <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterBox>
+                <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
+                  <Select value={city} onValueChange={setCity}>
+                    <SelectTrigger ref={citySelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                      <SelectValue placeholder="Будь-яке" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Будь-яке</SelectItem>
+                      {ALL_CITIES.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterBox>
+                <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
+                  <Select value={format} onValueChange={setFormat}>
+                    <SelectTrigger ref={formatSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Будь-який</SelectItem>
+                      <SelectItem value="online">Онлайн</SelectItem>
+                      <SelectItem value="offline">Офлайн</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FilterBox>
+                <FilterBox label="Сортування" onClick={() => sortSelectRef.current?.click()}>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger ref={sortSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SORT_OPTIONS.map(o => (
+                        <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FilterBox>
+              </div>
+              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+                <PillDropdown
+                  label="Предмети"
+                  multi
+                  options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
+                  value={subjectFilter}
+                  onChange={(v) => setSubjectFilter(v as string[])}
+                />
+                <button
+                  onClick={() => setVerifiedOnly(!verifiedOnly)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
+                    verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+                  }`}
+                >
+                  Верифіковані
+                  {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
+                </button>
+                <button
+                  onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
+                    showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+                  }`}
+                >
+                  Обрані
+                  {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* ── Filter Row 2: Pill filters + Sort + Search ── */}
-        <div className="flex items-center gap-2 pb-1 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
-            <PillDropdown
-              label="Предмети"
-              multi
-              options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
-              value={subjectFilter}
-              onChange={(v) => setSubjectFilter(v as string[])}
-            />
-            <button
-              onClick={() => setVerifiedOnly(!verifiedOnly)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
-                verifiedOnly
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-200 text-slate-600 hover:border-slate-400"
-              }`}
-            >
-              Верифіковані
-              {verifiedOnly ? (
-                <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} />
-              ) : (
-                <ChevronDown className="h-3.5 w-3.5 opacity-50" />
-              )}
-            </button>
-            <button
-              onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
-                showFavoritesOnly
-                  ? "border-slate-900 bg-slate-900 text-white"
-                  : "border-slate-200 text-slate-600 hover:border-slate-400"
-              }`}
-            >
-              Обрані
-              {showFavoritesOnly ? (
-                <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} />
-              ) : (
-                <ChevronDown className="h-3.5 w-3.5 opacity-50" />
-              )}
-            </button>
-            <div className="flex-shrink-0">
+        {/* ── DESKTOP: Full FilterBox grid + pill row ── */}
+        <div className="hidden sm:block">
+          <div className="grid grid-cols-4 gap-3 mb-3">
+            <FilterBox label="Спеціалізація" onClick={() => categorySelectRef.current?.click()}>
+              <Select value={category} onValueChange={setCategory}>
+                <SelectTrigger
+                  ref={categorySelectRef}
+                  className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Всі спеціалісти</SelectItem>
+                  <SelectItem value="tutor">Репетитори</SelectItem>
+                  <SelectItem value="psychologist">Психологи</SelectItem>
+                  <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                </SelectContent>
+              </Select>
+            </FilterBox>
+            <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
+              <Select value={priceRange} onValueChange={setPriceRange}>
+                <SelectTrigger
+                  ref={priceSelectRef}
+                  className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
+                >
+                  <SelectValue placeholder="Будь-яка" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-яка</SelectItem>
+                  {PRICE_RANGES.slice(1).map((r, i) => (
+                    <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterBox>
+            <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
+              <Select value={city} onValueChange={setCity}>
+                <SelectTrigger
+                  ref={citySelectRef}
+                  className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
+                >
+                  <SelectValue placeholder="Будь-яке" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-яке</SelectItem>
+                  {ALL_CITIES.map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FilterBox>
+            <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
+              <Select value={format} onValueChange={setFormat}>
+                <SelectTrigger
+                  ref={formatSelectRef}
+                  className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-який</SelectItem>
+                  <SelectItem value="online">Онлайн</SelectItem>
+                  <SelectItem value="offline">Офлайн</SelectItem>
+                </SelectContent>
+              </Select>
+            </FilterBox>
+          </div>
+
+          <div className="flex items-center justify-between gap-3 pb-1">
+            <div className="flex items-center gap-2">
+              <PillDropdown
+                label="Предмети"
+                multi
+                options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
+                value={subjectFilter}
+                onChange={(v) => setSubjectFilter(v as string[])}
+              />
+              <button
+                onClick={() => setVerifiedOnly(!verifiedOnly)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
+                  verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+                }`}
+              >
+                Верифіковані
+                {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
+              </button>
+              <button
+                onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
+                  showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
+                }`}
+              >
+                Обрані
+                {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
+              </button>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
               <PillDropdown
                 label={`Сортувати: ${SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
                 options={SORT_OPTIONS}
                 value={sortBy}
                 onChange={(v) => setSortBy(v as string)}
               />
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+                <Input
+                  placeholder="Пошук за ім'ям"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-8 w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
+                />
+              </div>
             </div>
-            <div className="relative flex-shrink-0">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-              <Input
-                placeholder="Пошук за ім'ям"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-[160px] sm:w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
-              />
-            </div>
+          </div>
         </div>
 
         </div>{/* end sticky filters */}
