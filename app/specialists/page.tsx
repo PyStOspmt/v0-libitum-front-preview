@@ -174,7 +174,7 @@ function getDiffuseBackground(index: number, accents: AccentKey[]) {
 function FilterBox({ label, children, onClick }: { label: string; children: React.ReactNode; onClick?: () => void }) {
   return (
     <div 
-      className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors cursor-pointer bg-white"
+      className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors cursor-pointer bg-white min-w-[140px] flex-shrink-0 sm:min-w-0 sm:flex-shrink"
       onClick={onClick}
     >
       <div className="text-[10px] text-slate-400 leading-none mb-1">{label}</div>
@@ -304,6 +304,7 @@ export default function SpecialistsPage() {
   const citySelectRef = useRef<HTMLButtonElement>(null)
   const formatSelectRef = useRef<HTMLButtonElement>(null)
   const sortSelectRef = useRef<HTMLButtonElement>(null)
+  const stickyFiltersRef = useRef<HTMLDivElement>(null)
 
   // Handle category query parameter changes
   useEffect(() => {
@@ -312,6 +313,19 @@ export default function SpecialistsPage() {
       setCategory(categoryParam)
     }
   }, [searchParams])
+
+  // Sticky filters shadow on scroll
+  useEffect(() => {
+    const el = stickyFiltersRef.current
+    if (!el) return
+    const handleScroll = () => {
+      const rect = el.getBoundingClientRect()
+      el.classList.toggle("stuck", rect.top <= 56)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const toggleFavorite = (e: React.MouseEvent, id: number) => {
     e.preventDefault()
@@ -482,8 +496,11 @@ export default function SpecialistsPage() {
           </p>
         </div>
 
+        {/* ── Sticky Filters Container ── */}
+        <div className="sticky top-14 z-40 bg-white pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100 [&.stuck]:shadow-sm" ref={stickyFiltersRef}>
+
         {/* ── Filter Row 1: Labeled dropdowns ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+        <div className="flex sm:grid sm:grid-cols-4 gap-3 mb-3 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 sm:overflow-visible">
           <FilterBox label="Спеціалізація" onClick={() => categorySelectRef.current?.click()}>
             <Select value={category} onValueChange={setCategory}>
               <SelectTrigger
@@ -550,8 +567,7 @@ export default function SpecialistsPage() {
         </div>
 
         {/* ── Filter Row 2: Pill filters + Sort + Search ── */}
-        <div className="flex items-center justify-between gap-3 mb-6 pb-1 flex-wrap">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pb-1 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
             <PillDropdown
               label="Предмети"
               multi
@@ -561,7 +577,7 @@ export default function SpecialistsPage() {
             />
             <button
               onClick={() => setVerifiedOnly(!verifiedOnly)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
                 verifiedOnly
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 text-slate-600 hover:border-slate-400"
@@ -576,7 +592,7 @@ export default function SpecialistsPage() {
             </button>
             <button
               onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${
                 showFavoritesOnly
                   ? "border-slate-900 bg-slate-900 text-white"
                   : "border-slate-200 text-slate-600 hover:border-slate-400"
@@ -589,9 +605,7 @@ export default function SpecialistsPage() {
                 <ChevronDown className="h-3.5 w-3.5 opacity-50" />
               )}
             </button>
-          </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="hidden sm:block">
+            <div className="flex-shrink-0">
               <PillDropdown
                 label={`Сортувати: ${SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
                 options={SORT_OPTIONS}
@@ -599,17 +613,18 @@ export default function SpecialistsPage() {
                 onChange={(v) => setSortBy(v as string)}
               />
             </div>
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
               <Input
                 placeholder="Пошук за ім'ям"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
+                className="h-8 w-[160px] sm:w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
               />
             </div>
-          </div>
         </div>
+
+        </div>{/* end sticky filters */}
 
         {/* ── Results count ── */}
         <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-5">
