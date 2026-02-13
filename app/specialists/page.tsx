@@ -487,10 +487,10 @@ export default function SpecialistsPage() {
         </div>
       </header>
 
-      {/* Floating gradient orbs */}
-      <div className="fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
-      <div className="fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
-      <div className="fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
+      {/* Floating gradient orbs - desktop only */}
+      <div className="hidden sm:block fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+      <div className="hidden sm:block fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
+      <div className="hidden sm:block fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* ── Title ── */}
@@ -835,16 +835,16 @@ export default function SpecialistsPage() {
                             <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${a.badge} ${a.badgeBorder}`}>{specialist.specialization}</span>
                           </div>
                           <div className="mb-1">
-                            <SubjectsLine specialist={specialist} textClass="text-sm text-slate-700" iconClass={a.icon} maxCharsFallback={40} />
+                            <SubjectsLine specialist={specialist} textClass="text-[15px] text-slate-700 font-medium" iconClass={a.icon} maxCharsFallback={40} />
                           </div>
                           <div
                             className="mb-2 cursor-pointer group/bio"
                             onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                           >
-                            <p className={`text-sm text-slate-700 leading-relaxed ${isExpanded ? "" : "line-clamp-2"}`}>
-                              <span className="font-semibold">{specialist.bioTitle}</span>
+                            <p className={`text-[15px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
+                              <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
                               {" — "}
-                              <span className="text-slate-500">{specialist.bioText}</span>
+                              <span className="text-slate-600">{specialist.bioText}</span>
                             </p>
                           </div>
                         </div>
@@ -853,8 +853,8 @@ export default function SpecialistsPage() {
                         <div className="flex flex-col items-end flex-shrink-0 w-[200px]">
                           <div className="flex items-start justify-between w-full mb-1">
                             <div>
-                              <h4 className={`text-[22px] font-bold ${a.price} leading-tight`}>₴{specialist.pricePerLesson}</h4>
-                              <p className="text-xs text-slate-400 mt-0.5">{specialist.lessonDuration} заняття</p>
+                              <h4 className={`text-[24px] font-bold ${a.price} leading-tight`}>₴{specialist.pricePerLesson}</h4>
+                              <p className="text-[13px] text-slate-400 mt-0.5">{specialist.lessonDuration} заняття</p>
                             </div>
                             <button
                               onClick={(e) => toggleFavorite(e, specialist.id)}
@@ -866,22 +866,22 @@ export default function SpecialistsPage() {
                           <div className="flex items-start gap-3 w-full mt-3 mb-4">
                             <div className="text-center">
                               <div className="flex items-center gap-0.5 justify-center">
-                                <span className="text-[15px] font-bold text-slate-900">{specialist.rating}</span>
+                                <div className="text-[16px] font-bold text-slate-900">{specialist.rating}</div>
                                 <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                               </div>
-                              <div className="text-[11px] text-slate-400 whitespace-nowrap">{specialist.reviews} відгуків</div>
+                              <div className="text-[14px] text-slate-400 whitespace-nowrap">{specialist.reviews} відгуків</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-[15px] font-bold text-slate-900">{specialist.activeStudents}</div>
-                              <div className="text-[11px] text-slate-400">учнів</div>
+                              <div className="text-[16px] font-bold text-slate-900">{specialist.activeStudents}</div>
+                              <div className="text-[12px] text-slate-400">учнів</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-[15px] font-bold text-slate-900">{specialist.lessonsCompleted.toLocaleString()}</div>
-                              <div className="text-[11px] text-slate-400">занять</div>
+                              <div className="text-[16px] font-bold text-slate-900">{specialist.lessonsCompleted.toLocaleString()}</div>
+                              <div className="text-[12px] text-slate-400">занять</div>
                             </div>
                             <div className="text-center">
-                              <div className="text-[15px] font-bold text-slate-900">{specialist.experience}</div>
-                              <div className="text-[11px] text-slate-400">років</div>
+                              <div className="text-[16px] font-bold text-slate-900">{specialist.experience}</div>
+                              <div className="text-[12px] text-slate-400">років</div>
                             </div>
                           </div>
                           <Link href={`/specialists/${specialist.id}`} className="w-full">
