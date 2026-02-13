@@ -117,7 +117,7 @@ const accentPalette: Record<AccentKey, {
   tutor: {
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
     badgeBorder: "border border-emerald-200",
-    cta: "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md",
+    cta: "bg-[#009688] hover:bg-[#00796B] text-white shadow-md transition-colors",
     price: "text-slate-900",
     cardBg: "from-white via-emerald-50/30 to-white",
     glow: "rgba(16,185,129,0.08)",
@@ -128,7 +128,7 @@ const accentPalette: Record<AccentKey, {
   health: {
     badge: "bg-amber-50 text-amber-700 border-amber-200",
     badgeBorder: "border border-amber-200",
-    cta: "bg-amber-500 hover:bg-amber-600 text-white shadow-md",
+    cta: "bg-[#f59e0b] hover:bg-[#d97706] text-white shadow-md transition-colors",
     price: "text-slate-900",
     cardBg: "from-white via-amber-50/30 to-white",
     glow: "rgba(249,115,22,0.08)",
@@ -841,7 +841,7 @@ export default function SpecialistsPage() {
                             className="mb-2 cursor-pointer group/bio"
                             onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                           >
-                            <p className={`text-[15px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-4"}`}>
+                            <p className={`text-[15px] text-slate-700 leading-snug font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
                               <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
                               {" — "}
                               <span className="text-slate-600">{specialist.bioText}</span>
@@ -1010,12 +1010,12 @@ export default function SpecialistsPage() {
                       <div>
                         <SubjectsLine specialist={specialist} textClass="text-[14px] text-slate-700 font-medium" iconClass={a.icon} maxCharsFallback={24} />
                       </div>
-                      <div className="flex items-center gap-1.5 text-[13px] text-slate-500">
+                      <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
                         <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
                         <span>{specialist.location}</span>
                         {getAvailability(specialist) && <span className="text-slate-400">• {getAvailability(specialist)}</span>}
                       </div>
-                      <div className="flex items-center gap-2 text-[14px] text-slate-500">
+                      <div className="flex items-center gap-2 text-[13px] text-slate-500">
                         <Users className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
                         <span>{specialist.activeStudents} учнів • {specialist.lessonsCompleted.toLocaleString()} занять • {specialist.experience} років досвіду</span>
                       </div>
@@ -1024,10 +1024,10 @@ export default function SpecialistsPage() {
                       className="mb-2 cursor-pointer"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
-                      <p className={`text-[14px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
-                        <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
+                      <p className={`text-[14px] text-slate-700 leading-snug font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
+                        <span className="font-semibold">{specialist.bioTitle}</span>
                         {" — "}
-                        <span className="text-slate-600">{specialist.bioText}</span>
+                        <span className="text-slate-500">{specialist.bioText}</span>
                       </p>
                     </div>
                     <Link href={`/specialists/${specialist.id}`} className="block">

@@ -109,9 +109,9 @@ export default function AboutPage() {
                 <CardContent>
                   <Button asChild className={`${
                     index % 2 === 0 
-                      ? "bg-emerald-600 hover:bg-emerald-700" 
-                      : "bg-amber-500 hover:bg-amber-600"
-                  } text-white shadow-md transition-all duration-300`}>
+                      ? "bg-[#009688] hover:bg-[#00796B]" 
+                      : "bg-[#f59e0b] hover:bg-[#d97706]"
+                  } text-white shadow-md transition-colors`}>
                     <Link href={feature.link} className="inline-flex items-center gap-2">
                       {feature.linkText}
                       <ArrowRight className="h-4 w-4" />
