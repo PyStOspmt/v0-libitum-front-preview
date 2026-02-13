@@ -45,8 +45,13 @@ const stats = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-white">
-      <div className="container mx-auto max-w-6xl space-y-12 px-6 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white relative overflow-hidden">
+      {/* Floating gradient orbs */}
+      <div className="fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+      <div className="fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
+      <div className="fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
+      
+      <div className="container mx-auto max-w-6xl space-y-12 px-6 py-10 relative z-10">
         {/* Hero Section */}
         <div className="text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
@@ -80,11 +85,19 @@ export default function AboutPage() {
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature) => (
-              <Card key={feature.title} className="group hover:shadow-lg transition-all duration-300">
+            {features.map((feature, index) => (
+              <Card key={feature.title} className={`group hover:shadow-lg transition-all duration-300 bg-gradient-to-br ${
+                index % 2 === 0 
+                  ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50" 
+                  : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
+              }`}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-emerald-100 text-emerald-600">
+                    <div className={`p-2 rounded-lg ${
+                      index % 2 === 0 
+                        ? "bg-emerald-100 text-emerald-600" 
+                        : "bg-amber-100 text-amber-600"
+                    }`}>
                       <feature.icon className="h-6 w-6" />
                     </div>
                     <CardTitle className="text-xl">{feature.title}</CardTitle>
@@ -94,7 +107,9 @@ export default function AboutPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className="group-hover:bg-emerald-600 transition-colors">
+                  <Button asChild className={`group-hover:${
+                    index % 2 === 0 ? "bg-emerald-600" : "bg-amber-600"
+                  } transition-colors`}>
                     <Link href={feature.link} className="inline-flex items-center gap-2">
                       {feature.linkText}
                       <ArrowRight className="h-4 w-4" />

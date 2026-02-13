@@ -460,7 +460,7 @@ export default function SpecialistsPage() {
     })
 
   return (
-    <div className="min-h-screen bg-white overflow-x-clip">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white overflow-x-clip">
       {/* ── Header ── */}
       <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
@@ -487,6 +487,11 @@ export default function SpecialistsPage() {
         </div>
       </header>
 
+      {/* Floating gradient orbs */}
+      <div className="fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+      <div className="fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
+      <div className="fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
+
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* ── Title ── */}
         <div className="pt-6 pb-2 sm:pt-8">
@@ -499,7 +504,7 @@ export default function SpecialistsPage() {
         </div>
 
         {/* ── Sticky Filters Container ── */}
-        <div className="sticky top-14 z-40 bg-white pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100 [&.stuck]:shadow-sm" ref={stickyFiltersRef}>
+        <div className="sticky top-14 z-40 bg-white/80 backdrop-blur-md pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100/50 [&.stuck]:shadow-sm [&.stuck]:bg-white/90" ref={stickyFiltersRef}>
 
         {/* ── MOBILE: Compact filter bar (Preply-style) ── */}
         <div className="sm:hidden">
