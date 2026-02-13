@@ -24,7 +24,7 @@ export default function ContactsPage() {
               <CardDescription className="text-slate-600">Telegram бот для швидких звернень та консультацій.</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
-              <Button variant="outline" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">Відкрити Telegram бот</Button>
+              <Button className="bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white border-transparent shadow-md transition-all duration-300">Відкрити Telegram бот</Button>
               <div className="text-sm text-slate-600">Email: support@libitum.com</div>
               <div className="text-sm text-slate-600">Телефон: +380 (44) 123-45-67</div>
             </CardContent>

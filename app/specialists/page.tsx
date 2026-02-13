@@ -117,7 +117,7 @@ const accentPalette: Record<AccentKey, {
   tutor: {
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
     badgeBorder: "border border-emerald-200",
-    cta: "bg-emerald-600 hover:bg-emerald-700",
+    cta: "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white border-transparent shadow-emerald-100",
     price: "text-slate-900",
     cardBg: "from-white via-emerald-50/30 to-white",
     glow: "rgba(16,185,129,0.08)",
@@ -128,7 +128,7 @@ const accentPalette: Record<AccentKey, {
   health: {
     badge: "bg-amber-50 text-amber-700 border-amber-200",
     badgeBorder: "border border-amber-200",
-    cta: "bg-amber-500 hover:bg-amber-600",
+    cta: "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500 text-white border-transparent shadow-amber-100",
     price: "text-slate-900",
     cardBg: "from-white via-amber-50/30 to-white",
     glow: "rgba(249,115,22,0.08)",
@@ -847,12 +847,6 @@ export default function SpecialistsPage() {
                               <span className="text-slate-500">{specialist.bioText}</span>
                             </p>
                           </div>
-                          {specialist.popular && (
-                            <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-auto">
-                              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-                              {specialist.popular}
-                            </div>
-                          )}
                         </div>
 
                         {/* COL 3: Price + Stats + CTA */}
@@ -884,6 +878,10 @@ export default function SpecialistsPage() {
                             <div className="text-center">
                               <div className="text-[15px] font-bold text-slate-900">{specialist.lessonsCompleted.toLocaleString()}</div>
                               <div className="text-[11px] text-slate-400">занять</div>
+                            </div>
+                            <div className="text-center">
+                              <div className="text-[15px] font-bold text-slate-900">{specialist.experience}</div>
+                              <div className="text-[11px] text-slate-400">років</div>
                             </div>
                           </div>
                           <Link href={`/specialists/${specialist.id}`} className="w-full">
@@ -1019,7 +1017,7 @@ export default function SpecialistsPage() {
                       </div>
                       <div className="flex items-center gap-2 text-[13px] text-slate-500">
                         <Users className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
-                        <span>{specialist.activeStudents} учнів • {specialist.lessonsCompleted.toLocaleString()} занять</span>
+                        <span>{specialist.activeStudents} учнів • {specialist.lessonsCompleted.toLocaleString()} занять • {specialist.experience} років досвіду</span>
                       </div>
                     </div>
                     <div
@@ -1032,12 +1030,6 @@ export default function SpecialistsPage() {
                         <span className="text-slate-500">{specialist.bioText}</span>
                       </p>
                     </div>
-                    {specialist.popular && (
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-3">
-                        <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
-                        {specialist.popular}
-                      </div>
-                    )}
                     <Link href={`/specialists/${specialist.id}`} className="block">
                       <Button className={`w-full h-10 rounded-xl text-sm font-semibold text-white ${a.cta}`}>Записатись на пробне</Button>
                     </Link>

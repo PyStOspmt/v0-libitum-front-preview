@@ -107,9 +107,11 @@ export default function AboutPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className={`group-hover:${
-                    index % 2 === 0 ? "bg-emerald-600" : "bg-amber-600"
-                  } transition-colors`}>
+                  <Button asChild className={`${
+                    index % 2 === 0 
+                      ? "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800" 
+                      : "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500"
+                  } text-white border-transparent shadow-md transition-all duration-300`}>
                     <Link href={feature.link} className="inline-flex items-center gap-2">
                       {feature.linkText}
                       <ArrowRight className="h-4 w-4" />

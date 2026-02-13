@@ -47,9 +47,11 @@ export default function FaqPage() {
               <CardDescription className="text-slate-600">{item.description}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className={`${
-                index % 2 === 0 ? "border-emerald-200 text-emerald-700 hover:bg-emerald-50" : "border-amber-200 text-amber-700 hover:bg-amber-50"
-              }`}>
+              <Button asChild className={`${
+                index % 2 === 0 
+                  ? "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800" 
+                  : "bg-gradient-to-r from-amber-500 to-orange-400 hover:from-amber-600 hover:to-orange-500"
+              } text-white border-transparent shadow-md transition-all duration-300`}>
                 <Link href="/contacts">Звʼязатися з підтримкою</Link>
               </Button>
             </CardContent>
