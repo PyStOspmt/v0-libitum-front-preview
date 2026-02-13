@@ -117,7 +117,7 @@ const accentPalette: Record<AccentKey, {
   tutor: {
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
     badgeBorder: "border border-emerald-200",
-    cta: "bg-[#009688] hover:bg-[#00796B] text-white shadow-md transition-colors",
+    cta: "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110 text-white border-transparent shadow-emerald-100",
     price: "text-slate-900",
     cardBg: "from-white via-emerald-50/30 to-white",
     glow: "rgba(16,185,129,0.08)",
@@ -128,7 +128,7 @@ const accentPalette: Record<AccentKey, {
   health: {
     badge: "bg-amber-50 text-amber-700 border-amber-200",
     badgeBorder: "border border-amber-200",
-    cta: "bg-[#f59e0b] hover:bg-[#d97706] text-white shadow-md transition-colors",
+    cta: "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110 text-white border-transparent shadow-amber-100",
     price: "text-slate-900",
     cardBg: "from-white via-amber-50/30 to-white",
     glow: "rgba(249,115,22,0.08)",
@@ -215,7 +215,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
     : options.find(o => o.value === value)?.label || label
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className={`relative ${open ? "z-[95]" : "z-10"}`}>
       <button
         onClick={() => setOpen(!open)}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
@@ -232,7 +232,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
         )}
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-50 min-w-[200px] py-1 max-h-[280px] overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-[100] min-w-[200px] py-1 max-h-[280px] overflow-y-auto">
           {multi ? (
             options.map(opt => {
               const selected = (value as string[]).includes(opt.value)
@@ -609,7 +609,7 @@ export default function SpecialistsPage() {
                   </Select>
                 </FilterBox>
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-2 overflow-x-auto overflow-y-visible scrollbar-hide py-1">
                 <PillDropdown
                   label="Предмети"
                   multi
@@ -838,10 +838,10 @@ export default function SpecialistsPage() {
                             <SubjectsLine specialist={specialist} textClass="text-[15px] text-slate-700 font-medium" iconClass={a.icon} maxCharsFallback={40} />
                           </div>
                           <div
-                            className="mb-2 cursor-pointer group/bio"
+                            className="mt-1 mb-2 cursor-pointer group/bio"
                             onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                           >
-                            <p className={`text-[15px] text-slate-700 leading-snug font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
+                            <p className={`text-[14px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
                               <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
                               {" — "}
                               <span className="text-slate-600">{specialist.bioText}</span>
@@ -869,7 +869,7 @@ export default function SpecialistsPage() {
                                 <div className="text-[16px] font-bold text-slate-900">{specialist.rating}</div>
                                 <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                               </div>
-                              <div className="text-[14px] text-slate-400 whitespace-nowrap">{specialist.reviews} відгуків</div>
+                              <div className="text-[12px] text-slate-400 whitespace-nowrap">{specialist.reviews} відгуків</div>
                             </div>
                             <div className="text-center">
                               <div className="text-[16px] font-bold text-slate-900">{specialist.activeStudents}</div>
@@ -979,7 +979,7 @@ export default function SpecialistsPage() {
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1.5">
                             <Link href={`/specialists/${specialist.id}`}>
-                              <h3 className="text-[15px] font-bold text-slate-900 leading-tight">{specialist.name}</h3>
+                              <h3 className="text-[16px] font-semibold text-slate-900 leading-tight">{specialist.name}</h3>
                             </Link>
                             {specialist.verified && <Award className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />}
                           </div>
@@ -996,12 +996,12 @@ export default function SpecialistsPage() {
                         <div className="flex items-center gap-3">
                           <div className="flex items-center gap-1">
                             <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                            <span className="text-sm font-bold text-slate-900">{specialist.rating}</span>
-                            <span className="text-xs text-slate-400">{specialist.reviews} відгуків</span>
+                            <span className="text-[14px] font-bold text-slate-900">{specialist.rating}</span>
+                            <span className="text-[12px] text-slate-500">{specialist.reviews} відгуків</span>
                           </div>
                           <div>
-                            <span className={`text-[15px] font-bold ${a.price}`}>₴{specialist.pricePerLesson}</span>
-                            <span className="text-[11px] text-slate-400 ml-1">{specialist.lessonDuration}</span>
+                            <span className={`text-[16px] font-bold ${a.price}`}>₴{specialist.pricePerLesson}</span>
+                            <span className="text-[12px] text-slate-500 ml-1">{specialist.lessonDuration}</span>
                           </div>
                         </div>
                       </div>
@@ -1010,24 +1010,24 @@ export default function SpecialistsPage() {
                       <div>
                         <SubjectsLine specialist={specialist} textClass="text-[14px] text-slate-700 font-medium" iconClass={a.icon} maxCharsFallback={24} />
                       </div>
-                      <div className="flex items-center gap-1.5 text-[12px] text-slate-500">
+                      <div className="flex items-center gap-1.5 text-[13px] text-slate-600">
                         <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
                         <span>{specialist.location}</span>
                         {getAvailability(specialist) && <span className="text-slate-400">• {getAvailability(specialist)}</span>}
                       </div>
-                      <div className="flex items-center gap-2 text-[13px] text-slate-500">
+                      <div className="flex items-center gap-2 text-[13px] text-slate-600">
                         <Users className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
                         <span>{specialist.activeStudents} учнів • {specialist.lessonsCompleted.toLocaleString()} занять • {specialist.experience} років досвіду</span>
                       </div>
                     </div>
                     <div
-                      className="mb-2 cursor-pointer"
+                      className="mt-1 mb-2 cursor-pointer"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
-                      <p className={`text-[14px] text-slate-700 leading-snug font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
-                        <span className="font-semibold">{specialist.bioTitle}</span>
+                      <p className={`text-[14px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
+                        <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
                         {" — "}
-                        <span className="text-slate-500">{specialist.bioText}</span>
+                        <span className="text-slate-600">{specialist.bioText}</span>
                       </p>
                     </div>
                     <Link href={`/specialists/${specialist.id}`} className="block">

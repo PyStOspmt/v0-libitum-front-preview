@@ -49,9 +49,9 @@ export default function FaqPage() {
             <CardContent>
               <Button asChild className={`${
                 index % 2 === 0 
-                  ? "bg-[#009688] hover:bg-[#00796B]" 
-                  : "bg-[#f59e0b] hover:bg-[#d97706]"
-              } text-white shadow-md transition-colors`}>
+                  ? "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110"
+                  : "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110"
+              } text-white border-transparent shadow-md transition-all duration-300`}>
                 <Link href="/contacts">Звʼязатися з підтримкою</Link>
               </Button>
             </CardContent>

@@ -34,7 +34,7 @@ export default function ForgotPasswordPage() {
 
   if (isSent) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-white px-4">
         <div className="w-full max-w-md">
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
@@ -59,7 +59,10 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-white px-4 py-12 overflow-hidden">
+      <div className="hidden sm:block fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+      <div className="hidden sm:block fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
+
       <div className="w-full max-w-md animate-fade-in-up">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
@@ -97,7 +100,7 @@ export default function ForgotPasswordPage() {
 
               <Button 
                 type="submit" 
-                className="h-12 w-full rounded-xl bg-slate-900 text-base font-semibold text-white shadow-lg shadow-slate-200 transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98]" 
+                className="h-12 w-full rounded-xl text-base font-semibold text-white shadow-lg shadow-emerald-100 transition-all hover:scale-[1.02] active:scale-[0.98] bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110" 
                 disabled={isLoading}
               >
                 {isLoading ? "Відправка..." : "Надіслати інструкції"}

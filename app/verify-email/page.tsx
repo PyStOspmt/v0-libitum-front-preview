@@ -24,8 +24,11 @@ export default function VerifyEmailPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-      <Card className="max-w-md w-full text-center">
+    <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-white p-4 overflow-hidden">
+      <div className="hidden sm:block fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
+      <div className="hidden sm:block fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
+
+      <Card className="max-w-md w-full text-center bg-white/90 backdrop-blur-sm border-slate-200 shadow-lg">
         <CardHeader>
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <Mail className="h-8 w-8 text-primary" />
@@ -41,7 +44,11 @@ export default function VerifyEmailPage() {
           </div>
 
           <div className="space-y-2">
-            <Button onClick={handleResend} className="w-full" disabled={isResending}>
+            <Button
+              onClick={handleResend}
+              className="w-full bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110 text-white border-transparent"
+              disabled={isResending}
+            >
               {isResending ? "Відправка..." : "Відправити ще раз"}
             </Button>
             <Button variant="ghost" onClick={logout} className="w-full">
