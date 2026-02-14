@@ -195,10 +195,14 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
 }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      const target = e.target as Node
+      if (ref.current?.contains(target)) return
+      if (menuRef.current?.contains(target)) return
+      setOpen(false)
     }
     document.addEventListener("mousedown", handler)
     return () => document.removeEventListener("mousedown", handler)
@@ -215,7 +219,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
     : options.find(o => o.value === value)?.label || label
 
   return (
-    <div ref={ref} className={`relative ${open ? "z-[95]" : "z-10"}`}>
+    <div ref={ref} className={`relative ${open ? "z-[9999]" : "z-10"}`}>
       <button
         onClick={() => setOpen(!open)}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
@@ -232,7 +236,10 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
         )}
       </button>
       {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-[100] min-w-[200px] py-1 max-h-[280px] overflow-y-auto">
+        <div
+          ref={menuRef}
+          className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-[10000] min-w-[200px] w-max py-1 max-h-[280px] overflow-y-auto"
+        >
           {multi ? (
             options.map(opt => {
               const selected = (value as string[]).includes(opt.value)
