@@ -53,7 +53,8 @@ function SelectTrigger({
 function SelectContent({
   className,
   children,
-  position = 'popper',
+  position = 'item-aligned',
+  sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Content>) {
   return (
@@ -67,6 +68,7 @@ function SelectContent({
           className,
         )}
         position={position}
+        sideOffset={sideOffset}
         {...props}
       >
         <SelectScrollUpButton />

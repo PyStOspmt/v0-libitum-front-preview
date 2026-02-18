@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -264,7 +264,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
               <button
                 key={opt.value}
                 onClick={() => { onChange(opt.value); setOpen(false) }}
-                className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-50 ${opt.value === value ? "text-slate-900 font-semibold bg-slate-50" : "text-slate-600"}`}
+                className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-50 ${opt.value === value ? "text-slate-900 font-medium" : "text-slate-600"}`}
               >
                 {opt.label}
               </button>
