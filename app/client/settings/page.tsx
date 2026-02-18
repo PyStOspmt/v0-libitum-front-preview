@@ -37,7 +37,7 @@ export default function ClientSettingsPage() {
   const [childNotes, setChildNotes] = useState("")
   const [referralCopied, setReferralCopied] = useState(false)
 
-  const [children, setChildren] = useState([
+  const [householdChildren, setHouseholdChildren] = useState([
     {
       id: "1",
       name: "Марія Коваленко",
@@ -49,6 +49,10 @@ export default function ClientSettingsPage() {
       accessLink: "https://libitum.education/student/access/token-123",
     },
   ])
+
+  const selectableChildren = user
+    ? [{ id: user.id, name: user.name, label: user.name || "Я", isParent: true }, ...householdChildren]
+    : householdChildren
 
   const referralLink = `https://libitum.education/ref/${user?.id || "client123"}`
   const referralStats = {
@@ -77,7 +81,7 @@ export default function ClientSettingsPage() {
       return
     }
 
-    setChildren((prev) => [
+    setHouseholdChildren((prev) => [
       ...prev,
       {
         id: `${prev.length + 1}`,
@@ -148,7 +152,7 @@ export default function ClientSettingsPage() {
 
           <Card className="rounded-2xl border-slate-200 shadow-sm">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-xl font-bold text-slate-900">
                     <Users className="h-5 w-5 text-slate-500" />
@@ -156,15 +160,18 @@ export default function ClientSettingsPage() {
                   </CardTitle>
                   <CardDescription className="text-slate-500 mt-1">Управління профілями дітей та контроль прогресу</CardDescription>
                 </div>
-                <Button onClick={() => setIsAddChildOpen(true)} className="rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-sm">
+                <Button
+                  onClick={() => setIsAddChildOpen(true)}
+                  className="rounded-xl bg-slate-900 text-white hover:bg-slate-800 shadow-sm w-full sm:w-auto justify-center"
+                >
                   <UserPlus className="mr-2 h-4 w-4" />
                   Додати дитину
                 </Button>
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              {children.length > 0 ? (
-                children.map((child) => (
+              {householdChildren.length > 0 ? (
+                householdChildren.map((child) => (
                   <div key={child.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-colors hover:bg-slate-50 hover:border-slate-200">
                     <div className="flex items-center gap-4">
                       <Avatar className="h-12 w-12 rounded-xl border border-slate-200">
@@ -184,8 +191,8 @@ export default function ClientSettingsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Button variant="outline" size="sm" className="rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white" onClick={() => {
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <Button variant="outline" size="sm" className="rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white w-full sm:w-auto" onClick={() => {
                         if (child.accessLink) {
                           navigator.clipboard.writeText(child.accessLink)
                           toast({
@@ -197,7 +204,7 @@ export default function ClientSettingsPage() {
                         <Copy className="mr-2 h-3.5 w-3.5" />
                         Лінк доступу
                       </Button>
-                      <Button variant="outline" size="sm" className="rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white" onClick={() => router.push(`/client/progress?child=${child.id}`)}>
+                      <Button variant="outline" size="sm" className="rounded-lg border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-white w-full sm:w-auto" onClick={() => router.push(`/client/progress?child=${child.id}`)}>
                         Прогрес
                       </Button>
                     </div>
@@ -262,16 +269,16 @@ export default function ClientSettingsPage() {
             </CardHeader>
             <CardContent className="space-y-8 pt-6">
               {/* Referral stats */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-xl bg-slate-50 p-4 text-center border border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="rounded-xl bg-slate-50 p-4 text-center border border-slate-100 w-full">
                   <p className="text-2xl font-bold text-slate-900">{referralStats.invited}</p>
                   <p className="text-sm font-medium text-slate-500">Запрошено</p>
                 </div>
-                <div className="rounded-xl bg-slate-50 p-4 text-center border border-slate-100">
+                <div className="rounded-xl bg-slate-50 p-4 text-center border border-slate-100 w-full">
                   <p className="text-2xl font-bold text-slate-900">{referralStats.registered}</p>
                   <p className="text-sm font-medium text-slate-500">Зареєструвалось</p>
                 </div>
-                <div className="rounded-xl bg-emerald-50 p-4 text-center border border-emerald-100">
+                <div className="rounded-xl bg-emerald-50 p-4 text-center border border-emerald-100 w-full">
                   <p className="text-2xl font-bold text-emerald-600">{referralStats.bonus} грн</p>
                   <p className="text-sm font-medium text-emerald-700/80">Ваш бонус</p>
                 </div>
@@ -280,9 +287,9 @@ export default function ClientSettingsPage() {
               {/* Referral link */}
               <div className="space-y-3">
                 <Label className="text-slate-700">Ваше реферальне посилання</Label>
-                <div className="flex gap-2">
-                  <Input value={referralLink} readOnly className="font-mono text-sm bg-slate-50 rounded-xl border-slate-200 text-slate-600" />
-                  <Button variant="outline" size="icon" onClick={copyReferralLink} className="shrink-0 rounded-xl border-slate-200 hover:bg-slate-50">
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <Input value={referralLink} readOnly className="font-mono text-sm bg-slate-50 rounded-xl border-slate-200 text-slate-600 w-full" />
+                  <Button variant="outline" size="icon" onClick={copyReferralLink} className="shrink-0 rounded-xl border-slate-200 hover:bg-slate-50 sm:w-auto">
                     {referralCopied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4 text-slate-500" />}
                   </Button>
                 </div>
@@ -293,16 +300,16 @@ export default function ClientSettingsPage() {
               </div>
 
               {/* Share buttons */}
-              <div className="flex gap-3">
-                <Button variant="outline" className="flex-1 rounded-xl border-slate-200 text-slate-600 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-100">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                <Button variant="outline" className="w-full rounded-xl border-slate-200 text-slate-600 hover:text-blue-500 hover:bg-blue-50 hover:border-blue-100">
                   <Share2 className="mr-2 h-4 w-4" />
                   Telegram
                 </Button>
-                <Button variant="outline" className="flex-1 rounded-xl border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100">
+                <Button variant="outline" className="w-full rounded-xl border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-100">
                   <Share2 className="mr-2 h-4 w-4" />
                   Facebook
                 </Button>
-                <Button variant="outline" className="flex-1 rounded-xl border-slate-200 text-slate-600 hover:text-purple-600 hover:bg-purple-50 hover:border-purple-100">
+                <Button variant="outline" className="w-full rounded-xl border-slate-200 text-slate-600 hover:text-purple-600 hover:bg-purple-50 hover:border-purple-100">
                   <Share2 className="mr-2 h-4 w-4" />
                   Viber
                 </Button>
@@ -364,7 +371,12 @@ export default function ClientSettingsPage() {
                     <p className="font-medium text-slate-900">Підтримка</p>
                     <p className="text-xs text-slate-500 mt-0.5">Є питання?</p>
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-lg border-slate-200" onClick={() => window.open("mailto:support@libitum.education")}>
+                  <Button variant="outline" size="sm" className="rounded-lg border-slate-200" onClick={() => {
+                    const email = 'support@libitum.education';
+                    const subject = 'Питання від клієнта Libitum';
+                    const body = 'Доброго дня!\n\nУ мене є питання:\n\n';
+                    window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                  }}>
                     Написати
                   </Button>
                 </div>

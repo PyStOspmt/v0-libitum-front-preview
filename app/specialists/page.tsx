@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -219,7 +219,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
     : options.find(o => o.value === value)?.label || label
 
   return (
-    <div ref={ref} className={`relative ${open ? "z-[9999]" : "z-10"}`}>
+    <div ref={ref} className={`relative flex-shrink-0 ${open ? "z-[60]" : "z-0"}`}>
       <button
         onClick={() => setOpen(!open)}
         className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${
@@ -238,7 +238,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
       {open && (
         <div
           ref={menuRef}
-          className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-[10000] min-w-[200px] w-max py-1 max-h-[280px] overflow-y-auto"
+          className="absolute left-0 top-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-[60] min-w-[200px] w-max py-1 max-h-[280px] overflow-y-auto"
         >
           {multi ? (
             options.map(opt => {
@@ -565,9 +565,10 @@ export default function SpecialistsPage() {
           {showMobileFilters && (
             <div className="space-y-3 pb-2 animate-in slide-in-from-top-2 duration-200">
               <div className="grid grid-cols-2 gap-2">
-                <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
+                <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
+                  <div className="text-[10px] text-slate-400 leading-none mb-1">Ціна за заняття</div>
                   <Select value={priceRange} onValueChange={setPriceRange}>
-                    <SelectTrigger ref={priceSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                    <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                       <SelectValue placeholder="Будь-яка" />
                     </SelectTrigger>
                     <SelectContent>
@@ -577,10 +578,11 @@ export default function SpecialistsPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                </FilterBox>
-                <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
+                </div>
+                <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
+                  <div className="text-[10px] text-slate-400 leading-none mb-1">Місто</div>
                   <Select value={city} onValueChange={setCity}>
-                    <SelectTrigger ref={citySelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                    <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                       <SelectValue placeholder="Будь-яке" />
                     </SelectTrigger>
                     <SelectContent>
@@ -590,10 +592,11 @@ export default function SpecialistsPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                </FilterBox>
-                <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
+                </div>
+                <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
+                  <div className="text-[10px] text-slate-400 leading-none mb-1">Формат занять</div>
                   <Select value={format} onValueChange={setFormat}>
-                    <SelectTrigger ref={formatSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                    <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -602,10 +605,11 @@ export default function SpecialistsPage() {
                       <SelectItem value="offline">Офлайн</SelectItem>
                     </SelectContent>
                   </Select>
-                </FilterBox>
-                <FilterBox label="Сортування" onClick={() => sortSelectRef.current?.click()}>
+                </div>
+                <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
+                  <div className="text-[10px] text-slate-400 leading-none mb-1">Сортування</div>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger ref={sortSelectRef} className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none">
+                    <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -614,9 +618,9 @@ export default function SpecialistsPage() {
                       ))}
                     </SelectContent>
                   </Select>
-                </FilterBox>
+                </div>
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto overflow-y-visible scrollbar-hide py-1">
+              <div className="flex flex-wrap items-center gap-2 overflow-visible py-1">
                 <PillDropdown
                   label="Предмети"
                   multi

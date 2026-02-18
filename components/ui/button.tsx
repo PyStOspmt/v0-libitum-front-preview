@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'text-white border-transparent shadow-sm bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110',
+          'text-[var(--theme-primary-dark,_#333)] border-transparent shadow-sm bg-[var(--theme-primary)] bg-[var(--theme-gradient)] hover:brightness-110 hover:-translate-y-[1px]',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
-          'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border bg-background shadow-xs hover:bg-slate-50 hover:text-slate-900 dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
         secondary:
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
-          'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
+          'text-slate-700 hover:bg-slate-50 hover:text-slate-900',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
@@ -42,12 +42,22 @@ function Button({
   variant,
   size,
   asChild = false,
+  style,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
   }) {
   const Comp = asChild ? Slot : 'button'
+
+  const defaultStyleFallback =
+    variant === 'default'
+      ? {
+          background: 'var(--theme-gradient)',
+          backgroundColor: 'var(--theme-primary)',
+          color: 'var(--theme-primary-dark)',
+        }
+      : undefined
 
   const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -60,6 +70,7 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       onPointerMove={handlePointerMove}
+      style={defaultStyleFallback ? { ...defaultStyleFallback, ...style } : style}
       {...props}
     />
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { useLessonStore, type Lesson, type CalendarEvent } from "@/lib/lesson-store"
 import { useToast } from "@/hooks/use-toast"
@@ -8,6 +8,8 @@ import { CalendarHeader } from "./calendar/calendar-header"
 import { MonthView } from "./calendar/month-view"
 import { WeekView } from "./calendar/week-view"
 import { DayView } from "./calendar/day-view"
+import { MobileDayView } from "./calendar/mobile-day-view"
+import { MobileWeekView } from "./calendar/mobile-week-view"
 import { LessonDialogs, type LessonFormData } from "./calendar/lesson-dialogs"
 import { EventDialogs, type EventFormData } from "./calendar/event-dialogs"
 
@@ -22,6 +24,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
   const { lessons, addLesson, updateLesson, deleteLesson, events, addEvent, updateEvent, deleteEvent } =
     useLessonStore()
   const { toast } = useToast()
+  const calendarRef = useRef<HTMLDivElement>(null)
   const [currentDate, setCurrentDate] = useState(new Date())
   const [viewMode, setViewMode] = useState<ViewMode>("week")
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
@@ -44,6 +47,35 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
     description: "",
     price: "400",
   })
+
+  // Center view on the nearest lesson for this user (client or tutor)
+  useEffect(() => {
+    const userLessons = lessons.filter((lesson) =>
+      userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+    )
+
+    if (userLessons.length > 0) {
+      const sortedLessons = userLessons
+        .map((lesson) => new Date(`${lesson.date}T${lesson.time}`))
+        .filter((date) => !isNaN(date.getTime()))
+        .sort((a, b) => a.getTime() - b.getTime())
+
+      const now = new Date()
+      const upcomingLesson = sortedLessons.find((lesson) => lesson.getTime() > now.getTime())
+      const targetDate = upcomingLesson || sortedLessons[sortedLessons.length - 1]
+
+      if (targetDate) {
+        setCurrentDate(targetDate)
+      }
+    }
+  }, [lessons, userId, userType])
+
+  // Mobile: start with Day view for better readability
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const isMobile = window.innerWidth < 768
+    if (isMobile) setViewMode("day")
+  }, [])
 
   const [eventFormData, setEventFormData] = useState<EventFormData>({
     title: "",
@@ -128,7 +160,11 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
 
   const getLessonsForDate = (date: Date) => {
     const dateStr = date.toISOString().split("T")[0]
-    return lessons.filter((lesson) => lesson.date === dateStr)
+    if (userType === "client") {
+      return lessons.filter((lesson) => lesson.clientId === userId && lesson.date === dateStr)
+    } else {
+      return lessons.filter((lesson) => lesson.specialistId === userId && lesson.date === dateStr)
+    }
   }
 
   const getLessonsForTimeSlot = (date: Date, timeSlot: string) => {
@@ -137,7 +173,9 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
       if (lesson.date !== dateStr) return false
       const lessonHour = lesson.time.split(":")[0]
       const slotHour = timeSlot.split(":")[0]
-      return lessonHour === slotHour
+      return lessonHour === slotHour && (
+        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+      )
     })
   }
 
@@ -179,6 +217,50 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
     }
     setCurrentDate(newDate)
   }
+
+  // Add event listener for day navigation from mobile views
+  useEffect(() => {
+    const handleNavigateToDay = (event: CustomEvent) => {
+      setCurrentDate(event.detail)
+      setViewMode("day")
+    }
+
+    window.addEventListener("navigateToDay", handleNavigateToDay as EventListener)
+    return () => {
+      window.removeEventListener("navigateToDay", handleNavigateToDay as EventListener)
+    }
+  }, [])
+
+  // Add mobile swipe navigation only for Day view to avoid conflicts with horizontal scroll in Week/Month
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const isMobile = window.innerWidth < 768
+    if (!isMobile || viewMode !== "day") return
+
+    let startX = 0
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX
+    }
+    const handleTouchEnd = (e: TouchEvent) => {
+      const endX = e.changedTouches[0].clientX
+      if (startX - endX > 50) {
+        nextPeriod() // Swipe left for next period
+      } else if (endX - startX > 50) {
+        previousPeriod() // Swipe right for previous period
+      }
+    }
+    const calendarEl = calendarRef.current
+    if (calendarEl) {
+      calendarEl.addEventListener("touchstart", handleTouchStart)
+      calendarEl.addEventListener("touchend", handleTouchEnd)
+    }
+    return () => {
+      if (calendarEl) {
+        calendarEl.removeEventListener("touchstart", handleTouchStart)
+        calendarEl.removeEventListener("touchend", handleTouchEnd)
+      }
+    }
+  }, [previousPeriod, nextPeriod, viewMode])
 
   const goToToday = () => {
     setCurrentDate(new Date())
@@ -471,7 +553,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
 
   return (
     <>
-      <Card className="border-none shadow-none bg-transparent">
+      <Card className="border-none shadow-none bg-transparent mt-4 lg:mt-6" ref={calendarRef}>
         <CalendarHeader
           viewMode={viewMode}
           setViewMode={setViewMode}
@@ -483,61 +565,107 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
           userType={userType}
           onAddClick={() => openAddDialog(currentDate)}
         />
-        <CardContent>
-          {viewMode === "month" && (
-            <MonthView
-              dates={getMonthDates()}
-              weekDaysShort={weekDaysShort}
-              getLessonsForDate={getLessonsForDate}
-              getEventsForDate={getEventsForDate}
-              isToday={isToday}
-              isSameMonth={isSameMonth}
-              userType={userType}
-              onAddLesson={openAddDialog}
-              onAddEvent={openAddEventDialog}
-              onViewLesson={openViewDialog}
-              onViewEvent={openViewEventDialog}
-              getEventColor={getEventColor}
-            />
-          )}
-          {viewMode === "week" && (
-            <WeekView
-              weekDates={getWeekDates()}
-              weekDaysShort={weekDaysShort}
-              timeSlots={timeSlots}
-              currentDate={currentDate}
-              currentTime={currentTime}
-              isToday={isToday}
-              getLessonsForTimeSlot={getLessonsForTimeSlot}
-              getEventsForTimeSlot={getEventsForTimeSlot}
-              userType={userType}
-              onAddClick={openAddDialog}
-              onViewLesson={openViewDialog}
-              onViewEvent={openViewEventDialog}
-              getEventColor={getEventColor}
-              getEventTypeLabel={getEventTypeLabel}
-              getCurrentTimePosition={getCurrentTimePosition}
-            />
-          )}
-          {viewMode === "day" && (
-            <DayView
-              currentDate={currentDate}
-              currentTime={currentTime}
-              weekDays={weekDays}
-              monthNames={monthNames}
-              timeSlots={timeSlots}
-              isToday={isToday}
-              getLessonsForTimeSlot={getLessonsForTimeSlot}
-              getEventsForTimeSlot={getEventsForTimeSlot}
-              userType={userType}
-              onAddClick={openAddDialog}
-              onViewLesson={openViewDialog}
-              onViewEvent={openViewEventDialog}
-              getEventColor={getEventColor}
-              getEventTypeLabel={getEventTypeLabel}
-              getCurrentTimePosition={getCurrentTimePosition}
-            />
-          )}
+        <CardContent className="p-0 pt-4 lg:pt-6">
+              <div className="w-full overflow-x-auto scrollbar-hide">
+                <div className="min-h-[400px] lg:min-h-[600px] min-w-[320px] sm:min-w-[400px] md:min-w-[600px] lg:min-w-[800px]">
+              {viewMode === "month" && (
+                <MonthView
+                  dates={getMonthDates()}
+                  weekDaysShort={weekDaysShort}
+                  getLessonsForDate={getLessonsForDate}
+                  getEventsForDate={getEventsForDate}
+                  isToday={isToday}
+                  isSameMonth={isSameMonth}
+                  userType={userType}
+                  onAddLesson={openAddDialog}
+                  onAddEvent={openAddEventDialog}
+                  onViewLesson={openViewDialog}
+                  onViewEvent={openViewEventDialog}
+                  getEventColor={getEventColor}
+                />
+              )}
+              {viewMode === "week" && (
+                <>
+                  {/* Mobile Week View */}
+                  <div className="block md:hidden">
+                    <MobileWeekView
+                      currentDate={currentDate}
+                      weekDays={weekDays}
+                      monthNames={monthNames}
+                      lessons={lessons.filter((lesson) =>
+                        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+                      )}
+                      events={events.filter((event) => event.userId === userId)}
+                      isToday={isToday}
+                      userType={userType}
+                      onViewLesson={openViewDialog}
+                      onViewEvent={openViewEventDialog}
+                    />
+                  </div>
+                  {/* Desktop Week View */}
+                  <div className="hidden md:block">
+                    <WeekView
+                      weekDates={getWeekDates()}
+                      weekDaysShort={weekDaysShort}
+                      timeSlots={timeSlots}
+                      currentDate={currentDate}
+                      currentTime={currentTime}
+                      isToday={isToday}
+                      getLessonsForTimeSlot={getLessonsForTimeSlot}
+                      getEventsForTimeSlot={getEventsForTimeSlot}
+                      userType={userType}
+                      onAddClick={openAddDialog}
+                      onViewLesson={openViewDialog}
+                      onViewEvent={openViewEventDialog}
+                      getEventColor={getEventColor}
+                      getEventTypeLabel={getEventTypeLabel}
+                      getCurrentTimePosition={getCurrentTimePosition}
+                    />
+                  </div>
+                </>
+              )}
+              {viewMode === "day" && (
+                <>
+                  {/* Mobile Day View */}
+                  <div className="block md:hidden">
+                    <MobileDayView
+                      currentDate={currentDate}
+                      weekDays={weekDays}
+                      monthNames={monthNames}
+                      lessons={lessons.filter((lesson) =>
+                        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+                      )}
+                      events={events.filter((event) => event.userId === userId)}
+                      isToday={isToday}
+                      userType={userType}
+                      onViewLesson={openViewDialog}
+                      onViewEvent={openViewEventDialog}
+                    />
+                  </div>
+                  {/* Desktop Day View */}
+                  <div className="hidden md:block">
+                    <DayView
+                      currentDate={currentDate}
+                      currentTime={currentTime}
+                      weekDays={weekDays}
+                      monthNames={monthNames}
+                      timeSlots={timeSlots}
+                      isToday={isToday}
+                      getLessonsForTimeSlot={getLessonsForTimeSlot}
+                      getEventsForTimeSlot={getEventsForTimeSlot}
+                      userType={userType}
+                      onAddClick={openAddDialog}
+                      onViewLesson={openViewDialog}
+                      onViewEvent={openViewEventDialog}
+                      getEventColor={getEventColor}
+                      getEventTypeLabel={getEventTypeLabel}
+                      getCurrentTimePosition={getCurrentTimePosition}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </CardContent>
       </Card>
 

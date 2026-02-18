@@ -21,12 +21,15 @@ export default function ClientChatsPage() {
   const { getUserConversations } = useChatStore()
   const router = useRouter()
   const searchParams = useSearchParams()
+  
   const children = [
+    user ? { id: user.id, label: user.name || "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
-  ]
-  const initialChild = searchParams.get("child") || children[0].id
-  const selectedChildId = children.find((c) => c.id === initialChild)?.id || children[0].id
+  ].filter(Boolean) as { id: string; label: string }[]
+
+  const initialChild = searchParams.get("child") || (user?.id ?? children[0]?.id)
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || (user?.id ?? children[0]?.id)
 
   const conversations = user ? getUserConversations(user.email, "client") : []
 

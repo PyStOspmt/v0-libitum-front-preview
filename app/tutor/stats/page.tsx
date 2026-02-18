@@ -10,10 +10,11 @@ import { SidebarLayout } from "@/components/sidebar-layout"
 
 export default function TutorStatsPage() {
   const { user } = useAuth()
-  const { getProgress, getLevelInfo } = useGamificationStore()
+  const { getProgress, getLevelInfo, getCategoryProgress } = useGamificationStore()
 
-  const progress = getProgress("specialist-1")
-  const currentLevel = getLevelInfo(progress.totalSessions)
+  const progress = getProgress(user?.id || "specialist-1")
+  const currentLevel = getLevelInfo(progress.totalXP)
+  const categoryProgress = getCategoryProgress(user?.id || "specialist-1")
   const nextLevel = levels.find((l) => l.level === currentLevel.level + 1)
 
   const progressToNextLevel = nextLevel
@@ -52,14 +53,14 @@ export default function TutorStatsPage() {
                     </CardTitle>
                     <CardDescription className="text-base">
                       {nextLevel
-                        ? `Ще ${nextLevel.minSessions - progress.totalSessions} занять до рівня ${nextLevel.level}`
+                        ? `Ще ${nextLevel.minXP - progress.totalXP} XP до рівня ${nextLevel.level}`
                         : "Максимальний рівень досягнуто!"}
                     </CardDescription>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold">{progress.points}</div>
-                  <div className="text-sm text-muted-foreground">балів</div>
+                  <div className="text-3xl font-bold">{progress.totalXP}</div>
+                  <div className="text-sm text-muted-foreground">XP</div>
                 </div>
               </div>
             </CardHeader>
@@ -67,9 +68,9 @@ export default function TutorStatsPage() {
               <div>
                 <div className="mb-2 flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Прогрес до наступного рівня</span>
-                  <span className="font-medium">{Math.round(progressToNextLevel)}%</span>
+                  <span className="font-medium">{Math.round(categoryProgress.percentage)}%</span>
                 </div>
-                <Progress value={progressToNextLevel} className="h-3" />
+                <Progress value={categoryProgress.percentage} className="h-3" />
               </div>
               <div>
                 <p className="mb-2 text-sm font-medium">Переваги поточного рівня:</p>
@@ -226,11 +227,11 @@ export default function TutorStatsPage() {
                           )}
                         </div>
                         <p className="mb-2 text-sm text-muted-foreground">
-                          {level.minSessions === 0
-                            ? `0-${level.maxSessions} занять`
-                            : level.maxSessions === Number.POSITIVE_INFINITY
-                              ? `${level.minSessions}+ занять`
-                              : `${level.minSessions}-${level.maxSessions} занять`}
+                          {level.minXP === 0
+                            ? `0-${level.maxXP} XP`
+                            : level.maxXP === Number.POSITIVE_INFINITY
+                              ? `${level.minXP}+ XP`
+                              : `${level.minXP}-${level.maxXP} XP`}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {level.benefits.map((benefit) => (

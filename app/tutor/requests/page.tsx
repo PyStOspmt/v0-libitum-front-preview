@@ -7,12 +7,16 @@ import { RequestCard } from "@/components/request-card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
+import { useAuth } from "@/lib/auth-context"
 
 export default function TutorRequestsPage() {
   const { toast } = useToast()
-  const { getRequestsBySpecialist, acceptRequest } = useRequestStore()
+  const { getRequestsBySpecialist, acceptRequest, rejectRequest } = useRequestStore()
+  const { user } = useAuth()
 
-  const specialistRequests = getRequestsBySpecialist("specialist-1")
+  const specialistId = user?.id || "specialist-1"
+
+  const specialistRequests = getRequestsBySpecialist(specialistId)
   const pendingRequests = specialistRequests.filter((req) => req.status === "pending")
   const activeRequests = specialistRequests.filter((req) =>
     ["accepted", "communicating", "trial_scheduled"].includes(req.status),
@@ -30,6 +34,7 @@ export default function TutorRequestsPage() {
   }
 
   const handleRejectRequest = (requestId: string) => {
+    rejectRequest(requestId, "Не підходить графік")
     toast({
       title: "Запит відхилено",
       description: "Клієнт отримає повідомлення",

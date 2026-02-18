@@ -11,14 +11,17 @@ import { TrendingDown, Clock, User, MapPin, MessageSquare, ArrowDown } from "luc
 import { useToast } from "@/hooks/use-toast"
 import { useEffect, useMemo, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { useTheme } from "@/lib/theme-context"
 
 export default function TutorExchangePage() {
   const { toast } = useToast()
   const { getPublicLeads, takePublicLead, autoReducePublicLeads } = useRequestStore()
   const { user } = useAuth()
+  const { theme } = useTheme()
   const [selectedLead, setSelectedLead] = useState<string | null>(null)
 
   const mySubjects = useMemo(() => user?.subjects ?? [], [user?.subjects])
+  const specialistId = user?.id || "specialist-1"
   const publicLeads = getPublicLeads().filter((lead) => mySubjects.length === 0 || mySubjects.includes(lead.subject))
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function TutorExchangePage() {
   }, [autoReducePublicLeads])
 
   const handleTakeLead = (leadId: string) => {
-    takePublicLead(leadId, "specialist-1")
+    takePublicLead(leadId, specialistId)
     setSelectedLead(null)
     toast({
       title: "Заявку взято!",
@@ -58,13 +61,19 @@ export default function TutorExchangePage() {
             <p className="text-muted-foreground">Публічні заявки з аукціонною ціною</p>
           </div>
 
-          <Card className="border-teal-200 bg-teal-50/50">
+          <Card
+            className="border bg-white"
+            style={{
+              borderColor: theme.primaryLight,
+              background: `linear-gradient(135deg, ${theme.primaryLight} 0%, rgba(255,255,255,0.95) 100%)`,
+            }}
+          >
             <CardContent className="p-6">
               <div className="flex items-start gap-3">
-                <TrendingDown className="h-5 w-5 text-teal-600 mt-0.5" />
+                <TrendingDown className="h-5 w-5 mt-0.5" style={{ color: theme.primary }} />
                 <div>
-                  <h3 className="font-semibold text-teal-900">Як працює аукціон?</h3>
-                  <p className="mt-1 text-sm text-teal-700">
+                  <h3 className="font-semibold" style={{ color: theme.primaryDark }}>Як працює аукціон?</h3>
+                  <p className="mt-1 text-sm" style={{ color: theme.primary }}>
                     Перше зниження ціни відбувається через 2 години після публікації. Далі ціна знижується кожну годину
                     на 100 грн, поки не досягне мінімуму.
                   </p>
@@ -80,21 +89,27 @@ export default function TutorExchangePage() {
                 const priceReduction = lead.basePrice && lead.currentPrice ? lead.basePrice - lead.currentPrice : 0
 
                 return (
-                  <Card key={lead.id} className="flex flex-col border-2 hover:border-teal-200 transition-colors">
+                  <Card
+                    key={lead.id}
+                    className="flex flex-col border-2 transition-colors"
+                    style={{ borderColor: theme.primaryLight }}
+                  >
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div>
                           <CardTitle className="text-lg">{lead.subject}</CardTitle>
                           <CardDescription className="mt-1">{lead.clientName}</CardDescription>
                         </div>
-                        <Badge variant="secondary" className="text-lg font-bold">
+                        <Badge variant="secondary" className="text-lg font-bold" style={{ color: theme.primaryDark }}>
                           {lead.currentPrice} грн
                         </Badge>
                       </div>
                       {priceReduction > 0 && (
                         <div className="flex items-center gap-2 mt-2">
-                          <ArrowDown className="h-4 w-4 text-green-600" />
-                          <span className="text-sm text-green-600 font-medium">Знижено на {priceReduction} грн</span>
+                          <ArrowDown className="h-4 w-4" style={{ color: theme.primary }} />
+                          <span className="text-sm font-medium" style={{ color: theme.primary }}>
+                            Знижено на {priceReduction} грн
+                          </span>
                         </div>
                       )}
                     </CardHeader>
@@ -137,7 +152,7 @@ export default function TutorExchangePage() {
                         </div>
                       </div>
 
-                      <Button onClick={() => setSelectedLead(lead.id)} className="w-full">
+                      <Button variant="default" onClick={() => setSelectedLead(lead.id)} className="w-full">
                         Взяти за {lead.currentPrice} грн
                       </Button>
                     </CardContent>

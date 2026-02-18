@@ -12,11 +12,15 @@ import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useToast } from "@/hooks/use-toast"
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
 
 export default function TutorClientsPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const { getRequestsBySpecialist, getStudentsByTutor, addOwnStudent } = useRequestStore()
+  const { user } = useAuth()
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [newStudent, setNewStudent] = useState({
     name: "",
@@ -25,17 +29,23 @@ export default function TutorClientsPage() {
     subject: "",
   })
 
-  const students = getStudentsByTutor("specialist-1")
-  const specialistRequests = getRequestsBySpecialist("specialist-1")
+  const tutorId = user?.id || "specialist-1"
+
+  const students = getStudentsByTutor(tutorId)
+  const specialistRequests = getRequestsBySpecialist(tutorId)
 
   const handleAddStudent = () => {
     if (!newStudent.name || !newStudent.subject) {
-      alert("Будь ласка, заповніть обов'язкові поля")
+      toast({
+        title: "Помилка валідації",
+        description: "Будь ласка, заповніть обов'язкові поля",
+        variant: "destructive",
+      })
       return
     }
 
     addOwnStudent({
-      tutorId: "specialist-1",
+      tutorId,
       name: newStudent.name,
       grade: newStudent.grade,
       phone: newStudent.phone,
@@ -45,6 +55,11 @@ export default function TutorClientsPage() {
 
     setNewStudent({ name: "", grade: "", phone: "", subject: "" })
     setShowAddStudent(false)
+    
+    toast({
+      title: "Учень додано",
+      description: `${newStudent.name} успішно додано до вашого списку`,
+    })
   }
 
   return (

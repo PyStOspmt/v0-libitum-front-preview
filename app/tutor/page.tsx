@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useRequestStore } from "@/lib/request-store"
 import { useGamificationStore } from "@/lib/gamification-store"
+import { useAuth } from "@/lib/auth-context"
 import { RequestCard } from "@/components/request-card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -16,11 +17,17 @@ export default function TutorPage() {
   const { toast } = useToast()
   const { getRequestsBySpecialist, acceptRequest, rejectRequest } = useRequestStore()
   const { getProgress, getLevelInfo } = useGamificationStore()
+  const { user } = useAuth()
 
-  const specialistRequests = getRequestsBySpecialist("specialist-1")
+  const specialistId = user?.id || "specialist-1"
+
+  const specialistRequests = getRequestsBySpecialist(specialistId)
   const pendingRequests = specialistRequests.filter((req) => req.status === "pending")
-  const progress = getProgress("specialist-1")
+  const progress = getProgress(specialistId)
   const currentLevel = getLevelInfo(progress.totalSessions)
+  const levelProgress = currentLevel.maxSessions === Number.POSITIVE_INFINITY
+    ? 100
+    : Math.max(0, Math.min(100, ((progress.totalSessions - currentLevel.minSessions) / (currentLevel.maxSessions - currentLevel.minSessions)) * 100))
 
   const stats = {
     activeClients: 12,
@@ -63,8 +70,8 @@ export default function TutorPage() {
             <div className="bg-white rounded-2xl p-6 border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-slate-500">Активні клієнти</span>
-                <div className="h-10 w-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center">
-                  <Users className="h-5 w-5 text-[#43a047]" />
+                <div className="h-10 w-10 rounded-xl bg-[var(--theme-primary-light)] flex items-center justify-center">
+                  <Users className="h-5 w-5 text-[var(--theme-primary)]" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-slate-800">{stats.activeClients}</div>
@@ -96,8 +103,8 @@ export default function TutorPage() {
             <div className="bg-white rounded-2xl p-6 border border-slate-100">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-medium text-slate-500">Заробіток</span>
-                <div className="h-10 w-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-[#43a047]" />
+                <div className="h-10 w-10 rounded-xl bg-[var(--theme-primary-light)] flex items-center justify-center">
+                  <DollarSign className="h-5 w-5 text-[var(--theme-primary)]" />
                 </div>
               </div>
               <div className="text-3xl font-bold text-slate-800">{stats.earnings} ₴</div>
@@ -107,12 +114,12 @@ export default function TutorPage() {
 
           {/* Level Card */}
           <Link href="/tutor/stats">
-            <div className="bg-white rounded-3xl p-8 border border-slate-100 relative overflow-hidden cursor-pointer hover:border-[#43a047]/30 hover:shadow-sm transition-all group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#e8f5e9] rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="bg-white rounded-3xl p-8 border border-slate-100 relative overflow-hidden cursor-pointer hover:border-[var(--theme-primary)]/30 hover:shadow-sm transition-all group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--theme-primary-light)] rounded-full -translate-y-1/2 translate-x-1/2" />
               <div className="relative z-10">
                 <div className="flex items-center justify-between flex-wrap gap-4">
                   <div className="flex items-center gap-5">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#43a047]">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--theme-primary)]">
                       <Award className="h-8 w-8 text-white" />
                     </div>
                     <div>
@@ -123,13 +130,13 @@ export default function TutorPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge className="text-sm px-4 py-2 bg-[#e8f5e9] text-[#2e7d32] font-medium border-0">
+                    <Badge className="text-sm px-4 py-2 bg-[var(--theme-primary-light)] text-[var(--theme-primary-dark)] font-medium border-0">
                       {stats.completedSessions} занять
                     </Badge>
-                    <BarChart3 className="h-5 w-5 text-[#43a047] group-hover:translate-x-1 transition-transform" />
+                    <BarChart3 className="h-5 w-5 text-[var(--theme-primary)] group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-                <Progress value={75} className="h-2 mt-6 bg-slate-100 [&>div]:bg-[#43a047]" />
+                <Progress value={levelProgress} className="h-2 mt-6 bg-slate-100 [&>div]:bg-[var(--theme-primary)]" />
                 <div className="mt-5 flex gap-2 flex-wrap">
                   {progress.achievements.slice(0, 3).map((achievement) => (
                     <Badge key={achievement.id} variant="outline" className="border-slate-200 text-slate-600 bg-white px-3 py-1">
@@ -154,7 +161,7 @@ export default function TutorPage() {
                 <p className="text-slate-500 text-sm mt-1">Відповідайте протягом 3 годин для збереження рейтингу</p>
               </div>
               <Link href="/tutor/requests">
-                <Button variant="ghost" className="text-[#43a047] hover:text-[#2e7d32] hover:bg-[#e8f5e9]">
+                <Button variant="ghost" className="text-[var(--theme-primary)] hover:text-[var(--theme-primary-dark)] hover:bg-[var(--theme-primary-light)]">
                   Всі запити
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -178,7 +185,7 @@ export default function TutorPage() {
                   </div>
                   <p className="text-slate-500">Немає нових запитів</p>
                   <Link href="/tutor/exchange">
-                    <Button className="mt-4 rounded-full bg-[#43a047] hover:bg-[#388e3c]">
+                    <Button className="mt-4 rounded-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)]">
                       Переглянути біржу
                     </Button>
                   </Link>

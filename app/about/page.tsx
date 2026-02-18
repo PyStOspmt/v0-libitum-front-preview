@@ -124,18 +124,18 @@ export default function AboutPage() {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-2xl p-8 md:p-12 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">
+        <div className="bg-white rounded-2xl p-8 md:p-12 text-center shadow-xl border border-slate-100">
+          <h2 className="text-3xl font-bold mb-4 text-slate-900">
             Готові почати навчання?
           </h2>
-          <p className="text-emerald-100 mb-8 max-w-2xl mx-auto text-lg">
+          <p className="text-slate-600 mb-8 max-w-2xl mx-auto text-lg">
             Приєднуйтесь до тисяч задоволених клієнтів та знайдіть ідеального спеціаліста для ваших цілей
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="secondary" asChild>
+            <Button size="lg" asChild>
               <Link href="/specialists">Знайти спеціаліста</Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-emerald-600" asChild>
+            <Button size="lg" variant="outline" asChild>
               <Link href="/register">Створити кабінет</Link>
             </Button>
           </div>

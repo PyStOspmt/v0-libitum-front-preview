@@ -3,6 +3,7 @@
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useLessonStore } from "@/lib/lesson-store"
+import { useAuth } from "@/lib/auth-context"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,15 +14,18 @@ import { useRouter, useSearchParams } from "next/navigation"
 
 export default function ClientProgressPage() {
   const router = useRouter()
+  const { user } = useAuth()
   const { getLessonsByClient } = useLessonStore()
   const searchParams = useSearchParams()
   const children = [
+    user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
-  ]
-  const initialChild = searchParams.get("child") || children[0].id
-  const selectedChildId = children.find((child) => child.id === initialChild)?.id || children[0].id
-  const clientId = selectedChildId || "client-1"
+  ].filter(Boolean) as { id: string; label: string }[]
+
+  const initialChild = searchParams.get("child") || (user?.id ?? children[0].id)
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || (user?.id ?? children[0].id)
+  const clientId = selectedChildId || user?.id || "client-1"
 
   const allLessons = getLessonsByClient(clientId)
   const completedLessons = allLessons.filter((l) => l.status === "completed")
@@ -37,16 +41,13 @@ export default function ClientProgressPage() {
   const totalHomework = completedLessons.filter((l) => l.homework).length
 
   // Group by subject
-  const lessonsBySubject = completedLessons.reduce(
-    (acc, lesson) => {
-      if (!acc[lesson.subject]) {
-        acc[lesson.subject] = []
-      }
-      acc[lesson.subject].push(lesson)
-      return acc
-    },
-    {} as Record<string, typeof completedLessons>,
-  )
+  const lessonsBySubject = completedLessons.reduce<Record<string, typeof completedLessons[number][]>>((acc, lesson) => {
+    if (!acc[lesson.subject]) {
+      acc[lesson.subject] = []
+    }
+    acc[lesson.subject].push(lesson)
+    return acc
+  }, {})
 
   return (
     <ProtectedRoute allowedRoles={["client"]}>
@@ -149,7 +150,10 @@ export default function ClientProgressPage() {
                         <p className="text-xs text-muted-foreground">Середня оцінка</p>
                       </div>
                     </div>
-                    <Progress value={(lessons.length / totalLessons) * 100} className="h-2" />
+                    <Progress
+                      value={totalLessons > 0 ? (lessons.length / totalLessons) * 100 : 0}
+                      className="h-2"
+                    />
                   </div>
                 )
               })}
@@ -171,23 +175,29 @@ export default function ClientProgressPage() {
                 </TabsList>
 
                 <TabsContent value="all" className="space-y-4">
-                  {allLessons
-                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                    .map((lesson) => (
-                      <LessonCard key={lesson.id} lesson={lesson} />
-                    ))}
+                  {allLessons.length > 0 ? (
+                    allLessons
+                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                      .map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                  ) : (
+                    <LessonPlaceholder variant="all" />
+                  )}
                 </TabsContent>
 
                 <TabsContent value="completed" className="space-y-4">
-                  {completedLessons.map((lesson) => (
-                    <LessonCard key={lesson.id} lesson={lesson} />
-                  ))}
+                  {completedLessons.length > 0 ? (
+                    completedLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                  ) : (
+                    <LessonPlaceholder variant="completed" />
+                  )}
                 </TabsContent>
 
                 <TabsContent value="scheduled" className="space-y-4">
-                  {scheduledLessons.map((lesson) => (
-                    <LessonCard key={lesson.id} lesson={lesson} />
-                  ))}
+                  {scheduledLessons.length > 0 ? (
+                    scheduledLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                  ) : (
+                    <LessonPlaceholder variant="scheduled" />
+                  )}
                 </TabsContent>
               </Tabs>
             </CardContent>
@@ -195,6 +205,46 @@ export default function ClientProgressPage() {
         </div>
       </SidebarLayout>
     </ProtectedRoute>
+  )
+}
+
+function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "scheduled" }) {
+  const samples: Record<string, { subject: string; date: string; time: string; status: "completed" | "scheduled"; duration: number; note: string }[]> = {
+    all: [
+      { subject: "Англійська мова", date: "2026-02-10", time: "17:00", status: "scheduled", duration: 60, note: "Підготовка до ЗНО" },
+      { subject: "Математика", date: "2026-02-05", time: "15:00", status: "completed", duration: 60, note: "Тригонометрія, домашнє виконано" },
+    ],
+    completed: [
+      { subject: "Логопед", date: "2026-02-03", time: "16:00", status: "completed", duration: 45, note: "Вправи на дикцію" },
+    ],
+    scheduled: [
+      { subject: "Психолог", date: "2026-02-12", time: "18:30", status: "scheduled", duration: 50, note: "Підтримка мотивації" },
+    ],
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">Поки що немає занять у цій вкладці. Ось приклад, як виглядатиме журнал:</p>
+      {samples[variant].map((item, idx) => (
+        <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-slate-800">{item.subject}</p>
+              <p className="text-sm text-slate-500">
+                {new Date(item.date).toLocaleDateString("uk-UA", { day: "numeric", month: "long" })} • {item.time}
+              </p>
+            </div>
+            <Badge variant="outline" className="rounded-full">
+              {item.status === "completed" ? "Завершено" : "Заплановано"}
+            </Badge>
+          </div>
+          <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
+            <Clock className="h-4 w-4 text-slate-400" /> {item.duration} хв
+          </div>
+          <p className="mt-2 text-sm text-slate-600">{item.note}</p>
+        </div>
+      ))}
+    </div>
   )
 }
 

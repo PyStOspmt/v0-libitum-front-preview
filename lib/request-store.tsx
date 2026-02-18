@@ -42,8 +42,9 @@ export interface BookingRequest {
   level?: string
   date: string
   time: string
-  format: "online" | "offline"
+  format: "online" | "offline" | "in-person"
   message?: string
+  location?: string
   status: RequestStatus
   rejectReason?: string
   communicationStatus?: CommunicationStatus
@@ -128,6 +129,26 @@ const mockRequests: BookingRequest[] = [
     responseDeadline: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   },
   {
+    id: "2",
+    type: "private",
+    clientId: "client-1",
+    clientName: "Марія Коваленко",
+    clientPhone: "+380501234567",
+    clientTelegram: "@maria_k",
+    specialistId: "specialist-2",
+    specialistName: "Ігор Петренко",
+    subject: "Психологія",
+    level: "Середній клас",
+    date: "2025-01-20",
+    time: "16:00",
+    format: "offline",
+    message: "Дитина має проблеми з адаптацією в школі",
+    status: "accepted",
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    communicationDeadline: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
+  },
+  {
     id: "3",
     type: "public",
     clientId: "client-3",
@@ -146,6 +167,62 @@ const mockRequests: BookingRequest[] = [
     currentPrice: 350,
     minPriceLimit: 250,
     stepValue: 20,
+  },
+  {
+    id: "4",
+    type: "private",
+    clientId: "client-3",
+    clientName: "Петро Сидоренко",
+    clientPhone: "+380671234567",
+    specialistId: "specialist-3",
+    specialistName: "Анна Мельник",
+    subject: "Фізика",
+    level: "9 клас",
+    date: "2025-01-18",
+    time: "15:30",
+    format: "online",
+    message: "Слабкі результати в школі з фізики",
+    status: "trial_completed",
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    trialResultDeadline: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "5",
+    type: "private",
+    clientId: "client-1",
+    clientName: "Марія Коваленко",
+    clientPhone: "+380501234567",
+    specialistId: "specialist-4",
+    specialistName: "Олександр Ковальчук",
+    subject: "Логопед",
+    level: "Початкова школа",
+    date: "2025-01-15",
+    time: "10:00",
+    format: "offline",
+    message: "Проблеми з вимовою",
+    status: "paid",
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "6",
+    type: "private",
+    clientId: "client-3",
+    clientName: "Петро Сидоренко",
+    clientPhone: "+380671234567",
+    specialistId: "specialist-5",
+    specialistName: "Світлана Павленко",
+    subject: "Хімія",
+    level: "10 клас",
+    date: "2025-01-16",
+    time: "17:00",
+    format: "online",
+    message: "Підготовка до контрольної з хімії",
+    status: "awaiting_payment",
+    createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    paymentDeadline: new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString(),
   },
 ]
 
@@ -221,8 +298,6 @@ export const useRequestStore = create<RequestStore>((set, get) => ({
     const request = get().requests.find((r) => r.id === requestId)
     const responseTime = request ? now.getTime() - new Date(request.createdAt).getTime() : 0
     const fastResponseBonus = responseTime <= 20 * 60 * 1000
-
-    console.log(`[v0] Request accepted ${fastResponseBonus ? "within 20 minutes - BONUS!" : "after 20 minutes"}`)
 
     set((state) => ({
       requests: state.requests.map((req) =>

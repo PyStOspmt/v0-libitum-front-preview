@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/auth-context"
 import { BookOpen, FileText, Upload, Download, CheckCircle, Clock } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export default function ClientMaterialsPage() {
   const { user } = useAuth()
@@ -28,8 +29,19 @@ export default function ClientMaterialsPage() {
   const { toast } = useToast()
   const [selectedHomework, setSelectedHomework] = useState<any>(null)
   const [submissionText, setSubmissionText] = useState("")
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const clientLessons = lessons.filter((l) => l.clientId === (user?.id || "client-1"))
+  const children = [
+    user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+    { id: "child-1", label: "Марія, 12 років" },
+    { id: "child-2", label: "Іван, 9 років" },
+  ].filter(Boolean) as { id: string; label: string }[]
+
+  const initialChild = searchParams.get("child") || (user?.id ?? children[0].id)
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || (user?.id ?? children[0].id)
+
+  const clientLessons = lessons.filter((l) => l.clientId === (selectedChildId || user?.id || "client-1"))
   const homeworks = clientLessons
     .filter((l) => l.homework)
     .map((l) => {
@@ -64,6 +76,45 @@ export default function ClientMaterialsPage() {
   const pendingHomeworks = homeworks.filter((h) => h.status === "pending")
   const submittedHomeworks = homeworks.filter((h) => h.status === "submitted")
   const checkedHomeworks = homeworks.filter((h) => h.status === "checked")
+
+  // Demo content for empty states
+  const demoHomeworks = [
+    {
+      id: "demo-hw-1",
+      title: "Есе про подорожі",
+      description: "Написати 150 слів про улюблене місце",
+      subject: "Англійська мова",
+      specialistName: "Олена Іваненко",
+      status: "pending" as const,
+      dueDate: new Date().toISOString(),
+    },
+    {
+      id: "demo-hw-2",
+      title: "Графіки руху",
+      description: "Побудувати графік V(t) для трьох сценаріїв",
+      subject: "Фізика",
+      specialistName: "Олександр Сидоренко",
+      status: "submitted" as const,
+      submittedAt: new Date().toISOString(),
+    },
+    {
+      id: "demo-hw-3",
+      title: "Вправи на дроби",
+      description: "Задачі 4-8, перевірено викладачем",
+      subject: "Математика",
+      specialistName: "Ігор Петренко",
+      status: "checked" as const,
+      grade: 4.5,
+      feedback: "Лише одна неточність, в цілому чудово!",
+      checkedAt: new Date().toISOString(),
+    },
+  ]
+
+  const demoMaterials = [
+    { fileName: "Present_Perfect_Guide.pdf", subject: "Англійська мова", date: new Date().toISOString() },
+    { fileName: "Fractions_Practice.xlsx", subject: "Математика", date: new Date().toISOString() },
+    { fileName: "Stress_Management_Techniques.pdf", subject: "Психологія", date: new Date().toISOString() },
+  ]
 
   const handleSubmitHomework = () => {
     if (!selectedHomework) return
@@ -117,6 +168,23 @@ export default function ClientMaterialsPage() {
           <div>
             <h1 className="text-3xl font-bold">Матеріали та завдання</h1>
             <p className="text-muted-foreground">Домашні завдання та навчальні матеріали</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {children.map((child) => (
+                <Button
+                  key={child.id}
+                  variant={child.id === selectedChildId ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => router.push(`/client/materials?child=${child.id}`)}
+                  className={`rounded-full transition-all ${
+                    child.id === selectedChildId
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
+                      : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                  }`}
+                >
+                  {child.label}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <Tabs defaultValue="homework" className="w-full">
@@ -228,12 +296,49 @@ export default function ClientMaterialsPage() {
               )}
 
               {homeworks.length === 0 && (
-                <Card>
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <BookOpen className="h-12 w-12 text-muted-foreground" />
-                    <p className="mt-4 text-center text-muted-foreground">Поки що немає домашніх завдань</p>
-                  </CardContent>
-                </Card>
+                <div className="space-y-4">
+                  <h2 className="text-xl font-semibold">Приклад заповненого кабінету</h2>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {demoHomeworks.map((hw) => (
+                      <Card key={hw.id} className={hw.status === "pending" ? "border-yellow-200" : hw.status === "submitted" ? "border-blue-200" : "border-green-200"}>
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="space-y-1">
+                              <CardTitle className="text-lg">{hw.title}</CardTitle>
+                              <CardDescription>
+                                {hw.subject} • {hw.specialistName}
+                              </CardDescription>
+                            </div>
+                            {getStatusBadge(hw.status)}
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                          <p className="text-sm text-muted-foreground">{hw.description}</p>
+                          {hw.dueDate && (
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <Clock className="h-4 w-4" />
+                              <span>Здати до: {new Date(hw.dueDate).toLocaleDateString("uk-UA")}</span>
+                            </div>
+                          )}
+                          {hw.submittedAt && (
+                            <div className="text-sm text-muted-foreground">
+                              Здано: {new Date(hw.submittedAt).toLocaleDateString("uk-UA")}
+                            </div>
+                          )}
+                          {hw.feedback && (
+                            <div className="rounded-lg bg-muted p-3">
+                              <p className="text-sm font-medium">Відгук викладача:</p>
+                              <p className="text-sm text-muted-foreground">{hw.feedback}</p>
+                            </div>
+                          )}
+                          {typeof hw.grade === "number" && (
+                            <Badge className="bg-green-600 text-white w-fit">{hw.grade}/5</Badge>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
               )}
             </TabsContent>
 
@@ -261,12 +366,30 @@ export default function ClientMaterialsPage() {
                   ))}
                 </div>
               ) : (
-                <Card>
-                  <CardContent className="flex flex-col items-center justify-center py-12">
-                    <FileText className="h-12 w-12 text-muted-foreground" />
-                    <p className="mt-4 text-center text-muted-foreground">Поки що немає навчальних матеріалів</p>
-                  </CardContent>
-                </Card>
+                <div className="space-y-3">
+                  <h2 className="text-xl font-semibold">Приклад матеріалів</h2>
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {demoMaterials.map((material, index) => (
+                      <Card key={index}>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <FileText className="h-5 w-5" />
+                            {material.fileName}
+                          </CardTitle>
+                          <CardDescription>
+                            {material.subject} • {new Date(material.date).toLocaleDateString("uk-UA")}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Button variant="outline" className="w-full bg-transparent">
+                            <Download className="mr-2 h-4 w-4" />
+                            Завантажити
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
               )}
             </TabsContent>
           </Tabs>

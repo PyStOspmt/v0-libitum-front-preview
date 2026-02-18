@@ -2,6 +2,7 @@
 
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
+import { useAuth } from "@/lib/auth-context"
 import { useRequestStore } from "@/lib/request-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,12 +16,16 @@ export default function ClientSpecialistsPage() {
   const searchParams = useSearchParams()
   const { getRequestsByClient } = useRequestStore()
 
+  const { user } = useAuth()
+
   const children = [
+    user ? { id: user.id, label: user.name || "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
-  ]
-  const initialChild = searchParams.get("child") || children[0].id
-  const selectedChildId = children.find((child) => child.id === initialChild)?.id || children[0].id
+  ].filter(Boolean) as { id: string; label: string }[]
+
+  const initialChild = searchParams.get("child") || (user?.id ?? children[0]?.id)
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || (user?.id ?? children[0]?.id)
 
   // Get all requests for this client
   const clientRequests = getRequestsByClient(selectedChildId)

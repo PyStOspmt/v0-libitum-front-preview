@@ -18,7 +18,7 @@ export default function FaqPage() {
           <p className="text-slate-600">Відповіді на найчастіші запитання про Libitum.</p>
         </div>
 
-      <div className="grid gap-4">
+        <div className="grid gap-4">
         {[
           {
             title: "Як створити заявку на заняття?",
@@ -57,6 +57,7 @@ export default function FaqPage() {
             </CardContent>
           </Card>
         ))}
+        </div>
       </div>
     </div>
   )

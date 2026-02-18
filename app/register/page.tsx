@@ -13,9 +13,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { AlertCircle, Chrome, Eye, EyeOff, ArrowLeft, Users, TrendingUp, Check } from "lucide-react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { useToast } from "@/hooks/use-toast"
 
 export default function RegisterPage() {
   const { register } = useAuth()
+  const { toast } = useToast()
   const [userType, setUserType] = useState<"client" | "specialist">("client")
   const [formData, setFormData] = useState({
     name: "",
@@ -32,12 +34,20 @@ export default function RegisterPage() {
     e.preventDefault()
 
     if (formData.password.length < 8) {
-      alert("Пароль повинен містити мінімум 8 символів")
+      toast({
+        title: "Помилка валідації",
+        description: "Пароль повинен містити мінімум 8 символів",
+        variant: "destructive",
+      })
       return
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Паролі не співпадають")
+      toast({
+        title: "Помилка валідації",
+        description: "Паролі не співпадають",
+        variant: "destructive",
+      })
       return
     }
 
@@ -50,7 +60,11 @@ export default function RegisterPage() {
     try {
       await register(formData.name, formData.email, formData.password, userType)
     } catch (error) {
-      console.error("Registration error:", error)
+      toast({
+        title: "Помилка реєстрації",
+        description: "Не вдалося створити акаунт. Спробуйте ще раз.",
+        variant: "destructive",
+      })
     } finally {
       setIsLoading(false)
     }

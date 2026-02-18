@@ -51,10 +51,14 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
   })()
 
   const getStatusBadge = () => {
+    // Determine subject category for color coding
+    const isPsychology = request.subject === "Психологія"
+    const isTutoring = ["Англійська мова", "Математика", "Фізика", "Хімія", "Історія", "Географія"].includes(request.subject)
+    
     switch (request.status) {
       case "pending":
         return (
-          <Badge variant="outline" className="text-orange-600 border-orange-600">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-600 border-orange-600" : isTutoring ? "text-emerald-600 border-emerald-600" : "text-blue-600 border-blue-600"}`}>
             <Clock className="mr-1 h-3 w-3" />
             Очікує відповіді
           </Badge>
@@ -62,35 +66,35 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
       case "accepted":
       case "communicating":
         return (
-          <Badge variant="outline" className="text-blue-600 border-blue-600">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-600 border-orange-600" : isTutoring ? "text-emerald-600 border-emerald-600" : "text-blue-600 border-blue-600"}`}>
             <MessageCircle className="mr-1 h-3 w-3" />
             Комунікація
           </Badge>
         )
       case "trial_scheduled":
         return (
-          <Badge variant="outline" className="text-purple-600 border-purple-600">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-600 border-orange-600" : isTutoring ? "text-emerald-600 border-emerald-600" : "text-blue-600 border-blue-600"}`}>
             <Calendar className="mr-1 h-3 w-3" />
             Пробне заплановано
           </Badge>
         )
       case "trial_completed":
         return (
-          <Badge variant="outline" className="text-indigo-600 border-indigo-600">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-600 border-orange-600" : isTutoring ? "text-emerald-600 border-emerald-600" : "text-blue-600 border-blue-600"}`}>
             <CheckCircle2 className="mr-1 h-3 w-3" />
             Пробне завершено
           </Badge>
         )
       case "awaiting_payment":
         return (
-          <Badge variant="outline" className="text-green-600 border-green-600">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-600 border-orange-600" : isTutoring ? "text-emerald-600 border-emerald-600" : "text-blue-600 border-blue-600"}`}>
             <DollarSign className="mr-1 h-3 w-3" />
             Очікує оплати
           </Badge>
         )
       case "paid":
         return (
-          <Badge variant="outline" className="text-green-700 border-green-700">
+          <Badge variant="outline" className={`${isPsychology ? "text-orange-700 border-orange-700" : isTutoring ? "text-emerald-700 border-emerald-700" : "text-blue-700 border-blue-700"}`}>
             <CheckCircle2 className="mr-1 h-3 w-3" />
             Оплачено
           </Badge>
@@ -155,7 +159,7 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
 
   return (
     <>
-      <Card className="rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md">
+      <Card className="rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-slate-300">
         <CardContent className="p-5">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">

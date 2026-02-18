@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Star, User, MapPin, Heart, BookOpen } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 
 export default function ClientWishlistPage() {
@@ -16,12 +17,16 @@ export default function ClientWishlistPage() {
   const searchParams = useSearchParams()
   const { toast } = useToast()
 
+  const { user } = useAuth()
+
   const children = [
+    user ? { id: user.id, label: user.name || "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
-  ]
-  const initialChild = searchParams.get("child") || children[0].id
-  const selectedChildId = children.find((child) => child.id === initialChild)?.id || children[0].id
+  ].filter(Boolean) as { id: string; label: string }[]
+
+  const initialChild = searchParams.get("child") || (user?.id ?? children[0]?.id)
+  const selectedChildId = children.find((child) => child.id === initialChild)?.id || (user?.id ?? children[0]?.id)
   
   // Mock wishlist data - in real app would come from a store or API
   const [wishlist, setWishlist] = useState([

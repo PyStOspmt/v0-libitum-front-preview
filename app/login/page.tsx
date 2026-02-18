@@ -11,9 +11,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Chrome, Eye, EyeOff, ArrowLeft, Star, Shield, BookOpen } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
   const { login } = useAuth()
+  const { toast } = useToast()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -31,7 +33,11 @@ export default function LoginPage() {
     try {
       await login(email, password)
     } catch (error) {
-      console.error("Login error:", error)
+      toast({
+        title: "Помилка входу",
+        description: "Невірний email або пароль. Спробуйте ще раз.",
+        variant: "destructive",
+      })
     } finally {
       setIsLoading(false)
     }

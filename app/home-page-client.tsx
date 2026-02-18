@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, useDragControls } from "framer-motion"
 import {
   ArrowRight,
   Check,
@@ -12,6 +12,8 @@ import {
   GraduationCap,
   Brain,
   MessageCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 import { useAuth } from "@/lib/auth-context"
@@ -59,6 +61,7 @@ export default function HomePageClient() {
   const { t } = useTranslation(user?.language || "UA")
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [scrolled, setScrolled] = useState(false)
+  const [currentReview, setCurrentReview] = useState(0)
 
   const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
 
@@ -133,6 +136,14 @@ export default function HomePageClient() {
     { text: t("reviews.item2.text"), name: t("reviews.item2.name"), rating: 5 },
     { text: t("reviews.item3.text"), name: t("reviews.item3.name"), rating: 5 },
   ]
+
+  const nextReview = () => {
+    setCurrentReview((prev) => (prev + 1) % reviews.length)
+  }
+
+  const prevReview = () => {
+    setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length)
+  }
 
   const faqs = [
     { q: t("faq.q1.q"), a: t("faq.q1.a") },
@@ -399,7 +410,7 @@ export default function HomePageClient() {
         </section>
 
         {/* ═══ Reviews ═══ */}
-        <section ref={revs.ref} id="reviews" className="py-14 sm:py-20 bg-slate-50/80 relative grain-overlay">
+        <section ref={revs.ref} id="reviews" className="py-12 sm:py-16 bg-slate-50/80 relative grain-overlay">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -413,25 +424,143 @@ export default function HomePageClient() {
               <p className="text-slate-500 text-sm mt-1.5">{t("reviews.subtitle")}</p>
             </motion.div>
 
-            <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {reviews.map((review, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={revs.visible ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: (i + 1) * 0.12, duration: 0.5 }}
-                  whileHover={{ y: -3, transition: { duration: 0.2 } }}
-                  className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-slate-200/80 hover:border-slate-300 hover:shadow-md transition-shadow"
-                >
-                  <div className="flex gap-0.5 mb-2">
-                    {[...Array(review.rating)].map((_, j) => (
-                      <Star key={j} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                    ))}
-                  </div>
-                  <p className="text-slate-600 mb-2 leading-relaxed text-xs">{'"'}{review.text}{'"'}</p>
-                  <div className="text-xs font-semibold text-slate-800">{review.name}</div>
-                </motion.div>
-              ))}
+            {/* Epic Review Carousel */}
+            <div className="relative max-w-4xl mx-auto">
+              <div className="relative h-[200px] flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentReview}
+                    initial={{ 
+                      opacity: 0, 
+                      scale: 0.8,
+                      rotateY: -90,
+                      z: -100
+                    }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1,
+                      rotateY: 0,
+                      z: 0,
+                      transition: {
+                        duration: 0.8,
+                        ease: [0.23, 1, 0.32, 1],
+                        scale: { type: "spring", stiffness: 300, damping: 25 },
+                        rotateY: { type: "spring", stiffness: 100, damping: 20 }
+                      }
+                    }}
+                    exit={{ 
+                      opacity: 0,
+                      scale: 0.8,
+                      rotateY: 90,
+                      z: -100,
+                      transition: {
+                        duration: 0.6,
+                        ease: [0.23, 1, 0.32, 1]
+                      }
+                    }}
+                    className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                    onClick={nextReview}
+                  >
+                    <motion.div
+                      whileHover={{ 
+                        scale: 1.05,
+                        rotateX: 5,
+                        transition: { duration: 0.3 }
+                      }}
+                      className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/80 hover:border-slate-300 hover:shadow-xl transition-all max-w-md w-full mx-4"
+                    >
+                      <div className="flex gap-0.5 mb-3">
+                        {[...Array(reviews[currentReview].rating)].map((_, j) => (
+                          <motion.div
+                            key={j}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: j * 0.1, type: "spring", stiffness: 400 }}
+                          >
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                          </motion.div>
+                        ))}
+                      </div>
+                      <motion.p 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.5 }}
+                        className="text-slate-600 mb-3 leading-relaxed text-sm"
+                      >
+                        {'"'}{reviews[currentReview].text}{'"'}
+                      </motion.p>
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5, duration: 0.3 }}
+                        className="text-sm font-semibold text-slate-800"
+                      >
+                        {reviews[currentReview].name}
+                      </motion.div>
+                    </motion.div>
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Side reviews preview */}
+                <div className="absolute inset-0 hidden lg:flex items-center justify-between pointer-events-none">
+                  <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 0.3, x: -20 }}
+                    transition={{ duration: 0.6 }}
+                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 max-w-[200px] w-full ml-8 transform scale-90 shadow-md hover:shadow-lg"
+                  >
+                    <div className="flex gap-0.5 mb-2">
+                      {[...Array(reviews[(currentReview - 1 + reviews.length) % reviews.length].rating)].map((_, j) => (
+                        <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">
+                      {'"'}{reviews[(currentReview - 1 + reviews.length) % reviews.length].text}{'"'}
+                    </p>
+                    <div className="text-xs font-medium text-slate-600 mt-2">
+                      {reviews[(currentReview - 1 + reviews.length) % reviews.length].name}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 0.3, x: 20 }}
+                    transition={{ duration: 0.6 }}
+                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 max-w-[200px] w-full mr-8 transform scale-90 shadow-md hover:shadow-lg"
+                  >
+                    <div className="flex gap-0.5 mb-2">
+                      {[...Array(reviews[(currentReview + 1) % reviews.length].rating)].map((_, j) => (
+                        <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">
+                      {'"'}{reviews[(currentReview + 1) % reviews.length].text}{'"'}
+                    </p>
+                    <div className="text-xs font-medium text-slate-600 mt-2">
+                      {reviews[(currentReview + 1) % reviews.length].name}
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Navigation Controls */}
+              <div className="flex items-center justify-center gap-4 mt-8">
+                <div className="flex gap-2">
+                  {reviews.map((_, i) => (
+                    <motion.button
+                      key={i}
+                      whileHover={{ scale: 1.2 }}
+                      whileTap={{ scale: 0.8 }}
+                      onClick={() => setCurrentReview(i)}
+                      className={`h-2 w-2 rounded-full transition-all ${
+                        i === currentReview 
+                          ? "bg-emerald-600 w-8" 
+                          : "bg-slate-300 hover:bg-slate-400"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>

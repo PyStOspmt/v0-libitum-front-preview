@@ -46,8 +46,15 @@ export default function TutorMaterialsPage() {
   const tutorId = user?.id || "specialist-1"
   const tutorLessons = lessons.filter((l) => l.specialistId === tutorId)
   
-  // Get active clients for the dropdown
-  const activeClients = Array.from(new Set(tutorLessons.map(l => ({ id: l.clientId, name: l.clientName }))))
+  // Get active clients for the dropdown (deduped by id)
+  const activeClients = Object.values(
+    tutorLessons.reduce<Record<string, { id: string; name: string }>>((acc, lesson) => {
+      if (!acc[lesson.clientId]) {
+        acc[lesson.clientId] = { id: lesson.clientId, name: lesson.clientName }
+      }
+      return acc
+    }, {}),
+  )
 
   const homeworks = tutorLessons
     .filter((l) => l.homework)
@@ -77,6 +84,16 @@ export default function TutorMaterialsPage() {
       toast({
         title: "Помилка",
         description: "Заповніть обов'язкові поля",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const clientExists = activeClients.some((c) => c.id === newHwClient)
+    if (!clientExists) {
+      toast({
+        title: "Учня не знайдено",
+        description: "Оберіть учня зі списку активних",
         variant: "destructive",
       })
       return

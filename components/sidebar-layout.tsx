@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/auth-context"
+import { useTheme } from "@/lib/theme-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import {
   BookOpen,
@@ -36,50 +37,20 @@ interface SidebarLayoutProps {
 
 export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   const { user, logout, stopImpersonating } = useAuth()
+  const { theme } = useTheme()
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
 
-  const isPsychologist = user?.subjects?.some((subject) =>
-    subject.toLowerCase().includes("психол") || subject.toLowerCase().includes("psych")
-  )
-
-  const theme = (() => {
-    if (userType === "admin") {
-      return {
-        logoBg: "bg-slate-700",
-        activeItem: "bg-slate-100 text-slate-800",
-        activeIcon: "text-slate-700",
-        label: "text-slate-500",
-        accent: "#64748b"
-      }
-    }
-    if (userType === "client") {
-      return {
-        logoBg: "bg-[#5c6bc0]",
-        activeItem: "bg-[#e8eaf6] text-[#3949ab]",
-        activeIcon: "text-[#5c6bc0]",
-        label: "text-[#7986cb]",
-        accent: "#5c6bc0"
-      }
-    }
-    if (userType === "tutor" && isPsychologist) {
-      return {
-        logoBg: "bg-[#ffb74d]",
-        activeItem: "bg-[#fff8e1] text-[#f57c00]",
-        activeIcon: "text-[#ffb74d]",
-        label: "text-[#ffb74d]",
-        accent: "#ffb74d"
-      }
-    }
-    return {
-      logoBg: "bg-[#43a047]",
-      activeItem: "bg-[#e8f5e9] text-[#2e7d32]",
-      activeIcon: "text-[#43a047]",
-      label: "text-[#66bb6a]",
-      accent: "#43a047"
-    }
-  })()
+  const sidebarTheme = {
+    logoBg: userType === "admin" ? "bg-slate-700" : "",
+    activeItem: userType === "admin" 
+      ? "bg-slate-100 text-slate-800" 
+      : "",
+    activeIcon: userType === "admin" ? "text-slate-700" : "",
+    label: userType === "admin" ? "text-slate-500" : "",
+    accent: theme.primary,
+  }
 
   useEffect(() => {
     const readFlag = () => {
@@ -141,27 +112,42 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
           <div
             className={cn(
               "flex h-11 w-11 items-center justify-center rounded-2xl",
-              theme.logoBg
+              sidebarTheme.logoBg || "shadow-lg"
             )}
+            style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
           >
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div className="hidden lg:block text-left">
             <p className="text-lg font-bold text-slate-800 leading-tight">Libitum</p>
-            <p className={cn("text-xs font-medium", theme.label)}>
+            <p className={cn("text-xs font-medium", sidebarTheme.label)}>
               {userType === "client"
                 ? "Кабінет учня"
                 : userType === "tutor"
-                  ? isPsychologist
+                  ? theme.type === "psychologist"
                     ? "Кабінет психолога"
-                    : "Кабінет викладача"
+                    : theme.type === "speech-therapist"
+                      ? "Кабінет логопеда"
+                      : "Кабінет викладача"
                   : "Адмін-панель"}
             </p>
           </div>
         </Link>
 
-        <div className="lg:hidden">
-          <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <div className="lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="rounded-full hover:bg-slate-100 transition-colors"
+            >
+              <X className="h-5 w-5 text-slate-500" />
+            </Button>
+          </div>
+          <div className="lg:hidden">
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
 
@@ -173,7 +159,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         {isImpersonating && (
           <Button
             variant="outline"
-            className="mb-6 w-full justify-start gap-3 border-[#ffb74d]/30 bg-[#fff8e1] text-[#f57c00] hover:bg-[#ffecb3] rounded-xl"
+            className="mb-6 w-full justify-start gap-3 border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl transition-all"
             onClick={handleStopImpersonating}
           >
             <ShieldCheck className="h-5 w-5" />
@@ -184,7 +170,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         <Link href="/">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 mb-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 h-11"
+            className="w-full justify-start gap-3 mb-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 h-11 transition-all"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <Home className="h-5 w-5" />
@@ -203,15 +189,21 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                 variant="ghost"
                 className={cn(
                   "w-full justify-start gap-3 rounded-xl h-11 transition-all font-medium",
-                  isActive ? theme.activeItem : "text-slate-500 hover:bg-slate-50 hover:text-slate-700"
+                  isActive 
+                    ? userType === "admin" 
+                      ? sidebarTheme.activeItem
+                      : "text-slate-900"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 )}
+                style={isActive && userType !== "admin" ? { borderColor: theme.primary, backgroundColor: theme.primaryLight, color: theme.primaryDark, borderWidth: 1, borderStyle: "solid" } : {}}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Icon
                   className={cn(
                     "h-5 w-5 transition-colors",
-                    isActive ? theme.activeIcon : "text-slate-400"
+                    isActive ? (userType === "admin" ? sidebarTheme.activeIcon : "") : "text-slate-400"
                   )}
+                  style={isActive && userType !== "admin" ? { color: theme.primary } : {}}
                 />
                 <span>{item.label}</span>
               </Button>
@@ -224,7 +216,10 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         <div className="rounded-2xl border border-slate-100 bg-white p-4">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-10 w-10 border border-slate-100">
-              <AvatarFallback className={cn("font-bold text-white", theme.logoBg)}>
+              <AvatarFallback 
+                className="font-bold text-white"
+                style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
+              >
                 {user?.name?.[0] ?? "U"}
               </AvatarFallback>
             </Avatar>
@@ -249,7 +244,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   return (
     <div className="flex h-screen overflow-hidden bg-[#fafaf8]">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-72 flex-col border-r border-slate-100 bg-white lg:flex">
+      <aside className="hidden w-72 flex-col border-r border-slate-200/80 bg-white lg:flex shadow-sm">
         <NavContent />
       </aside>
 
@@ -257,45 +252,31 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-slate-900/20"
+            className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <aside className="absolute left-0 top-0 h-full w-72 flex-col border-r bg-white flex animate-in slide-in-from-left duration-300">
-            <div className="flex items-center justify-between border-b border-slate-100 p-4">
-              <div className="flex items-center gap-3">
-                <div className={cn("flex h-10 w-10 items-center justify-center rounded-2xl", theme.logoBg)}>
-                  <BookOpen className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-800">Libitum</p>
-                  <p className="text-xs text-slate-500">
-                    {userType === "client" ? "Учень" : userType === "tutor" ? "Спеціаліст" : "Адмін"}
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="rounded-full hover:bg-slate-100"
-              >
-                <X className="h-5 w-5 text-slate-500" />
-              </Button>
-            </div>
+          <aside className="absolute left-0 top-0 h-full w-72 flex-col border-r border-slate-200/80 bg-white flex animate-in slide-in-from-left duration-300 shadow-lg">
             <NavContent />
           </aside>
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
         {/* Mobile Header */}
-        <header className="flex items-center justify-between border-b border-slate-100 bg-white p-4 lg:hidden sticky top-0 z-10">
-          <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)} className="-ml-2">
+        <header className="flex items-center justify-between border-b border-slate-200/80 bg-white p-4 lg:hidden sticky top-0 z-10 backdrop-blur-sm">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={() => setIsMobileMenuOpen(true)} 
+            className="-ml-2 hover:bg-slate-100 transition-colors"
+          >
             <Menu className="h-6 w-6 text-slate-700" />
           </Button>
           <div className="flex items-center gap-2">
-            <div className={cn("flex h-8 w-8 items-center justify-center rounded-xl", theme.logoBg)}>
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-xl shadow-sm"
+              style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
+            >
               <BookOpen className="h-4 w-4 text-white" />
             </div>
             <span className="font-bold text-slate-800">Libitum</span>
@@ -304,7 +285,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-[#fafaf8]">{children}</main>
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ import { Space_Grotesk, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/lib/auth-context"
+import { ThemeProvider } from "@/lib/theme-context"
 import "./globals.css"
 
 const spaceGrotesk = Space_Grotesk({ 
@@ -32,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="uk">
       <body className={`${inter.className} ${spaceGrotesk.variable} ${inter.variable} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </AuthProvider>
         <Toaster />
         <Analytics />
       </body>

@@ -202,6 +202,33 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     setBookingOpen(true)
   }
 
+  const handleMessageClick = async () => {
+    if (!user) {
+      toast({
+        title: "Потрібна авторизація",
+        description: "Увійдіть, щоб написати спеціалісту",
+        variant: "destructive",
+      })
+      router.push("/login")
+      return
+    }
+
+    const shareUrl = typeof window !== "undefined" ? window.location.href : ""
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `Повідомлення для ${specialist.name}`, url: shareUrl })
+        toast({ title: "Відкрийте ваш месенджер", description: "Надішліть посилання спеціалісту" })
+        return
+      }
+
+      await navigator.clipboard.writeText(shareUrl)
+      toast({ title: "Посилання скопійовано", description: "Вставте у ваш месенджер, щоб написати спеціалісту" })
+    } catch (error) {
+      toast({ title: "Не вдалося поділитися", variant: "destructive" })
+    }
+  }
+
   const reviews = [
     { id: 1, clientName: "Марія К.", rating: 5, date: "15.01.2025", text: "Чудовий викладач! Олена дуже професійна та уважна. За 2 місяці занять мій рівень англійської значно покращився." },
     { id: 2, clientName: "Іван П.", rating: 5, date: "10.01.2025", text: "Рекомендую! Зрозумілі пояснення, цікаві матеріали. Підготувався до IELTS на 7.5 балів." },
@@ -585,6 +612,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <Button
                       variant="outline"
                       className="w-full h-11 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:border-black transition-colors cursor-pointer"
+                      onClick={handleMessageClick}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Написати
