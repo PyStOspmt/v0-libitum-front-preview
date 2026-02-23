@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 
 export type ThemeType = "tutor" | "psychologist" | "speech-therapist" | "client" | "admin"
+type SpecialistType = "tutor" | "psychologist" | "speech-therapist"
 
 export interface ThemeColors {
   type: ThemeType
@@ -21,15 +22,15 @@ export interface ThemeColors {
 const colorThemes: Record<ThemeType, ThemeColors> = {
   tutor: {
     type: "tutor",
-    primary: "#10b981",
-    primaryHover: "#059669",
-    primaryLight: "rgba(16, 185, 129, 0.1)",
-    primaryDark: "#047857",
-    gradient: "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
-    gradientLight: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)",
-    accent: "#34d399",
-    bgGradient: "radial-gradient(ellipse at top, rgba(16, 185, 129, 0.08) 0%, transparent 50%)",
-    cardGradient: "linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(16, 185, 129, 0.01) 100%)",
+    primary: "#00c5a6",
+    primaryHover: "#00b296",
+    primaryLight: "rgba(0, 197, 166, 0.12)",
+    primaryDark: "#0f172a",
+    gradient: "linear-gradient(135deg, #00c5a6 0%, #10b981 100%)",
+    gradientLight: "linear-gradient(135deg, rgba(0, 197, 166, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%)",
+    accent: "#00a389",
+    bgGradient: "radial-gradient(ellipse at top, rgba(0, 197, 166, 0.1) 0%, transparent 52%)",
+    cardGradient: "linear-gradient(135deg, rgba(0, 197, 166, 0.05) 0%, rgba(0, 197, 166, 0.01) 100%)",
   },
   psychologist: {
     type: "psychologist",
@@ -57,15 +58,15 @@ const colorThemes: Record<ThemeType, ThemeColors> = {
   },
   client: {
     type: "client",
-    primary: "#10b981",
-    primaryHover: "#059669",
-    primaryLight: "rgba(16, 185, 129, 0.1)",
-    primaryDark: "#047857",
-    gradient: "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
-    gradientLight: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)",
-    accent: "#34d399",
-    bgGradient: "radial-gradient(ellipse at top, rgba(16, 185, 129, 0.08) 0%, transparent 50%)",
-    cardGradient: "linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(16, 185, 129, 0.01) 100%)",
+    primary: "#00c5a6",
+    primaryHover: "#00b296",
+    primaryLight: "rgba(0, 197, 166, 0.12)",
+    primaryDark: "#0f172a",
+    gradient: "linear-gradient(135deg, #00c5a6 0%, #10b981 100%)",
+    gradientLight: "linear-gradient(135deg, rgba(0, 197, 166, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%)",
+    accent: "#00a389",
+    bgGradient: "radial-gradient(ellipse at top, rgba(0, 197, 166, 0.1) 0%, transparent 52%)",
+    cardGradient: "linear-gradient(135deg, rgba(0, 197, 166, 0.05) 0%, rgba(0, 197, 166, 0.01) 100%)",
   },
   admin: {
     type: "admin",
@@ -122,7 +123,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       // Set initial theme based on user
       if (user.role === "admin") {
         setTheme("admin")
-      } else if (user.role === "client" || user.role === "student") {
+      } else if (user.role === "client" || String(user.role) === "student") {
         setTheme("client")
       } else if (user.role === "specialist" || user.role === "tutor") {
         // Check specialization

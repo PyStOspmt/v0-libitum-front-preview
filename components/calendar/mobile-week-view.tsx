@@ -47,13 +47,13 @@ export function MobileWeekView({
   const weekDates = getWeekDates()
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 font-sans">
       {/* Week Header */}
       <div className="flex items-center justify-between px-2 py-3">
-        <h3 className="text-lg font-semibold text-slate-800">
+        <h3 className="text-lg font-[700] text-[#121117]">
           {weekDates[0].getDate()} {monthNames[weekDates[0].getMonth()]} - {weekDates[6].getDate()} {monthNames[weekDates[6].getMonth()]}
         </h3>
-        <div className="text-sm text-slate-500">
+        <div className="text-[14px] font-[500] text-[#69686f]">
           {weekDates[0].getFullYear()}
         </div>
       </div>
@@ -75,11 +75,11 @@ export function MobileWeekView({
             <div
               key={index}
               className={cn(
-                "flex flex-col items-center p-2 rounded-xl border min-h-[80px] cursor-pointer transition-all",
+                "flex flex-col items-center p-2 rounded-[16px] border min-h-[80px] cursor-pointer transition-all",
                 isTodayDate
-                  ? "bg-emerald-50 border-emerald-200"
-                  : "bg-white border-slate-200 hover:bg-slate-50",
-                totalItems > 0 && "ring-2 ring-emerald-100"
+                  ? "bg-[#e8fffb] border-[#00c5a6]/20 shadow-[0_2px_8px_rgba(0,197,166,0.1)]"
+                  : "bg-white border-slate-200/80 hover:bg-slate-50",
+                totalItems > 0 && "ring-2 ring-[#e8fffb] border-[#00c5a6]/30"
               )}
               onClick={() => {
                 // Navigate to this day
@@ -88,7 +88,7 @@ export function MobileWeekView({
               }}
             >
               {/* Day Name */}
-              <div className="text-xs text-slate-500 mb-1 truncate text-center w-full">
+              <div className="text-[11px] font-[600] text-[#69686f] mb-1 truncate text-center w-full">
                 <span className="block sm:hidden uppercase tracking-wide">{weekDaysMobileShort[date.getDay()]}</span>
                 <span className="hidden sm:block">{weekDays[index]}</span>
               </div>
@@ -96,10 +96,10 @@ export function MobileWeekView({
               {/* Day Number */}
               <div
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-lg font-semibold text-sm",
+                  "flex h-8 w-8 items-center justify-center rounded-[12px] font-[600] text-[15px]",
                   isTodayDate
-                    ? "bg-emerald-600 text-white"
-                    : "text-slate-700"
+                    ? "bg-[#121117] text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+                    : "text-[#121117]"
                 )}
               >
                 {date.getDate()}
@@ -110,13 +110,13 @@ export function MobileWeekView({
                 <div className="mt-2 flex flex-col items-center gap-1">
                   <div className="flex items-center gap-1">
                     {dayLessons.length > 0 && (
-                      <div className="h-3 w-3 rounded-full bg-emerald-500" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-[#00c5a6]" />
                     )}
                     {dayEvents.length > 0 && (
-                      <div className="h-3 w-3 rounded-full bg-purple-500" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-purple-500" />
                     )}
                   </div>
-                  <div className="text-xs text-slate-600 font-medium">
+                  <div className="text-[11px] text-[#69686f] font-[600]">
                     {totalItems}
                   </div>
                 </div>
@@ -128,7 +128,7 @@ export function MobileWeekView({
 
       {/* Upcoming Lessons List */}
       <div className="mt-4">
-        <h4 className="text-sm font-semibold text-slate-700 mb-3 px-2">
+        <h4 className="text-[15px] font-[700] text-[#121117] mb-3 px-2">
           Найближчі заняття на цьому тижні
         </h4>
         <div className="space-y-2">
@@ -150,7 +150,7 @@ export function MobileWeekView({
 
             return (
               <div key={dateStr} className="px-2">
-                <div className="text-xs font-medium text-slate-500 mb-2">
+                <div className="text-[13px] font-[600] text-[#69686f] mb-2">
                   {weekDays[date.getDay()]}, {date.getDate()} {monthNames[date.getMonth()]}
                 </div>
                 <div className="space-y-2">
@@ -162,33 +162,33 @@ export function MobileWeekView({
                         <div
                           key={`lesson-${index}`}
                           className={cn(
-                            "p-3 rounded-xl border cursor-pointer transition-all active:bg-slate-50",
+                            "p-3.5 rounded-[16px] border cursor-pointer transition-all active:bg-slate-50",
                             isPsychology
                               ? "bg-orange-50 border-orange-200"
-                              : "bg-emerald-50 border-emerald-200"
+                              : "bg-[#e8fffb] border-[#00c5a6]/20"
                           )}
                           onClick={() => onViewLesson(lesson)}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="text-sm font-bold text-slate-700 min-w-[45px]">
+                            <div className="text-[15px] font-[700] text-[#121117] min-w-[45px]">
                               {lesson.time}
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className={cn(
-                                "font-semibold text-sm truncate",
-                                isPsychology ? "text-orange-800" : "text-emerald-800"
+                                "font-[600] text-[15px] truncate",
+                                isPsychology ? "text-orange-800" : "text-[#00a389]"
                               )}>
                                 {lesson.subject}
                               </div>
-                              <div className="text-xs text-slate-600">
+                              <div className="text-[13px] font-[500] text-[#69686f]">
                                 {userType === "client" ? lesson.specialistName : lesson.clientName}
                               </div>
                             </div>
                             <div className="flex items-center gap-1">
                               {lesson.format === "online" ? (
-                                <Video className="h-3 w-3 text-emerald-600" />
+                                <Video className="h-4 w-4 text-[#00c5a6]" />
                               ) : (
-                                <MapPin className="h-3 w-3 text-blue-600" />
+                                <MapPin className="h-4 w-4 text-blue-600" />
                               )}
                             </div>
                           </div>

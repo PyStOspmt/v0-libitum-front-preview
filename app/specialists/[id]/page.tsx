@@ -289,14 +289,14 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
       </header>
 
       {/* Breadcrumbs */}
-      <div className="border-b border-slate-100 bg-[#fafaf8]">
+      <div className="border-b border-slate-100 bg-[#f8f9fa]">
         <div className="container mx-auto px-4 lg:px-8 py-3">
-          <nav className="flex items-center gap-1.5 text-sm text-slate-500">
-            <Link href="/" className="hover:text-slate-800 transition-colors">Головна</Link>
+          <nav className="flex items-center gap-1.5 text-sm text-[#69686f] font-medium">
+            <Link href="/" className="hover:text-[#121117] transition-colors">Головна</Link>
             <ChevronRight className="h-3.5 w-3.5" />
-            <Link href={specialistsListHref} className="hover:text-slate-800 transition-colors">Спеціалісти</Link>
+            <Link href={specialistsListHref} className="hover:text-[#121117] transition-colors">Спеціалісти</Link>
             <ChevronRight className="h-3.5 w-3.5" />
-            <span className="text-slate-800 font-medium">{specialist.name}</span>
+            <span className="text-[#121117]">{specialist.name}</span>
           </nav>
         </div>
       </div>
@@ -306,15 +306,15 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
           {/* Main Content */}
           <div className="flex-1 min-w-0">
             {/* Profile Header */}
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start">
+            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <div className="relative shrink-0 mx-auto sm:mx-0">
-                <Avatar className="h-52 w-52 rounded-lg border border-slate-200 sm:h-56 sm:w-56">
+                <Avatar className="h-32 w-32 sm:h-48 sm:w-48 rounded-[24px] border border-slate-200/80 shadow-sm">
                   <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
-                  <AvatarFallback className="text-4xl font-bold bg-[#fafaf8] text-slate-400">{specialist.name[0]}</AvatarFallback>
+                  <AvatarFallback className="text-4xl font-bold bg-[#f0f3f3] text-[#121117]">{specialist.name[0]}</AvatarFallback>
                 </Avatar>
                 {specialist.verified && (
-                  <div className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white border border-slate-200">
-                    <Award className="h-5 w-5 text-[#009688]" />
+                  <div className="absolute -bottom-2 -right-2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white border border-slate-200/80 shadow-md z-10">
+                    <Award className="h-5 w-5 sm:h-6 sm:w-6 text-[#00c5a6]" />
                   </div>
                 )}
               </div>
@@ -322,13 +322,13 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               <div className="flex-1 pt-1 text-center sm:text-left">
                 <div className="mb-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-3">
                   <div className="space-y-3">
-                    <h1 className="text-3xl font-bold text-slate-800">{specialist.name}</h1>
+                    <h1 className="text-[28px] font-bold text-[#121117] leading-tight">{specialist.name}</h1>
                     <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                      <span className="inline-flex items-center rounded-lg px-3 py-1 text-sm font-semibold bg-[#E0F2F1] text-[#009688]">
+                      <span className="inline-flex items-center rounded-full px-3 py-1 text-[13px] font-[600] bg-[#e8fffb] text-[#00a389]">
                         {specialist.specialization}
                       </span>
                       {specialist.badges.map((badge: string) => (
-                        <span key={badge} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1 text-sm font-medium text-slate-600">
+                        <span key={badge} className="inline-flex items-center rounded-full border border-slate-200/80 bg-white px-3 py-1 text-[13px] font-medium text-[#69686f]">
                           {badge}
                         </span>
                       ))}
@@ -338,38 +338,38 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   <div className="flex items-center gap-2">
                     <button
                       onClick={handleWishlist}
-                      className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
+                      className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
                     >
-                      <Heart className={`h-5 w-5 ${wishlisted ? "fill-red-500 text-red-500" : "text-slate-400"}`} />
+                      <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#ff4757] text-[#ff4757]" : "text-[#b2b1b9]"}`} />
                     </button>
                     <button
                       onClick={handleShare}
-                      className="h-10 w-10 rounded-lg border border-slate-200 flex items-center justify-center hover:border-black transition-colors cursor-pointer"
+                      className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
                     >
-                      <Share className="h-5 w-5 text-slate-400" />
+                      <Share className="h-5 w-5 text-[#b2b1b9]" />
                     </button>
                   </div>
                 </div>
 
-                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-[14px] text-[#69686f] font-medium">
                   <div className="flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
-                    <span className="font-bold text-slate-800">{specialist.rating}</span>
-                    <span className="text-slate-400">({specialist.reviews} відгуків)</span>
+                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    <span className="font-bold text-[#121117]">{specialist.rating}</span>
+                    <span>({specialist.reviews} відгуків)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4" />
+                    <MapPin className="h-4 w-4 text-[#b2b1b9]" />
                     {specialist.location}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Users className="h-4 w-4" />
+                    <Users className="h-4 w-4 text-[#b2b1b9]" />
                     {specialist.completedSessions} занять
                   </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                   {specialist.subjects.map((subject: string) => (
-                    <span key={subject} className="inline-flex items-center rounded-lg bg-[#fafaf8] px-3 py-1.5 text-sm font-medium text-slate-600 border border-slate-100">
+                    <span key={subject} className="inline-flex items-center rounded-full bg-[#f0f3f3] px-3 py-1.5 text-[14px] font-[600] text-[#121117]">
                       {subject}
                     </span>
                   ))}
@@ -379,41 +379,41 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
             {/* Tabs */}
             <Tabs defaultValue="about" className="space-y-8">
-              <TabsList className="w-full justify-start border-b border-slate-200 bg-transparent p-0 h-auto gap-8 rounded-none">
+              <TabsList className="w-full justify-start border-b border-slate-200/80 bg-transparent p-0 h-auto gap-8 rounded-none">
                 <TabsTrigger
                   value="about"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
                 >
                   Про спеціаліста
                 </TabsTrigger>
                 <TabsTrigger
                   value="reviews"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
                 >
                   Відгуки ({specialist.reviews})
                 </TabsTrigger>
                 <TabsTrigger
                   value="schedule"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-base font-medium text-slate-500 data-[state=active]:border-[#009688] data-[state=active]:text-slate-800 data-[state=active]:shadow-none hover:text-slate-700 bg-transparent cursor-pointer"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
                 >
                   Розклад
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="about" className="space-y-10">
+              <TabsContent value="about" className="space-y-8">
                 {/* Bio */}
-                <section>
-                  <h3 className="text-xl font-bold text-slate-800 mb-4">Про мене</h3>
-                  <p className="text-lg leading-relaxed text-slate-600 whitespace-pre-line">
+                <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                  <h3 className="text-[20px] font-bold text-[#121117] mb-4">Про мене</h3>
+                  <p className="text-[16px] leading-relaxed text-[#3e3d45] whitespace-pre-line font-medium">
                     {specialist.bio}
                   </p>
                 </section>
 
                 {/* Video */}
                 {specialist.videoIntroUrl && (
-                  <section>
-                    <h3 className="text-xl font-bold text-slate-800 mb-4">Відео-візитівка</h3>
-                    <div className="relative overflow-hidden rounded-lg bg-slate-900 aspect-video border border-slate-200">
+                  <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                    <h3 className="text-[20px] font-bold text-[#121117] mb-4">Відео-візитівка</h3>
+                    <div className="relative overflow-hidden rounded-[16px] bg-slate-900 aspect-video border border-slate-200/80">
                       <video controls poster={specialist.avatarUrl} className="w-full h-full object-cover">
                         <source src={specialist.videoIntroUrl} type="video/mp4" />
                       </video>
@@ -421,33 +421,33 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </section>
                 )}
 
-                <div className="grid gap-8 md:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-2">
                   {/* Education */}
-                  <section className="bg-[#fafaf8] rounded-lg p-6 border border-transparent hover:border-black transition-colors">
-                    <h3 className="text-lg font-bold text-slate-800 mb-4">Освіта</h3>
+                  <section className="bg-[#f0f3f3] rounded-[24px] p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
+                    <h3 className="text-[18px] font-bold text-[#121117] mb-4">Освіта</h3>
                     <div className="flex gap-4">
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#009688] border border-slate-100">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white text-[#00c5a6] border border-slate-200/80 shadow-sm">
                         <GraduationCap className="h-6 w-6" />
                       </div>
                       <div>
-                        <h4 className="font-semibold text-slate-800">{specialist.education}</h4>
-                        <p className="text-slate-500 text-sm mt-1">Магістр філології</p>
+                        <h4 className="font-[600] text-[#121117]">{specialist.education}</h4>
+                        <p className="text-[#69686f] text-[13px] font-medium mt-1">Магістр філології</p>
                       </div>
                     </div>
                   </section>
 
                   {/* Certificates */}
-                  <section className="bg-[#fafaf8] rounded-lg p-6 border border-transparent hover:border-black transition-colors">
-                    <h3 className="text-lg font-bold text-slate-800 mb-4">Сертифікати</h3>
+                  <section className="bg-[#f0f3f3] rounded-[24px] p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
+                    <h3 className="text-[18px] font-bold text-[#121117] mb-4">Сертифікати</h3>
                     <div className="space-y-4">
                       {specialist.certificates.map((cert: { title: string; description: string }) => (
                         <div key={cert.title} className="flex gap-4">
-                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white text-[#009688] border border-slate-100">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white text-[#00c5a6] border border-slate-200/80 shadow-sm">
                             <Award className="h-6 w-6" />
                           </div>
                           <div>
-                            <h4 className="font-semibold text-slate-800">{cert.title}</h4>
-                            <p className="text-slate-500 text-sm mt-0.5">{cert.description}</p>
+                            <h4 className="font-[600] text-[#121117]">{cert.title}</h4>
+                            <p className="text-[#69686f] text-[13px] font-medium mt-0.5">{cert.description}</p>
                           </div>
                         </div>
                       ))}
@@ -456,8 +456,8 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                 </div>
 
                 {/* Pricing */}
-                <section>
-                  <h3 className="text-xl font-bold text-slate-800 mb-6">Вартість навчання</h3>
+                <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                  <h3 className="text-[20px] font-bold text-[#121117] mb-6">Вартість навчання</h3>
                   <div className="grid gap-6">
                     {specialist.subjectsDetails.map(
                       (subject: {
@@ -465,17 +465,17 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                         levels: { label: string; priceOnline?: number; priceOffline?: number; groupPrice?: number }[]
                         groupAvailable?: boolean
                       }) => (
-                      <div key={subject.subject} className="rounded-lg border border-slate-200 bg-white p-6 hover:border-black transition-colors">
+                      <div key={subject.subject} className="rounded-[16px] border border-slate-200/80 bg-white p-6 hover:border-slate-300 transition-colors shadow-sm">
                         <div className="mb-4 flex items-center justify-between">
-                          <h4 className="text-lg font-bold text-slate-800">{subject.subject}</h4>
+                          <h4 className="text-[18px] font-bold text-[#121117]">{subject.subject}</h4>
                           {subject.groupAvailable && (
-                            <span className="inline-flex items-center rounded-lg bg-[#E0F2F1] px-2.5 py-1 text-xs font-semibold text-[#009688]">
+                            <span className="inline-flex items-center rounded-full bg-[#e8fffb] px-3 py-1 text-[12px] font-[600] text-[#00a389]">
                               Групові доступні
                             </span>
                           )}
                         </div>
-                        <div className="overflow-hidden rounded-lg border border-slate-100">
-                          <div className="grid grid-cols-4 bg-[#fafaf8] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        <div className="overflow-hidden rounded-[12px] border border-slate-200/80">
+                          <div className="grid grid-cols-4 bg-[#f0f3f3] px-4 py-3 text-[12px] font-[600] uppercase tracking-wider text-[#69686f]">
                             <span>Рівень</span>
                             <span>Онлайн</span>
                             <span>Офлайн</span>
@@ -500,35 +500,35 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
               <TabsContent value="reviews" className="space-y-4">
                 {reviews.map((review) => (
-                  <div key={review.id} className="rounded-lg border border-slate-200 bg-white p-6 hover:border-black transition-colors">
+                  <div key={review.id} className="rounded-[16px] border border-slate-200/80 bg-white p-6 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E0F2F1] font-bold text-[#009688]">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f0f3f3] font-bold text-[#121117] text-[16px]">
                           {review.clientName[0]}
                         </div>
                         <div>
-                          <p className="font-bold text-slate-800">{review.clientName}</p>
-                          <p className="text-sm text-slate-500">{review.date}</p>
+                          <p className="font-bold text-[#121117] text-[15px]">{review.clientName}</p>
+                          <p className="text-[13px] font-medium text-[#69686f] mt-0.5">{review.date}</p>
                         </div>
                       </div>
                       <div className="flex gap-0.5">
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${i < review.rating ? "fill-[#ffc107] text-[#ffc107]" : "fill-slate-100 text-slate-200"}`}
+                            className={`h-4 w-4 ${i < review.rating ? "fill-amber-400 text-amber-400" : "fill-slate-100 text-slate-200"}`}
                           />
                         ))}
                       </div>
                     </div>
-                    <p className="text-slate-600 leading-relaxed">{review.text}</p>
+                    <p className="text-[#3e3d45] leading-relaxed text-[15px] font-medium">{review.text}</p>
                   </div>
                 ))}
               </TabsContent>
 
               <TabsContent value="schedule" className="space-y-6">
-                <div className="rounded-lg border border-slate-200 bg-white p-6 hover:border-black transition-colors">
-                  <h3 className="text-lg font-bold text-slate-800 mb-2">Тижневий графік</h3>
-                  <p className="text-sm text-slate-500 mb-6">Вільні слоти для бронювання</p>
+                <div className="rounded-[24px] border border-slate-200/80 bg-white p-6 sm:p-8 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                  <h3 className="text-[20px] font-bold text-[#121117] mb-2">Тижневий графік</h3>
+                  <p className="text-[14px] font-medium text-[#69686f] mb-6">Вільні слоти для бронювання</p>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {[
                       { day: "Понеділок", slots: ["10:00", "14:00", "18:00"] },
@@ -537,14 +537,14 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                       { day: "Четвер", slots: ["11:00", "17:00"] },
                       { day: "П'ятниця", slots: ["10:00", "13:00"] },
                     ].map((day) => (
-                      <div key={day.day} className="rounded-lg bg-[#fafaf8] p-4 border border-slate-100">
-                        <div className="mb-3 flex items-center justify-between font-semibold text-slate-800">
+                      <div key={day.day} className="rounded-[16px] bg-[#f0f3f3] p-5 border border-slate-200/50">
+                        <div className="mb-4 flex items-center justify-between font-bold text-[#121117]">
                           <span>{day.day}</span>
-                          <Calendar className="h-4 w-4 text-slate-400" />
+                          <Calendar className="h-4 w-4 text-[#69686f]" />
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {day.slots.map((slot) => (
-                            <button key={slot} className="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-[#009688] hover:text-[#009688] transition-colors cursor-pointer">
+                            <button key={slot} className="inline-flex items-center rounded-[8px] border border-slate-200/80 bg-white px-3 py-1.5 text-[13px] font-[600] text-[#121117] hover:border-[#121117] transition-colors cursor-pointer shadow-sm">
                               {slot}
                             </button>
                           ))}
@@ -558,52 +558,55 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
           </div>
 
           {/* Sidebar */}
-          <div className="lg:w-80 xl:w-96 flex-shrink-0">
+          <div className="lg:w-[340px] xl:w-[380px] flex-shrink-0">
             <div className="sticky top-24 flex flex-col gap-4">
               {/* Price card */}
-              <div className="rounded-lg border border-slate-200 bg-white overflow-hidden hover:border-black transition-colors">
-                <div className="bg-[#fafaf8] p-6 border-b border-slate-100 text-center">
-                  <p className="text-sm font-medium text-slate-500 mb-1">Вартість заняття</p>
-                  <div className="text-3xl font-bold text-[#009688]">
-                    {specialist.priceOnline} ₴
-                    <span className="text-lg text-slate-400 font-medium ml-1">/ год</span>
+              <div className="rounded-[24px] border border-slate-200/80 bg-white overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+                <div className="bg-white p-6 border-b border-slate-100 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#f0f3f3]/50 to-transparent pointer-events-none" />
+                  <div className="relative z-10">
+                    <p className="text-[13px] font-[600] text-[#69686f] mb-2 uppercase tracking-wider">Вартість заняття</p>
+                    <div className="flex items-end justify-center gap-1.5 mb-1">
+                      <span className="text-[36px] font-bold text-[#121117] leading-none">{specialist.priceOnline} ₴</span>
+                      <span className="text-[16px] font-[600] text-[#69686f] mb-1">/ год</span>
+                    </div>
+                    <p className="text-[13px] text-[#00a389] mt-2 font-bold bg-[#e8fffb] inline-block px-3 py-1 rounded-full">Перше пробне заняття безкоштовно</p>
                   </div>
-                  <p className="text-xs text-slate-400 mt-2 font-medium">Перше пробне заняття безкоштовно</p>
                 </div>
 
-                <div className="p-6 flex flex-col gap-4">
+                <div className="p-6 flex flex-col gap-5">
                   <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between rounded-lg bg-[#fafaf8] p-3">
+                    <div className="flex items-center justify-between rounded-[12px] bg-[#f0f3f3] p-3.5 border border-slate-200/50">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#009688] flex-shrink-0">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-white border border-slate-200/80 text-[#121117] flex-shrink-0 shadow-sm">
                           <Video className="h-4 w-4" />
                         </div>
-                        <span className="font-medium text-slate-700 text-sm">Онлайн</span>
+                        <span className="font-[600] text-[#121117] text-[15px]">Онлайн</span>
                       </div>
-                      <span className="font-bold text-slate-800">{specialist.priceOnline} ₴</span>
+                      <span className="font-bold text-[#121117] text-[16px]">{specialist.priceOnline} ₴</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-lg bg-[#fafaf8] p-3">
+                    <div className="flex items-center justify-between rounded-[12px] bg-[#f0f3f3] p-3.5 border border-slate-200/50">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white border border-slate-100 text-[#009688] flex-shrink-0">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-[8px] bg-white border border-slate-200/80 text-[#121117] flex-shrink-0 shadow-sm">
                           <HomeIcon className="h-4 w-4" />
                         </div>
-                        <span className="font-medium text-slate-700 text-sm">Офлайн</span>
+                        <span className="font-[600] text-[#121117] text-[15px]">Офлайн</span>
                       </div>
-                      <span className="font-bold text-slate-800">{specialist.priceOffline} ₴</span>
+                      <span className="font-bold text-[#121117] text-[16px]">{specialist.priceOffline} ₴</span>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 p-3 rounded-lg bg-[#fafaf8]">
-                    <MapPin className="h-5 w-5 text-slate-400 shrink-0 mt-0.5" />
-                    <div className="text-sm text-slate-600">
-                      <p className="font-medium text-slate-800 mb-0.5">Локація</p>
+                  <div className="flex items-start gap-3 p-4 rounded-[12px] bg-[#f8f9fa] border border-slate-100">
+                    <MapPin className="h-5 w-5 text-[#b2b1b9] shrink-0 mt-0.5" />
+                    <div className="text-[14px] text-[#3e3d45] font-medium">
+                      <p className="font-bold text-[#121117] mb-1">Локація</p>
                       {specialist.location}
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-2 pt-2">
+                  <div className="flex flex-col gap-3 pt-2">
                     <Button
-                      className="w-full h-12 rounded-lg bg-[#009688] text-white text-base font-semibold hover:bg-[#00796B] cursor-pointer"
+                      className="w-full h-[52px] rounded-[12px] bg-[#121117] text-white text-[16px] font-bold hover:bg-[#121117]/90 cursor-pointer shadow-sm"
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
@@ -611,7 +614,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full h-11 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:border-black transition-colors cursor-pointer"
+                      className="w-full h-[48px] rounded-[12px] border border-slate-200/80 text-[#121117] text-[15px] font-bold hover:bg-[#f8f9fa] cursor-pointer"
                       onClick={handleMessageClick}
                     >
                       <MessageCircle className="mr-2 h-4 w-4" />
@@ -619,42 +622,42 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 text-xs text-slate-400 pt-1">
-                    <Users className="h-3 w-3" />
+                  <div className="flex items-center justify-center gap-2 text-[13px] font-[600] text-[#69686f] pt-1 bg-[#f0f3f3] py-2 rounded-[8px]">
+                    <Users className="h-4 w-4" />
                     <span>{specialist.currentStudents} учнів вже навчаються</span>
                   </div>
                 </div>
               </div>
 
               {/* Quick stats */}
-              <div className="rounded-lg border border-slate-200 bg-white p-5 hover:border-black transition-colors">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-slate-800">{specialist.experience}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">років досвіду</div>
+                    <div className="text-[24px] font-bold text-[#121117]">{specialist.experience}</div>
+                    <div className="text-[12px] font-[600] text-[#69686f] mt-1">років досвіду</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-slate-800">{specialist.acceptanceRate}%</div>
-                    <div className="text-xs text-slate-500 mt-0.5">прийняття заявок</div>
+                    <div className="text-[24px] font-bold text-[#121117]">{specialist.acceptanceRate}%</div>
+                    <div className="text-[12px] font-[600] text-[#69686f] mt-1">прийняття заявок</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-slate-800">{specialist.responseTime}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">час відповіді</div>
+                    <div className="text-[20px] font-bold text-[#121117]">{specialist.responseTime}</div>
+                    <div className="text-[12px] font-[600] text-[#69686f] mt-1">час відповіді</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-[#009688]">{specialist.completedSessions}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">проведено занять</div>
+                    <div className="text-[24px] font-bold text-[#00c5a6]">{specialist.completedSessions}</div>
+                    <div className="text-[12px] font-[600] text-[#69686f] mt-1">проведено занять</div>
                   </div>
                 </div>
               </div>
 
               {/* Guarantee */}
-              <div className="rounded-lg bg-[#E0F2F1] p-4 text-center border border-[#b2ebf2]">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Check className="h-4 w-4 text-[#009688]" />
-                  <span className="text-sm font-semibold text-[#009688]">Гарантія якості</span>
+              <div className="rounded-[16px] bg-[#e8fffb] p-5 text-center border border-[#00c5a6]/20">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <Check className="h-5 w-5 text-[#00a389]" />
+                  <span className="text-[15px] font-bold text-[#00a389]">Гарантія якості</span>
                 </div>
-                <p className="text-xs text-[#009688] leading-relaxed">
+                <p className="text-[13px] font-medium text-[#00a389]/80 leading-relaxed">
                   Повернення коштів, якщо заняття не відбудеться або не сподобається.
                 </p>
               </div>

@@ -3,9 +3,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, Video, MapPin, User, DollarSign, FileText, Star, ExternalLink } from "lucide-react"
+import { Progress } from "@/components/ui/progress"
+import { Calendar, Clock, Video, MapPin, User, DollarSign, FileText, Star, ExternalLink, Target, CheckCircle2 } from "lucide-react"
 import type { Lesson } from "@/lib/lesson-store"
+import { useGoalStore } from "@/lib/goal-store"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 interface LessonDetailsDialogProps {
   lesson: Lesson | null
@@ -15,6 +18,7 @@ interface LessonDetailsDialogProps {
 
 export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetailsDialogProps) {
   const { toast } = useToast()
+  const { getGoalByLesson, getProgress } = useGoalStore()
   
   if (!lesson) return null
 
@@ -33,9 +37,12 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
     missed: "Пропущено"
   }
 
+  const goal = getGoalByLesson(lesson.id)
+  const progress = getProgress(lesson.id)
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
@@ -133,8 +140,53 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
             </div>
           </div>
 
+          {/* Цілі та субцілі */}
+          {goal && goal.title && (
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-slate-800">
+                  <Target className="h-5 w-5 text-[#00c5a6]" />
+                  <h3 className="font-semibold text-lg">{goal.title}</h3>
+                </div>
+                <span className="text-sm font-medium text-[#00c5a6] bg-[#e8fffb] px-2 py-1 rounded-md">
+                  {progress.percentage}%
+                </span>
+              </div>
+              
+              <Progress value={progress.percentage} className="h-2 bg-slate-100 [&>div]:bg-[#00c5a6]" />
+              
+              {goal.subGoals.length > 0 && (
+                <div className="space-y-2 mt-4">
+                  {goal.subGoals.map((subGoal) => (
+                    <div 
+                      key={subGoal.id} 
+                      className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                        subGoal.completed 
+                          ? 'bg-slate-50 border-transparent' 
+                          : 'bg-white border-slate-200'
+                      }`}
+                    >
+                      <div className={`flex items-center justify-center h-5 w-5 rounded-full border-2 shrink-0 ${
+                        subGoal.completed 
+                          ? 'bg-[#00c5a6] border-[#00c5a6]' 
+                          : 'border-slate-300'
+                      }`}>
+                        {subGoal.completed && <CheckCircle2 className="h-3 w-3 text-white" />}
+                      </div>
+                      <span className={`text-sm font-medium ${
+                        subGoal.completed ? 'text-slate-500 line-through' : 'text-slate-700'
+                      }`}>
+                        {subGoal.title}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Оплата */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
             <DollarSign className="h-4 w-4 text-slate-600" />
             <div>
               <p className="text-sm text-slate-600">Вартість</p>
@@ -158,29 +210,49 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
 
           {/* Оцінка (якщо є) */}
           {lesson.report && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Video className="h-4 w-4 text-emerald-600" />
-                <span className="font-medium">{format}</span>
-                {lesson.format === "online" && lesson.meetingUrl && (
-                  <Button variant="outline" size="sm" onClick={() => window.open(lesson.meetingUrl, '_blank')}>
-                    <ExternalLink className="h-3 w-3 mr-1" />
-                    Відкрити посилання
-                  </Button>
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-2 text-slate-800">
+                <Star className="h-5 w-5 text-amber-500 fill-current" />
+                <h3 className="font-semibold text-lg">Звіт та оцінка</h3>
+              </div>
+              
+              <div className="space-y-3 bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-slate-700">Загальна оцінка</span>
+                  <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-md shadow-sm border border-amber-200">
+                    <Star className="h-4 w-4 text-amber-500 fill-current" />
+                    <span className="font-bold text-slate-800">{lesson.report.performance}</span>
+                    <span className="text-slate-400 text-xs">/5</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-slate-700">Поведінка та активність</span>
+                  <div className="flex items-center gap-1 bg-white px-2 py-1 rounded-md shadow-sm border border-slate-200">
+                    <span className="font-bold text-slate-800">{lesson.report.behavior}</span>
+                    <span className="text-slate-400 text-xs">/5</span>
+                  </div>
+                </div>
+
+                {lesson.report.tag && (
+                  <div className="pt-2">
+                    <span className="text-xs font-medium text-slate-500 block mb-1.5">Тег заняття</span>
+                    <Badge variant="outline" className={cn(
+                      "px-3 py-1 font-medium border", 
+                      lesson.report.tag.color || "bg-blue-50 text-blue-700 border-blue-200"
+                    )}>
+                      {lesson.report.tag.text}
+                    </Badge>
+                  </div>
+                )}
+                
+                {lesson.report.comment && (
+                  <div className="pt-2 border-t border-amber-200/50 mt-2">
+                    <span className="text-xs font-medium text-slate-500 block mb-1">Коментар репетитора</span>
+                    <p className="text-sm text-slate-700 leading-relaxed italic">"{lesson.report.comment}"</p>
+                  </div>
                 )}
               </div>
-              <div className="ml-6 flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 text-amber-500 fill-current" />
-                  <span className="font-medium">{lesson.report.performance}/5</span>
-                </div>
-                <div className="text-sm text-slate-600">
-                  Поведінка: {lesson.report.behavior}/5
-                </div>
-              </div>
-              {lesson.report.comment && (
-                <p className="ml-6 text-sm text-slate-600 mt-2">{lesson.report.comment}</p>
-              )}
             </div>
           )}
 

@@ -53,132 +53,144 @@ export default function AdminPage() {
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <SidebarLayout userType="admin">
-        <div className="p-6 lg:p-10 max-w-6xl mx-auto space-y-8">
+        <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
           {/* Header */}
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-800 tracking-tight">Адміністративна панель</h1>
-            <p className="text-slate-500 mt-1">Огляд платформи</p>
+            <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Адміністративна панель</h1>
+            <p className="text-[#69686f] mt-1 text-[16px]">Огляд платформи</p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Всього користувачів</span>
-                <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-slate-600" />
+                <span className="text-[14px] font-[600] text-[#69686f]">Всього користувачів</span>
+                <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center">
+                  <Users className="h-5 w-5 text-[#121117]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.totalUsers}</div>
-              <p className="text-sm text-slate-500 mt-1">
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.totalUsers}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">
                 {stats.totalSpecialists} спеціалістів, {stats.totalClients} клієнтів
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Очікують верифікації</span>
-                <div className="h-10 w-10 rounded-xl bg-[#fff8e1] flex items-center justify-center">
+                <span className="text-[14px] font-[600] text-[#69686f]">Очікують верифікації</span>
+                <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center">
                   <UserCheck className="h-5 w-5 text-[#ffb74d]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.pendingVerifications}</div>
-              <p className="text-sm text-slate-500 mt-1">Нові спеціалісти</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingVerifications}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Нові спеціалісти</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Активні запити</span>
-                <div className="h-10 w-10 rounded-xl bg-[#e8eaf6] flex items-center justify-center">
+                <span className="text-[14px] font-[600] text-[#69686f]">Активні запити</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8eaf6] flex items-center justify-center">
                   <Clock className="h-5 w-5 text-[#5c6bc0]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.activeRequests}</div>
-              <p className="text-sm text-slate-500 mt-1">В обробці</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.activeRequests}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">В обробці</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Дохід за місяць</span>
-                <div className="h-10 w-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center">
+                <span className="text-[14px] font-[600] text-[#69686f]">Дохід за місяць</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8f5e9] flex items-center justify-center">
                   <DollarSign className="h-5 w-5 text-[#43a047]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.monthlyRevenue.toLocaleString()} ₴</div>
-              <p className="text-sm text-[#43a047] mt-1 font-medium">+{stats.growthRate}% від минулого місяця</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.monthlyRevenue.toLocaleString()} ₴</div>
+              <p className="text-[13px] text-[#43a047] mt-2 font-[600]">+{stats.growthRate}% від минулого місяця</p>
             </div>
           </div>
 
           {/* Alert Cards */}
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="bg-white rounded-2xl p-6 border border-[#ffb74d]/20">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-10 w-10 rounded-xl bg-[#fff8e1] flex items-center justify-center">
-                  <AlertCircle className="h-5 w-5 text-[#f57c00]" />
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+            <div className="bg-white rounded-[24px] p-8 border border-yellow-200/50 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-full bg-[#fff8e1] flex items-center justify-center">
+                  <AlertCircle className="h-6 w-6 text-[#f57c00]" />
                 </div>
-                <h3 className="font-bold text-slate-800">Потребують уваги</h3>
+                <h3 className="text-[20px] font-bold text-[#121117]">Потребують уваги</h3>
               </div>
               <div className="space-y-4">
-                <Link href="/admin/verifications" className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors group">
-                  <span className="text-sm text-slate-700">Верифікація спеціалістів</span>
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-[#fff8e1] text-[#f57c00] border-0">{stats.pendingVerifications}</Badge>
-                    <ArrowRight className="h-4 w-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <Link href="/admin/verifications" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                  <span className="text-[15px] font-[500] text-[#121117]">Верифікація спеціалістів</span>
+                  <div className="flex items-center gap-3">
+                    <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                      {stats.pendingVerifications}
+                    </Badge>
+                    <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                   </div>
                 </Link>
-                <Link href="/admin/payments" className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors group">
-                  <span className="text-sm text-slate-700">Очікують оплати</span>
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-[#fff8e1] text-[#f57c00] border-0">{stats.pendingPayments}</Badge>
-                    <ArrowRight className="h-4 w-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
+                <Link href="/admin/payments" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                  <span className="text-[15px] font-[500] text-[#121117]">Очікують оплати</span>
+                  <div className="flex items-center gap-3">
+                    <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                      {stats.pendingPayments}
+                    </Badge>
+                    <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                   </div>
                 </Link>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-[#43a047]/20">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-10 w-10 rounded-xl bg-[#e8f5e9] flex items-center justify-center">
-                  <TrendingUp className="h-5 w-5 text-[#43a047]" />
+            <div className="bg-white rounded-[24px] p-8 border border-green-200/50 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-full bg-[#e8f5e9] flex items-center justify-center">
+                  <TrendingUp className="h-6 w-6 text-[#43a047]" />
                 </div>
-                <h3 className="font-bold text-slate-800">Зростання платформи</h3>
+                <h3 className="text-[20px] font-bold text-[#121117]">Зростання платформи</h3>
               </div>
               <div className="space-y-4">
-                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50">
-                  <span className="text-sm text-slate-700">Нові користувачі (тиждень)</span>
-                  <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0">+47</Badge>
+                <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
+                  <span className="text-[15px] font-[500] text-[#121117]">Нові користувачі (тиждень)</span>
+                  <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                    +47
+                  </Badge>
                 </div>
-                <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50">
-                  <span className="text-sm text-slate-700">Завершені заняття (тиждень)</span>
-                  <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0">+156</Badge>
+                <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
+                  <span className="text-[15px] font-[500] text-[#121117]">Завершені заняття (тиждень)</span>
+                  <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                    +156
+                  </Badge>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Activity Feed */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-100">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800">Остання активність</h2>
-                <p className="text-slate-500 text-sm mt-1">Нещодавні події на платформі</p>
-              </div>
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="mb-6">
+              <h2 className="text-[24px] font-bold text-[#121117]">Остання активність</h2>
+              <p className="text-[#69686f] text-[16px] mt-1">Нещодавні події на платформі</p>
             </div>
-            <div className="space-y-1">
-              {activities.map((activity, i) => (
-                <div 
-                  key={activity.id} 
-                  className={`flex items-center justify-between py-4 px-4 rounded-xl hover:bg-slate-50 transition-colors ${
-                    i !== activities.length - 1 ? "border-b border-slate-50" : ""
-                  }`}
+            <div className="space-y-2">
+              {activities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex flex-col sm:flex-row sm:items-center justify-between py-4 px-5 rounded-[12px] hover:bg-gray-50 transition-colors border border-transparent hover:border-slate-200/50"
                 >
-                  <div>
-                    <p className="text-sm font-medium text-slate-800">{activity.text}</p>
-                    <p className="text-sm text-slate-500 mt-0.5">
-                      {activity.user} {activity.amount && `• ${activity.amount}`}
+                  <div className="mb-2 sm:mb-0">
+                    <p className="text-[15px] font-[600] text-[#121117]">{activity.text}</p>
+                    <p className="text-[14px] text-[#69686f] mt-1 flex items-center gap-2">
+                      <span className="font-[500]">{activity.user}</span>
+                      {activity.amount && (
+                        <>
+                          <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                          <span className="text-[#121117] font-[600]">{activity.amount}</span>
+                        </>
+                      )}
                     </p>
                   </div>
-                  <span className="text-sm text-slate-400">{activity.time}</span>
+                  <span className="text-[13px] font-[500] text-[#69686f] bg-white px-3 py-1 rounded-full border border-gray-200 shrink-0 self-start sm:self-auto">
+                    {activity.time}
+                  </span>
                 </div>
               ))}
             </div>

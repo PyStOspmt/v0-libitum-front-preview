@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Plus } from "lucide-react"
+import { Calendar, User, Users, Plus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -65,19 +65,20 @@ export default function TutorClientsPage() {
   return (
     <ProtectedRoute allowedRoles={["specialist"]}>
       <SidebarLayout userType="tutor">
-        <div className="container mx-auto max-w-7xl space-y-8 p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="container mx-auto max-w-7xl space-y-6 sm:space-y-8 px-3 py-6 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-1 sm:px-0">
             <div className="space-y-1">
               <h1 className="text-3xl font-bold text-slate-900">Мої учні</h1>
               <p className="text-muted-foreground">Клієнти, з якими ви працюєте</p>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-base rounded-full px-4 py-1">
-                Всього: {students.length}
-              </Badge>
+            <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-sm font-medium">
+                <Users className="h-4 w-4 text-slate-500" />
+                <span>Всього: {students.length}</span>
+              </div>
               <Dialog open={showAddStudent} onOpenChange={setShowAddStudent}>
                 <DialogTrigger asChild>
-                  <Button className="rounded-full">
+                  <Button className="rounded-full flex-1 sm:flex-none">
                     <Plus className="mr-2 h-4 w-4" />
                     Додати свого учня
                   </Button>

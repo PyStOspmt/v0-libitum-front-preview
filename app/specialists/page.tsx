@@ -787,126 +787,146 @@ export default function SpecialistsPage() {
               const isVideoActive = videoPlaying === specialist.id
 
               return (
-                <div key={specialist.id}>
+                <div key={specialist.id} className="relative">
                   {/* ═══ DESKTOP: Card + Video sidebar ═══ */}
                   <div
-                    className="hidden sm:flex gap-4 items-start"
+                    className="hidden sm:flex gap-4 items-start relative z-10"
                     onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                     onMouseLeave={() => { setHoveredSpecialist(null); setVideoPlaying(null) }}
                   >
                     <article
-                      className={`flex-1 min-w-0 bg-gradient-to-br ${a.cardBg} border rounded-2xl p-5 transition-all ${isHovered ? `border-slate-300 shadow-md ring-1 ${a.ring}` : "border-slate-200"}`}
-                      style={getDiffuseBackground(index, accentKeys)}
+                      className={`flex-1 min-w-0 bg-white border rounded-[24px] p-6 transition-all duration-200 ${isHovered ? `border-slate-300 shadow-[0_8px_30px_rgb(0,0,0,0.08)] ring-1 ring-slate-200` : "border-slate-200 shadow-[0_2px_10px_rgb(0,0,0,0.02)]"}`}
                     >
-                      <div className="flex gap-5">
+                      <div className="flex gap-6">
                         {/* COL 1: Photo */}
                         <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0 self-start">
-                          <div className="relative w-[120px] h-[120px] rounded-xl overflow-hidden bg-slate-100">
+                          <div className="relative w-[140px] h-[140px] rounded-[16px] overflow-hidden bg-slate-100">
                             {specialist.image ? (
-                              <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="120px" />
+                              <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="140px" />
                             ) : (
-                              <Avatar className="h-full w-full rounded-xl">
-                                <AvatarFallback className="bg-slate-100 text-xl font-bold text-slate-600 rounded-xl">{specialist.name[0]}</AvatarFallback>
+                              <Avatar className="h-full w-full rounded-[16px]">
+                                <AvatarFallback className="bg-slate-100 text-2xl font-bold text-slate-600 rounded-[16px]">{specialist.name[0]}</AvatarFallback>
                               </Avatar>
                             )}
                             {specialist.online && (
-                              <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+                              <div className="absolute bottom-2 left-2 flex items-center justify-center bg-white rounded-full p-0.5">
+                                <div className="w-3 h-3 rounded-full bg-[#00c5a6] border-2 border-white" />
+                              </div>
                             )}
                           </div>
                         </Link>
 
                         {/* COL 2: Info */}
                         <div className="flex-1 min-w-0 flex flex-col">
-                          <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                            <Link href={`/specialists/${specialist.id}`}>
-                              <h3 className="text-lg font-bold text-slate-900 hover:underline decoration-1 underline-offset-2 leading-tight">{specialist.name}</h3>
-                            </Link>
-                            {specialist.verified && (
-                              <span
-                                className="relative group"
-                                onMouseEnter={() => setShowVerifiedTooltip(specialist.id)}
-                                onMouseLeave={() => setShowVerifiedTooltip(null)}
-                                onClick={() => setShowVerifiedTooltip(showVerifiedTooltip === specialist.id ? null : specialist.id)}
-                              >
-                                <Award className="h-4 w-4 text-blue-500 flex-shrink-0" />
-                                {(showVerifiedTooltip === specialist.id) && (
-                                  <span className="absolute left-0 top-full mt-1 whitespace-nowrap rounded-md bg-slate-900 text-white text-[11px] px-2 py-1 shadow-lg z-10">
-                                    Верифікований спеціаліст
-                                  </span>
-                                )}
-                              </span>
-                            )}
-                            <div className="flex items-center gap-1 text-xs text-slate-500">
-                              <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
-                              <span>{specialist.location}</span>
-                              {getAvailability(specialist) && <span className="text-slate-400">• {getAvailability(specialist)}</span>}
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <Link href={`/specialists/${specialist.id}`}>
+                                <h3 className="text-[20px] font-bold text-[#121117] hover:underline decoration-1 underline-offset-2 leading-tight">{specialist.name}</h3>
+                              </Link>
+                              {specialist.verified && (
+                                <span
+                                  className="relative group cursor-help"
+                                  onMouseEnter={() => setShowVerifiedTooltip(specialist.id)}
+                                  onMouseLeave={() => setShowVerifiedTooltip(null)}
+                                  onClick={() => setShowVerifiedTooltip(showVerifiedTooltip === specialist.id ? null : specialist.id)}
+                                >
+                                  <div className="flex items-center justify-center bg-[#e8fffb] rounded-full p-1">
+                                    <Award className="h-4 w-4 text-[#00a389] flex-shrink-0" />
+                                  </div>
+                                  {(showVerifiedTooltip === specialist.id) && (
+                                    <span className="absolute left-0 top-full mt-2 whitespace-nowrap rounded-[8px] bg-[#121117] text-white text-[12px] font-medium px-3 py-1.5 shadow-lg z-10 before:content-[''] before:absolute before:-top-1 before:left-2 before:w-2 before:h-2 before:bg-[#121117] before:rotate-45">
+                                      Верифікований спеціаліст
+                                    </span>
+                                  )}
+                                </span>
+                              )}
+                              <span className={`text-[12px] font-[600] px-2.5 py-0.5 rounded-full ${a.badge} border-transparent`}>{specialist.specialization}</span>
                             </div>
+                            <button
+                              onClick={(e) => toggleFavorite(e, specialist.id)}
+                              className={`p-2 rounded-full transition-all hover:bg-slate-50 ${isFav ? "text-[#ff4757]" : "text-[#b2b1b9] hover:text-[#ff4757]"}`}
+                            >
+                              <Heart className={`h-6 w-6 ${isFav ? "fill-current" : ""}`} />
+                            </button>
                           </div>
-                          <div className="flex items-center gap-1.5 mb-2">
-                            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded ${a.badge} ${a.badgeBorder}`}>{specialist.specialization}</span>
+                          
+                          <div className="flex items-center gap-4 text-[14px] text-[#69686f] font-medium mb-3">
+                            <div className="flex items-center gap-1.5">
+                              <MapPin className="h-4 w-4 text-[#b2b1b9] flex-shrink-0" />
+                              <span>{specialist.location}</span>
+                            </div>
+                            {getAvailability(specialist) && (
+                              <div className="flex items-center gap-1.5">
+                                <Globe className="h-4 w-4 text-[#b2b1b9] flex-shrink-0" />
+                                <span>{getAvailability(specialist)}</span>
+                              </div>
+                            )}
                           </div>
-                          <div className="mb-1">
-                            <SubjectsLine specialist={specialist} textClass="text-[15px] text-slate-700 font-medium" iconClass={a.icon} maxCharsFallback={40} />
+                          
+                          <div className="mb-2">
+                            <SubjectsLine specialist={specialist} textClass="text-[15px] text-[#121117] font-semibold" iconClass="text-[#121117] hidden" maxCharsFallback={40} />
                           </div>
                           <div
                             className="mt-1 mb-2 cursor-pointer group/bio"
                             onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                           >
-                            <p className={`text-[14px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
-                              <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
-                              {" — "}
-                              <span className="text-slate-600">{specialist.bioText}</span>
+                            <p className={`text-[15px] text-[#3e3d45] leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"} relative`}>
+                              <span className="font-bold text-[#121117] mr-1">{specialist.bioTitle}</span>
+                              <span className="text-[#69686f]">{specialist.bioText}</span>
                             </p>
+                            {!isExpanded && specialist.bioText.length > 100 && (
+                              <span className="text-[14px] font-bold text-[#121117] underline decoration-1 underline-offset-2 mt-1 inline-block">Читати далі</span>
+                            )}
                           </div>
                         </div>
 
-                        {/* COL 3: Price + Stats + CTA */}
-                        <div className="flex flex-col items-end flex-shrink-0 w-[200px]">
-                          <div className="flex items-start justify-between w-full mb-1">
-                            <div>
-                              <h4 className={`text-[24px] font-bold ${a.price} leading-tight`}>₴{specialist.pricePerLesson}</h4>
-                              <p className="text-[13px] text-slate-400 mt-0.5">{specialist.lessonDuration} заняття</p>
-                            </div>
-                            <button
-                              onClick={(e) => toggleFavorite(e, specialist.id)}
-                              className={`p-1.5 rounded-full transition-all hover:scale-110 ${isFav ? "text-red-500" : "text-slate-300 hover:text-red-400"}`}
-                            >
-                              <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
-                            </button>
-                          </div>
-                          <div className="flex items-start gap-3 w-full mt-3 mb-4">
-                            <div className="text-center">
-                              <div className="flex items-center gap-0.5 justify-center">
-                                <div className="text-[16px] font-bold text-slate-900">{specialist.rating}</div>
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                        {/* COL 3: Stats + CTA */}
+                        <div className="flex flex-col items-end flex-shrink-0 w-[220px] pl-6 border-l border-slate-100">
+                          <div className="flex items-start justify-between w-full mb-3">
+                            <div className="flex flex-col gap-1 w-full">
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-[14px] font-medium text-[#69686f]">Оцінка</span>
+                                <div className="flex items-center gap-1">
+                                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                                  <span className="text-[16px] font-bold text-[#121117]">{specialist.rating}</span>
+                                </div>
                               </div>
-                              <div className="text-[12px] text-slate-400 whitespace-nowrap">{specialist.reviews} відгуків</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[16px] font-bold text-slate-900">{specialist.activeStudents}</div>
-                              <div className="text-[12px] text-slate-400">учнів</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[16px] font-bold text-slate-900">{specialist.lessonsCompleted.toLocaleString()}</div>
-                              <div className="text-[12px] text-slate-400">занять</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-[16px] font-bold text-slate-900">{specialist.experience}</div>
-                              <div className="text-[12px] text-slate-400">років</div>
+                              <div className="flex items-center justify-between w-full">
+                                <span className="text-[14px] font-medium text-[#69686f]">Відгуки</span>
+                                <span className="text-[15px] font-semibold text-[#121117]">{specialist.reviews}</span>
+                              </div>
+                              <div className="flex items-center justify-between w-full mt-1 pt-1 border-t border-slate-50">
+                                <span className="text-[14px] font-medium text-[#69686f]">Студенти</span>
+                                <span className="text-[15px] font-semibold text-[#121117]">{specialist.activeStudents}</span>
+                              </div>
                             </div>
                           </div>
+                          
+                          <div className="mt-auto w-full text-right mb-4">
+                            <div className="text-[28px] font-bold text-[#121117] leading-none mb-1">₴{specialist.pricePerLesson}</div>
+                            <div className="text-[14px] font-medium text-[#69686f]">{specialist.lessonDuration} хв</div>
+                          </div>
+                          
                           <Link href={`/specialists/${specialist.id}`} className="w-full">
-                            <Button className={`w-full h-11 rounded-xl text-sm font-semibold text-white ${a.cta}`}>Записатись на пробне</Button>
+                            <Button 
+                              className={`w-full h-12 rounded-[12px] text-[16px] font-bold text-white transition-colors shadow-sm ${
+                                specialist.specialization === "Репетитор" || specialist.specialization === "Tutor"
+                                  ? "bg-[#00c5a6] hover:bg-[#00a389]"
+                                  : "bg-[#f57c00] hover:bg-[#e65100]"
+                              }`}
+                            >
+                              Записатись
+                            </Button>
                           </Link>
                         </div>
                       </div>
                     </article>
 
                     {/* Video sidebar anchored to card — landscape, compact */}
-                    <div className={`hidden lg:block flex-shrink-0 w-[200px] transition-all duration-300 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-2 pointer-events-none"}`}>
-                      <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+                    <div className={`absolute top-0 right-[-236px] hidden lg:block flex-shrink-0 w-[220px] transition-all duration-300 z-0 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"}`}>
+                      <div className="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
                         <div
-                          className="relative aspect-video bg-slate-900 cursor-pointer"
+                          className="relative aspect-[3/4] bg-slate-900 cursor-pointer"
                           onClick={() => setVideoPlaying(isVideoActive ? null : specialist.id)}
                         >
                           {isVideoActive ? (
@@ -919,10 +939,10 @@ export default function SpecialistsPage() {
                                 poster={specialist.videoThumb}
                               />
                               <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center">
-                                  <div className="flex gap-0.5">
-                                    <div className="w-1 h-4 bg-white rounded-sm" />
-                                    <div className="w-1 h-4 bg-white rounded-sm" />
+                                <div className="w-12 h-12 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-sm">
+                                  <div className="flex gap-1">
+                                    <div className="w-1.5 h-5 bg-white rounded-sm" />
+                                    <div className="w-1.5 h-5 bg-white rounded-sm" />
                                   </div>
                                 </div>
                               </div>
@@ -934,30 +954,30 @@ export default function SpecialistsPage() {
                                 alt={specialist.name}
                                 fill
                                 className="object-cover object-top"
-                                sizes="200px"
+                                sizes="220px"
                               />
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/10 hover:bg-black/20 transition-colors">
-                                <div className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow-lg hover:scale-110 transition-transform">
-                                  <Play className="h-4 w-4 text-slate-800 ml-0.5" />
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/30 transition-colors">
+                                <div className="w-14 h-14 rounded-full bg-white/95 flex items-center justify-center shadow-xl hover:scale-110 transition-transform duration-300">
+                                  <Play className="h-6 w-6 text-[#121117] ml-1" />
                                 </div>
                               </div>
                             </>
                           )}
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-2.5 pb-2 pt-6">
-                            <p className="text-white font-semibold text-xs leading-tight">{specialist.name}</p>
-                            <p className="text-white/70 text-[10px]">{specialist.specialization}</p>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-4 pb-4 pt-12">
+                            <p className="text-white font-bold text-[15px] leading-tight mb-0.5">{specialist.name}</p>
+                            <p className="text-white/80 text-[12px] font-medium">{specialist.specialization}</p>
                           </div>
                         </div>
-                        <div className="p-2 space-y-1.5">
+                        <div className="p-3 space-y-2 bg-[#f0f3f3]/50">
                           <Link href={`/specialists/${specialist.id}#schedule`} className="block">
-                            <Button variant="outline" className="w-full h-8 rounded-lg text-[11px] font-medium border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center gap-1">
-                              <Calendar className="h-3 w-3" />
+                            <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
+                              <Calendar className="h-4 w-4 text-[#69686f]" />
                               Розклад
                             </Button>
                           </Link>
                           <Link href={`/specialists/${specialist.id}`} className="block">
-                            <Button variant="outline" className="w-full h-8 rounded-lg text-[11px] font-medium border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center gap-1">
-                              <Eye className="h-3 w-3" />
+                            <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
+                              <Eye className="h-4 w-4 text-[#69686f]" />
                               Профіль
                             </Button>
                           </Link>
@@ -1032,17 +1052,28 @@ export default function SpecialistsPage() {
                       </div>
                     </div>
                     <div
-                      className="mt-1 mb-2 cursor-pointer"
+                      className="mb-4 cursor-pointer"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
-                      <p className={`text-[14px] text-slate-700 leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
-                        <span className="font-semibold text-slate-800">{specialist.bioTitle}</span>
-                        {" — "}
-                        <span className="text-slate-600">{specialist.bioText}</span>
+                      <p className={`text-[15px] text-[#3e3d45] leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
+                        <span className="font-bold text-[#121117] mr-1">{specialist.bioTitle}</span>
+                        {specialist.bioText}
                       </p>
+                      {!isExpanded && specialist.bioText.length > 80 && (
+                        <span className="text-[14px] font-bold text-[#121117] underline decoration-1 underline-offset-2 mt-1 inline-block">Читати далі</span>
+                      )}
                     </div>
-                    <Link href={`/specialists/${specialist.id}`} className="block">
-                      <Button className={`w-full h-10 rounded-xl text-sm font-semibold text-white ${a.cta}`}>Записатись на пробне</Button>
+                    
+                    <Link href={`/specialists/${specialist.id}`} className="block w-full">
+                      <Button 
+                        className={`w-full h-12 rounded-[12px] text-[16px] font-bold text-white transition-colors shadow-sm ${
+                          specialist.specialization === "Репетитор" || specialist.specialization === "Tutor"
+                            ? "bg-[#00c5a6] hover:bg-[#00a389]"
+                            : "bg-[#f57c00] hover:bg-[#e65100]"
+                        }`}
+                      >
+                        Записатись
+                      </Button>
                     </Link>
                   </article>
                 </div>

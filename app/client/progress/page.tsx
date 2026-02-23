@@ -52,81 +52,83 @@ export default function ClientProgressPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-7xl space-y-8 p-6">
-          <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-slate-900">Мій прогрес</h1>
-            <p className="text-muted-foreground">Відстежуйте свої досягнення та прогрес у навчанні</p>
-            <div className="mt-4 flex flex-wrap gap-2">
+        <div className="container mx-auto max-w-[1200px] space-y-6 sm:space-y-8 px-3 py-6 sm:p-6 font-sans">
+          <div className="space-y-2 px-1 sm:px-0">
+            <h1 className="text-[32px] font-bold text-[#121117] tracking-tight">Мій прогрес</h1>
+            <p className="text-[16px] text-[#69686f]">Відстежуйте свої досягнення та прогрес у навчанні</p>
+            <div className="mt-6 flex flex-wrap gap-3">
               {children.map((child) => (
-                <Button
+                <button
                   key={child.id}
-                  variant={child.id === selectedChildId ? "default" : "outline"}
-                  size="sm"
                   onClick={() => router.push(`/client/progress?child=${child.id}`)}
-                  className="rounded-full"
+                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${
+                    child.id === selectedChildId
+                      ? "bg-[#121117] text-white border-transparent"
+                      : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
+                  }`}
                 >
                   {child.label}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Всього занять</CardTitle>
-                <BookOpen className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{totalLessons}</div>
-                <p className="text-xs text-muted-foreground">{totalHours.toFixed(1)} годин</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200/70 bg-white/80 shadow-sm rounded-2xl p-4">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Середня оцінка</CardTitle>
-                <Star className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{averageGrade.toFixed(1)}</div>
-                <p className="text-xs text-muted-foreground">Чудовий результат!</p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Домашні завдання</CardTitle>
-                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {completedHomework}/{totalHomework}
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Всього занять</span>
+                <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center">
+                  <BookOpen className="h-5 w-5 text-[#121117]" />
                 </div>
-                <p className="text-xs text-muted-foreground">Виконано</p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{totalLessons}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">{totalHours.toFixed(1)} годин</p>
+            </div>
 
-            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Наступне заняття</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{scheduledLessons.length}</div>
-                <p className="text-xs text-muted-foreground">Заплановано</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Середня оцінка</span>
+                <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center">
+                  <Star className="h-5 w-5 text-[#ffc107]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{averageGrade.toFixed(1)}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Чудовий результат!</p>
+            </div>
+
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Домашні завдання</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8fffb] flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-[#00c5a6]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">
+                {completedHomework}/{totalHomework}
+              </div>
+              <p className="text-[13px] text-[#69686f] mt-2">Виконано</p>
+            </div>
+
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Наступне заняття</span>
+                <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-[#121117]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{scheduledLessons.length}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Заплановано</p>
+            </div>
           </div>
 
           {/* Progress by Subject */}
-          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
-            <CardHeader>
-              <CardTitle>Прогрес по предметах</CardTitle>
-              <CardDescription>Ваші досягнення в різних напрямках</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="mb-6">
+              <h2 className="text-[24px] font-bold text-[#121117]">Прогрес по предметах</h2>
+              <p className="text-[#69686f] text-[16px] mt-1">Ваші досягнення в різних напрямках</p>
+            </div>
+            <div className="space-y-8">
               {Object.entries(lessonsBySubject).map(([subject, lessons]) => {
                 const subjectHours = lessons.reduce((acc, l) => acc + l.duration, 0) / 60
                 const subjectGrade =
@@ -134,74 +136,78 @@ export default function ClientProgressPage() {
                     lessons.filter((l) => l.homework?.grade).length || 0
 
                 return (
-                  <div key={subject} className="space-y-2">
+                  <div key={subject} className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium">{subject}</h4>
-                        <p className="text-sm text-muted-foreground">
+                        <h4 className="font-[600] text-[18px] text-[#121117]">{subject}</h4>
+                        <p className="text-[14px] text-[#69686f]">
                           {lessons.length} занять • {subjectHours.toFixed(1)} годин
                         </p>
                       </div>
                       <div className="text-right">
-                        <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                          <span className="font-bold">{subjectGrade.toFixed(1)}</span>
+                        <div className="flex items-center gap-1 justify-end">
+                          <Star className="h-4 w-4 fill-[#ffc800] text-[#ffc800]" />
+                          <span className="font-bold text-[18px] text-[#121117]">{subjectGrade.toFixed(1)}</span>
                         </div>
-                        <p className="text-xs text-muted-foreground">Середня оцінка</p>
+                        <p className="text-[13px] text-[#69686f]">Середня оцінка</p>
                       </div>
                     </div>
                     <Progress
                       value={totalLessons > 0 ? (lessons.length / totalLessons) * 100 : 0}
-                      className="h-2"
+                      className="h-3 bg-gray-100 [&>div]:bg-[#00c5a6]"
                     />
                   </div>
                 )
               })}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Detailed Lessons */}
-          <Card className="border-slate-200/70 bg-white/80 shadow-sm">
-            <CardHeader>
-              <CardTitle>Журнал занять</CardTitle>
-              <CardDescription>Детальна історія всіх ваших занять</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="all">
-                <TabsList className="grid w-full grid-cols-3 rounded-full bg-slate-100/70 p-1">
-                  <TabsTrigger value="all">Всі ({allLessons.length})</TabsTrigger>
-                  <TabsTrigger value="completed">Завершені ({completedLessons.length})</TabsTrigger>
-                  <TabsTrigger value="scheduled">Заплановані ({scheduledLessons.length})</TabsTrigger>
-                </TabsList>
+          <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="mb-6">
+              <h2 className="text-[24px] font-bold text-[#121117]">Журнал занять</h2>
+              <p className="text-[#69686f] text-[16px] mt-1">Детальна історія всіх ваших занять</p>
+            </div>
+            <Tabs defaultValue="all">
+              <TabsList className="grid w-full max-w-[500px] grid-cols-1 sm:grid-cols-3 rounded-[8px] sm:bg-[#f0f3f3] bg-transparent p-0 sm:p-1 h-auto sm:h-[48px] mb-8 gap-2 sm:gap-0">
+                <TabsTrigger value="all" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                  Всі ({allLessons.length})
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                  Завершені ({completedLessons.length})
+                </TabsTrigger>
+                <TabsTrigger value="scheduled" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                  Заплановані ({scheduledLessons.length})
+                </TabsTrigger>
+              </TabsList>
 
-                <TabsContent value="all" className="space-y-4">
-                  {allLessons.length > 0 ? (
-                    allLessons
-                      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                      .map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
-                  ) : (
-                    <LessonPlaceholder variant="all" />
-                  )}
-                </TabsContent>
+              <TabsContent value="all" className="space-y-4">
+                {allLessons.length > 0 ? (
+                  allLessons
+                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                ) : (
+                  <LessonPlaceholder variant="all" />
+                )}
+              </TabsContent>
 
-                <TabsContent value="completed" className="space-y-4">
-                  {completedLessons.length > 0 ? (
-                    completedLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
-                  ) : (
-                    <LessonPlaceholder variant="completed" />
-                  )}
-                </TabsContent>
+              <TabsContent value="completed" className="space-y-4">
+                {completedLessons.length > 0 ? (
+                  completedLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                ) : (
+                  <LessonPlaceholder variant="completed" />
+                )}
+              </TabsContent>
 
-                <TabsContent value="scheduled" className="space-y-4">
-                  {scheduledLessons.length > 0 ? (
-                    scheduledLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
-                  ) : (
-                    <LessonPlaceholder variant="scheduled" />
-                  )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+              <TabsContent value="scheduled" className="space-y-4">
+                {scheduledLessons.length > 0 ? (
+                  scheduledLessons.map((lesson) => <LessonCard key={lesson.id} lesson={lesson} />)
+                ) : (
+                  <LessonPlaceholder variant="scheduled" />
+                )}
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </SidebarLayout>
     </ProtectedRoute>
@@ -223,25 +229,24 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
   }
 
   return (
-    <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">Поки що немає занять у цій вкладці. Ось приклад, як виглядатиме журнал:</p>
+    <div className="space-y-4">
+      <p className="text-[15px] text-[#69686f]">Поки що немає занять у цій вкладці. Ось приклад, як виглядатиме журнал:</p>
       {samples[variant].map((item, idx) => (
-        <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between">
+        <div key={idx} className="rounded-[16px] border border-slate-200/80 bg-white p-6 shadow-[0_4px_12px_rgba(0,0,0,0.03)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <p className="font-semibold text-slate-800">{item.subject}</p>
-              <p className="text-sm text-slate-500">
+              <p className="font-[600] text-[18px] text-[#121117]">{item.subject}</p>
+              <p className="text-[14px] text-[#69686f] mt-1 flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
                 {new Date(item.date).toLocaleDateString("uk-UA", { day: "numeric", month: "long" })} • {item.time}
+                <span className="flex items-center gap-1 ml-2"><Clock className="h-4 w-4" /> {item.duration} хв</span>
               </p>
             </div>
-            <Badge variant="outline" className="rounded-full">
+            <Badge variant="outline" className={`rounded-[6px] px-3 py-1 font-[600] border-0 ${item.status === "completed" ? "bg-[#e8fffb] text-[#00a389]" : "bg-[#f0f3f3] text-[#69686f]"}`}>
               {item.status === "completed" ? "Завершено" : "Заплановано"}
             </Badge>
           </div>
-          <div className="mt-2 flex items-center gap-2 text-sm text-slate-600">
-            <Clock className="h-4 w-4 text-slate-400" /> {item.duration} хв
-          </div>
-          <p className="mt-2 text-sm text-slate-600">{item.note}</p>
+          <p className="mt-4 text-[15px] text-[#69686f] border-t border-gray-100 pt-4">{item.note}</p>
         </div>
       ))}
     </div>
@@ -250,10 +255,10 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
 
 function LessonCard({ lesson }: { lesson: any }) {
   const statusColors = {
-    completed: "bg-green-500/10 text-green-700 border-green-200",
-    scheduled: "bg-blue-500/10 text-blue-700 border-blue-200",
-    cancelled: "bg-red-500/10 text-red-700 border-red-200",
-    missed: "bg-gray-500/10 text-gray-700 border-gray-200",
+    completed: "bg-white border-l-4 border-l-[#00c5a6]",
+    scheduled: "bg-white border-l-4 border-l-blue-500",
+    cancelled: "bg-white border-l-4 border-l-red-500",
+    missed: "bg-white border-l-4 border-l-gray-400",
   }
 
   const statusLabels = {
@@ -262,96 +267,121 @@ function LessonCard({ lesson }: { lesson: any }) {
     cancelled: "Скасовано",
     missed: "Пропущено",
   }
+  
+  const statusBadgeColors = {
+    completed: "bg-[#e8fffb] text-[#00a389]",
+    scheduled: "bg-blue-50 text-blue-700",
+    cancelled: "bg-red-50 text-red-700",
+    missed: "bg-gray-100 text-gray-700",
+  }
 
   return (
-    <Card className={`${statusColors[lesson.status as keyof typeof statusColors]} shadow-sm`}>
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-base">{lesson.topic || lesson.subject}</CardTitle>
-            <CardDescription className="flex items-center gap-2 text-sm">
-              <Calendar className="h-3 w-3" />
+    <div className={`rounded-[16px] border border-slate-200/80 p-6 shadow-[0_4px_12px_rgba(0,0,0,0.03)] ${statusColors[lesson.status as keyof typeof statusColors]}`}>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+        <div>
+          <h3 className="font-[600] text-[18px] text-[#121117]">{lesson.topic || lesson.subject}</h3>
+          <div className="flex items-center gap-3 text-[14px] text-[#69686f] mt-2">
+            <span className="flex items-center gap-1.5">
+              <Calendar className="h-4 w-4" />
               {new Date(lesson.date).toLocaleDateString("uk-UA", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",
-              })}{" "}
-              • {lesson.time}
-              <Badge variant="outline" className="ml-2 rounded-full">
-                {lesson.duration} хв
-              </Badge>
-            </CardDescription>
+              })}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+            <span className="flex items-center gap-1.5">
+              <Clock className="h-4 w-4" />
+              {lesson.time}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+            <span>{lesson.duration} хв</span>
           </div>
-          <Badge variant="outline" className="rounded-full">
-            {statusLabels[lesson.status as keyof typeof statusLabels]}
-          </Badge>
         </div>
-      </CardHeader>
+        <Badge variant="outline" className={`rounded-[6px] px-3 py-1 font-[600] border-0 ${statusBadgeColors[lesson.status as keyof typeof statusBadgeColors]}`}>
+          {statusLabels[lesson.status as keyof typeof statusLabels]}
+        </Badge>
+      </div>
 
       {lesson.status === "completed" && (
-        <CardContent className="space-y-4">
+        <div className="space-y-6 mt-6 pt-6 border-t border-gray-100">
           {lesson.description && (
             <div>
-              <h5 className="mb-1 text-sm font-medium">Опис заняття</h5>
-              <p className="text-sm text-muted-foreground">{lesson.description}</p>
+              <h5 className="mb-2 text-[16px] font-[600] text-[#121117]">Опис заняття</h5>
+              <p className="text-[15px] text-[#69686f] leading-relaxed">{lesson.description}</p>
             </div>
           )}
 
           {lesson.report && (
-            <div className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
-              <h5 className="mb-2 font-medium">Звіт викладача</h5>
-              <div className="mb-3 flex gap-4">
-                <div className="flex items-center gap-2">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm">
-                    Успішність: <strong>{lesson.report.performance}/5</strong>
+            <div className="rounded-[12px] bg-[#f0f3f3] p-5">
+              <h5 className="mb-3 font-[600] text-[16px] text-[#121117]">Звіт викладача</h5>
+              <div className="mb-4 flex flex-wrap gap-4">
+                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-[8px] shadow-sm">
+                  <Star className="h-4 w-4 fill-[#ffc800] text-[#ffc800]" />
+                  <span className="text-[14px] text-[#121117]">
+                    Успішність: <strong className="font-[600]">{lesson.report.performance}/5</strong>
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                  <span className="text-sm">
-                    Поведінка: <strong>{lesson.report.behavior}/5</strong>
+                <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-[8px] shadow-sm">
+                  <TrendingUp className="h-4 w-4 text-[#00c5a6]" />
+                  <span className="text-[14px] text-[#121117]">
+                    Поведінка: <strong className="font-[600]">{lesson.report.behavior}/5</strong>
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground">{lesson.report.comment}</p>
+              <p className="text-[15px] text-[#69686f] leading-relaxed mb-4 bg-white p-4 rounded-[8px] border border-slate-200/50">{lesson.report.comment}</p>
 
-              {lesson.report.strengths && lesson.report.strengths.length > 0 && (
-                <div className="mt-3">
-                  <p className="mb-1 text-sm font-medium text-green-700">Сильні сторони:</p>
-                  <ul className="list-inside list-disc text-sm text-muted-foreground">
-                    {lesson.report.strengths.map((s: string, i: number) => (
-                      <li key={i}>{s}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              <div className="grid sm:grid-cols-2 gap-4">
+                {lesson.report.strengths && lesson.report.strengths.length > 0 && (
+                  <div className="bg-white p-4 rounded-[8px] border border-slate-200/50">
+                    <p className="mb-2 text-[14px] font-[600] text-[#00a389] flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4" /> Сильні сторони
+                    </p>
+                    <ul className="space-y-1">
+                      {lesson.report.strengths.map((s: string, i: number) => (
+                        <li key={i} className="text-[14px] text-[#69686f] flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00c5a6] mt-1.5 shrink-0"></span>
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              {lesson.report.improvements && lesson.report.improvements.length > 0 && (
-                <div className="mt-2">
-                  <p className="mb-1 text-sm font-medium text-blue-700">Що покращити:</p>
-                  <ul className="list-inside list-disc text-sm text-muted-foreground">
-                    {lesson.report.improvements.map((s: string, i: number) => (
-                      <li key={i}>{s}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                {lesson.report.improvements && lesson.report.improvements.length > 0 && (
+                  <div className="bg-white p-4 rounded-[8px] border border-slate-200/50">
+                    <p className="mb-2 text-[14px] font-[600] text-blue-600 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4" /> Що покращити
+                    </p>
+                    <ul className="space-y-1">
+                      {lesson.report.improvements.map((s: string, i: number) => (
+                        <li key={i} className="text-[14px] text-[#69686f] flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
           {lesson.homework && (
-            <div className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
-              <div className="mb-2 flex items-center justify-between">
-                <h5 className="font-medium">Домашнє завдання</h5>
+            <div className="rounded-[12px] border border-slate-200/80 p-5">
+              <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+                <h5 className="font-[600] text-[16px] text-[#121117] flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#69686f]" /> Домашнє завдання
+                </h5>
                 <Badge
-                  variant={
+                  variant="outline"
+                  className={`rounded-[6px] px-3 py-1 font-[600] border-0 ${
                     lesson.homework.status === "checked"
-                      ? "default"
+                      ? "bg-[#e8fffb] text-[#00a389]"
                       : lesson.homework.status === "submitted"
-                        ? "secondary"
-                        : "outline"
-                  }
+                        ? "bg-blue-50 text-blue-700"
+                        : "bg-[#f0f3f3] text-[#69686f]"
+                  }`}
                 >
                   {lesson.homework.status === "checked"
                     ? "Перевірено"
@@ -360,57 +390,56 @@ function LessonCard({ lesson }: { lesson: any }) {
                       : "Очікує"}
                 </Badge>
               </div>
-              <p className="mb-2 text-sm font-medium">{lesson.homework.title}</p>
-              <p className="mb-2 text-sm text-muted-foreground">{lesson.homework.description}</p>
-              <p className="text-xs text-muted-foreground">
+              <p className="mb-1 text-[15px] font-[600] text-[#121117]">{lesson.homework.title}</p>
+              <p className="mb-4 text-[14px] text-[#69686f]">{lesson.homework.description}</p>
+              <div className="flex items-center gap-2 text-[13px] text-[#69686f] bg-[#f0f3f3] inline-flex px-3 py-1.5 rounded-[6px]">
+                <Clock className="h-3.5 w-3.5" />
                 Здати до:{" "}
                 {new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA", {
                   day: "numeric",
                   month: "long",
                 })}
-              </p>
+              </div>
 
               {lesson.homework.grade && (
-                <div className="mt-3 flex items-center gap-2 rounded-xl bg-emerald-500/10 p-2">
-                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                <div className="mt-4 flex items-start gap-3 rounded-[8px] bg-[#fff8e1] p-4 border border-yellow-100">
+                  <Star className="h-5 w-5 fill-[#ffc800] text-[#ffc800] shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-bold">Оцінка: {lesson.homework.grade}/5</p>
+                    <p className="text-[15px] font-[600] text-[#121117]">Оцінка: {lesson.homework.grade}/5</p>
                     {lesson.homework.feedback && (
-                      <p className="text-xs text-muted-foreground">{lesson.homework.feedback}</p>
+                      <p className="text-[14px] text-[#69686f] mt-1">{lesson.homework.feedback}</p>
                     )}
                   </div>
                 </div>
               )}
 
               {lesson.homework.status === "pending" && (
-                <Button size="sm" className="mt-3 rounded-full">
-                  <FileText className="mr-2 h-4 w-4" />
+                <button className="mt-4 h-[40px] px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[14px] hover:bg-gray-50 transition-colors inline-flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
                   Здати завдання
-                </Button>
+                </button>
               )}
             </div>
           )}
 
           {lesson.materials && lesson.materials.length > 0 && (
             <div>
-              <h5 className="mb-2 text-sm font-medium">Матеріали до заняття</h5>
-              <div className="space-y-2">
+              <h5 className="mb-3 text-[16px] font-[600] text-[#121117]">Матеріали до заняття</h5>
+              <div className="flex flex-wrap gap-2">
                 {lesson.materials.map((material: string, i: number) => (
-                  <Button
+                  <button
                     key={i}
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start bg-transparent rounded-full"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] border border-slate-200 hover:border-[#121117] hover:bg-gray-50 transition-colors text-[14px] font-[500] text-[#121117]"
                   >
-                    <Download className="mr-2 h-4 w-4" />
+                    <Download className="h-4 w-4 text-[#69686f]" />
                     {material}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
           )}
-        </CardContent>
+        </div>
       )}
-    </Card>
+    </div>
   )
 }

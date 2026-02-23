@@ -18,7 +18,7 @@ export default function TutorStatsPage() {
   const nextLevel = levels.find((l) => l.level === currentLevel.level + 1)
 
   const progressToNextLevel = nextLevel
-    ? ((progress.totalSessions - currentLevel.minSessions) / (nextLevel.minSessions - currentLevel.minSessions)) * 100
+    ? ((progress.totalXP - currentLevel.minXP) / (nextLevel.minXP - currentLevel.minXP)) * 100
     : 100
 
   const stats = {
@@ -32,221 +32,217 @@ export default function TutorStatsPage() {
 
   return (
     <SidebarLayout userType="tutor">
-      <div className="container mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Статистика та досягнення</h1>
-          <p className="text-muted-foreground">Відстежуйте свій прогрес та розблоковуйте нагороди</p>
+      <div className="container mx-auto max-w-[1200px] px-6 py-8 font-sans">
+        <div className="mb-8">
+          <h1 className="text-[32px] font-bold text-[#121117] tracking-tight">Статистика та досягнення</h1>
+          <p className="text-[16px] text-[#69686f] mt-1">Відстежуйте свій прогрес та розблоковуйте нагороди</p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {/* Level Progress */}
-          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary">
-                    <Award className="h-8 w-8 text-primary-foreground" />
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#e8fffb] rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-8">
+                <div className="flex items-center gap-5">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-[12px] bg-[#00c5a6] shadow-sm">
+                    <Award className="h-8 w-8 text-white" />
                   </div>
                   <div>
-                    <CardTitle className="text-2xl">
+                    <h2 className="text-[24px] font-bold text-[#121117]">
                       Рівень {currentLevel.level} - {currentLevel.title}
-                    </CardTitle>
-                    <CardDescription className="text-base">
+                    </h2>
+                    <p className="text-[15px] text-[#69686f] mt-1">
                       {nextLevel
                         ? `Ще ${nextLevel.minXP - progress.totalXP} XP до рівня ${nextLevel.level}`
                         : "Максимальний рівень досягнуто!"}
-                    </CardDescription>
+                    </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold">{progress.totalXP}</div>
-                  <div className="text-sm text-muted-foreground">XP</div>
+                <div className="text-left sm:text-right bg-[#f0f3f3] px-6 py-3 rounded-[16px]">
+                  <div className="text-[32px] font-bold text-[#121117] leading-none">{progress.totalXP}</div>
+                  <div className="text-[14px] font-[600] text-[#69686f] mt-1">Загальний XP</div>
                 </div>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <div className="mb-2 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Прогрес до наступного рівня</span>
-                  <span className="font-medium">{Math.round(categoryProgress.percentage)}%</span>
+
+              <div className="space-y-6">
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-[14px] font-[600] text-[#121117]">Прогрес до наступного рівня</span>
+                    <span className="font-[600] text-[#00c5a6]">{Math.round(categoryProgress.percentage)}%</span>
+                  </div>
+                  <Progress value={categoryProgress.percentage} className="h-3 bg-gray-100 [&>div]:bg-[#00c5a6]" />
                 </div>
-                <Progress value={categoryProgress.percentage} className="h-3" />
-              </div>
-              <div>
-                <p className="mb-2 text-sm font-medium">Переваги поточного рівня:</p>
-                <div className="flex flex-wrap gap-2">
-                  {currentLevel.benefits.map((benefit) => (
-                    <Badge key={benefit} variant="secondary">
-                      <CheckCircle2 className="mr-1 h-3 w-3" />
-                      {benefit}
-                    </Badge>
-                  ))}
+                <div className="pt-6 border-t border-gray-100">
+                  <p className="mb-4 text-[15px] font-[600] text-[#121117]">Переваги поточного рівня:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {currentLevel.benefits.map((benefit) => (
+                      <Badge key={benefit} variant="outline" className="bg-[#e8fffb] text-[#00a389] border-0 px-3 py-1.5 text-[14px] font-[500] rounded-[8px]">
+                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                        {benefit}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Рейтинг</CardTitle>
-                <Star className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.rating}</div>
-                <p className="text-xs text-muted-foreground">З {stats.totalReviews} відгуків</p>
-                <Progress value={(stats.rating / 5) * 100} className="mt-2 h-2" />
-              </CardContent>
-            </Card>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Рейтинг</span>
+                <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center">
+                  <Star className="h-5 w-5 text-[#ffc107]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.rating}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">З {stats.totalReviews} відгуків</p>
+              <Progress value={(stats.rating / 5) * 100} className="mt-4 h-2 bg-gray-100 [&>div]:bg-[#ffc107]" />
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Час відповіді</CardTitle>
-                <Clock className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.responseTime}</div>
-                <p className="text-xs text-muted-foreground">Середній час</p>
-                <Progress value={90} className="mt-2 h-2" />
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Час відповіді</span>
+                <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-[#121117]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.responseTime}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Середній час</p>
+              <Progress value={90} className="mt-4 h-2 bg-gray-100 [&>div]:bg-[#00c5a6]" />
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Прийняття запитів</CardTitle>
-                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.acceptanceRate}%</div>
-                <p className="text-xs text-muted-foreground">Прийнято</p>
-                <Progress value={stats.acceptanceRate} className="mt-2 h-2" />
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Прийняття запитів</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8fffb] flex items-center justify-center">
+                  <CheckCircle2 className="h-5 w-5 text-[#00c5a6]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.acceptanceRate}%</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Прийнято</p>
+              <Progress value={stats.acceptanceRate} className="mt-4 h-2 bg-gray-100 [&>div]:bg-[#00c5a6]" />
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Завершення занять</CardTitle>
-                <Target className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.completionRate}%</div>
-                <p className="text-xs text-muted-foreground">Успішно завершено</p>
-                <Progress value={stats.completionRate} className="mt-2 h-2" />
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Завершення занять</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8f5e9] flex items-center justify-center">
+                  <Target className="h-5 w-5 text-[#43a047]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.completionRate}%</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Успішно завершено</p>
+              <Progress value={stats.completionRate} className="mt-4 h-2 bg-gray-100 [&>div]:bg-[#43a047]" />
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Повторні клієнти</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stats.repeatClients}%</div>
-                <p className="text-xs text-muted-foreground">Повертаються</p>
-                <Progress value={stats.repeatClients} className="mt-2 h-2" />
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Повторні клієнти</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8eaf6] flex items-center justify-center">
+                  <TrendingUp className="h-5 w-5 text-[#5c6bc0]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.repeatClients}%</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Повертаються</p>
+              <Progress value={stats.repeatClients} className="mt-4 h-2 bg-gray-100 [&>div]:bg-[#5c6bc0]" />
+            </div>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Поточна серія</CardTitle>
-                <Zap className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{progress.currentStreak}</div>
-                <p className="text-xs text-muted-foreground">Днів поспіль</p>
-                <p className="mt-1 text-xs text-muted-foreground">Рекорд: {progress.longestStreak} днів</p>
-              </CardContent>
-            </Card>
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[14px] font-[600] text-[#69686f]">Поточна серія</span>
+                <div className="h-10 w-10 rounded-full bg-[#ffebee] flex items-center justify-center">
+                  <Zap className="h-5 w-5 text-[#e53935]" />
+                </div>
+              </div>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{progress.currentStreak}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Днів поспіль</p>
+              <p className="mt-1 text-[13px] font-[600] text-[#121117]">Рекорд: {progress.longestStreak} днів</p>
+            </div>
           </div>
 
           {/* Achievements */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Досягнення</CardTitle>
-              <CardDescription>
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="mb-6">
+              <h2 className="text-[24px] font-bold text-[#121117]">Досягнення</h2>
+              <p className="text-[#69686f] text-[16px] mt-1">
                 Розблоковано {progress.achievements.length} з {availableAchievements.length}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {availableAchievements.map((achievement) => {
-                  const unlocked = progress.achievements.find((a) => a.id === achievement.id)
-                  return (
-                    <Card key={achievement.id} className={unlocked ? "border-primary/50 bg-primary/5" : "opacity-50"}>
-                      <CardContent className="p-4">
-                        <div className="flex items-start gap-3">
-                          <div className="text-3xl">{achievement.icon}</div>
-                          <div className="flex-1">
-                            <p className="font-medium">{achievement.title}</p>
-                            <p className="text-sm text-muted-foreground">{achievement.description}</p>
-                            {unlocked && (
-                              <p className="mt-1 text-xs text-muted-foreground">
-                                Розблоковано {new Date(unlocked.unlockedAt!).toLocaleDateString("uk-UA")}
-                              </p>
-                            )}
-                          </div>
-                          {unlocked && <CheckCircle2 className="h-5 w-5 text-primary" />}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            </CardContent>
-          </Card>
+              </p>
+            </div>
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {availableAchievements.map((achievement) => {
+                const unlocked = progress.achievements.find((a) => a.id === achievement.id)
+                return (
+                  <div key={achievement.id} className={`rounded-[16px] border p-5 transition-all ${unlocked ? "border-[#00c5a6]/30 bg-[#e8fffb]" : "border-slate-200/80 bg-white opacity-60 grayscale-[0.5]"}`}>
+                    <div className="flex items-start gap-4">
+                      <div className="text-[32px] shrink-0 leading-none">{achievement.icon}</div>
+                      <div className="flex-1">
+                        <p className={`font-[600] text-[16px] ${unlocked ? "text-[#121117]" : "text-[#69686f]"}`}>{achievement.title}</p>
+                        <p className={`text-[14px] mt-1 ${unlocked ? "text-[#121117]/80" : "text-[#69686f]"}`}>{achievement.description}</p>
+                        {unlocked && (
+                          <p className="mt-2 text-[12px] font-[600] text-[#00a389]">
+                            Розблоковано {new Date(unlocked.unlockedAt!).toLocaleDateString("uk-UA")}
+                          </p>
+                        )}
+                      </div>
+                      {unlocked && <CheckCircle2 className="h-5 w-5 text-[#00c5a6] shrink-0" />}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
 
           {/* All Levels */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Всі рівні</CardTitle>
-              <CardDescription>Прогресуйте та отримуйте більше переваг</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {levels.map((level) => (
-                  <div
-                    key={level.level}
-                    className={`rounded-lg border p-4 ${
-                      level.level === currentLevel.level ? "border-primary bg-primary/5" : ""
-                    } ${level.level > currentLevel.level ? "opacity-50" : ""}`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="mb-2 flex items-center gap-2">
-                          <h3 className="font-semibold">
-                            Рівень {level.level}: {level.title}
-                          </h3>
-                          {level.level === currentLevel.level && <Badge>Поточний</Badge>}
-                          {level.level < currentLevel.level && (
-                            <Badge variant="secondary">
-                              <CheckCircle2 className="mr-1 h-3 w-3" />
-                              Досягнуто
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="mb-2 text-sm text-muted-foreground">
-                          {level.minXP === 0
-                            ? `0-${level.maxXP} XP`
-                            : level.maxXP === Number.POSITIVE_INFINITY
-                              ? `${level.minXP}+ XP`
-                              : `${level.minXP}-${level.maxXP} XP`}
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          {level.benefits.map((benefit) => (
-                            <Badge key={benefit} variant="outline">
-                              {benefit}
-                            </Badge>
-                          ))}
-                        </div>
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="mb-6">
+              <h2 className="text-[24px] font-bold text-[#121117]">Всі рівні</h2>
+              <p className="text-[#69686f] text-[16px] mt-1">Прогресуйте та отримуйте більше переваг</p>
+            </div>
+            <div className="space-y-4">
+              {levels.map((level) => (
+                <div
+                  key={level.level}
+                  className={`rounded-[16px] border p-6 transition-all ${
+                    level.level === currentLevel.level ? "border-[#00c5a6] bg-[#e8fffb] shadow-sm" : "border-slate-200/80 bg-white hover:border-slate-300"
+                  } ${level.level > currentLevel.level ? "opacity-60" : ""}`}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="mb-2 flex items-center flex-wrap gap-3">
+                        <h3 className={`font-bold text-[18px] ${level.level === currentLevel.level ? "text-[#121117]" : "text-[#121117]"}`}>
+                          Рівень {level.level}: {level.title}
+                        </h3>
+                        {level.level === currentLevel.level && <Badge className="bg-[#121117] text-white border-0 hover:bg-[#121117]">Поточний</Badge>}
+                        {level.level < currentLevel.level && (
+                          <Badge variant="outline" className="bg-[#f0f3f3] text-[#69686f] border-0 px-3 py-1 rounded-[6px]">
+                            <CheckCircle2 className="mr-1.5 h-3.5 w-3.5" />
+                            Досягнуто
+                          </Badge>
+                        )}
+                      </div>
+                      <p className={`mb-4 text-[15px] font-[500] ${level.level === currentLevel.level ? "text-[#00a389]" : "text-[#69686f]"}`}>
+                        {level.minXP === 0
+                          ? `0 - ${level.maxXP} XP`
+                          : level.maxXP === Number.POSITIVE_INFINITY
+                            ? `${level.minXP}+ XP`
+                            : `${level.minXP} - ${level.maxXP} XP`}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {level.benefits.map((benefit) => (
+                          <Badge key={benefit} variant="outline" className={`border-slate-200/80 px-3 py-1.5 text-[14px] font-[500] rounded-[8px] ${level.level === currentLevel.level ? "bg-white text-[#121117]" : "bg-[#f0f3f3] text-[#69686f]"}`}>
+                            {benefit}
+                          </Badge>
+                        ))}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </SidebarLayout>

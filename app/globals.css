@@ -3,18 +3,50 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "PreplyInter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/preply-fonts/PreplyInter.regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PreplyInter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/preply-fonts/PreplyInter.medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "PreplyInter";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/preply-fonts/PreplyInter.bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Platform";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/preply-fonts/Platform-Medium-Web-v0.woff2") format("woff2");
+}
+
 /* Light neutral theme with subtle accents for Libitum Education */
 :root {
   /* Safe defaults for theme (SSR fallback) */
-  --theme-primary: #10b981;
-  --theme-primary-hover: #059669;
-  --theme-primary-light: rgba(16, 185, 129, 0.12);
-  --theme-primary-dark: #047857;
-  --theme-gradient: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
-  --theme-gradient-light: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%);
-  --theme-accent: #0f766e;
-  --theme-bg-gradient: radial-gradient(ellipse at top, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
-  --theme-card-gradient: linear-gradient(135deg, rgba(16, 185, 129, 0.06) 0%, rgba(16, 185, 129, 0.02) 100%);
+  --theme-primary: #00c5a6;
+  --theme-primary-hover: #00b296;
+  --theme-primary-light: rgba(0, 197, 166, 0.12);
+  --theme-primary-dark: #0f172a;
+  --theme-gradient: linear-gradient(135deg, #00c5a6 0%, #10b981 100%);
+  --theme-gradient-light: linear-gradient(135deg, rgba(0, 197, 166, 0.12) 0%, rgba(16, 185, 129, 0.06) 100%);
+  --theme-accent: #00a389;
+  --theme-bg-gradient: radial-gradient(ellipse at top, rgba(0, 197, 166, 0.08) 0%, transparent 52%);
+  --theme-card-gradient: linear-gradient(135deg, rgba(0, 197, 166, 0.04) 0%, rgba(0, 197, 166, 0.01) 100%);
   /* Brand Colors - kept for section accents only */
   --libitum-teal: #14b8a6;
   --libitum-emerald: #10b981;
@@ -22,8 +54,8 @@
   --libitum-lime: #84cc16;
 
   /* Neutral palette - even lighter, less saturated */
-  --background: oklch(0.99 0.002 95);
-  --foreground: oklch(0.18 0.008 95);
+  --background: #f8f9fb;
+  --foreground: #111827;
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.15 0.01 180);
@@ -32,8 +64,8 @@
   --popover-foreground: oklch(0.15 0.01 180);
 
   /* Primary - Very neutral dark */
-  --primary: oklch(0.22 0.015 95);
-  --primary-foreground: oklch(0.99 0 0);
+  --primary: #00c5a6;
+  --primary-foreground: #111827;
 
   /* Secondary - Lighter neutral */
   --secondary: oklch(0.96 0.003 95);
@@ -62,7 +94,7 @@
   --chart-4: oklch(0.55 0.06 110);
   --chart-5: oklch(0.65 0.1 150);
 
-  --radius: 0.75rem;
+  --radius: 1rem;
 
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.2 0.01 95);
@@ -123,7 +155,7 @@
 }
 
 @theme inline {
-  --font-sans: "Inter", "Geist", "Geist Fallback", system-ui, -apple-system;
+  --font-sans: "PreplyInter", "Inter", system-ui, -apple-system;
   --font-mono: "Geist Mono", "Geist Mono Fallback", monospace;
 
   /* Added brand colors to Tailwind theme */
@@ -203,19 +235,22 @@
   }
   body {
     @apply text-foreground;
-    background-color: #fafafa;
-    background-image: 
-      linear-gradient(180deg, rgba(240, 248, 245, 0.9) 0%, rgba(250, 250, 250, 0) 40%),
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 85% 5%, rgba(249, 115, 22, 0.04) 0%, transparent 40%);
-    background-attachment: fixed;
+    font-family: "PreplyInter", "Inter", system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
     scrollbar-gutter: stable;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Platform", "PreplyInter", "Inter", system-ui, sans-serif;
+    letter-spacing: -0.02em;
   }
 
   /* Custom Scrollbar - Elegant & Stable */
   ::-webkit-scrollbar {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
   }
 
   ::-webkit-scrollbar-track {
@@ -223,7 +258,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-slate-200/80 hover:bg-slate-300 rounded-full border-[5px] border-solid border-transparent bg-clip-content transition-colors;
+    @apply bg-slate-300/90 hover:bg-slate-400 rounded-full border-[4px] border-solid border-transparent bg-clip-content transition-colors;
   }
 
 
@@ -342,74 +377,6 @@
   /* Gradient text - more neutral */
   .gradient-text {
     @apply bg-gradient-to-r from-slate-800 via-slate-600 to-slate-700 bg-clip-text text-transparent;
-  }
-
-  /* Spotlight hover effect for buttons/cards */
-  .spotlight-button {
-    position: relative;
-    overflow: hidden;
-  }
-  .spotlight-button::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      circle 80px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-      rgba(255, 255, 255, 0.15),
-      transparent 60%
-    );
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-  .spotlight-button:hover::before {
-    opacity: 1;
-  }
-
-  /* Hover glow utility */
-  .hover-glow {
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-  }
-  .hover-glow:hover {
-    box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.12);
-    transform: translateY(-2px);
-  }
-
-  /* Cursor-follow spotlight for buttons/cards */
-  .spotlight-button {
-    position: relative;
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  .spotlight-button::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    background: radial-gradient(120px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.35), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.25s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .spotlight-button:hover::before,
-  .spotlight-button:focus-visible::before {
-    opacity: 1;
-  }
-
-  .spotlight-button > * {
-    position: relative;
-    z-index: 2;
-  }
-
-  /* Gentle lift + glow for cards/containers */
-  .hover-glow {
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-  }
-  .hover-glow:hover {
-    transform: translateY(-6px) scale(1.01);
-    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
   }
 
   /* ── Premium grain texture overlay ── */
@@ -556,9 +523,9 @@
 
 /* ── Global Theme Styles ── */
 .theme-button {
-  background: var(--theme-gradient) !important;
+  background: var(--theme-primary) !important;
   border: none !important;
-  color: white !important;
+  color: #111827 !important;
   transition: all 0.3s ease !important;
 }
 
@@ -568,8 +535,26 @@
 }
 
 .theme-card {
-  border: 1px solid var(--theme-primary-light) !important;
-  background: var(--theme-card-gradient) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06) !important;
+}
+
+.preply-container {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 3vw, 2rem);
+}
+
+.preply-surface {
+  border-radius: 1.5rem;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.preply-section {
+  padding-block: clamp(2.5rem, 6vw, 5.5rem);
 }
 
 .theme-accent-bg {

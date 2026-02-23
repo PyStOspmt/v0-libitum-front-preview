@@ -30,6 +30,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { LogIn, Clock3, Eye, CheckCircle2, XCircle, Ban, DollarSign } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
+import { cn } from "@/lib/utils"
 
 export default function AdminRequestsPage() {
   const { requests, acceptRequest, rejectRequest, cancelRequest, markAsPaid } = useRequestStore()
@@ -54,52 +55,52 @@ export default function AdminRequestsPage() {
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <SidebarLayout userType="admin">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
-          <div>
-            <h1 className="text-3xl font-bold">Всі запити</h1>
-            <p className="text-muted-foreground">Перегляд та управління запитами на платформі</p>
+        <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-[700] text-[#121117]">Всі запити</h1>
+            <p className="text-[15px] font-[500] text-[#69686f]">Перегляд та управління запитами на платформі</p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle>Нові</CardTitle>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Нові</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{pendingRequests.length}</div>
+                <div className="text-[32px] font-[700] text-[#121117]">{pendingRequests.length}</div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Активні</CardTitle>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Активні</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{activeRequests.length}</div>
+                <div className="text-[32px] font-[700] text-[#00c5a6]">{activeRequests.length}</div>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Завершені</CardTitle>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Завершені</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{completedRequests.length}</div>
+                <div className="text-[32px] font-[700] text-[#00a389]">{completedRequests.length}</div>
               </CardContent>
             </Card>
           </div>
 
           <Tabs defaultValue="all" className="w-full">
-            <TabsList>
-              <TabsTrigger value="all">Всі ({requests.length})</TabsTrigger>
-              <TabsTrigger value="pending">Нові ({pendingRequests.length})</TabsTrigger>
-              <TabsTrigger value="active">Активні ({activeRequests.length})</TabsTrigger>
-              <TabsTrigger value="completed">Завершені ({completedRequests.length})</TabsTrigger>
+            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 mb-4">
+              <TabsTrigger value="all" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Всі ({requests.length})</TabsTrigger>
+              <TabsTrigger value="pending" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Нові ({pendingRequests.length})</TabsTrigger>
+              <TabsTrigger value="active" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Активні ({activeRequests.length})</TabsTrigger>
+              <TabsTrigger value="completed" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Завершені ({completedRequests.length})</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="space-y-4">
-              <Card>
+              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
                 <CardHeader>
-                  <CardTitle>Всі запити</CardTitle>
-                  <CardDescription>Повний список запитів на платформі</CardDescription>
+                  <CardTitle className="text-xl font-[700] text-[#121117]">Всі запити</CardTitle>
+                  <CardDescription className="text-[#69686f] font-[500]">Повний список запитів на платформі</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -120,9 +121,9 @@ export default function AdminRequestsPage() {
             </TabsContent>
 
             <TabsContent value="pending" className="space-y-4">
-              <Card>
+              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
                 <CardHeader>
-                  <CardTitle>Нові запити</CardTitle>
+                  <CardTitle className="text-xl font-[700] text-[#121117]">Нові запити</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -143,9 +144,9 @@ export default function AdminRequestsPage() {
             </TabsContent>
 
             <TabsContent value="active" className="space-y-4">
-              <Card>
+              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
                 <CardHeader>
-                  <CardTitle>Активні запити</CardTitle>
+                  <CardTitle className="text-xl font-[700] text-[#121117]">Активні запити</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -166,9 +167,9 @@ export default function AdminRequestsPage() {
             </TabsContent>
 
             <TabsContent value="completed" className="space-y-4">
-              <Card>
+              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
                 <CardHeader>
-                  <CardTitle>Завершені запити</CardTitle>
+                  <CardTitle className="text-xl font-[700] text-[#121117]">Завершені запити</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -243,28 +244,34 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
   const canCancel = ["accepted", "communicating", "trial_scheduled"].includes(request.status)
 
   return (
-    <Card>
+    <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       <CardContent className="space-y-3 p-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Badge variant={request.type === "public" ? "outline" : "secondary"}>
+            <div className="flex items-center gap-2 text-[14px] text-[#69686f] font-[500]">
+              <Badge variant={request.type === "public" ? "outline" : "secondary"} className="rounded-[8px] bg-[#f0f3f3]/50 text-[#121117] border-slate-200/80 font-[600]">
                 {request.type === "public" ? "Публічний" : "Приватний"}
               </Badge>
-              <Badge>{statusLabel(request.status)}</Badge>
+              <Badge className={cn(
+                "font-[600] border-0",
+                request.status === "pending" ? "bg-orange-100 text-orange-700" :
+                ["accepted", "communicating", "trial_scheduled"].includes(request.status) ? "bg-[#e8fffb] text-[#00a389]" :
+                ["trial_completed", "paid"].includes(request.status) ? "bg-[#00c5a6] text-white" :
+                "bg-slate-100 text-slate-700"
+              )}>{statusLabel(request.status)}</Badge>
             </div>
-            <p className="font-medium">{request.subject}</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="font-[700] text-[16px] text-[#121117]">{request.subject}</p>
+            <p className="text-[14px] font-[500] text-[#69686f]">
               Клієнт: {request.clientName} → {request.specialistName || "(не призначено)"}
             </p>
-            <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Clock3 className="h-3 w-3" />
+            <div className="flex flex-wrap items-center gap-2 text-[13px] font-[500] text-[#69686f]">
+              <span className="flex items-center gap-1 bg-[#f0f3f3]/50 px-2 py-1 rounded-[8px] border border-slate-200/80">
+                <Clock3 className="h-3.5 w-3.5" />
                 Дедлайн відповіді: {deadlineLabel || "—"}
               </span>
               {request.currentPrice && (
-                <span className="flex items-center gap-1">
-                  <DollarSign className="h-3 w-3" />
+                <span className="flex items-center gap-1 bg-[#e8fffb] px-2 py-1 rounded-[8px] border border-[#00c5a6]/20 text-[#00a389] font-[600]">
+                  <DollarSign className="h-3.5 w-3.5" />
                   Поточна ціна: {request.currentPrice} ₴ (мін {request.minPriceLimit || ""})
                 </span>
               )}
@@ -274,48 +281,49 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
           <div className="flex flex-wrap gap-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                   <Eye className="mr-2 h-4 w-4" />
                   Деталі
                 </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Запит: {request.subject}</DialogTitle>
-                  <DialogDescription>{request.message || "Без опису"}</DialogDescription>
+              <DialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] sm:max-w-md font-sans">
+                <DialogHeader className="pb-4 border-b border-slate-200/80">
+                  <DialogTitle className="text-[24px] font-[700] text-[#121117]">Запит: {request.subject}</DialogTitle>
+                  <DialogDescription className="text-[#69686f] font-[500] text-[15px]">{request.message || "Без опису"}</DialogDescription>
                 </DialogHeader>
-                <div className="space-y-3 text-sm">
+                <div className="space-y-3 text-[15px]">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Тип</span>
-                    <span className="font-medium">{request.type === "public" ? "Публічний" : "Приватний"}</span>
+                    <span className="text-[#69686f] font-[500]">Тип</span>
+                    <span className="font-[600] text-[#121117]">{request.type === "public" ? "Публічний" : "Приватний"}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Формат</span>
-                    <span className="font-medium">{request.format}</span>
+                    <span className="text-[#69686f] font-[500]">Формат</span>
+                    <span className="font-[600] text-[#121117]">{request.format}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Дата/час</span>
-                    <span className="font-medium">{request.date} {request.time}</span>
+                    <span className="text-[#69686f] font-[500]">Дата/час</span>
+                    <span className="font-[600] text-[#121117]">{request.date} {request.time}</span>
                   </div>
-                  <Separator />
+                  <Separator className="bg-slate-200/80" />
                   <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground">Клієнт</p>
-                    <div className="flex justify-between text-sm">
-                      <span>{request.clientName}</span>
-                      <Button variant="ghost" size="sm" onClick={() => onImpersonate("client")}>
+                    <p className="text-[13px] font-[500] text-[#69686f]">Клієнт</p>
+                    <div className="flex justify-between items-center text-[15px]">
+                      <span className="font-[600] text-[#121117]">{request.clientName}</span>
+                      <Button variant="ghost" size="sm" onClick={() => onImpersonate("client")} className="rounded-[8px] font-[600] text-[#00a389] hover:bg-[#e8fffb]">
                         <LogIn className="mr-1 h-4 w-4" /> Support Access
                       </Button>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs text-muted-foreground">Спеціаліст</p>
-                    <div className="flex justify-between text-sm">
-                      <span>{request.specialistName || "(не призначено)"}</span>
+                    <p className="text-[13px] font-[500] text-[#69686f]">Спеціаліст</p>
+                    <div className="flex justify-between items-center text-[15px]">
+                      <span className="font-[600] text-[#121117]">{request.specialistName || "(не призначено)"}</span>
                       <Button
                         variant="ghost"
                         size="sm"
                         disabled={!request.specialistId}
                         onClick={() => onImpersonate("specialist")}
+                        className="rounded-[8px] font-[600] text-[#00a389] hover:bg-[#e8fffb]"
                       >
                         <LogIn className="mr-1 h-4 w-4" /> Support Access
                       </Button>
@@ -326,7 +334,7 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             </Dialog>
 
             {canAccept && (
-              <Button size="sm" variant="default" onClick={onAccept}>
+              <Button size="sm" variant="default" onClick={onAccept} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
                 <CheckCircle2 className="mr-2 h-4 w-4" />
                 Прийняти
               </Button>
@@ -334,30 +342,32 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
 
             <AlertDialog open={rejectOpen} onOpenChange={setRejectOpen}>
               <AlertDialogTrigger asChild>
-                <Button size="sm" variant="destructive">
+                <Button size="sm" variant="destructive" className="rounded-[8px] font-[600]">
                   <XCircle className="mr-2 h-4 w-4" />
                   Відхилити
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Відхилити запит?</AlertDialogTitle>
-                  <AlertDialogDescription>Вкажіть причину, буде збережено для аналітики.</AlertDialogDescription>
+                  <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Відхилити запит?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-[#69686f] font-[500]">Вкажіть причину, буде збережено для аналітики.</AlertDialogDescription>
                 </AlertDialogHeader>
                 <textarea
-                  className="w-full rounded-md border p-2 text-sm"
+                  className="w-full rounded-[12px] border-slate-200/80 p-3 text-[15px] focus-visible:ring-[#00c5a6] focus:outline-none focus:ring-2 focus:ring-offset-2"
                   placeholder="Причина відхилення"
                   value={rejectReason}
                   onChange={(e) => setRejectReason(e.target.value)}
+                  rows={4}
                 />
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Скасувати</AlertDialogCancel>
+                  <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => {
                       onReject(rejectReason || "Без причини")
                       setRejectReason("")
                       setRejectOpen(false)
                     }}
+                    className="rounded-[8px] font-[600]"
                   >
                     Відхилити
                   </AlertDialogAction>
@@ -368,26 +378,26 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             {canCancel && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                     <Ban className="mr-2 h-4 w-4" />
                     Скасувати
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Скасувати запит?</AlertDialogTitle>
-                    <AlertDialogDescription>Запит перейде у статус cancelled.</AlertDialogDescription>
+                    <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Скасувати запит?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-[#69686f] font-[500]">Запит перейде у статус cancelled.</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Назад</AlertDialogCancel>
-                    <AlertDialogAction onClick={onCancel}>Скасувати</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Назад</AlertDialogCancel>
+                    <AlertDialogAction onClick={onCancel} className="rounded-[8px] font-[600]">Скасувати</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
             )}
 
             {canMarkPaid && (
-              <Button size="sm" variant="secondary" onClick={onMarkPaid}>
+              <Button size="sm" variant="secondary" onClick={onMarkPaid} className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
                 <DollarSign className="mr-2 h-4 w-4" />
                 Позначити як оплачений
               </Button>

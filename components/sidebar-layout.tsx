@@ -85,6 +85,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     { href: "/tutor/clients", label: "Учні", icon: Users },
     { href: "/tutor/schedule", label: "Розклад", icon: Calendar },
     { href: "/tutor/finances", label: "Фінанси", icon: DollarSign },
+    { href: "/tutor/rewards", label: "Магазин винагород", icon: TrendingUp },
     { href: "/tutor/profile", label: "Профіль", icon: UserCog },
     { href: "/tutor/settings", label: "Налаштування", icon: Settings },
   ]
@@ -111,7 +112,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
           <div
             className={cn(
-              "flex h-11 w-11 items-center justify-center rounded-2xl",
+              "flex h-11 w-11 items-center justify-center rounded-[12px]",
               sidebarTheme.logoBg || "shadow-lg"
             )}
             style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
@@ -119,7 +120,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <div className="hidden lg:block text-left">
-            <p className="text-lg font-bold text-slate-800 leading-tight">Libitum</p>
+            <p className="text-lg font-bold text-[#121117] leading-tight">Libitum</p>
             <p className={cn("text-xs font-medium", sidebarTheme.label)}>
               {userType === "client"
                 ? "Кабінет учня"
@@ -140,9 +141,9 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="rounded-full hover:bg-slate-100 transition-colors"
+              className="rounded-full hover:bg-gray-100 transition-colors"
             >
-              <X className="h-5 w-5 text-slate-500" />
+              <X className="h-5 w-5 text-[#69686f]" />
             </Button>
           </div>
           <div className="lg:hidden">
@@ -159,7 +160,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         {isImpersonating && (
           <Button
             variant="outline"
-            className="mb-6 w-full justify-start gap-3 border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-xl transition-all"
+            className="mb-6 w-full justify-start gap-3 border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-[8px] h-[48px] font-[600] transition-all"
             onClick={handleStopImpersonating}
           >
             <ShieldCheck className="h-5 w-5" />
@@ -170,7 +171,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         <Link href="/">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 mb-2 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-700 h-11 transition-all"
+            className="w-full justify-start gap-3 mb-2 rounded-[8px] text-[#69686f] hover:bg-gray-100 hover:text-[#121117] h-[48px] font-[600] transition-all"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <Home className="h-5 w-5" />
@@ -178,7 +179,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
           </Button>
         </Link>
 
-        <div className="h-px bg-slate-100 my-4 mx-2" />
+        <div className="h-px bg-gray-200 my-4 mx-2" />
 
         {navItems.map((item) => {
           const Icon = item.icon
@@ -188,22 +189,22 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
               <Button
                 variant="ghost"
                 className={cn(
-                  "w-full justify-start gap-3 rounded-xl h-11 transition-all font-medium",
+                  "w-full justify-start gap-3 rounded-[8px] h-[48px] transition-all font-[600]",
                   isActive 
                     ? userType === "admin" 
                       ? sidebarTheme.activeItem
-                      : "text-slate-900"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      : "text-[#121117] bg-[#f0f3f3]"
+                    : "text-[#69686f] hover:bg-gray-100 hover:text-[#121117]"
                 )}
-                style={isActive && userType !== "admin" ? { borderColor: theme.primary, backgroundColor: theme.primaryLight, color: theme.primaryDark, borderWidth: 1, borderStyle: "solid" } : {}}
+                style={isActive && userType !== "admin" ? { backgroundColor: theme.primaryLight, color: theme.primaryDark } : {}}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Icon
                   className={cn(
                     "h-5 w-5 transition-colors",
-                    isActive ? (userType === "admin" ? sidebarTheme.activeIcon : "") : "text-slate-400"
+                    isActive ? (userType === "admin" ? sidebarTheme.activeIcon : "text-[#121117]") : "text-[#69686f]"
                   )}
-                  style={isActive && userType !== "admin" ? { color: theme.primary } : {}}
+                  style={isActive && userType !== "admin" ? { color: theme.primaryDark } : {}}
                 />
                 <span>{item.label}</span>
               </Button>
@@ -213,9 +214,9 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
       </nav>
 
       <div className="p-4 mt-auto">
-        <div className="rounded-2xl border border-slate-100 bg-white p-4">
+        <div className="rounded-[16px] border border-gray-200 bg-white p-4">
           <div className="flex items-center gap-3 mb-3">
-            <Avatar className="h-10 w-10 border border-slate-100">
+            <Avatar className="h-10 w-10 border border-gray-100">
               <AvatarFallback 
                 className="font-bold text-white"
                 style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
@@ -224,17 +225,17 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 overflow-hidden">
-              <p className="truncate text-sm font-bold text-slate-800">{user?.name}</p>
-              <p className="truncate text-xs text-slate-500">{user?.email}</p>
+              <p className="truncate text-[14px] font-[600] text-[#121117]">{user?.name}</p>
+              <p className="truncate text-[13px] text-[#69686f]">{user?.email}</p>
             </div>
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl h-9 px-2 transition-colors"
+            className="w-full justify-start gap-3 text-[#69686f] hover:text-rose-600 hover:bg-rose-50 rounded-[8px] h-[40px] px-3 transition-colors font-[600]"
             onClick={logout}
           >
             <LogOut className="h-4 w-4" />
-            <span className="text-sm font-medium">Вийти з акаунту</span>
+            <span className="text-[14px]">Вийти з акаунту</span>
           </Button>
         </div>
       </div>
@@ -242,9 +243,9 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   )
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#fafaf8]">
+    <div className="flex h-screen overflow-hidden bg-[#f0f3f3] font-sans text-[#121117]">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-72 flex-col border-r border-slate-200/80 bg-white lg:flex shadow-sm">
+      <aside className="hidden w-[280px] flex-col border-r border-gray-200 bg-white lg:flex">
         <NavContent />
       </aside>
 
@@ -255,7 +256,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <aside className="absolute left-0 top-0 h-full w-72 flex-col border-r border-slate-200/80 bg-white flex animate-in slide-in-from-left duration-300 shadow-lg">
+          <aside className="absolute left-0 top-0 h-full w-[280px] flex-col border-r border-gray-200 bg-white flex animate-in slide-in-from-left duration-300 shadow-2xl">
             <NavContent />
           </aside>
         </div>
@@ -263,29 +264,29 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
       <div className="flex-1 overflow-y-auto">
         {/* Mobile Header */}
-        <header className="flex items-center justify-between border-b border-slate-200/80 bg-white p-4 lg:hidden sticky top-0 z-10 backdrop-blur-sm">
+        <header className="flex items-center justify-between border-b border-gray-200 bg-white p-4 lg:hidden sticky top-0 z-10">
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => setIsMobileMenuOpen(true)} 
-            className="-ml-2 hover:bg-slate-100 transition-colors"
+            className="-ml-2 hover:bg-gray-100 transition-colors"
           >
-            <Menu className="h-6 w-6 text-slate-700" />
+            <Menu className="h-6 w-6 text-[#121117]" />
           </Button>
           <div className="flex items-center gap-2">
             <div 
-              className="flex h-8 w-8 items-center justify-center rounded-xl shadow-sm"
+              className="flex h-8 w-8 items-center justify-center rounded-[8px]"
               style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
             >
               <BookOpen className="h-4 w-4 text-white" />
             </div>
-            <span className="font-bold text-slate-800">Libitum</span>
+            <span className="font-bold text-[#121117]">Libitum</span>
           </div>
           <div className="w-10" />
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-[#fafaf8]">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-[#f0f3f3] p-4 lg:p-8">{children}</main>
       </div>
     </div>
   )

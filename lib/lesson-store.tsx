@@ -33,11 +33,16 @@ export interface Lesson {
   homework?: Homework
   report?: {
     attendance: "present" | "absent" | "late"
-    performance: number // 1-5
-    behavior: number // 1-5
+    performance: number
+    behavior: number
     comment: string
     strengths: string[]
     improvements: string[]
+    tag?: {
+      id: string
+      text: string
+      color: string
+    }
   }
   materials?: string[]
   isPaid: boolean
@@ -106,9 +111,14 @@ const mockLessons: Lesson[] = [
       attendance: "present",
       performance: 5,
       behavior: 5,
-      comment: "Чудовий прогрес! Марія активно працювала на уроці.",
-      strengths: ["Швидко розуміє нову граматику", "Відмінна вимова"],
-      improvements: ["Потрібно більше практикувати письмову мову"],
+      comment: "Відмінна робота! Марія швидко засвоїла нову тему і без помилок виконала всі вправи.",
+      strengths: ["Швидке засвоєння матеріалу", "Уважність"],
+      improvements: [],
+      tag: {
+        id: "tag-4",
+        text: "Сьогодні ти перевершив(ла) себе!",
+        color: "bg-amber-100 text-amber-800 border-amber-200"
+      }
     },
     materials: ["Grammar Guide - Present Perfect.pdf", "Practice Exercises.pdf"],
     isPaid: true,

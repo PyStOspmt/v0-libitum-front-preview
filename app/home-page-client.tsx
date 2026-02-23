@@ -2,148 +2,95 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence, useDragControls } from "framer-motion"
-import {
-  ArrowRight,
-  Check,
-  ChevronDown,
-  Star,
-  GraduationCap,
-  Brain,
-  MessageCircle,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react"
+import { useState, useRef } from "react"
+import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Search, Star, Globe, ShieldCheck, MessageCircle, Menu, X } from "lucide-react"
 
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
+import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
-import { HeroSpotlight } from "@/components/home/hero-spotlight"
-import { SpecialistSlider } from "@/components/home/specialist-slider"
-import { SquishyButton } from "@/components/home/squishy-button"
-import { AnimatedCounter } from "@/components/home/animated-counter"
-import { TrustMarquee } from "@/components/home/trust-marquee"
-import { MorphBlob } from "@/components/home/morph-blob"
-import { InkRippleLayer } from "@/components/home/ink-ripple"
-import { TiltCard } from "@/components/home/tilt-card"
+
+// Mock specialists for the carousel
+const featuredSpecialists = [
+  {
+    id: "1",
+    name: "Олена І.",
+    specialization: "Репетитор",
+    subjects: ["Англійська мова", "Німецька мова"],
+    rating: 4.9,
+    reviews: 48,
+    price: 400,
+    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "2",
+    name: "Марія К.",
+    specialization: "Психолог",
+    subjects: ["Індивідуальна терапія", "Сімейна терапія"],
+    rating: 5.0,
+    reviews: 62,
+    price: 600,
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "3",
+    name: "Ігор П.",
+    specialization: "Логопед",
+    subjects: ["Корекція звуковимови", "Розвиток мовлення"],
+    rating: 4.8,
+    reviews: 35,
+    price: 450,
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "4",
+    name: "Анна С.",
+    specialization: "Репетитор",
+    subjects: ["Математика", "Фізика"],
+    rating: 4.9,
+    reviews: 89,
+    price: 350,
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    id: "5",
+    name: "Дмитро В.",
+    specialization: "Репетитор",
+    subjects: ["Програмування (Python)", "Веб-розробка"],
+    rating: 5.0,
+    reviews: 120,
+    price: 500,
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+  }
+]
 
 /* ── Brand palette ── */
-const B = {
-  pri: "#009688",
-  dark: "#00796B",
-  light: "#E0F2F1",
-  mid: "#B2DFDB",
-} as const
-
-/* ── Intersection observer hook ── */
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
-      { threshold }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [threshold])
-  return { ref, visible }
+const BRAND = {
+  primary: "#00c5a6",
+  dark: "#00a389",
+  light: "#e8fffb",
+  bg: "#f0f3f3"
 }
 
-/* ══════════════════════════════════════════════════════════
-   Home Page — Premium Orchestrator
-   ══════════════════════════════════════════════════════════ */
-export default function HomePageClient() {
+export function HomePageClient() {
   const { user } = useAuth()
-  const { t } = useTranslation(user?.language || "UA")
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
-  const [scrolled, setScrolled] = useState(false)
-  const [currentReview, setCurrentReview] = useState(0)
+  const { t } = useTranslation()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
 
-  const specialistHref = user?.role === "client" ? "/client/requests/new" : "/specialists"
-
-  useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10)
-    window.addEventListener("scroll", handler, { passive: true })
-    return () => window.removeEventListener("scroll", handler)
-  }, [])
-
-  const stats = useInView(0.2)
-  const tutors = useInView()
-  const psychologists = useInView()
-  const speechTherapists = useInView()
-  const how = useInView()
-  const price = useInView()
-  const revs = useInView()
-  const faqSec = useInView()
-  const ctaSec = useInView()
-
-  /* ── Mock data ── */
-  const tutorSlides = [
-    { name: "Олена Іваненко", subject: "Англійська мова", rating: 4.9, reviews: 48, price: 400, image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80", badge: "TOP" },
-    { name: "Андрій Петренко", subject: "Математика", rating: 4.8, reviews: 35, price: 350, image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Ірина Бондар", subject: "Фізика", rating: 4.7, reviews: 28, price: 380, image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Тетяна Шевченко", subject: "Хімія", rating: 4.9, reviews: 41, price: 420, image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Дмитро Козак", subject: "Українська мова", rating: 5.0, reviews: 62, price: 360, image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80", badge: "TOP" },
-  ]
-
-  const psychologistSlides = [
-    { name: "Марія Коваленко", subject: "Дитяча психологія", rating: 5.0, reviews: 62, price: 600, image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80", badge: "TOP" },
-    { name: "Наталія Кравчук", subject: "Сімейна терапія", rating: 4.9, reviews: 55, price: 700, image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Олександр Тимчук", subject: "Когнітивна терапія", rating: 4.8, reviews: 38, price: 550, image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Вікторія Лисенко", subject: "Підліткова психологія", rating: 4.9, reviews: 44, price: 650, image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80", badge: null },
-  ]
-
-  const speechSlides = [
-    { name: "Анна Мельник", subject: "Корекція мовлення", rating: 4.9, reviews: 41, price: 500, image: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=400&q=80", badge: "TOP" },
-    { name: "Юлія Савченко", subject: "Заїкання", rating: 5.0, reviews: 33, price: 550, image: "https://images.unsplash.com/photo-1614644147798-f8c0fc9da7f6?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Оксана Гончар", subject: "Дислексія", rating: 4.8, reviews: 29, price: 480, image: "https://images.unsplash.com/photo-1598550874175-4d0ef436c909?auto=format&fit=crop&w=400&q=80", badge: null },
-    { name: "Тарас Коваль", subject: "Розвиток мовлення", rating: 4.7, reviews: 25, price: 450, image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80", badge: null },
-  ]
-
-  const steps = [
-    { num: "01", title: t("how.step1.title"), desc: t("how.step1.desc") },
-    { num: "02", title: t("how.step2.title"), desc: t("how.step2.desc") },
-    { num: "03", title: t("how.step3.title"), desc: t("how.step3.desc") },
-  ]
-
-  const pricing = [
-    {
-      lessons: "4 уроки", name: t("pricing.item1.title"), price: "990 \u20B4",
-      desc: t("pricing.item1.desc"),
-      features: ["4 заняття з репетитором", "Доступ до матеріалів", "Домашні завдання", "Підтримка вчителя"],
-      highlight: false,
-    },
-    {
-      lessons: "12 уроків", name: t("pricing.item2.title"), price: "2199 \u20B4", oldPrice: "2590 \u20B4", badge: "ВИГІДНО",
-      desc: t("pricing.item2.desc"),
-      features: ["12 занять з репетитором", "Повний доступ до матеріалів", "Детальний фідбек", "Тести прогресу", "Персоналізовані сесії"],
-      highlight: true,
-    },
-    {
-      lessons: "24 уроки", name: t("pricing.item3.title"), price: "5199 \u20B4",
-      desc: t("pricing.item3.desc"),
-      features: ["24 заняття поглиблено", "Преміум матеріали", "Інтенсивні ДЗ з фідбеком", "Щомісячні звіти", "Підготовка до іспитів"],
-      highlight: false,
-    },
-  ]
-
-  const reviews = [
-    { text: t("reviews.item1.text"), name: t("reviews.item1.name"), rating: 5 },
-    { text: t("reviews.item2.text"), name: t("reviews.item2.name"), rating: 5 },
-    { text: t("reviews.item3.text"), name: t("reviews.item3.name"), rating: 5 },
-  ]
-
-  const nextReview = () => {
-    setCurrentReview((prev) => (prev + 1) % reviews.length)
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 350 // approx card width + gap
+      carouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
+    }
   }
 
-  const prevReview = () => {
-    setCurrentReview((prev) => (prev - 1 + reviews.length) % reviews.length)
-  }
+  const dashboardHref = user?.role === "client" ? "/client" : user?.role === "specialist" ? "/tutor" : "/admin"
+  const specialistHref = user?.role === "client" ? "/client/specialists" : "/specialists"
 
   const faqs = [
     { q: t("faq.q1.q"), a: t("faq.q1.a") },
@@ -151,547 +98,403 @@ export default function HomePageClient() {
     { q: t("faq.q3.q"), a: t("faq.q3.a") },
     { q: t("faq.q4.q"), a: t("faq.q4.a") },
   ]
+  const plans = [
+    { title: "Start", lessons: "4 yroki", price: "990 ⁴", features: ["Підбір спеціаліста", "Онлайн-кабінет", "Підтримка"] },
+    { title: "Popular", lessons: "12 уроків", price: "2199 ⁴", features: ["Персональний план", "Пріоритетна підтримка", "Звіт прогресу"], highlighted: true },
+    { title: "Pro", lessons: "24 уроки", price: "5199 ⁴", features: ["Глибока програма", "Щотижневий фідбек", "Підготовка до цілей"] },
+  ]
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ═══ Sticky Header ═══ */}
-      <header
-        className={`sticky top-0 z-50 backdrop-blur-xl transition-all duration-300 ${
-          scrolled
-            ? "bg-white/80 shadow-sm border-b border-slate-100/80"
-            : "bg-white/95"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-14 items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="relative h-8 w-8 overflow-hidden rounded-lg flex-shrink-0">
+    <div className="min-h-screen bg-white text-[#111827] font-sans">
+      {/* Preply-style Header */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
+           {/* Left: Logo + Primary Nav */}
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="relative h-8 w-8 overflow-hidden rounded-md">
                 <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
               </div>
-              <span className="text-sm font-bold text-slate-800 tracking-tight hidden sm:block">LIBITUM</span>
+              <span className="font-bold text-xl tracking-tight text-[#121117]">Libitum</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href={specialistHref} className="text-[13px] text-slate-600 hover:text-slate-900 transition-colors">{t("nav.specialists")}</Link>
-              <Link href="#how" className="text-[13px] text-slate-600 hover:text-slate-900 transition-colors">{t("nav.how_it_works")}</Link>
-              <Link href="#reviews" className="text-[13px] text-slate-600 hover:text-slate-900 transition-colors">{t("nav.reviews")}</Link>
-              <LanguageSwitcher />
+            <nav className="hidden lg:flex items-center gap-6 text-[15px] font-medium text-[#121117]">
+              <Link href={specialistHref} className="hover:text-primary transition-colors">{t("nav.specialists")}</Link>
+              <Link href="#how" className="hover:text-primary transition-colors">{t("nav.how_it_works")}</Link>
+              <Link href="#reviews" className="hover:text-primary transition-colors">{t("nav.reviews")}</Link>
             </nav>
+          </div>
 
-            <div className="flex items-center gap-2">
+          {/* Right: Secondary Nav + Auth (Desktop) */}
+          <div className="hidden lg:flex items-center gap-4 text-[15px] font-medium text-[#121117]">
+            <LanguageSwitcher />
+            
+            <div className="flex items-center gap-3 ml-2">
               {user ? (
-                <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
-                  <SquishyButton bgColor={B.pri} className="h-8 rounded-md px-4 text-xs">
-                    Dashboard
-                  </SquishyButton>
+                <Link href={dashboardHref} className="h-[48px] px-6 rounded-[8px] border-2 border-transparent bg-primary text-[#121117] hover:bg-primary/90 hover:border-[#121117] flex items-center justify-center font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
+                  Dashboard
                 </Link>
               ) : (
                 <>
-                  <Link href="/login">
-                    <SquishyButton variant="outline" className="h-8 rounded-md px-4 text-xs">
-                      {t("btn.login")}
-                    </SquishyButton>
+                  <Link href="/login" className="hover:text-primary transition-colors hidden sm:block px-2 font-[600]">
+                    {t("btn.login")}
                   </Link>
-                  <Link href="/register">
-                    <SquishyButton bgColor={B.pri} className="h-8 rounded-md px-4 text-xs">
-                      {t("btn.register")}
-                    </SquishyButton>
+                  <Link href="/register" className="h-[48px] px-6 rounded-[8px] border-2 border-transparent bg-primary text-[#121117] hover:bg-primary/90 hover:border-[#121117] flex items-center justify-center font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
+                    {t("btn.register")}
                   </Link>
                 </>
               )}
             </div>
           </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <LanguageSwitcher />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="hover:bg-gray-100 transition-colors rounded-full ml-1"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-[#121117]" />
+              ) : (
+                <Menu className="h-6 w-6 text-[#121117]" />
+              )}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Menu Content */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden absolute top-[72px] left-0 w-full bg-white border-b border-gray-200 shadow-lg p-4 flex flex-col gap-4 z-40">
+            <nav className="flex flex-col gap-4 text-[16px] font-medium text-[#121117] border-b border-gray-100 pb-4">
+              <Link href={specialistHref} onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.specialists")}</Link>
+              <Link href="#how" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.how_it_works")}</Link>
+              <Link href="#reviews" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.reviews")}</Link>
+            </nav>
+            <div className="flex flex-col gap-3 pt-2">
+              {user ? (
+                <Link href={dashboardHref} className="h-[48px] w-full rounded-[8px] bg-primary text-[#121117] hover:bg-primary/90 flex items-center justify-center font-[600] transition-colors">
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login" className="h-[48px] w-full rounded-[8px] border-2 border-[#121117] text-[#121117] hover:bg-gray-50 flex items-center justify-center font-[600] transition-colors">
+                    {t("btn.login")}
+                  </Link>
+                  <Link href="/register" className="h-[48px] w-full rounded-[8px] bg-primary text-[#121117] hover:bg-primary/90 flex items-center justify-center font-[600] transition-colors">
+                    {t("btn.register")}
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       <main>
-        {/* ═══ Hero with Spotlight + Ink Ripple + Scramble Text ═══ */}
-        <HeroSpotlight>
-          {/* Ink ripple — click anywhere in hero to see expanding teal rings */}
-          <InkRippleLayer />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 pb-4 relative z-10">
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-[13px] font-bold tracking-widest uppercase mb-3"
-              style={{ color: B.pri }}
-            >
-              Libitum Education
-            </motion.p>
-
-            <h1
-              className="font-bold text-slate-900 tracking-tight text-balance leading-tight"
-              style={{ fontSize: "clamp(1.5rem, 4vw, 2.75rem)", letterSpacing: "-0.025em" }}
-            >
-              Професійні репетитори, психологи
-              <br className="hidden sm:block" />
-              та логопеди
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.8 }}
-              className="text-slate-500 mt-3 text-sm max-w-lg leading-relaxed"
-            >
-              {t("hero.subtitle")}
-            </motion.p>
-
-            {/* CTA with morphing blob behind it */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.0 }}
-              className="mt-6 relative inline-block"
-            >
-              <MorphBlob
-                color="rgba(0,150,136,0.07)"
-                size={200}
-                className="absolute -top-16 -left-16 z-0"
-              />
-              <Link href={specialistHref} className="relative z-10">
-                <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
-                  {t("hero.cta")}
-                  <ArrowRight className="h-4 w-4" />
-                </SquishyButton>
-              </Link>
-            </motion.div>
-          </div>
-        </HeroSpotlight>
-
-        {/* ═══ Tutors ═══ */}
-        <section ref={tutors.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-1">
-          <SpecialistSlider title="Репетитори" type="tutor" icon={GraduationCap} specialists={tutorSlides} visible={tutors.visible} catalogHref="/specialists" catalogLabel="Всі репетитори" />
-        </section>
-
-        {/* ═══ Psychologists ═══ */}
-        <section ref={psychologists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <SpecialistSlider title="Психологи" type="health" icon={Brain} specialists={psychologistSlides} visible={psychologists.visible} catalogHref="/specialists" catalogLabel="Всі психологи" />
-        </section>
-
-        {/* ═══ Speech Therapists ═══ */}
-        <section ref={speechTherapists.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 pb-2">
-          <SpecialistSlider title="Логопеди" type="speech-therapist" icon={MessageCircle} specialists={speechSlides} visible={speechTherapists.visible} catalogHref="/specialists" catalogLabel="Всі логопеди" />
-        </section>
-
-        {/* ═══ Stats Counter ═══ */}
-        <section ref={stats.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <AnimatedCounter visible={stats.visible} />
-        </section>
-
-        {/* ═══ Trust Marquee ═══ */}
-        <TrustMarquee />
-
-        {/* ═══ How it works ═══ */}
-        <section ref={how.ref} id="how" className="py-14 sm:py-20 relative grain-overlay" style={{ backgroundColor: B.light }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={how.visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-10"
-            >
-              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                {t("nav.how_it_works")}
-              </h2>
-              <p className="text-slate-500 text-sm mt-1.5 max-w-md mx-auto">{t("how.subtitle")}</p>
-            </motion.div>
-
-            <div className="relative grid sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              {/* Connecting line between steps (desktop) */}
-              <div className="hidden sm:block absolute top-[22px] left-[16.67%] right-[16.67%] h-[2px] bg-gradient-to-r from-transparent via-teal-200 to-transparent z-0" />
-
-              {steps.map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={how.visible ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: (i + 1) * 0.15, duration: 0.5 }}
-                  className="text-center relative z-10"
-                >
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 3 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    className="h-11 w-11 rounded-lg flex items-center justify-center mx-auto mb-3 shadow-md"
-                    style={{ backgroundColor: B.pri }}
-                  >
-                    <span className="text-sm font-bold text-white">{step.num}</span>
-                  </motion.div>
-                  <h3 className="text-sm font-bold text-slate-800 mb-1 tracking-tight">{step.title}</h3>
-                  <p className="text-slate-500 text-xs leading-relaxed">{step.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <Link href={specialistHref}>
-                <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
-                  {t("hero.cta")}
-                  <ArrowRight className="h-4 w-4" />
-                </SquishyButton>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ Pricing ═══ */}
-        <section ref={price.ref} id="plans" className="py-14 sm:py-20 relative overflow-hidden">
-          {/* Floating gradient orbs */}
-          <div className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
-          <div className="absolute bottom-20 -right-32 w-72 h-72 rounded-full bg-amber-100/30 blur-3xl animate-orb-slow pointer-events-none" />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={price.visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-10"
-            >
-              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                {"Обери свій план"}
-              </h2>
-              <p className="text-slate-500 text-sm mt-1.5">{t("pricing.subtitle")}</p>
-            </motion.div>
-
-            <div className="grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-              {pricing.map((plan, i) => (
-                <TiltCard key={i} className="rounded-xl" intensity={6}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={price.visible ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: (i + 1) * 0.12, duration: 0.5 }}
-                    className={`relative rounded-xl p-5 border transition-colors backdrop-blur-sm h-full
-                      ${plan.highlight ? "border-2 bg-white/80 shadow-lg" : "bg-white/70 border-slate-200 hover:border-slate-300"}`}
-                    style={plan.highlight ? { borderColor: B.pri } : {}}
-                  >
-                  {plan.badge && (
-                    <div className="absolute -top-3 left-4 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-md" style={{ backgroundColor: B.pri }}>
-                      {plan.badge}
-                    </div>
-                  )}
-
-                  <div
-                    className="inline-block px-2.5 py-0.5 rounded-md text-[10px] font-bold mb-3"
-                    style={plan.highlight ? { backgroundColor: B.pri, color: "white" } : { backgroundColor: B.light, color: B.pri }}
-                  >
-                    {plan.lessons}
-                  </div>
-
-                  <h3 className="text-sm font-bold mb-1.5 tracking-tight" style={{ color: B.pri }}>{plan.name}</h3>
-
-                  <div className="flex items-baseline gap-2 mb-4">
-                    {plan.oldPrice && <span className="text-xs line-through text-slate-400">{plan.oldPrice}</span>}
-                    <span className="text-xl font-bold text-slate-800 tracking-tight">{plan.price}</span>
-                  </div>
-
-                  <SquishyButton
-                    bgColor={plan.highlight ? B.pri : "#1e293b"}
-                    className="w-full h-9 rounded-lg mb-4 text-sm inline-flex items-center justify-center gap-1.5"
-                  >
-                    {"Обрати"}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </SquishyButton>
-
-                  <div className="space-y-2">
-                    {plan.features.map((f, j) => (
-                      <div key={j} className="flex items-start gap-1.5">
-                        <Check className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" style={{ color: B.pri }} />
-                        <span className="text-xs text-slate-600">{f}</span>
-                      </div>
-                    ))}
-                  </div>
-                  </motion.div>
-                </TiltCard>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ Reviews ═══ */}
-        <section ref={revs.ref} id="reviews" className="py-12 sm:py-16 bg-slate-50/80 relative grain-overlay">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={revs.visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-8"
-            >
-              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                {t("nav.reviews")}
-              </h2>
-              <p className="text-slate-500 text-sm mt-1.5">{t("reviews.subtitle")}</p>
-            </motion.div>
-
-            {/* Epic Review Carousel */}
-            <div className="relative max-w-4xl mx-auto">
-              <div className="relative h-[200px] flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={currentReview}
-                    initial={{ 
-                      opacity: 0, 
-                      scale: 0.8,
-                      rotateY: -90,
-                      z: -100
-                    }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: 1,
-                      rotateY: 0,
-                      z: 0,
-                      transition: {
-                        duration: 0.8,
-                        ease: [0.23, 1, 0.32, 1],
-                        scale: { type: "spring", stiffness: 300, damping: 25 },
-                        rotateY: { type: "spring", stiffness: 100, damping: 20 }
-                      }
-                    }}
-                    exit={{ 
-                      opacity: 0,
-                      scale: 0.8,
-                      rotateY: 90,
-                      z: -100,
-                      transition: {
-                        duration: 0.6,
-                        ease: [0.23, 1, 0.32, 1]
-                      }
-                    }}
-                    className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                    onClick={nextReview}
-                  >
-                    <motion.div
-                      whileHover={{ 
-                        scale: 1.05,
-                        rotateX: 5,
-                        transition: { duration: 0.3 }
-                      }}
-                      className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 border border-slate-200/80 hover:border-slate-300 hover:shadow-xl transition-all max-w-md w-full mx-4"
-                    >
-                      <div className="flex gap-0.5 mb-3">
-                        {[...Array(reviews[currentReview].rating)].map((_, j) => (
-                          <motion.div
-                            key={j}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: j * 0.1, type: "spring", stiffness: 400 }}
-                          >
-                            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                          </motion.div>
-                        ))}
-                      </div>
-                      <motion.p 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.5 }}
-                        className="text-slate-600 mb-3 leading-relaxed text-sm"
-                      >
-                        {'"'}{reviews[currentReview].text}{'"'}
-                      </motion.p>
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5, duration: 0.3 }}
-                        className="text-sm font-semibold text-slate-800"
-                      >
-                        {reviews[currentReview].name}
-                      </motion.div>
-                    </motion.div>
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Side reviews preview */}
-                <div className="absolute inset-0 hidden lg:flex items-center justify-between pointer-events-none">
-                  <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    animate={{ opacity: 0.3, x: -20 }}
-                    transition={{ duration: 0.6 }}
-                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 max-w-[200px] w-full ml-8 transform scale-90 shadow-md hover:shadow-lg"
-                  >
-                    <div className="flex gap-0.5 mb-2">
-                      {[...Array(reviews[(currentReview - 1 + reviews.length) % reviews.length].rating)].map((_, j) => (
-                        <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">
-                      {'"'}{reviews[(currentReview - 1 + reviews.length) % reviews.length].text}{'"'}
-                    </p>
-                    <div className="text-xs font-medium text-slate-600 mt-2">
-                      {reviews[(currentReview - 1 + reviews.length) % reviews.length].name}
-                    </div>
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 0.3, x: 20 }}
-                    transition={{ duration: 0.6 }}
-                    className="bg-white/60 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 max-w-[200px] w-full mr-8 transform scale-90 shadow-md hover:shadow-lg"
-                  >
-                    <div className="flex gap-0.5 mb-2">
-                      {[...Array(reviews[(currentReview + 1) % reviews.length].rating)].map((_, j) => (
-                        <Star key={j} className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-2">
-                      {'"'}{reviews[(currentReview + 1) % reviews.length].text}{'"'}
-                    </p>
-                    <div className="text-xs font-medium text-slate-600 mt-2">
-                      {reviews[(currentReview + 1) % reviews.length].name}
-                    </div>
-                  </motion.div>
-                </div>
+        {/* Preply-style Hero Section */}
+        <section className="bg-white relative overflow-hidden pt-12 pb-16 lg:pt-24 lg:pb-32">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12 lg:gap-24 relative">
+            
+            {/* Left Content */}
+            <div className="w-full lg:w-[55%] xl:w-[50%] z-10 relative">
+              <div className="absolute -top-12 -left-8 w-[54px] h-[53px] text-[#ffc800] z-20 animate-[spin_10s_linear_infinite] opacity-80 hidden md:block">
+                <svg viewBox="0 0 54 53" fill="currentColor"><path fillRule="evenodd" d="M25.753.033c-3.111 2.37-5.076 5.617-7.859 8.283-4.008-2.656-7.798-5.322-11.834-7.792-2.316 4.39-3.791 9.176-5.46 13.882-5.405-3.32-10.45-6.852-16.143-9.87 0 5.485.498 10.873 2.062 16.111-5.187-.638-10.364-1.392-15.421-2.483 3.197 5.093 7.391 9.544 11.666 13.874-5.309 2.502-10.395 5.253-15.688 7.771 4.542 3.847 9.877 6.574 15.358 8.922-3.816 4.321-7.737 8.57-11.841 12.632 6.002 1.547 11.968 2.651 18.068 3.018-2.167 5.176-4.524 10.231-7.147 15.095 5.602-2.112 11.026-4.665 16.27-7.397.643 5.752 1.096 11.558 1.157 17.387 5.561-3.693 10.597-8.026 15.405-12.441 2.709 5.267 5.503 10.493 8.563 15.525 4.095-4.646 8.356-9.141 12.196-14.043 4.52 4.417 8.956 8.917 13.567 13.256-2.179-6.326-4.009-12.78-5.69-19.167 5.343 3.654 11.233 6.643 16.994 9.68-1.574-5.69-3.268-11.332-5.46-16.786 5.864 1.761 11.921 3.268 18.021 4.095-3.08-4.789-6.666-9.284-10.28-13.676 5.485-.295 11.01-1.077 16.516-1.921-4.757-3.81-9.983-7.135-15.333-10.05 5.534-1.503 11.166-2.735 16.892-3.791-5.626-2.42-10.961-5.421-16.204-8.583C45.318 20.301 48.337 14.894 51 9.308c-5.741.25-11.458.74-17.166 1.48C37.07 6.136 40.75 1.762 44.821-2.425c-5.913.689-11.758 1.905-17.514 3.411 1.748-4.832 3.847-9.528 5.892-14.188-5.267 1.831-10.375 4.195-15.346 6.837.283-4.646.126-9.284-.334-13.918" clipRule="evenodd"></path></svg>
               </div>
 
-              {/* Navigation Controls */}
-              <div className="flex items-center justify-center gap-4 mt-8">
-                <div className="flex gap-2">
-                  {reviews.map((_, i) => (
-                    <motion.button
-                      key={i}
-                      whileHover={{ scale: 1.2 }}
-                      whileTap={{ scale: 0.8 }}
-                      onClick={() => setCurrentReview(i)}
-                      className={`h-2 w-2 rounded-full transition-all ${
-                        i === currentReview 
-                          ? "bg-emerald-600 w-8" 
-                          : "bg-slate-300 hover:bg-slate-400"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ FAQ ═══ */}
-        <section ref={faqSec.ref} className="py-14 sm:py-20">
-          <div className="max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={faqSec.visible ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-              className="text-center mb-8"
-            >
-              <h2 className="font-bold text-slate-800 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                {"Часті запитання"}
-              </h2>
-              <p className="text-slate-500 text-sm mt-1.5">{t("faq.subtitle")}</p>
-            </motion.div>
-
-            <div className="space-y-2">
-              {faqs.map((faq, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={faqSec.visible ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: (i + 1) * 0.08, duration: 0.4 }}
-                  className="bg-white/80 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-200/80 hover:border-slate-300 transition-all"
+              <h1 className="text-[42px] sm:text-[60px] lg:text-[72px] leading-[1.05] font-bold text-[#121117] tracking-[-0.03em] mb-10 text-center lg:text-left">
+                Швидке навчання <br />
+                з вашим ідеальним <br />
+                <span className="relative inline-block mt-2">
+                  спеціалістом.
+                  <svg className="absolute -bottom-3 left-0 w-[110%] h-[20px] text-[#ffc800] -z-10" viewBox="0 0 137 13" fill="currentColor" preserveAspectRatio="none"><path fillRule="evenodd" d="M136.009 2.193c-28.775-1.921-57.94-2.884-86.744-1.921C34.821 1.233 20.378 1.956.126 3.161c-.551.066-1.042.868.175 1.096 16.096 3.011 31.91 5.926 48.064 8.71 28.539 4.931 58.077 4.14 86.815-.992 1.391-.25 2.179-2.124.829-9.782z" clipRule="evenodd"></path></svg>
+                </span>
+              </h1>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+                <Link 
+                  href={specialistHref}
+                  className="inline-flex items-center justify-center gap-2 bg-primary text-[#121117] border-2 border-transparent text-[18px] font-[600] h-[56px] px-8 rounded-[8px] w-full sm:w-auto hover:bg-primary/90 hover:border-[#121117] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                 >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                    className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50/50 transition-colors cursor-pointer"
-                  >
-                    <span className="font-semibold text-slate-800 text-sm tracking-tight">{faq.q}</span>
-                    <motion.div
-                      animate={{ rotate: openFaq === i ? 180 : 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <ChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0 ml-3" />
-                    </motion.div>
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {openFaq === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="px-4 pb-3 text-slate-600 leading-relaxed text-sm">{faq.a}</div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══ CTA ═══ */}
-        <section ref={ctaSec.ref} className="py-14 sm:py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={ctaSec.visible ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="rounded-2xl p-8 sm:p-12 text-center relative overflow-hidden grain-overlay"
-              style={{ backgroundColor: B.light, border: `1px solid ${B.mid}` }}
-            >
-              {/* Shimmer glow behind CTA */}
-              <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full shimmer-glow -z-0"
-                style={{ backgroundColor: B.pri }}
-              />
-              <div className="relative z-10">
-                <h2 className="font-bold text-slate-800 mb-2 text-balance tracking-tight" style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)" }}>
-                  {t("cta.title")}
-                </h2>
-                <p className="text-slate-600 mb-6 max-w-md mx-auto text-sm">{t("cta.subtitle")}</p>
-                <Link href={specialistHref}>
-                  <SquishyButton bgColor={B.pri} className="h-10 rounded-lg px-6 text-sm inline-flex items-center gap-2">
-                    {t("cta.button")}
-                    <ArrowRight className="h-4 w-4" />
-                  </SquishyButton>
+                  Знайти спеціаліста
+                  <ArrowRight className="h-6 w-6" />
+                </Link>
+                <Link 
+                  href="#how"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-[#121117] border-[2px] border-[#121117] text-[18px] font-[600] h-[56px] px-8 rounded-[8px] w-full sm:w-auto hover:bg-gray-50 transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+                >
+                  Як це працює
                 </Link>
               </div>
-            </motion.div>
+            </div>
+
+            {/* Right Image/Illustration Area */}
+            <div className="w-full lg:w-[45%] xl:w-[50%] relative hidden md:block">
+              <div className="relative w-full aspect-[4/3] rounded-[32px] overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)]">
+                <Image 
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" 
+                  alt="Happy student learning" 
+                  fill 
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              
+              {/* Paper / Cartoonish floating badge */}
+              <div className="absolute -bottom-8 -left-8 bg-white p-5 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-gray-100 flex items-center gap-4 rotate-[-3deg] animate-[bounce_6s_infinite]">
+                <div className="bg-[#ffc800] p-3 rounded-full flex items-center justify-center">
+                  <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="m12 3 2.221 5.942 6.338.277-4.965 3.95 1.696 6.112L12 15.78l-5.29 3.501 1.695-6.113-4.965-3.95 6.338-.276z"></path></svg>
+                </div>
+                <div>
+                  <p className="text-[#121117] font-bold text-lg leading-tight">4.9/5</p>
+                  <p className="text-[#69686f] text-sm">Середня оцінка</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Preply-style Stats Strip */}
+        <section className="bg-[#f0f3f3] pb-12 border-b border-gray-200">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap items-center justify-between gap-8 py-8 border-t border-gray-200/50">
+              <div className="flex items-center gap-3">
+                <p className="text-[28px] font-bold text-[#121117] leading-none">32,000+</p>
+                <p className="text-[15px] text-[#69686f] leading-snug">Досвідчених<br/>спеціалістів</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-[28px] font-bold text-[#121117] leading-none">300,000+</p>
+                <p className="text-[15px] text-[#69686f] leading-snug">5-зіркових<br/>відгуків</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <p className="text-[28px] font-bold text-[#121117] leading-none">120+</p>
+                <p className="text-[15px] text-[#69686f] leading-snug">Напрямків<br/>навчання</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Specialists Carousel */}
+        <section className="py-20 lg:py-28 bg-white border-b border-gray-200 overflow-hidden">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-[#121117]">
+                Наші найкращі спеціалісти
+              </h2>
+              <div className="hidden sm:flex gap-3">
+                <button 
+                  onClick={() => scrollCarousel('left')}
+                  className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={() => scrollCarousel('right')}
+                  className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            <div className="relative -mx-4 sm:mx-0">
+              <div 
+                ref={carouselRef}
+                className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar px-4 sm:px-0 pb-8"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {featuredSpecialists.map((specialist) => (
+                  <Link 
+                    key={specialist.id} 
+                    href={`/specialists/${specialist.id}`}
+                    className="flex-none w-[280px] sm:w-[320px] snap-start group"
+                  >
+                    <div className="bg-white border border-slate-200 rounded-[20px] p-5 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-slate-300 transition-all duration-300 h-full flex flex-col">
+                      <div className="flex gap-4 items-start mb-4">
+                        <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border border-slate-100">
+                          <Image 
+                            src={specialist.image} 
+                            alt={specialist.name} 
+                            fill 
+                            className="object-cover object-center group-hover:scale-105 transition-transform duration-500" 
+                            sizes="64px"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-[18px] text-[#121117] leading-tight group-hover:text-primary transition-colors">{specialist.name}</h3>
+                          <p className="text-[14px] text-[#69686f] font-medium mt-1">{specialist.specialization}</p>
+                          <div className="flex items-center gap-1.5 mt-1.5 bg-[#fff8e1] w-fit px-2 py-0.5 rounded-[6px]">
+                            <Star className="w-3.5 h-3.5 fill-[#ffc800] text-[#ffc800]" />
+                            <span className="text-[13px] font-bold text-[#f57c00]">{specialist.rating}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="mb-4 flex-grow">
+                        <div className="flex flex-wrap items-start gap-2">
+                          {specialist.subjects.slice(0, 2).map((subject, idx) => (
+                            <span key={idx} className="bg-[#f0f3f3] text-[#121117] px-2.5 py-1 rounded-[6px] text-[13px] font-medium leading-tight">
+                              {subject}
+                            </span>
+                          ))}
+                          {specialist.subjects.length > 2 && (
+                            <span className="bg-[#f0f3f3] text-[#121117] px-2.5 py-1 rounded-[6px] text-[13px] font-medium leading-tight">
+                              +{specialist.subjects.length - 2}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
+                        <div>
+                          <span className="text-[18px] font-bold text-[#121117]">₴{specialist.price}</span>
+                          <span className="text-[13px] text-[#69686f] ml-1">/ год</span>
+                        </div>
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#121117] transition-colors">
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            
+            <div className="mt-6 flex justify-center sm:hidden">
+              <Link 
+                href={specialistHref}
+                className="text-[#00c5a6] font-bold flex items-center gap-1 hover:underline underline-offset-2"
+              >
+                Всі спеціалісти <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* How it works (Preply Card Layout) */}
+        <section id="how" className="py-20 lg:py-28">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-center text-[#121117] mb-16">
+              {t("nav.how_it_works")}
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[t("how.step1.title"), t("how.step2.title"), t("how.step3.title")].map((title, idx) => (
+                <div
+                  key={title}
+                  className="rounded-[24px] bg-white p-8 border border-slate-200/80"
+                  style={{ boxShadow: "0 15px 35px rgba(0,0,0,0.08)" }}
+                >
+                  <div className="w-12 h-12 rounded-full text-[#121117] flex items-center justify-center font-bold text-xl mb-6 bg-[#f0f3f3]">
+                    {idx + 1}
+                  </div>
+                  <h3 className="text-[22px] font-bold text-[#121117] mb-4">{title}</h3>
+                  <p className="text-[16px] text-[#69686f] leading-relaxed">{t(`how.step${idx + 1 as 1 | 2 | 3}.desc`)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#f0f3f3] py-20 lg:py-28">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-center text-[#121117] mb-4">
+              Обери свій план
+            </h2>
+            <p className="text-center text-[18px] text-[#69686f] mb-16 max-w-2xl mx-auto">{t("pricing.subtitle")}</p>
+            <div className="grid lg:grid-cols-3 gap-6 max-w-[1200px] mx-auto">
+              {plans.map((plan) => (
+                <div
+                  key={plan.title}
+                  className={`rounded-[24px] p-8 border ${plan.highlighted ? "bg-[#121117] text-white border-transparent" : "bg-white border-slate-200/80"}`}
+                  style={!plan.highlighted ? { boxShadow: "0 15px 35px rgba(0,0,0,0.08)" } : {}}
+                >
+                  <p className={`text-[16px] font-medium ${plan.highlighted ? "text-gray-300" : "text-[#69686f]"}`}>{plan.lessons}</p>
+                  <h3 className="text-[32px] font-bold mt-2 mb-2">{plan.price}</h3>
+                  <p className="font-bold text-[18px] mb-8">{plan.title}</p>
+                  <Link
+                    href={specialistHref}
+                    className={`h-[48px] rounded-[8px] px-6 inline-flex items-center justify-center w-full text-[16px] font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] border-2 ${
+                      plan.highlighted ? "bg-white text-[#121117] border-transparent hover:bg-gray-100" : "bg-primary text-[#121117] border-[#121117] hover:bg-primary/90 hover:border-[#121117]"
+                    }`}
+                  >
+                    Обрати план
+                  </Link>
+                  <div className="mt-8 space-y-4">
+                    {plan.features.map((feature) => (
+                      <p key={feature} className={`text-[16px] flex items-start gap-3 ${plan.highlighted ? "text-gray-200" : "text-[#121117]"}`}>
+                        <Check className="h-5 w-5 shrink-0" style={{ color: plan.highlighted ? "#fff" : BRAND.primary }} />
+                        {feature}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 lg:py-28 bg-white">
+          <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-center text-[#121117] mb-12">
+              Часті запитання
+            </h2>
+            <div className="space-y-0">
+              {faqs.map((faq, idx) => (
+                <div key={faq.q} className="border-b border-gray-200 overflow-hidden">
+                  <button
+                    className="w-full py-6 flex items-center justify-between text-left font-[600] text-[18px] text-[#121117] hover:text-primary transition-colors duration-200"
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  >
+                    <span>{faq.q}</span>
+                    <ChevronDown className={`h-6 w-6 shrink-0 text-[#121117] transition-transform duration-300 ${openFaq === idx ? "rotate-180" : ""}`} />
+                  </button>
+                  {openFaq === idx && (
+                    <div className="pb-6 pr-8">
+                      <p className="text-[16px] text-[#69686f] leading-relaxed">{faq.a}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       </main>
 
-      {/* ═══ Footer ═══ */}
-      <footer className="bg-slate-800 text-white py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-            <div className="col-span-2 md:col-span-1">
-              <Link href="/" className="flex items-center gap-2 mb-3">
-                <div className="relative h-7 w-7 overflow-hidden rounded-md flex-shrink-0">
-                  <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-                </div>
-                <span className="font-bold text-sm tracking-tight">LIBITUM</span>
-              </Link>
-              <p className="text-slate-400 text-xs leading-relaxed">{t("about.desc")}</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-xs">{t("contact.title")}</h4>
-              <div className="space-y-1.5 text-xs text-slate-400">
-                <p>{t("contact.email")}</p>
-                <p>{t("contact.telegram")}</p>
-                <p>{t("contact.hours")}</p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-xs">{t("rules.title")}</h4>
-              <div className="space-y-1.5 text-xs text-slate-400">
-                <p>{t("rules.item1")}</p>
-                <p>{t("rules.item2")}</p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-3 text-xs">{"Навігація"}</h4>
-              <div className="space-y-1.5 text-xs">
-                <Link href={specialistHref} className="block text-slate-400 hover:text-white transition-colors">{t("nav.specialists")}</Link>
-                <Link href="#how" className="block text-slate-400 hover:text-white transition-colors">{t("nav.how_it_works")}</Link>
-                <Link href="#reviews" className="block text-slate-400 hover:text-white transition-colors">{t("nav.reviews")}</Link>
-              </div>
+      {/* Preply-style Footer */}
+      <footer className="bg-white border-t border-gray-200 pt-16 pb-8">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-12 text-[15px]">
+          <div>
+            <p className="font-bold text-[#121117] text-lg mb-4">LIBITUM</p>
+            <p className="text-[#69686f] leading-relaxed">{t("about.desc")}</p>
+          </div>
+          <div>
+            <p className="font-bold text-[#121117] mb-6 uppercase tracking-wider text-[13px]">{t("contact.title")}</p>
+            <div className="space-y-4 text-[#69686f]">
+              <p className="hover:text-[#121117] cursor-pointer transition-colors">{t("contact.email")}</p>
+              <p className="hover:text-[#121117] cursor-pointer transition-colors">{t("contact.telegram")}</p>
+              <p className="hover:text-[#121117] cursor-pointer transition-colors">{t("contact.hours")}</p>
             </div>
           </div>
-          <div className="border-t border-slate-700 pt-5 text-center text-xs text-slate-400">
-            &copy; 2024 Libitum Education. {t("footer.rights")}
+          <div>
+            <p className="font-bold text-[#121117] mb-6 uppercase tracking-wider text-[13px]">{t("rules.title")}</p>
+            <div className="space-y-4 text-[#69686f]">
+              <p className="hover:text-[#121117] cursor-pointer transition-colors">{t("rules.item1")}</p>
+              <p className="hover:text-[#121117] cursor-pointer transition-colors">{t("rules.item2")}</p>
+            </div>
           </div>
+          <div>
+            <p className="font-bold text-[#121117] mb-6 uppercase tracking-wider text-[13px]">Навігація</p>
+            <div className="space-y-4">
+              <Link href={specialistHref} className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.specialists")}</Link>
+              <Link href="#how" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.how_it_works")}</Link>
+              <Link href="#reviews" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.reviews")}</Link>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-gray-200 text-[14px] text-[#69686f]">
+          © 2024 Libitum Education. {t("footer.rights")}
         </div>
       </footer>
     </div>

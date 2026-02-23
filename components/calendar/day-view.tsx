@@ -42,13 +42,13 @@ export function DayView({
   const isTodayDate = isToday(currentDate)
 
   return (
-    <div className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden min-w-[350px]">
+    <div className="flex flex-col rounded-[24px] border border-slate-200/80 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden min-w-[350px] font-sans">
       {/* Header */}
-      <div className="border-b border-slate-200 bg-slate-50/50 p-4 lg:p-6 flex flex-col items-center">
-        <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">
+      <div className="border-b border-slate-200/80 bg-[#f0f3f3] p-4 lg:p-6 flex flex-col items-center">
+        <div className="text-[12px] font-[600] text-[#69686f] uppercase tracking-wide">
           {weekDays[currentDate.getDay()]}
         </div>
-        <div className={cn("mt-2 text-2xl lg:text-3xl font-bold", isTodayDate ? "text-slate-900" : "text-slate-700")}>
+        <div className={cn("mt-2 text-2xl lg:text-[28px] font-[700]", isTodayDate ? "text-[#121117]" : "text-[#121117]/80")}>
           {currentDate.getDate()} {monthNames[currentDate.getMonth()]}
         </div>
       </div>
@@ -79,42 +79,43 @@ export function DayView({
             return (
               <div
                 key={index}
-                className="group relative flex transition-colors hover:bg-slate-50"
-                style={{ height: "80px sm:h-100px" }}
+                className="group relative flex transition-colors hover:bg-slate-50/50 border-b border-slate-100 last:border-b-0"
+                style={{ height: "80px sm:h-[100px]" }}
                 onClick={() => userType === "tutor" && onAddClick(currentDate, time)}
               >
-                <div className="w-16 sm:w-24 border-r border-slate-100 p-2 sm:p-4 text-xs sm:text-sm font-medium text-slate-400 flex justify-center pt-2 sm:pt-3">
+                <div className="w-16 sm:w-24 border-r border-slate-100 p-2 sm:p-4 text-[12px] font-[500] text-[#69686f] flex justify-center pt-2 sm:pt-3">
                   <span className="hidden sm:block">{time}</span>
                   <span className="sm:hidden">{time.split(':')[0]}</span>
                 </div>
-                <div className="relative flex-1 p-1 sm:p-2 gap-1 sm:gap-2 flex">
+                <div className="relative flex-1 p-1.5 sm:p-2 gap-1.5 sm:gap-2 flex">
                   {sessionsInSlot.map((session) => {
                     const isPsychology = session.subject === "Психологія"
-                    const borderColor = isPsychology ? "border-orange-500" : "border-emerald-500"
-                    const bgColor = isPsychology ? "bg-orange-50" : "bg-emerald-50"
-                    const hoverBg = isPsychology ? "hover:bg-orange-100" : "hover:bg-emerald-100"
-                    const textColor = isPsychology ? "text-orange-900" : "text-emerald-900"
+                    const borderColor = isPsychology ? "border-orange-500" : "border-[#00c5a6]"
+                    const bgColor = isPsychology ? "bg-orange-50" : "bg-[#e8fffb]"
+                    const hoverBg = isPsychology ? "hover:bg-orange-100" : "hover:bg-[#00c5a6]/10"
+                    const textColor = isPsychology ? "text-orange-900" : "text-[#00a389]"
+                    const subtitleColor = isPsychology ? "text-orange-600" : "text-[#00a389]"
                     
                     return (
                     <div
                       key={session.id}
-                      className={`flex-1 cursor-pointer rounded-xl border-l-4 ${borderColor} ${bgColor} p-2 sm:p-3 ${hoverBg} hover:shadow-md transition-all`}
+                      className={`flex-1 cursor-pointer rounded-[12px] border-l-4 ${borderColor} ${bgColor} p-2 sm:p-3 ${hoverBg} hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all`}
                       onClick={(e) => {
                         e.stopPropagation()
                         onViewLesson(session)
                       }}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <div className={`font-bold ${textColor} text-xs sm:text-sm`}>
+                      <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                        <div className={`font-[700] ${textColor} text-[13px] sm:text-[15px]`}>
                           {userType === "client" ? session.specialistName : session.clientName}
                         </div>
                         <Badge
                           variant={session.format === "online" ? "default" : "secondary"}
                           className={cn(
-                            "text-[11px] sm:text-[11px] h-4 sm:h-5",
+                            "text-[10px] sm:text-[11px] h-5 sm:h-6 font-[600] border-0",
                             session.format === "online"
-                              ? "bg-emerald-600 hover:bg-emerald-700"
-                              : "bg-white text-slate-600 border-slate-200",
+                              ? "bg-[#00c5a6] hover:bg-[#00a389] text-white"
+                              : "bg-[#f0f3f3] text-[#121117]",
                           )}
                         >
                           {session.format === "online" ? (
@@ -134,16 +135,15 @@ export function DayView({
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className={`text-xs sm:text-sm font-medium ${isPsychology ? "text-orange-800" : "text-emerald-800"}`}>{session.subject}</div>
-                          {session.topic && <div className={`mt-1 text-[11px] sm:text-xs ${isPsychology ? "text-orange-600" : "text-emerald-600"}`}>{session.topic}</div>}
+                          <div className={`text-[12px] sm:text-[13px] font-[600] ${subtitleColor}`}>{session.subject}</div>
+                          {session.topic && <div className={`mt-0.5 text-[11px] sm:text-[12px] font-[500] ${subtitleColor}/80`}>{session.topic}</div>}
                         </div>
-                        <div className={`flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium ${isPsychology ? "text-orange-700" : "text-emerald-700"}`}>
-                          <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <div className={`flex items-center gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-[600] ${subtitleColor}`}>
+                          <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                           <span className="hidden sm:inline">{session.time} ({session.duration} хв)</span>
                           <span className="sm:hidden">{session.time}</span>
                         </div>
                       </div>
-                      <div className={`text-[11px] sm:text-xs opacity-80 ${isPsychology ? "text-orange-600" : "text-emerald-600"}`}>{session.subject}</div>
                     </div>
                     )
                   })}
@@ -151,7 +151,7 @@ export function DayView({
                     <div
                       key={event.id}
                       className={cn(
-                        "flex-1 cursor-pointer rounded-xl border-l-4 p-2 sm:p-3 hover:shadow-md transition-all",
+                        "flex-1 cursor-pointer rounded-[12px] border-l-4 p-2 sm:p-3 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-all",
                         getEventColor(event.type),
                       )}
                       onClick={(e) => {
@@ -159,15 +159,15 @@ export function DayView({
                         onViewEvent(event)
                       }}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="font-bold text-xs sm:text-sm">{event.title}</div>
-                        <div className="flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium">
-                          <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                        <div className="font-[700] text-[13px] sm:text-[15px]">{event.title}</div>
+                        <div className="flex items-center gap-1 sm:gap-1.5 text-[12px] sm:text-[13px] font-[600]">
+                          <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                           <span className="hidden sm:inline">{event.time} ({event.duration} хв)</span>
                           <span className="sm:hidden">{event.time}</span>
                         </div>
                       </div>
-                      <div className="text-[11px] sm:text-xs opacity-80">{getEventTypeLabel(event.type)}</div>
+                      <div className="text-[11px] sm:text-[12px] font-[500] opacity-80">{getEventTypeLabel(event.type)}</div>
                     </div>
                   ))}
                   {userType === "tutor" && sessionsInSlot.length === 0 && eventsInSlot.length === 0 && (

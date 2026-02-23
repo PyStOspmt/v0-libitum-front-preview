@@ -10,8 +10,9 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight } from "lucide-react"
+import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight, Flame, Target, Coins, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import { useState } from "react"
 
 export default function TutorPage() {
   const { toast } = useToast()
@@ -36,6 +37,18 @@ export default function TutorPage() {
     earnings: 15600,
     rating: 4.8,
     level: progress.level,
+    streak: 5,
+    lcBalance: 1250,
+  }
+
+  const [goals, setGoals] = useState([
+    { id: 1, title: "Заповнити звіт по уроку", completed: false },
+    { id: 2, title: "Перевірити ДЗ (3)", completed: true },
+    { id: 3, title: "Додати нового учня", completed: false },
+  ])
+
+  const handleToggleGoal = (id: number) => {
+    setGoals(goals.map(g => g.id === id ? { ...g, completed: !g.completed } : g))
   }
 
   const handleAcceptRequest = (requestId: string) => {
@@ -58,116 +71,201 @@ export default function TutorPage() {
   return (
     <ProtectedRoute allowedRoles={["specialist"]}>
       <SidebarLayout userType="tutor">
-        <div className="p-6 lg:p-10 max-w-6xl mx-auto space-y-8">
+        <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
           {/* Header */}
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold text-slate-800 tracking-tight">Головна</h1>
-            <p className="text-slate-500 mt-1">Кабінет спеціаліста</p>
+            <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Головна</h1>
+            <p className="text-[#69686f] mt-1 text-[16px]">Кабінет спеціаліста</p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Активні клієнти</span>
-                <div className="h-10 w-10 rounded-xl bg-[var(--theme-primary-light)] flex items-center justify-center">
-                  <Users className="h-5 w-5 text-[var(--theme-primary)]" />
+                <span className="text-[14px] font-[600] text-[#69686f]">Активні клієнти</span>
+                <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center shrink-0">
+                  <Users className="h-5 w-5 text-[#121117]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.activeClients}</div>
-              <p className="text-sm text-slate-500 mt-1">+2 цього місяця</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.activeClients}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">+2 цього місяця</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Нові запити</span>
-                <div className="h-10 w-10 rounded-xl bg-[#fff8e1] flex items-center justify-center">
+                <span className="text-[14px] font-[600] text-[#69686f]">Нові запити</span>
+                <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center shrink-0">
                   <Clock className="h-5 w-5 text-[#ffb74d]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.pendingRequests}</div>
-              <p className="text-sm text-slate-500 mt-1">Потребують відповіді</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingRequests}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">Потребують відповіді</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Рейтинг</span>
-                <div className="h-10 w-10 rounded-xl bg-[#fff8e1] flex items-center justify-center">
+                <span className="text-[14px] font-[600] text-[#69686f]">Рейтинг</span>
+                <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center shrink-0">
                   <Star className="h-5 w-5 text-[#ffc107]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.rating}</div>
-              <p className="text-sm text-slate-500 mt-1">З 48 відгуків</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.rating}</div>
+              <p className="text-[13px] text-[#69686f] mt-2">З 48 відгуків</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-slate-100">
+            <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-sm font-medium text-slate-500">Заробіток</span>
-                <div className="h-10 w-10 rounded-xl bg-[var(--theme-primary-light)] flex items-center justify-center">
-                  <DollarSign className="h-5 w-5 text-[var(--theme-primary)]" />
+                <span className="text-[14px] font-[600] text-[#69686f]">Заробіток</span>
+                <div className="h-10 w-10 rounded-full bg-[#e8fffb] flex items-center justify-center shrink-0">
+                  <DollarSign className="h-5 w-5 text-[#00c5a6]" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-slate-800">{stats.earnings} ₴</div>
-              <p className="text-sm text-slate-500 mt-1">За цей місяць</p>
+              <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.earnings} ₴</div>
+              <p className="text-[13px] text-[#69686f] mt-2">За цей місяць</p>
             </div>
           </div>
 
-          {/* Level Card */}
-          <Link href="/tutor/stats">
-            <div className="bg-white rounded-3xl p-8 border border-slate-100 relative overflow-hidden cursor-pointer hover:border-[var(--theme-primary)]/30 hover:shadow-sm transition-all group">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--theme-primary-light)] rounded-full -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex items-center gap-5">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--theme-primary)]">
-                      <Award className="h-8 w-8 text-white" />
+          {/* Level Card & Gamification */}
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
+            {/* Level Card */}
+            <div className="md:col-span-2">
+              <Link href="/tutor/stats" className="block h-full">
+                <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] relative overflow-hidden cursor-pointer hover:-translate-y-1 transition-all duration-300 group h-full">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-[#e8fffb] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-[#00c5a6]/10 transition-colors" />
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="flex items-center gap-5">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-[12px] bg-[#00c5a6]">
+                          <Award className="h-8 w-8 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-[24px] font-bold text-[#121117]">
+                            Рівень {stats.level} - {currentLevel.title}
+                          </h3>
+                          <p className="text-[#69686f] mt-1 text-[15px]">Натисніть для детальної статистики</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Badge className="text-[14px] px-4 py-2 bg-[#e8fffb] text-[#00a389] font-[600] rounded-[8px] border-0">
+                          {stats.completedSessions} занять
+                        </Badge>
+                        <BarChart3 className="h-5 w-5 text-[#00c5a6] group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-slate-800">
-                        Рівень {stats.level} - {currentLevel.title}
-                      </h3>
-                      <p className="text-slate-500 mt-0.5">Натисніть для детальної статистики</p>
+                    <Progress value={levelProgress} className="h-3 mt-8 bg-gray-100 [&>div]:bg-[#00c5a6] rounded-full overflow-hidden" />
+                    <div className="mt-6 flex gap-2 flex-wrap">
+                      {progress.achievements.slice(0, 3).map((achievement) => (
+                        <Badge key={achievement.id} variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
+                          <span className="mr-1 text-[16px]">{achievement.icon}</span> {achievement.title}
+                        </Badge>
+                      ))}
+                      {progress.achievements.length > 3 && (
+                        <Badge variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
+                          +{progress.achievements.length - 3} ще
+                        </Badge>
+                      )}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge className="text-sm px-4 py-2 bg-[var(--theme-primary-light)] text-[var(--theme-primary-dark)] font-medium border-0">
-                      {stats.completedSessions} занять
-                    </Badge>
-                    <BarChart3 className="h-5 w-5 text-[var(--theme-primary)] group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-                <Progress value={levelProgress} className="h-2 mt-6 bg-slate-100 [&>div]:bg-[var(--theme-primary)]" />
-                <div className="mt-5 flex gap-2 flex-wrap">
-                  {progress.achievements.slice(0, 3).map((achievement) => (
-                    <Badge key={achievement.id} variant="outline" className="border-slate-200 text-slate-600 bg-white px-3 py-1">
-                      {achievement.icon} {achievement.title}
-                    </Badge>
-                  ))}
-                  {progress.achievements.length > 3 && (
-                    <Badge variant="outline" className="border-slate-200 text-slate-600 bg-white px-3 py-1">
-                      +{progress.achievements.length - 3} ще
+              </Link>
+            </div>
+
+            {/* Streak & LC */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="h-12 w-12 rounded-[12px] bg-[#fff8e1] flex items-center justify-center shrink-0">
+                    <Flame className="h-6 w-6 text-[#ff9800]" />
+                  </div>
+                  <div>
+                    <h3 className="text-[18px] font-bold text-[#121117]">{stats.streak} днів поспіль</h3>
+                    <p className="text-[13px] text-[#69686f]">Зайдіть завтра, щоб не втратити серію</p>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center text-[13px] font-[600] text-[#ff9800] bg-[#fff8e1]/50 px-3 py-2 rounded-[8px]">
+                  <span>Бонус завтра:</span>
+                  <span>+50 XP</span>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="h-12 w-12 rounded-[12px] bg-[#f0f3f3] flex items-center justify-center shrink-0">
+                    <Coins className="h-6 w-6 text-[#121117]" />
+                  </div>
+                  <div>
+                    <h3 className="text-[18px] font-bold text-[#121117]">{stats.lcBalance} LC</h3>
+                    <p className="text-[13px] text-[#69686f]">Баланс Libitum Coins</p>
+                  </div>
+                </div>
+                <Link href="/tutor/rewards">
+                  <Button className="w-full bg-[#00c5a6] hover:bg-[#00a389] text-[#121117] font-[600] rounded-[8px] h-10">
+                    Магазин винагород
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Goals & Tasks */}
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Target className="h-6 w-6 text-[#00c5a6]" />
+                <h2 className="text-[20px] font-bold text-[#121117]">Цілі на сьогодні</h2>
+              </div>
+              <span className="text-[14px] font-[600] text-[#00c5a6] bg-[#e8fffb] px-3 py-1 rounded-[8px]">
+                {goals.filter(g => g.completed).length} / {goals.length} виконано
+              </span>
+            </div>
+            <div className="space-y-3">
+              {goals.map(goal => (
+                <div 
+                  key={goal.id}
+                  onClick={() => handleToggleGoal(goal.id)}
+                  className={`flex items-center gap-4 p-4 rounded-[12px] border cursor-pointer transition-colors ${
+                    goal.completed 
+                      ? 'bg-[#f8f9fb] border-transparent' 
+                      : 'bg-white border-slate-200/80 hover:border-[#00c5a6]/30'
+                  }`}
+                >
+                  <div className={`flex items-center justify-center h-6 w-6 rounded-full border-2 shrink-0 transition-colors ${
+                    goal.completed 
+                      ? 'bg-[#00c5a6] border-[#00c5a6]' 
+                      : 'border-slate-300'
+                  }`}>
+                    {goal.completed && <CheckCircle2 className="h-4 w-4 text-white" />}
+                  </div>
+                  <span className={`text-[15px] font-[500] ${
+                    goal.completed ? 'text-[#69686f] line-through' : 'text-[#121117]'
+                  }`}>
+                    {goal.title}
+                  </span>
+                  {!goal.completed && (
+                    <Badge variant="outline" className="ml-auto text-[12px] text-[#ff9800] border-[#ff9800]/30 bg-[#fff8e1]/50">
+                      +10 XP
                     </Badge>
                   )}
                 </div>
-              </div>
+              ))}
             </div>
-          </Link>
+          </div>
 
           {/* Pending Requests */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-100">
-            <div className="flex items-center justify-between mb-6">
+          <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all">
+            <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-800">Нові запити на заняття</h2>
-                <p className="text-slate-500 text-sm mt-1">Відповідайте протягом 3 годин для збереження рейтингу</p>
+                <h2 className="text-[24px] font-bold text-[#121117]">Нові запити на заняття</h2>
+                <p className="text-[#69686f] text-[16px] mt-1">Відповідайте протягом 3 годин для збереження рейтингу</p>
               </div>
               <Link href="/tutor/requests">
-                <Button variant="ghost" className="text-[var(--theme-primary)] hover:text-[var(--theme-primary-dark)] hover:bg-[var(--theme-primary-light)]">
+                <Button variant="ghost" className="text-[16px] font-[600] text-[#121117] hover:text-[#00c5a6] hover:bg-transparent h-auto p-0">
                   Всі запити
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-6">
               {pendingRequests.length > 0 ? (
                 pendingRequests.map((request) => (
                   <RequestCard
@@ -179,15 +277,15 @@ export default function TutorPage() {
                   />
                 ))
               ) : (
-                <div className="py-12 text-center">
-                  <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
-                    <Clock className="h-8 w-8 text-slate-300" />
+                <div className="py-12 text-center border-2 border-dashed border-gray-200 rounded-[16px]">
+                  <div className="h-16 w-16 rounded-full bg-[#f0f3f3] flex items-center justify-center mx-auto mb-6">
+                    <Clock className="h-8 w-8 text-[#121117]" />
                   </div>
-                  <p className="text-slate-500">Немає нових запитів</p>
+                  <p className="text-[#69686f] text-[16px] mb-6">Немає нових запитів</p>
                   <Link href="/tutor/exchange">
-                    <Button className="mt-4 rounded-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-dark)]">
+                    <button className="inline-flex items-center justify-center gap-2 bg-[#00c5a6] text-[#121117] border-2 border-transparent text-[16px] font-[600] h-[48px] px-8 rounded-[8px] hover:bg-[#00c5a6]/90 hover:border-[#121117] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
                       Переглянути біржу
-                    </Button>
+                    </button>
                   </Link>
                 </div>
               )}

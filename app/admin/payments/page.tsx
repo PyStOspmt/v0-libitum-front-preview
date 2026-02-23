@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Separator } from "@/components/ui/separator"
 import { DollarSign, Eye, Filter, RefreshCw, Search, ShieldCheck, XCircle } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 type PaymentStatus = "pending" | "paid" | "refunded" | "failed"
 
@@ -97,14 +98,14 @@ const paymentsMock: Payment[] = [
 ]
 
 function statusBadge(status: PaymentStatus) {
-  const map: Record<PaymentStatus, { label: string; variant: "outline" | "secondary" | "destructive" | "default" }> = {
-    pending: { label: "Очікує", variant: "outline" },
-    paid: { label: "Оплачено", variant: "secondary" },
-    refunded: { label: "Повернено", variant: "default" },
-    failed: { label: "Помилка", variant: "destructive" },
+  const map: Record<PaymentStatus, { label: string; className: string }> = {
+    pending: { label: "Очікує", className: "bg-orange-100 text-orange-700 hover:bg-orange-100/80" },
+    paid: { label: "Оплачено", className: "bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80" },
+    refunded: { label: "Повернено", className: "bg-blue-100 text-blue-700 hover:bg-blue-100/80" },
+    failed: { label: "Помилка", className: "bg-red-100 text-red-700 hover:bg-red-100/80" },
   }
-  const { label, variant } = map[status]
-  return <Badge variant={variant}>{label}</Badge>
+  const { label, className } = map[status]
+  return <Badge variant="secondary" className={cn("font-[600] border-0", className)}>{label}</Badge>
 }
 
 export default function AdminPaymentsPage() {
@@ -133,26 +134,26 @@ export default function AdminPaymentsPage() {
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <SidebarLayout userType="admin">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
+        <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Платежі</h1>
-              <p className="text-muted-foreground">Фінансова статистика та рух коштів по заявках</p>
+            <div className="space-y-1">
+              <h1 className="text-3xl font-[700] text-[#121117]">Платежі</h1>
+              <p className="text-[15px] font-[500] text-[#69686f]">Фінансова статистика та рух коштів по заявках</p>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row">
-              <div className="flex items-center gap-2 rounded-md border bg-card px-3 py-2">
-                <Search className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 rounded-[12px] border border-slate-200/80 bg-white px-3 py-2 h-12 shadow-sm focus-within:ring-2 focus-within:ring-[#00c5a6]/20">
+                <Search className="h-5 w-5 text-[#69686f]" />
                 <Input
                   placeholder="Пошук по ID, клієнту, спеціалісту"
-                  className="border-0 focus-visible:ring-0"
+                  className="border-0 focus-visible:ring-0 shadow-none px-1 text-[15px]"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
               </div>
-              <div className="flex items-center gap-2 rounded-md border bg-card px-3 py-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 rounded-[12px] border border-slate-200/80 bg-white px-3 py-2 h-12 shadow-sm focus-within:ring-2 focus-within:ring-[#00c5a6]/20">
+                <Filter className="h-5 w-5 text-[#69686f]" />
                 <select
-                  className="bg-transparent text-sm outline-none"
+                  className="bg-transparent text-[15px] outline-none font-[500] text-[#121117]"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as PaymentStatus | "all")}
                 >
@@ -166,43 +167,43 @@ export default function AdminPaymentsPage() {
             </div>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle>Оплачено</CardTitle>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-3">
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Оплачено</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{totals.paid.toLocaleString()} ₴</div>
-                <p className="text-sm text-muted-foreground">Підтверджені оплати</p>
+                <div className="text-[32px] font-[700] text-[#00c5a6]">{totals.paid.toLocaleString()} ₴</div>
+                <p className="text-[13px] font-[500] text-[#69686f] mt-1">Підтверджені оплати</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Очікує оплату</CardTitle>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Очікує оплату</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{totals.pending.toLocaleString()} ₴</div>
-                <p className="text-sm text-muted-foreground">Сума інвойсів в очікуванні</p>
+                <div className="text-[32px] font-[700] text-orange-500">{totals.pending.toLocaleString()} ₴</div>
+                <p className="text-[13px] font-[500] text-[#69686f] mt-1">Сума інвойсів в очікуванні</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Середній чек</CardTitle>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Середній чек</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold">{totals.avg} ₴</div>
-                <p className="text-sm text-muted-foreground">Середній платіж за заявку</p>
+                <div className="text-[32px] font-[700] text-[#121117]">{totals.avg} ₴</div>
+                <p className="text-[13px] font-[500] text-[#69686f] mt-1">Середній платіж за заявку</p>
               </CardContent>
             </Card>
           </div>
 
           <Tabs defaultValue="all" className="w-full">
-            <TabsList>
-              <TabsTrigger value="all">Всі ({paymentsMock.length})</TabsTrigger>
-              <TabsTrigger value="pending">Очікують</TabsTrigger>
-              <TabsTrigger value="paid">Оплачені</TabsTrigger>
-              <TabsTrigger value="refunded">Повернені</TabsTrigger>
-              <TabsTrigger value="failed">Помилки</TabsTrigger>
+            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 mb-4">
+              <TabsTrigger value="all" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Всі ({paymentsMock.length})</TabsTrigger>
+              <TabsTrigger value="pending" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Очікують</TabsTrigger>
+              <TabsTrigger value="paid" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Оплачені</TabsTrigger>
+              <TabsTrigger value="refunded" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Повернені</TabsTrigger>
+              <TabsTrigger value="failed" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Помилки</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="space-y-4">
@@ -230,20 +231,20 @@ export default function AdminPaymentsPage() {
 function PaymentTable({ payments }: { payments: Payment[] }) {
   if (!payments.length) {
     return (
-      <Card>
-        <CardContent className="py-10 text-center text-muted-foreground">Немає записів за обраними фільтрами</CardContent>
+      <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans">
+        <CardContent className="py-12 text-center text-[#69686f] font-[500]">Немає записів за обраними фільтрами</CardContent>
       </Card>
     )
   }
 
   return (
-    <Card>
+    <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans">
       <CardHeader>
-        <CardTitle>Рух коштів</CardTitle>
-        <CardDescription>Оплати, повернення та помилки</CardDescription>
+        <CardTitle className="text-xl font-[700] text-[#121117]">Рух коштів</CardTitle>
+        <CardDescription className="text-[#69686f] font-[500]">Оплати, повернення та помилки</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="hidden grid-cols-8 gap-3 rounded-md bg-muted/60 px-3 py-2 text-xs font-medium text-muted-foreground md:grid">
+      <CardContent className="space-y-4">
+        <div className="hidden grid-cols-8 gap-3 rounded-[12px] bg-[#f0f3f3] px-4 py-3 text-[13px] font-[600] text-[#69686f] md:grid">
           <span>ID</span>
           <span>Запит</span>
           <span>Клієнт</span>
@@ -255,24 +256,24 @@ function PaymentTable({ payments }: { payments: Payment[] }) {
         </div>
         <div className="space-y-3">
           {payments.map((p) => (
-            <Card key={p.id} className="border-muted md:border-0 md:bg-transparent md:shadow-none">
-              <CardContent className="grid gap-3 px-3 py-3 md:grid-cols-8 md:items-center md:rounded-md md:bg-card">
-                <div className="text-sm font-medium">{p.id}</div>
-                <div className="text-sm text-muted-foreground">{p.requestId}</div>
+            <Card key={p.id} className="border-slate-200/80 md:border-0 md:bg-transparent md:shadow-none transition-colors hover:bg-slate-50/50 rounded-[16px]">
+              <CardContent className="grid gap-3 px-4 py-4 md:grid-cols-8 md:items-center md:rounded-[12px] md:bg-white md:border md:border-slate-200/80 shadow-sm">
+                <div className="text-[14px] font-[600] text-[#121117]">{p.id}</div>
+                <div className="text-[14px] font-[500] text-[#69686f]">{p.requestId}</div>
                 <div>
-                  <p className="text-sm font-medium">{p.client}</p>
-                  <p className="text-xs text-muted-foreground">Клієнт</p>
+                  <p className="text-[14px] font-[600] text-[#121117]">{p.client}</p>
+                  <p className="text-[12px] font-[500] text-[#69686f]">Клієнт</p>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">{p.specialist}</p>
-                  <p className="text-xs text-muted-foreground">Спеціаліст</p>
+                  <p className="text-[14px] font-[600] text-[#121117]">{p.specialist}</p>
+                  <p className="text-[12px] font-[500] text-[#69686f]">Спеціаліст</p>
                 </div>
-                <div className="text-sm">
-                  <p className="font-semibold">{p.amount.toLocaleString()} ₴</p>
-                  <p className="text-xs text-muted-foreground">Комісія: {p.fee} ₴</p>
+                <div className="text-[14px]">
+                  <p className="font-[700] text-[#121117]">{p.amount.toLocaleString()} ₴</p>
+                  <p className="text-[12px] font-[500] text-[#69686f]">Комісія: {p.fee} ₴</p>
                 </div>
-                <div className="text-sm text-muted-foreground">{p.method}</div>
-                <div className="flex items-center gap-2 text-sm">{statusBadge(p.status)}</div>
+                <div className="text-[14px] font-[500] text-[#69686f]">{p.method}</div>
+                <div className="flex items-center gap-2 text-[14px]">{statusBadge(p.status)}</div>
                 <div className="flex items-center justify-end gap-2">
                   <PaymentDetails payment={p} />
                   {p.status === "pending" && <ConfirmMarkPaid paymentId={p.id} />}
@@ -291,52 +292,52 @@ function PaymentDetails({ payment }: { payment: Payment }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
           <Eye className="mr-2 h-4 w-4" /> Деталі
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Оплата {payment.id}</DialogTitle>
-          <DialogDescription>Запит {payment.requestId}</DialogDescription>
+      <DialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] sm:max-w-md font-sans">
+        <DialogHeader className="pb-4 border-b border-slate-200/80">
+          <DialogTitle className="text-[24px] font-[700] text-[#121117]">Оплата {payment.id}</DialogTitle>
+          <DialogDescription className="text-[#69686f] font-[500] text-[15px]">Запит {payment.requestId}</DialogDescription>
         </DialogHeader>
-        <div className="space-y-3 text-sm">
+        <div className="space-y-3 text-[15px]">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Клієнт</span>
-            <span className="font-medium">{payment.client}</span>
+            <span className="text-[#69686f] font-[500]">Клієнт</span>
+            <span className="font-[600] text-[#121117]">{payment.client}</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Спеціаліст</span>
-            <span className="font-medium">{payment.specialist}</span>
+            <span className="text-[#69686f] font-[500]">Спеціаліст</span>
+            <span className="font-[600] text-[#121117]">{payment.specialist}</span>
           </div>
-          <Separator />
+          <Separator className="bg-slate-200/80" />
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Сума</span>
-            <span className="font-semibold">{payment.amount.toLocaleString()} ₴</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Комісія платформи</span>
-            <span className="font-semibold">{payment.fee} ₴</span>
+            <span className="text-[#69686f] font-[500]">Сума</span>
+            <span className="font-[700] text-[#121117]">{payment.amount.toLocaleString()} ₴</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Метод</span>
-            <span className="font-medium">{payment.method}</span>
+            <span className="text-[#69686f] font-[500]">Комісія платформи</span>
+            <span className="font-[700] text-[#121117]">{payment.fee} ₴</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Статус</span>
+            <span className="text-[#69686f] font-[500]">Метод</span>
+            <span className="font-[600] text-[#121117]">{payment.method}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-[#69686f] font-[500]">Статус</span>
             <span>{statusBadge(payment.status)}</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between text-[13px] font-[500] text-[#69686f]">
             <span>Створено</span>
             <span>{payment.createdAt}</span>
           </div>
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <div className="flex items-center justify-between text-[13px] font-[500] text-[#69686f]">
             <span>Оновлено</span>
             <span>{payment.updatedAt}</span>
           </div>
-          <Separator />
+          <Separator className="bg-slate-200/80" />
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground">Дії</span>
+            <span className="text-[#69686f] font-[500]">Дії</span>
             <div className="flex gap-2">
               {payment.status === "pending" && <ConfirmMarkPaid paymentId={payment.id} />}
               {payment.status === "paid" && <ConfirmRefund paymentId={payment.id} />}
@@ -352,18 +353,18 @@ function ConfirmMarkPaid({ paymentId }: { paymentId: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant="secondary">
+        <Button size="sm" variant="secondary" className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
           <ShieldCheck className="mr-2 h-4 w-4" /> Позначити оплачено
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
         <AlertDialogHeader>
-          <AlertDialogTitle>Підтвердити оплату?</AlertDialogTitle>
-          <AlertDialogDescription>Платіж {paymentId} стане зі статусом paid.</AlertDialogDescription>
+          <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Підтвердити оплату?</AlertDialogTitle>
+          <AlertDialogDescription className="text-[#69686f] font-[500]">Платіж {paymentId} стане зі статусом paid.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Скасувати</AlertDialogCancel>
-          <AlertDialogAction>Підтвердити</AlertDialogAction>
+          <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+          <AlertDialogAction className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]">Підтвердити</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -374,18 +375,18 @@ function ConfirmRefund({ paymentId }: { paymentId: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="outline" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
           <XCircle className="mr-2 h-4 w-4" /> Оформити повернення
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
         <AlertDialogHeader>
-          <AlertDialogTitle>Підтвердити повернення коштів?</AlertDialogTitle>
-          <AlertDialogDescription>Платіж {paymentId} буде відмічено як refunded.</AlertDialogDescription>
+          <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Підтвердити повернення коштів?</AlertDialogTitle>
+          <AlertDialogDescription className="text-[#69686f] font-[500]">Платіж {paymentId} буде відмічено як refunded.</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Скасувати</AlertDialogCancel>
-          <AlertDialogAction>Повернути</AlertDialogAction>
+          <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+          <AlertDialogAction className="rounded-[8px] font-[600]">Повернути</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

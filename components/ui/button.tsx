@@ -5,29 +5,29 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "spotlight-button inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[8px] border-2 text-[16px] font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
   {
     variants: {
       variant: {
         default:
-          'text-[var(--theme-primary-dark,_#333)] border-transparent shadow-sm bg-[var(--theme-primary)] bg-[var(--theme-gradient)] hover:brightness-110 hover:-translate-y-[1px]',
+          'text-[#121117] border-[#121117] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] hover:border-[#121117]',
         destructive:
-          'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+          'bg-destructive text-white hover:bg-destructive/90 border-transparent',
         outline:
-          'border bg-background shadow-xs hover:bg-slate-50 hover:text-slate-900 dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
+          'border-[#121117] bg-white text-[#121117] hover:bg-gray-50',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'bg-[#E2E8F0] border-transparent text-[#121117] hover:bg-[#CBD5E1]',
         ghost:
-          'text-slate-700 hover:bg-slate-50 hover:text-slate-900',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'border-transparent bg-transparent text-[#121117] hover:bg-gray-100 hover:border-gray-100',
+        link: 'text-primary underline-offset-4 hover:underline border-transparent',
       },
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
-        icon: 'size-9',
-        'icon-sm': 'size-8',
-        'icon-lg': 'size-10',
+        default: 'h-[48px] px-6 py-2',
+        sm: 'h-[40px] px-4 py-1.5 text-[14px]',
+        lg: 'h-[56px] px-8 py-3 text-[18px]',
+        icon: 'size-[48px]',
+        'icon-sm': 'size-[40px]',
+        'icon-lg': 'size-[56px]',
       },
     },
     defaultVariants: {
@@ -42,7 +42,6 @@ function Button({
   variant,
   size,
   asChild = false,
-  style,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
@@ -50,27 +49,10 @@ function Button({
   }) {
   const Comp = asChild ? Slot : 'button'
 
-  const defaultStyleFallback =
-    variant === 'default'
-      ? {
-          background: 'var(--theme-gradient)',
-          backgroundColor: 'var(--theme-primary)',
-          color: 'var(--theme-primary-dark)',
-        }
-      : undefined
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    e.currentTarget.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`)
-    e.currentTarget.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`)
-  }
-
   return (
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      onPointerMove={handlePointerMove}
-      style={defaultStyleFallback ? { ...defaultStyleFallback, ...style } : style}
       {...props}
     />
   )

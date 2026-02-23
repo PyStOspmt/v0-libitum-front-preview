@@ -42,31 +42,31 @@ export function MobileDayView({
   ].sort((a, b) => a.sortTime.localeCompare(b.sortTime))
 
   return (
-    <div className="flex flex-col rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div className="flex flex-col rounded-[24px] border border-slate-200/80 bg-white shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden font-sans">
       {/* Header */}
-      <div className="border-b border-slate-200 bg-slate-50/50 p-4 flex items-center justify-between">
+      <div className="border-b border-slate-200/80 bg-[#f0f3f3] p-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div
             className={cn(
-              "flex h-12 w-12 items-center justify-center rounded-xl font-bold text-lg",
+              "flex h-12 w-12 items-center justify-center rounded-[12px] font-[600] text-[18px]",
               isTodayDate
-                ? "bg-slate-900 text-white shadow-md"
-                : "bg-white border border-slate-200 text-slate-700"
+                ? "bg-[#121117] text-white shadow-[0_2px_8px_rgba(0,0,0,0.1)]"
+                : "bg-white border border-slate-200/80 text-[#121117]"
             )}
           >
             {currentDate.getDate()}
           </div>
           <div>
-            <div className="text-sm font-medium text-slate-500">
+            <div className="text-[12px] font-[600] text-[#69686f] uppercase tracking-wide">
               {weekDays[currentDate.getDay()]}
             </div>
-            <div className="text-lg font-semibold text-slate-800">
+            <div className="text-[16px] font-[700] text-[#121117]">
               {monthNames[currentDate.getMonth()]}
             </div>
           </div>
         </div>
         {isTodayDate && (
-          <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">
+          <Badge variant="secondary" className="bg-[#e8fffb] text-[#00a389] border-0 font-[600]">
             Сьогодні
           </Badge>
         )}
@@ -76,11 +76,11 @@ export function MobileDayView({
       <div className="flex-1 overflow-auto bg-white" style={{ maxHeight: "calc(100vh - 280px)" }}>
         {sortedItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-            <div className="h-16 w-16 rounded-full bg-slate-50 flex items-center justify-center mb-4">
-              <CalendarIcon className="h-8 w-8 text-slate-300" />
+            <div className="h-16 w-16 rounded-full bg-[#f0f3f3] flex items-center justify-center mb-4">
+              <CalendarIcon className="h-8 w-8 text-[#69686f]/50" />
             </div>
-            <p className="text-slate-500 font-medium">Немає подій на цей день</p>
-            <p className="text-slate-400 text-sm mt-1">
+            <p className="text-[#121117] font-[600]">Немає подій на цей день</p>
+            <p className="text-[#69686f] text-[13px] mt-1 font-[500]">
               {userType === "tutor" ? "Натисніть + щоб додати заняття" : "Найближчі заняття з'являться тут"}
             </p>
           </div>
@@ -90,38 +90,42 @@ export function MobileDayView({
               if (item.itemType === "lesson") {
                 const lesson = item as Lesson
                 const isPsychology = lesson.subject === "Психологія"
+                const borderColor = isPsychology ? "border-orange-500" : "border-[#00c5a6]"
+                const textColor = isPsychology ? "text-orange-900" : "text-[#00a389]"
+                const subtitleColor = isPsychology ? "text-orange-600" : "text-[#00a389]"
+
                 return (
                   <div
                     key={`lesson-${index}`}
                     className={cn(
-                      "p-4 active:bg-slate-50 transition-colors cursor-pointer rounded-xl",
-                      isPsychology ? "border-l-4 border-l-orange-500" : "border-l-4 border-l-emerald-500"
+                      "p-4 active:bg-slate-50 transition-colors cursor-pointer border-l-4",
+                      borderColor
                     )}
                     onClick={() => onViewLesson(lesson)}
                   >
                     <div className="flex items-start gap-3">
                       {/* Time */}
                       <div className="flex flex-col items-center min-w-[60px]">
-                        <span className="text-lg font-bold text-slate-800">{lesson.time}</span>
-                        <span className="text-xs text-slate-500">{lesson.duration} хв</span>
+                        <span className="text-[16px] font-[700] text-[#121117]">{lesson.time}</span>
+                        <span className="text-[12px] font-[500] text-[#69686f]">{lesson.duration} хв</span>
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className={cn(
-                            "font-semibold text-base truncate",
-                            isPsychology ? "text-orange-800" : "text-emerald-800"
+                            "font-[600] text-[15px] truncate",
+                            textColor
                           )}>
                             {lesson.subject}
                           </h3>
                           <Badge
                             variant={lesson.format === "online" ? "default" : "secondary"}
                             className={cn(
-                              "text-xs flex-shrink-0",
+                              "text-[10px] font-[600] flex-shrink-0 border-0 h-5",
                               lesson.format === "online"
-                                ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                                : "bg-blue-100 text-blue-700 border-blue-200"
+                                ? "bg-[#e8fffb] text-[#00a389]"
+                                : "bg-blue-50 text-blue-700"
                             )}
                           >
                             {lesson.format === "online" ? (
@@ -134,19 +138,19 @@ export function MobileDayView({
                         </div>
 
                         <p className={cn(
-                          "text-sm font-medium",
-                          isPsychology ? "text-orange-700" : "text-emerald-700"
+                          "text-[14px] font-[600]",
+                          subtitleColor
                         )}>
                           {userType === "client" ? lesson.specialistName : lesson.clientName}
                         </p>
 
                         {lesson.topic && (
-                          <p className="text-sm text-slate-500 mt-1 truncate">{lesson.topic}</p>
+                          <p className="text-[12px] font-[500] text-[#69686f] mt-1 truncate">{lesson.topic}</p>
                         )}
 
                         <div className="flex items-center gap-2 mt-2">
-                          <Clock className="h-4 w-4 text-slate-400" />
-                          <span className="text-xs text-slate-500">
+                          <Clock className="h-3.5 w-3.5 text-[#69686f]" />
+                          <span className="text-[12px] font-[500] text-[#69686f]">
                             {lesson.time} - {new Date(
                               new Date(`2000-01-01T${lesson.time}`).getTime() + lesson.duration * 60000
                             ).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
@@ -155,7 +159,7 @@ export function MobileDayView({
                       </div>
 
                       {/* Arrow */}
-                      <ChevronRight className="h-6 w-6 text-slate-300 flex-shrink-0 mt-1" />
+                      <ChevronRight className="h-5 w-5 text-[#69686f]/50 flex-shrink-0 mt-1" />
                     </div>
                   </div>
                 )
@@ -164,21 +168,21 @@ export function MobileDayView({
                 return (
                   <div
                     key={`event-${index}`}
-                    className="p-4 active:bg-slate-50 transition-colors cursor-pointer border-l-4 border-l-purple-500 rounded-xl"
+                    className="p-4 active:bg-slate-50 transition-colors cursor-pointer border-l-4 border-l-purple-500"
                     onClick={() => onViewEvent(event)}
                   >
                     <div className="flex items-start gap-3">
                       <div className="flex flex-col items-center min-w-[60px]">
-                        <span className="text-lg font-bold text-slate-800">{event.time}</span>
-                        <span className="text-xs text-slate-500">{event.duration} хв</span>
+                        <span className="text-[16px] font-[700] text-[#121117]">{event.time}</span>
+                        <span className="text-[12px] font-[500] text-[#69686f]">{event.duration} хв</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-800">{event.title}</h3>
+                        <h3 className="font-[600] text-[15px] text-[#121117]">{event.title}</h3>
                         {event.description && (
-                          <p className="text-sm text-slate-500 mt-1 truncate">{event.description}</p>
+                          <p className="text-[13px] font-[500] text-[#69686f] mt-1 truncate">{event.description}</p>
                         )}
                       </div>
-                      <ChevronRight className="h-6 w-6 text-slate-300 flex-shrink-0 mt-1" />
+                      <ChevronRight className="h-5 w-5 text-[#69686f]/50 flex-shrink-0 mt-1" />
                     </div>
                   </div>
                 )

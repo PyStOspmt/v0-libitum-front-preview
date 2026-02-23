@@ -30,6 +30,7 @@ import {
 import { useAuth } from "@/lib/auth-context"
 import { Search, CheckCircle2, XCircle, Ban, Eye, Mail, Phone, LogIn } from "lucide-react"
 import { useState } from "react"
+import { cn } from "@/lib/utils"
 
 export default function AdminSpecialistsPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -121,63 +122,63 @@ export default function AdminSpecialistsPage() {
   return (
     <ProtectedRoute allowedRoles={["admin"]}>
       <SidebarLayout userType="admin">
-        <div className="container mx-auto max-w-7xl space-y-6 p-6">
-          <div>
-            <h1 className="text-3xl font-bold">Управління спеціалістами</h1>
-            <p className="text-muted-foreground">Перегляд та модерація спеціалістів платформи</p>
+        <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-[700] text-[#121117]">Управління спеціалістами</h1>
+            <p className="text-[15px] font-[500] text-[#69686f]">Перегляд та модерація спеціалістів платформи</p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card>
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Всього</CardTitle>
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Всього</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{specialists.length}</div>
+                <div className="text-[32px] font-[700] text-[#121117]">{specialists.length}</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Активні</CardTitle>
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Активні</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{activeSpecialists.length}</div>
+                <div className="text-[32px] font-[700] text-[#00c5a6]">{activeSpecialists.length}</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Очікують</CardTitle>
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Очікують</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{pendingSpecialists.length}</div>
+                <div className="text-[32px] font-[700] text-orange-500">{pendingSpecialists.length}</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-medium">Заблоковані</CardTitle>
+                <CardTitle className="text-[14px] font-[600] text-[#69686f]">Заблоковані</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">{blockedSpecialists.length}</div>
+                <div className="text-[32px] font-[700] text-red-500">{blockedSpecialists.length}</div>
               </CardContent>
             </Card>
           </div>
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-[#69686f]" />
             <Input
               placeholder="Пошук за ім'ям, email або предметом..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
+              className="pl-10 h-12 rounded-[12px] border-slate-200/80 focus-visible:ring-[#00c5a6] text-[15px]"
             />
           </div>
 
           <Tabs defaultValue="all" className="w-full">
-            <TabsList>
-              <TabsTrigger value="all">Всі ({filteredSpecialists.length})</TabsTrigger>
-              <TabsTrigger value="active">Активні ({activeSpecialists.length})</TabsTrigger>
-              <TabsTrigger value="pending">Очікують ({pendingSpecialists.length})</TabsTrigger>
-              <TabsTrigger value="blocked">Заблоковані ({blockedSpecialists.length})</TabsTrigger>
+            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0">
+              <TabsTrigger value="all" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Всі ({filteredSpecialists.length})</TabsTrigger>
+              <TabsTrigger value="active" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Активні ({activeSpecialists.length})</TabsTrigger>
+              <TabsTrigger value="pending" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Очікують ({pendingSpecialists.length})</TabsTrigger>
+              <TabsTrigger value="blocked" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Заблоковані ({blockedSpecialists.length})</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="space-y-4">
@@ -228,18 +229,18 @@ function SpecialistCard({ specialist }: { specialist: any }) {
     })
   }
   return (
-    <Card>
+    <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-3">
               <div>
-                <h3 className="font-semibold">{specialist.name}</h3>
-                <p className="text-sm text-muted-foreground">{specialist.specialization}</p>
+                <h3 className="font-[700] text-[18px] text-[#121117]">{specialist.name}</h3>
+                <p className="text-[14px] font-[500] text-[#69686f]">{specialist.specialization}</p>
               </div>
               {specialist.verified && (
-                <Badge variant="secondary" className="gap-1">
-                  <CheckCircle2 className="h-3 w-3" />
+                <Badge variant="secondary" className="gap-1 bg-[#e8fffb] text-[#00a389] border-0 font-[600]">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
                   Верифікований
                 </Badge>
               )}
@@ -251,6 +252,12 @@ function SpecialistCard({ specialist }: { specialist: any }) {
                       ? "secondary"
                       : "destructive"
                 }
+                className={cn(
+                  "font-[600] border-0",
+                  specialist.status === "active" ? "bg-[#00c5a6] text-white" :
+                  specialist.status === "pending" ? "bg-orange-100 text-orange-700" :
+                  "bg-red-100 text-red-700"
+                )}
               >
                 {specialist.status === "active"
                   ? "Активний"
@@ -260,12 +267,12 @@ function SpecialistCard({ specialist }: { specialist: any }) {
               </Badge>
             </div>
 
-            <div className="grid gap-2 text-sm md:grid-cols-2">
-              <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="grid gap-2 text-[14px] md:grid-cols-2 font-[500] text-[#69686f]">
+              <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 {specialist.email}
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
+              <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
                 {specialist.phone}
               </div>
@@ -273,86 +280,86 @@ function SpecialistCard({ specialist }: { specialist: any }) {
 
             <div className="flex flex-wrap gap-2">
               {specialist.subjects.map((subject: string) => (
-                <Badge key={subject} variant="outline">
+                <Badge key={subject} variant="outline" className="rounded-[8px] bg-white text-[#121117] border-slate-200/80 font-[500] px-3 py-1">
                   {subject}
                 </Badge>
               ))}
             </div>
 
-            <div className="flex gap-4 text-sm text-muted-foreground flex-wrap">
-              <span>Рейтинг: {specialist.rating > 0 ? specialist.rating : "Немає"}</span>
-              <span>Занять: {specialist.totalLessons}</span>
-              <span>Ціна: {specialist.price}</span>
-              <span>Приєднався: {new Date(specialist.joinedDate).toLocaleDateString("uk-UA")}</span>
+            <div className="flex gap-4 text-[14px] font-[600] text-[#121117] flex-wrap bg-[#f0f3f3]/50 p-3 rounded-[12px] border border-slate-200/80">
+              <span className="flex items-center gap-1.5"><span className="text-[#69686f] font-[500]">Рейтинг:</span> {specialist.rating > 0 ? specialist.rating : "Немає"}</span>
+              <span className="flex items-center gap-1.5"><span className="text-[#69686f] font-[500]">Занять:</span> {specialist.totalLessons}</span>
+              <span className="flex items-center gap-1.5"><span className="text-[#69686f] font-[500]">Ціна:</span> {specialist.price}</span>
+              <span className="flex items-center gap-1.5"><span className="text-[#69686f] font-[500]">Приєднався:</span> {new Date(specialist.joinedDate).toLocaleDateString("uk-UA")}</span>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                   <Eye className="mr-2 h-4 w-4" />
                   Деталі
                 </Button>
               </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Деталі спеціаліста</DialogTitle>
-                  <DialogDescription>Повна інформація про {specialist.name}</DialogDescription>
+              <DialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] sm:max-w-xl font-sans">
+                <DialogHeader className="pb-4 border-b border-slate-200/80">
+                  <DialogTitle className="text-[24px] font-[700] text-[#121117]">Деталі спеціаліста</DialogTitle>
+                  <DialogDescription className="text-[#69686f] font-[500] text-[15px]">Повна інформація про {specialist.name}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label>Ім'я</Label>
-                    <p className="text-sm">{specialist.name}</p>
+                    <Label className="text-[#69686f] font-[500]">Ім'я</Label>
+                    <p className="text-[16px] font-[600] text-[#121117] mt-1">{specialist.name}</p>
                   </div>
                   <div>
-                    <Label>Email</Label>
-                    <p className="text-sm">{specialist.email}</p>
+                    <Label className="text-[#69686f] font-[500]">Email</Label>
+                    <p className="text-[16px] font-[600] text-[#121117] mt-1">{specialist.email}</p>
                   </div>
                   <div>
-                    <Label>Телефон</Label>
-                    <p className="text-sm">{specialist.phone}</p>
+                    <Label className="text-[#69686f] font-[500]">Телефон</Label>
+                    <p className="text-[16px] font-[600] text-[#121117] mt-1">{specialist.phone}</p>
                   </div>
                   <div>
-                    <Label>Спеціалізація</Label>
-                    <p className="text-sm">{specialist.specialization}</p>
+                    <Label className="text-[#69686f] font-[500]">Спеціалізація</Label>
+                    <p className="text-[16px] font-[600] text-[#121117] mt-1">{specialist.specialization}</p>
                   </div>
                   <div>
-                    <Label>Предмети</Label>
-                    <p className="text-sm">{specialist.subjects.join(", ")}</p>
+                    <Label className="text-[#69686f] font-[500]">Предмети</Label>
+                    <p className="text-[16px] font-[600] text-[#121117] mt-1">{specialist.subjects.join(", ")}</p>
                   </div>
                   <div>
-                    <Label>Про себе (заявка)</Label>
-                    <p className="text-sm text-muted-foreground">
+                    <Label className="text-[#69686f] font-[500]">Про себе (заявка)</Label>
+                    <p className="text-[15px] font-[500] text-[#121117] bg-[#f0f3f3]/50 p-3 rounded-[12px] mt-1">
                       Ціна: {specialist.price} • Рейтинг: {specialist.rating || "Немає"} • Занять: {specialist.totalLessons}
                     </p>
                   </div>
                   <div>
-                    <Label>Документи</Label>
+                    <Label className="text-[#69686f] font-[500]">Документи</Label>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50">
                         <Eye className="mr-2 h-4 w-4" />
                         Диплом
                       </Button>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50">
                         <Eye className="mr-2 h-4 w-4" />
                         Сертифікат
                       </Button>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Support Access</Label>
+                    <Label className="text-[#69686f] font-[500]">Support Access</Label>
                     <Button
                       variant="secondary"
                       size="sm"
-                      className="w-full justify-start"
+                      className="w-full justify-start rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0"
                       onClick={handleImpersonate}
                       disabled={specialist.status === "blocked"}
                     >
                       <LogIn className="mr-2 h-4 w-4" />
                       Увійти як спеціаліст (підтримка)
                     </Button>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-[13px] font-[500] text-[#69686f]">
                       Доступ лише для Super Admin. Без зміни пароля спеціаліста.
                     </p>
                   </div>
@@ -364,46 +371,47 @@ function SpecialistCard({ specialist }: { specialist: any }) {
               <div className="flex gap-2">
                 <AlertDialog open={confirmAction === "approve"} onOpenChange={(open) => setConfirmAction(open ? "approve" : null)}>
                   <AlertDialogTrigger asChild>
-                    <Button size="sm" variant="default">
+                    <Button size="sm" variant="default" className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
                       <CheckCircle2 className="mr-2 h-4 w-4" />
                       Підтвердити
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Підтвердити спеціаліста</AlertDialogTitle>
-                      <AlertDialogDescription>Статус буде змінено на active.</AlertDialogDescription>
+                      <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Підтвердити спеціаліста</AlertDialogTitle>
+                      <AlertDialogDescription className="text-[#69686f] font-[500]">Статус буде змінено на active.</AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Скасувати</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => setConfirmAction(null)}>Підтвердити</AlertDialogAction>
+                      <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => setConfirmAction(null)} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]">Підтвердити</AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
 
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm" variant="destructive">
+                    <Button size="sm" variant="destructive" className="rounded-[8px] font-[600]">
                       <XCircle className="mr-2 h-4 w-4" />
                       Відхилити
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                     <DialogHeader>
-                      <DialogTitle>Відхилити спеціаліста</DialogTitle>
-                      <DialogDescription>Вкажіть причину відхилення.</DialogDescription>
+                      <DialogTitle className="text-[20px] font-[700] text-[#121117]">Відхилити спеціаліста</DialogTitle>
+                      <DialogDescription className="text-[#69686f] font-[500]">Вкажіть причину відхилення.</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-2">
-                      <Label>Причина</Label>
+                      <Label className="text-[#121117] font-[600]">Причина</Label>
                       <Input
                         placeholder="Наприклад: не пройшов перевірку документів"
                         value={rejectReason}
                         onChange={(e) => setRejectReason(e.target.value)}
+                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
                       />
                     </div>
                     <div className="flex justify-end gap-2 pt-2">
-                      <Button variant="outline" onClick={() => setRejectReason("")}>Скасувати</Button>
-                      <Button variant="destructive" onClick={() => setRejectReason("")}>Відхилити</Button>
+                      <Button variant="outline" onClick={() => setRejectReason("")} className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</Button>
+                      <Button variant="destructive" onClick={() => setRejectReason("")} className="rounded-[8px] font-[600]">Відхилити</Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -413,43 +421,43 @@ function SpecialistCard({ specialist }: { specialist: any }) {
             {specialist.status !== "blocked" ? (
               <AlertDialog open={confirmAction === "block"} onOpenChange={(open) => setConfirmAction(open ? "block" : null)}>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="outline">
+                  <Button size="sm" variant="outline" className="rounded-[8px] border-red-200 text-red-600 hover:bg-red-50 font-[600]">
                     <Ban className="mr-2 h-4 w-4" />
                     Заблокувати
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Заблокувати спеціаліста?</AlertDialogTitle>
-                    <AlertDialogDescription>Він втратить доступ до кабінету до розблокування.</AlertDialogDescription>
+                    <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Заблокувати спеціаліста?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-[#69686f] font-[500]">Він втратить доступ до кабінету до розблокування.</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Скасувати</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => setConfirmAction(null)}>Заблокувати</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => setConfirmAction(null)} className="rounded-[8px] bg-red-600 text-white hover:bg-red-700 font-[600]">Заблокувати</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
             ) : (
               <AlertDialog open={confirmAction === "unblock"} onOpenChange={(open) => setConfirmAction(open ? "unblock" : null)}>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="default">
+                  <Button size="sm" variant="default" className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
                     Розблокувати
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Розблокувати спеціаліста?</AlertDialogTitle>
-                    <AlertDialogDescription>Доступ до кабінету буде відновлено.</AlertDialogDescription>
+                    <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Розблокувати спеціаліста?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-[#69686f] font-[500]">Доступ до кабінету буде відновлено.</AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Скасувати</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => setConfirmAction(null)}>Розблокувати</AlertDialogAction>
+                    <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => setConfirmAction(null)} className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">Розблокувати</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
             )}
 
-            <Button size="sm" variant="secondary" onClick={handleImpersonate} disabled={specialist.status === "blocked"}>
+            <Button size="sm" variant="secondary" onClick={handleImpersonate} disabled={specialist.status === "blocked"} className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
               <LogIn className="mr-2 h-4 w-4" />
               Support Access
             </Button>
