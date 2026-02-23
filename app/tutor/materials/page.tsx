@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select"
 import { useLessonStore } from "@/lib/lesson-store"
 import { useAuth } from "@/lib/auth-context"
+import { useTheme } from "@/lib/theme-context"
 import { BookOpen, Plus, Upload, CheckCircle, Clock, Star, Tag } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
@@ -40,6 +41,7 @@ const lessonTags = [
 
 export default function TutorMaterialsPage() {
   const { user } = useAuth()
+  const { theme } = useTheme()
   const { lessons, checkHomework } = useLessonStore()
   const { toast } = useToast()
   const [selectedHomework, setSelectedHomework] = useState<any>(null)
@@ -54,7 +56,7 @@ export default function TutorMaterialsPage() {
 
   const tutorId = user?.id || "specialist-1"
   const tutorLessons = lessons.filter((l) => l.specialistId === tutorId)
-  
+
   // Get active clients for the dropdown (deduped by id)
   const activeClients = Object.values(
     tutorLessons.reduce<Record<string, { id: string; name: string }>>((acc, lesson) => {
@@ -77,7 +79,7 @@ export default function TutorMaterialsPage() {
     if (!selectedHomework) return
 
     // В реальному додатку тег також зберігатиметься, тут додаємо його до тексту відгуку для демонстрації
-    const finalFeedback = selectedTag 
+    const finalFeedback = selectedTag
       ? `${feedback}\n\nТег заняття: ${lessonTags.find(t => t.id === selectedTag)?.text}`
       : feedback
 
@@ -164,7 +166,7 @@ export default function TutorMaterialsPage() {
               <h1 className="text-[32px] font-bold text-[#121117] tracking-tight">Журнал та ДЗ</h1>
               <p className="text-[16px] text-[#69686f] mt-1">Управління домашніми завданнями та матеріалами</p>
             </div>
-            <Button onClick={() => setIsCreateModalOpen(true)} className="h-[48px] px-6 rounded-[8px] bg-[#00c5a6] hover:bg-[#00a389] text-white font-[600] text-[16px] transition-colors shadow-sm shrink-0">
+            <Button onClick={() => setIsCreateModalOpen(true)} className="h-[48px] px-6 rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-[600] text-[16px] transition-colors shadow-sm shrink-0">
               <Plus className="mr-2 h-5 w-5" />
               Створити завдання
             </Button>
@@ -187,7 +189,7 @@ export default function TutorMaterialsPage() {
                           <div className="space-y-1.5">
                             <CardTitle className="text-[18px] text-[#121117]">{hw.title}</CardTitle>
                             <CardDescription className="text-[14px] text-[#69686f] font-[500]">
-                              {hw.clientName} • <span className="text-[#00c5a6]">{hw.subject}</span>
+                              {hw.clientName} • <span className="text-[var(--theme-primary)]">{hw.subject}</span>
                             </CardDescription>
                           </div>
                           <Badge className="bg-[#e3f2fd] text-[#1976d2] border-0 px-2.5 py-1 rounded-[6px] shrink-0 font-[600]">
@@ -214,8 +216,8 @@ export default function TutorMaterialsPage() {
               ) : (
                 <Card className="border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[20px] border-dashed">
                   <CardContent className="flex flex-col items-center justify-center py-16">
-                    <div className="h-16 w-16 bg-[#e8fffb] rounded-full flex items-center justify-center mb-4">
-                      <CheckCircle className="h-8 w-8 text-[#00c5a6]" />
+                    <div className="h-16 w-16 bg-[var(--theme-primary-light)] rounded-full flex items-center justify-center mb-4">
+                      <CheckCircle className="h-8 w-8 text-[var(--theme-primary)]" />
                     </div>
                     <p className="text-[18px] font-bold text-[#121117]">Немає робіт на перевірці</p>
                     <p className="text-[14px] text-[#69686f] mt-1">Ви перевірили всі здані завдання</p>
@@ -234,7 +236,7 @@ export default function TutorMaterialsPage() {
                           <div className="space-y-1.5">
                             <CardTitle className="text-[18px] text-[#121117]">{hw.title}</CardTitle>
                             <CardDescription className="text-[14px] text-[#69686f] font-[500]">
-                              {hw.clientName} • <span className="text-[#00a389]">{hw.subject}</span>
+                              {hw.clientName} • <span className="text-[var(--theme-primary-dark)]">{hw.subject}</span>
                             </CardDescription>
                           </div>
                           <div className="flex items-center gap-1 bg-[#fff8e1] px-3 py-1.5 rounded-[8px] text-[#f57c00] font-bold">
@@ -252,7 +254,7 @@ export default function TutorMaterialsPage() {
                           </div>
                         )}
                         <div className="flex items-center text-[13px] font-[500] text-[#69686f]">
-                          <CheckCircle className="mr-1.5 h-4 w-4 text-[#00c5a6]" />
+                          <CheckCircle className="mr-1.5 h-4 w-4 text-[var(--theme-primary)]" />
                           Перевірено: {hw.checkedAt ? new Date(hw.checkedAt).toLocaleDateString("uk-UA") : "-"}
                         </div>
                       </CardContent>
@@ -281,7 +283,7 @@ export default function TutorMaterialsPage() {
                           <div className="space-y-1.5">
                             <CardTitle className="text-[18px] text-[#121117]">{hw.title}</CardTitle>
                             <CardDescription className="text-[14px] text-[#69686f] font-[500]">
-                              {hw.clientName} • <span className="text-[#00c5a6]">{hw.subject}</span>
+                              {hw.clientName} • <span className="text-[var(--theme-primary)]">{hw.subject}</span>
                             </CardDescription>
                           </div>
                           <Badge className="bg-[#fff3e0] text-[#f57c00] border-0 px-2.5 py-1 rounded-[6px] shrink-0 font-[600]">
@@ -294,8 +296,8 @@ export default function TutorMaterialsPage() {
                           <p className="text-[14px] text-[#121117] leading-relaxed">{hw.description}</p>
                         </div>
                         <div className="flex items-center gap-2 text-[14px] font-[600] text-[#69686f] bg-white border border-slate-200 px-3 py-2 rounded-[8px] inline-flex">
-                          <Clock className="h-4 w-4 text-[#00c5a6]" />
-                          <span>Здати до: {new Date(hw.dueDate).toLocaleDateString("uk-UA")}</span>
+                          <Clock className="h-4 w-4 text-[var(--theme-primary)]" />
+                          <span>Здати до: {hw.dueDate ? new Date(hw.dueDate).toLocaleDateString("uk-UA") : "-"}</span>
                         </div>
                       </CardContent>
                     </Card>
@@ -304,8 +306,8 @@ export default function TutorMaterialsPage() {
               ) : (
                 <Card className="border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[20px] border-dashed">
                   <CardContent className="flex flex-col items-center justify-center py-16">
-                    <div className="h-16 w-16 bg-[#e8fffb] rounded-full flex items-center justify-center mb-4">
-                      <Clock className="h-8 w-8 text-[#00c5a6]" />
+                    <div className="h-16 w-16 bg-[var(--theme-primary-light)] rounded-full flex items-center justify-center mb-4">
+                      <Clock className="h-8 w-8 text-[var(--theme-primary)]" />
                     </div>
                     <p className="text-[18px] font-bold text-[#121117]">Всі завдання здані</p>
                     <p className="text-[14px] text-[#69686f] mt-1">Ваші учні успішно виконали всі завдання</p>
@@ -328,7 +330,7 @@ export default function TutorMaterialsPage() {
                 {selectedHomework?.clientName} • {selectedHomework?.title}
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-6 py-2">
               <div className="bg-[#f0f3f3] p-5 rounded-[16px] space-y-4">
                 <div className="space-y-1.5">
@@ -350,8 +352,8 @@ export default function TutorMaterialsPage() {
                       type="button"
                       className={cn(
                         "flex-1 h-[48px] rounded-[12px] border-2 font-[600] text-[16px] flex items-center justify-center gap-1.5 transition-all",
-                        grade === g.toString() 
-                          ? "border-[#ffb74d] bg-[#fff8e1] text-[#f57c00]" 
+                        grade === g.toString()
+                          ? "border-[#ffb74d] bg-[#fff8e1] text-[#f57c00]"
                           : "border-slate-200 bg-white text-[#69686f] hover:border-slate-300"
                       )}
                       onClick={() => setGrade(g.toString())}
@@ -376,8 +378,8 @@ export default function TutorMaterialsPage() {
                       onClick={() => setSelectedTag(tag.id === selectedTag ? null : tag.id)}
                       className={cn(
                         "px-4 py-2 rounded-[12px] text-[14px] font-[500] transition-all border",
-                        tag.id === selectedTag 
-                          ? tag.color 
+                        tag.id === selectedTag
+                          ? tag.color
                           : "bg-white border-slate-200 text-[#69686f] hover:bg-slate-50"
                       )}
                     >
@@ -396,14 +398,14 @@ export default function TutorMaterialsPage() {
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Опишіть як пройшло заняття, що вдалося добре, над чим треба попрацювати. Цей звіт буде автоматично відправлено батькам в Telegram..."
                   rows={5}
-                  className="rounded-[12px] border-slate-200 focus-visible:ring-[#00c5a6] resize-none text-[15px] p-4"
+                  className="rounded-[12px] border-slate-200 focus-visible:ring-[var(--theme-primary)] resize-none text-[15px] p-4"
                 />
               </div>
             </div>
-            
+
             <DialogFooter className="mt-6 gap-3 sm:gap-0">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setSelectedHomework(null)
                   setSelectedTag(null)
@@ -412,10 +414,10 @@ export default function TutorMaterialsPage() {
               >
                 Скасувати
               </Button>
-              <Button 
-                onClick={handleCheckHomework} 
+              <Button
+                onClick={handleCheckHomework}
                 disabled={!feedback}
-                className="h-[48px] px-8 rounded-[8px] bg-[#00c5a6] hover:bg-[#00a389] text-white font-[600] text-[16px]"
+                className="h-[48px] px-8 rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-[600] text-[16px]"
               >
                 <CheckCircle className="mr-2 h-5 w-5" />
                 Зберегти звіт
@@ -433,7 +435,7 @@ export default function TutorMaterialsPage() {
                 Завдання буде відображено в кабінеті учня
               </DialogDescription>
             </DialogHeader>
-            
+
             <div className="space-y-5 py-2">
               <div className="space-y-2">
                 <Label htmlFor="hw-client" className="text-[14px] font-[600] text-[#121117]">Учень *</Label>
@@ -448,7 +450,7 @@ export default function TutorMaterialsPage() {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="hw-title" className="text-[14px] font-[600] text-[#121117]">Назва завдання *</Label>
                 <Input
@@ -459,7 +461,7 @@ export default function TutorMaterialsPage() {
                   className="h-[48px] rounded-[8px] border-slate-200"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="hw-desc" className="text-[14px] font-[600] text-[#121117]">Опис та інструкції</Label>
                 <Textarea
@@ -471,7 +473,7 @@ export default function TutorMaterialsPage() {
                   className="rounded-[12px] border-slate-200 resize-none"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="hw-due" className="text-[14px] font-[600] text-[#121117]">Термін здачі *</Label>
                 <Input
@@ -482,13 +484,13 @@ export default function TutorMaterialsPage() {
                   className="h-[48px] rounded-[8px] border-slate-200"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label className="text-[14px] font-[600] text-[#121117]">Додати матеріали (PDF, Audio, Image)</Label>
                 <div className="flex items-center justify-center rounded-[12px] border-2 border-dashed border-slate-200 bg-[#f8f9fb] p-6 hover:bg-slate-50 cursor-pointer transition-colors">
                   <div className="text-center">
                     <div className="mx-auto h-12 w-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm">
-                      <Upload className="h-5 w-5 text-[#00c5a6]" />
+                      <Upload className="h-5 w-5 text-[var(--theme-primary)]" />
                     </div>
                     <p className="text-[14px] font-[500] text-[#121117]">Натисніть для завантаження</p>
                     <p className="text-[12px] text-[#69686f] mt-1">До 25MB на файл</p>
@@ -496,18 +498,18 @@ export default function TutorMaterialsPage() {
                 </div>
               </div>
             </div>
-            
+
             <DialogFooter className="mt-6 gap-3 sm:gap-0">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setIsCreateModalOpen(false)}
                 className="flex-1 h-[48px] rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[16px] hover:bg-gray-50"
               >
                 Скасувати
               </Button>
-              <Button 
+              <Button
                 onClick={handleCreateHomework}
-                className="flex-1 h-[48px] rounded-[8px] bg-[#00c5a6] hover:bg-[#00a389] text-white font-[600] text-[16px]"
+                className="flex-1 h-[48px] rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-[600] text-[16px]"
               >
                 Відправити учню
               </Button>

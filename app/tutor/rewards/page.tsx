@@ -8,10 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Coins, Gift, Star, ArrowUpRight, TrendingUp, Gem, CheckCircle2 } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { useTheme } from "@/lib/theme-context"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 export default function TutorRewardsPage() {
   const { toast } = useToast()
+  const { theme } = useTheme()
   const [lcBalance, setLcBalance] = useState(1250)
   const [selectedReward, setSelectedReward] = useState<any>(null)
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
@@ -22,8 +24,8 @@ export default function TutorRewardsPage() {
       title: "Знижка на ліда (20%)",
       description: "Оплатити частину вартості наступного ліда. Мінімум 80% оплачується грошима.",
       price: 200,
-      icon: <TrendingUp className="h-6 w-6 text-[#00c5a6]" />,
-      color: "bg-[#e8fffb]",
+      icon: <TrendingUp className="h-6 w-6 text-[var(--theme-primary)]" />,
+      color: "bg-[var(--theme-primary-light)]",
       available: true
     },
     {
@@ -86,7 +88,7 @@ export default function TutorRewardsPage() {
               <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Магазин винагород</h1>
               <p className="text-[#69686f] mt-1 text-[16px]">Обмінюйте Libitum Coins на корисні бонуси</p>
             </div>
-            
+
             <div className="bg-white rounded-[16px] p-4 border border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex items-center gap-4 inline-flex">
               <div className="h-12 w-12 rounded-[12px] bg-[#f0f3f3] flex items-center justify-center shrink-0">
                 <Coins className="h-6 w-6 text-[#121117]" />
@@ -123,7 +125,7 @@ export default function TutorRewardsPage() {
                     </CardContent>
                     <CardFooter className="pt-4 border-t border-slate-100 mt-auto">
                       {reward.available && lcBalance >= reward.price ? (
-                        <Button 
+                        <Button
                           className="w-full bg-[#121117] hover:bg-[#121117]/90 text-white font-[600] h-[44px] rounded-[8px]"
                           onClick={() => {
                             setSelectedReward(reward)
@@ -133,9 +135,9 @@ export default function TutorRewardsPage() {
                           Придбати
                         </Button>
                       ) : (
-                        <Button 
-                          variant="outline" 
-                          disabled 
+                        <Button
+                          variant="outline"
+                          disabled
                           className="w-full h-[44px] rounded-[8px] bg-[#f8f9fb] border-slate-200 text-[#69686f] font-[600]"
                         >
                           {reward.requirement || "Недостатньо коштів"}
@@ -150,25 +152,25 @@ export default function TutorRewardsPage() {
             {/* Sidebar - History & Info */}
             <div className="space-y-6">
               {/* Info Box */}
-              <div className="bg-[#e8fffb] rounded-[24px] p-6 border border-[#00c5a6]/20">
+              <div className="bg-[var(--theme-primary-light)] rounded-[24px] p-6 border border-[var(--theme-primary)]/20">
                 <div className="flex items-center gap-3 mb-4">
-                  <Gift className="h-5 w-5 text-[#00a389]" />
-                  <h3 className="text-[18px] font-bold text-[#00a389]">Як отримати LC?</h3>
+                  <Gift className="h-5 w-5 text-[var(--theme-primary-dark)]" />
+                  <h3 className="text-[18px] font-bold text-[var(--theme-primary-dark)]">Як отримати LC?</h3>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-start gap-2 text-[14px] text-[#00a389]/80">
+                  <li className="flex items-start gap-2 text-[14px] text-[var(--theme-primary-dark)]/80">
                     <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>Щоденний вхід (Streak)</span>
                   </li>
-                  <li className="flex items-start gap-2 text-[14px] text-[#00a389]/80">
+                  <li className="flex items-start gap-2 text-[14px] text-[var(--theme-primary-dark)]/80">
                     <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>Своєчасне заповнення звітів</span>
                   </li>
-                  <li className="flex items-start gap-2 text-[14px] text-[#00a389]/80">
+                  <li className="flex items-start gap-2 text-[14px] text-[var(--theme-primary-dark)]/80">
                     <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>Отримання хороших відгуків</span>
                   </li>
-                  <li className="flex items-start gap-2 text-[14px] text-[#00a389]/80">
+                  <li className="flex items-start gap-2 text-[14px] text-[var(--theme-primary-dark)]/80">
                     <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
                     <span>Підключення Telegram бота</span>
                   </li>
@@ -185,7 +187,7 @@ export default function TutorRewardsPage() {
                         <p className="text-[14px] font-[500] text-[#121117]">{item.action}</p>
                         <p className="text-[12px] text-[#69686f] mt-0.5">{new Date(item.date).toLocaleDateString('uk-UA')}</p>
                       </div>
-                      <span className={`text-[14px] font-[700] ${item.type === 'earn' ? 'text-[#00c5a6]' : 'text-[#121117]'}`}>
+                      <span className={`text-[14px] font-[700] ${item.type === 'earn' ? 'text-[var(--theme-primary)]' : 'text-[#121117]'}`}>
                         {item.amount}
                       </span>
                     </div>
@@ -204,7 +206,7 @@ export default function TutorRewardsPage() {
                   Ви збираєтесь придбати "{selectedReward?.title}" за {selectedReward?.price} LC.
                 </DialogDescription>
               </DialogHeader>
-              
+
               <div className="py-6">
                 <div className="flex items-center justify-between p-4 bg-[#f0f3f3] rounded-[12px]">
                   <span className="text-[15px] font-[600] text-[#121117]">Поточний баланс:</span>
@@ -216,21 +218,21 @@ export default function TutorRewardsPage() {
                 </div>
                 <div className="flex items-center justify-between p-4 border-t border-slate-200 mt-2">
                   <span className="text-[15px] font-[600] text-[#121117]">Залишок:</span>
-                  <span className="text-[18px] font-bold text-[#00c5a6]">{lcBalance - (selectedReward?.price || 0)} LC</span>
+                  <span className="text-[18px] font-bold text-[var(--theme-primary)]">{lcBalance - (selectedReward?.price || 0)} LC</span>
                 </div>
               </div>
 
               <DialogFooter className="gap-3 sm:gap-0">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => setIsConfirmOpen(false)}
                   className="flex-1 h-[48px] rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600]"
                 >
                   Скасувати
                 </Button>
-                <Button 
+                <Button
                   onClick={handlePurchase}
-                  className="flex-1 h-[48px] rounded-[8px] bg-[#00c5a6] hover:bg-[#00a389] text-white font-[600] border-2 border-transparent"
+                  className="flex-1 h-[48px] rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-[600] border-2 border-transparent"
                 >
                   Підтвердити
                 </Button>

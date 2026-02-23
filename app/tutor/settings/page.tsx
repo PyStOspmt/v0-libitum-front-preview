@@ -10,11 +10,13 @@ import { Separator } from "@/components/ui/separator"
 import { Video, Upload, Share2, Copy, Check } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
+import { useTheme } from "@/lib/theme-context"
 import { useState } from "react"
 
 export default function TutorSettingsPage() {
   const { user } = useAuth()
   const { toast } = useToast()
+  const { theme } = useTheme()
   const [profileVideoUrl, setProfileVideoUrl] = useState("")
   const [referralCopied, setReferralCopied] = useState(false)
 
@@ -59,17 +61,17 @@ export default function TutorSettingsPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-[#121117] font-[600]">Ім'я</Label>
-                <Input id="name" defaultValue={user?.name} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="name" defaultValue={user?.name} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[#121117] font-[600]">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="email" type="email" defaultValue={user?.email} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-[#121117] font-[600]">Телефон</Label>
-                <Input id="phone" type="tel" placeholder="+380" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="phone" type="tel" placeholder="+380" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
-              <Button className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">Зберегти зміни</Button>
+              <Button className="rounded-[8px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] font-[600] shadow-sm">Зберегти зміни</Button>
             </CardContent>
           </Card>
 
@@ -81,15 +83,15 @@ export default function TutorSettingsPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="current-password" className="text-[#121117] font-[600]">Поточний пароль</Label>
-                <Input id="current-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="current-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="new-password" className="text-[#121117] font-[600]">Новий пароль</Label>
-                <Input id="new-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="new-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm-password" className="text-[#121117] font-[600]">Підтвердіть пароль</Label>
-                <Input id="confirm-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
+                <Input id="confirm-password" type="password" className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]" />
               </div>
               <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600] shadow-[0_2px_8px_rgba(0,0,0,0.1)]">Змінити пароль</Button>
             </CardContent>
@@ -116,7 +118,7 @@ export default function TutorSettingsPage() {
                       value={profileVideoUrl}
                       onChange={(e) => setProfileVideoUrl(e.target.value)}
                       placeholder="https://youtube.com/watch?v=..."
-                      className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                      className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]"
                     />
                     <Button variant="outline" onClick={() => setProfileVideoUrl("")} className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50">
                       Видалити
@@ -136,14 +138,14 @@ export default function TutorSettingsPage() {
                         value={profileVideoUrl}
                         onChange={(e) => setProfileVideoUrl(e.target.value)}
                         placeholder="https://youtube.com/watch?v=..."
-                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]"
                       />
                       <Button onClick={handleSaveVideo} className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600] shadow-[0_2px_8px_rgba(0,0,0,0.1)]">Додати</Button>
                     </div>
                   </div>
-                  <div className="rounded-[16px] border border-[#00c5a6]/20 bg-[#e8fffb] p-4 shadow-[0_2px_8px_rgba(0,197,166,0.05)]">
-                    <p className="text-[14px] font-[700] text-[#00a389] mb-1">Порада:</p>
-                    <p className="text-[13px] font-[500] text-[#00a389]/90 leading-relaxed">
+                  <div className="rounded-[16px] border border-[var(--theme-primary)]/20 bg-[var(--theme-primary-light)] p-4 shadow-sm">
+                    <p className="text-[14px] font-[700] text-[var(--theme-primary-dark)] mb-1">Порада:</p>
+                    <p className="text-[13px] font-[500] text-[var(--theme-primary-dark)]/90 leading-relaxed">
                       Відео-презентація підвищує конверсію до 40%. Розкажіть про свою методику, досвід та підхід до
                       навчання.
                     </p>
@@ -171,18 +173,18 @@ export default function TutorSettingsPage() {
                   <p className="text-2xl font-[700] text-[#121117]">{referralStats.active}</p>
                   <p className="text-[13px] font-[600] text-[#69686f]">Активних</p>
                 </div>
-                <div className="rounded-[16px] border border-[#00c5a6]/20 bg-[#e8fffb] p-4 text-center shadow-[0_2px_8px_rgba(0,197,166,0.1)]">
-                  <p className="text-2xl font-[700] text-[#00c5a6]">+{referralStats.xpEarned}</p>
-                  <p className="text-[13px] font-[600] text-[#00a389]">XP зароблено</p>
+                <div className="rounded-[16px] border border-[var(--theme-primary)]/20 bg-[var(--theme-primary-light)] p-4 text-center shadow-sm">
+                  <p className="text-2xl font-[700] text-[var(--theme-primary)]">+{referralStats.xpEarned}</p>
+                  <p className="text-[13px] font-[600] text-[var(--theme-primary-dark)]">XP зароблено</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <Label className="text-[#121117] font-[600]">Ваше реферальне посилання</Label>
                 <div className="flex gap-2">
-                  <Input value={referralLink} readOnly className="font-mono text-[14px] bg-[#f0f3f3]/50 rounded-[8px] border-slate-200/80 text-[#69686f] w-full focus-visible:ring-[#00c5a6]" />
+                  <Input value={referralLink} readOnly className="font-mono text-[14px] bg-[#f0f3f3]/50 rounded-[8px] border-slate-200/80 text-[#69686f] w-full focus-visible:ring-[var(--theme-primary)]" />
                   <Button variant="outline" size="icon" onClick={copyReferralLink} className="shrink-0 rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3]">
-                    {referralCopied ? <Check className="h-4 w-4 text-[#00c5a6]" /> : <Copy className="h-4 w-4 text-[#69686f]" />}
+                    {referralCopied ? <Check className="h-4 w-4 text-[var(--theme-primary)]" /> : <Copy className="h-4 w-4 text-[#69686f]" />}
                   </Button>
                 </div>
                 <p className="text-[12px] font-[500] text-[#69686f]">
@@ -192,27 +194,27 @@ export default function TutorSettingsPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] hover:border-[var(--theme-primary)]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Telegram
                 </Button>
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] hover:border-[var(--theme-primary)]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Facebook
                 </Button>
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] hover:border-[var(--theme-primary)]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Viber
                 </Button>
               </div>
 
-              <div className="rounded-[16px] border border-[#00c5a6]/20 bg-[#e8fffb] p-5 shadow-[0_2px_8px_rgba(0,197,166,0.05)]">
-                <p className="text-[14px] font-[700] text-[#00a389] mb-2">Як це працює:</p>
-                <ul className="space-y-1.5 text-[13px] font-[500] text-[#00a389]/90">
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[#00c5a6]" /> Поділіться посиланням з колегами-викладачами</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[#00c5a6]" /> Вони реєструються за вашим посиланням</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[#00c5a6]" /> Ви отримуєте 150 грн бонусу за кожну реєстрацію</li>
-                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[#00c5a6]" /> Ваш колега отримує знижку на перший платіж за ліда</li>
+              <div className="rounded-[16px] border border-[var(--theme-primary)]/20 bg-[var(--theme-primary-light)] p-5 shadow-sm">
+                <p className="text-[14px] font-[700] text-[var(--theme-primary-dark)] mb-2">Як це працює:</p>
+                <ul className="space-y-1.5 text-[13px] font-[500] text-[var(--theme-primary-dark)]/90">
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" /> Поділіться посиланням з колегами-викладачами</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" /> Вони реєструються за вашим посиланням</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" /> Ви отримуєте 150 грн бонусу за кожну реєстрацію</li>
+                  <li className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-[var(--theme-primary)]" /> Ваш колега отримує знижку на перший платіж за ліда</li>
                 </ul>
               </div>
             </CardContent>

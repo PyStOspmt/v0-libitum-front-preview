@@ -246,21 +246,21 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
   return (
     <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       <CardContent className="space-y-3 p-4">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-[14px] text-[#69686f] font-[500]">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex-1 space-y-2 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 text-[14px] text-[#69686f] font-[500]">
               <Badge variant={request.type === "public" ? "outline" : "secondary"} className="rounded-[8px] bg-[#f0f3f3]/50 text-[#121117] border-slate-200/80 font-[600]">
                 {request.type === "public" ? "Публічний" : "Приватний"}
               </Badge>
               <Badge className={cn(
                 "font-[600] border-0",
                 request.status === "pending" ? "bg-orange-100 text-orange-700" :
-                ["accepted", "communicating", "trial_scheduled"].includes(request.status) ? "bg-[#e8fffb] text-[#00a389]" :
-                ["trial_completed", "paid"].includes(request.status) ? "bg-[#00c5a6] text-white" :
-                "bg-slate-100 text-slate-700"
+                  ["accepted", "communicating", "trial_scheduled"].includes(request.status) ? "bg-[#e8fffb] text-[#00a389]" :
+                    ["trial_completed", "paid"].includes(request.status) ? "bg-[#00c5a6] text-white" :
+                      "bg-slate-100 text-slate-700"
               )}>{statusLabel(request.status)}</Badge>
             </div>
-            <p className="font-[700] text-[16px] text-[#121117]">{request.subject}</p>
+            <p className="font-[700] text-[16px] text-[#121117] break-words">{request.subject}</p>
             <p className="text-[14px] font-[500] text-[#69686f]">
               Клієнт: {request.clientName} → {request.specialistName || "(не призначено)"}
             </p>
@@ -278,10 +278,10 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full shrink-0 md:w-auto mt-2 md:mt-0">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                   <Eye className="mr-2 h-4 w-4" />
                   Деталі
                 </Button>
@@ -334,7 +334,7 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             </Dialog>
 
             {canAccept && (
-              <Button size="sm" variant="default" onClick={onAccept} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
+              <Button size="sm" variant="default" onClick={onAccept} className="w-full sm:w-auto rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
                 <CheckCircle2 className="mr-2 h-4 w-4" />
                 Прийняти
               </Button>
@@ -342,7 +342,7 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
 
             <AlertDialog open={rejectOpen} onOpenChange={setRejectOpen}>
               <AlertDialogTrigger asChild>
-                <Button size="sm" variant="destructive" className="rounded-[8px] font-[600]">
+                <Button size="sm" variant="destructive" className="w-full sm:w-auto rounded-[8px] font-[600]">
                   <XCircle className="mr-2 h-4 w-4" />
                   Відхилити
                 </Button>
@@ -378,7 +378,7 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             {canCancel && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                     <Ban className="mr-2 h-4 w-4" />
                     Скасувати
                   </Button>
@@ -397,7 +397,7 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
             )}
 
             {canMarkPaid && (
-              <Button size="sm" variant="secondary" onClick={onMarkPaid} className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
+              <Button size="sm" variant="secondary" onClick={onMarkPaid} className="w-full sm:w-auto rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
                 <DollarSign className="mr-2 h-4 w-4" />
                 Позначити як оплачений
               </Button>

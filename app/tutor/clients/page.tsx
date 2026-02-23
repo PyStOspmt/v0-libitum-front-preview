@@ -55,7 +55,7 @@ export default function TutorClientsPage() {
 
     setNewStudent({ name: "", grade: "", phone: "", subject: "" })
     setShowAddStudent(false)
-    
+
     toast({
       title: "Учень додано",
       description: `${newStudent.name} успішно додано до вашого списку`,
@@ -233,15 +233,15 @@ export default function TutorClientsPage() {
                 <p className="mb-6 text-center text-muted-foreground">
                   Додайте свого учня або прийміть запит з платформи
                 </p>
-                <div className="flex gap-3">
-                  <Button onClick={() => setShowAddStudent(true)} className="rounded-full">
+                <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+                  <Button onClick={() => setShowAddStudent(true)} className="rounded-full w-full sm:w-auto">
                     <Plus className="mr-2 h-4 w-4" />
                     Додати учня
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => router.push("/tutor/requests")}
-                    className="bg-transparent rounded-full"
+                    className="bg-transparent rounded-full w-full sm:w-auto"
                   >
                     Переглянути запити
                   </Button>

@@ -68,7 +68,7 @@ export default function ClientPage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
+        <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -83,11 +83,10 @@ export default function ClientPage() {
                 <button
                   key={child.id}
                   onClick={() => router.push(`/client?child=${child.id}`)}
-                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${
-                    child.id === selectedChildId
+                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${child.id === selectedChildId
                       ? "bg-[#121117] text-white border-transparent"
                       : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   {child.label}
                 </button>
@@ -101,7 +100,7 @@ export default function ClientPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[14px] font-[600] text-[#69686f]">Спеціалісти</p>
@@ -119,7 +118,7 @@ export default function ClientPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[14px] font-[600] text-[#69686f]">Пройдено</p>
@@ -137,7 +136,7 @@ export default function ClientPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[14px] font-[600] text-[#69686f]">Заплановано</p>
@@ -155,7 +154,7 @@ export default function ClientPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
             >
               <div className="flex items-center justify-between">
                 <p className="text-[14px] font-[600] text-[#69686f]">Рівень</p>
@@ -178,7 +177,7 @@ export default function ClientPage() {
             className="cursor-pointer group"
             onClick={() => router.push(`/client/progress?child=${selectedChildId}`)}
           >
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none group-hover:bg-primary/10 transition-colors" />
 
               <div className="relative z-10">
@@ -243,7 +242,7 @@ export default function ClientPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
               onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
-              className="bg-white rounded-[24px] p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
             >
               <div className="h-14 w-14 rounded-full bg-[#f0f3f3] flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
                 <Search className="h-6 w-6 text-[#121117] group-hover:text-primary transition-colors" />
@@ -261,7 +260,7 @@ export default function ClientPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.5 }}
               onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
-              className="bg-white rounded-[24px] p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
             >
               <div className="h-14 w-14 rounded-full bg-[#f0f3f3] flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
                 <Calendar className="h-6 w-6 text-[#121117] group-hover:text-primary transition-colors" />
@@ -279,7 +278,7 @@ export default function ClientPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.5 }}
               onClick={() => router.push(`/client/materials?child=${selectedChildId}`)}
-              className="bg-white rounded-[24px] p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
+              className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 text-left hover:border-primary/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 group flex flex-col h-full"
             >
               <div className="h-14 w-14 rounded-full bg-[#f0f3f3] flex items-center justify-center mb-6 group-hover:bg-primary/10 transition-colors">
                 <FileText className="h-6 w-6 text-[#121117] group-hover:text-primary transition-colors" />
@@ -299,7 +298,7 @@ export default function ClientPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.5 }}
           >
-            <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all">
               <div className="mb-8">
                 <h2 className="text-[24px] font-bold text-[#121117]">Мої запити</h2>
                 <p className="text-[#69686f] text-[16px] mt-1">Очікують відповіді від спеціалістів</p>

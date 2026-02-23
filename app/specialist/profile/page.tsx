@@ -35,7 +35,7 @@ export default function SpecialistProfilePage() {
     <ProtectedRoute allowedRoles={["specialist"]}>
       <div className="min-h-screen bg-muted/30">
         <header className="border-b bg-card">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4">
             <div className="flex items-center gap-4">
               <Link href="/specialist/dashboard">
                 <Button variant="ghost" size="icon">
@@ -52,7 +52,7 @@ export default function SpecialistProfilePage() {
           </div>
         </header>
 
-        <div className="container mx-auto max-w-4xl px-4 py-8">
+        <div className="container mx-auto max-w-4xl px-3 sm:px-4 md:px-6 py-8">
           <div className="space-y-6">
             {/* Profile Photo */}
             <Card>

@@ -24,6 +24,7 @@ export default function TutorProfilePage() {
   const { theme, updateSpecialistTheme } = useTheme()
   const router = useRouter()
   const { getProfile, updateProfile } = useSpecialistProfileStore()
+  const { toast } = useToast()
 
   const [specialization, setSpecialization] = useState<SpecialistType>("tutor")
   const [subjects, setSubjects] = useState<string[]>([])
@@ -41,7 +42,7 @@ export default function TutorProfilePage() {
   const [formatOnline, setFormatOnline] = useState(true)
   const [formatOffline, setFormatOffline] = useState(true)
   const [formatHomeVisit, setFormatHomeVisit] = useState(false)
-  
+
   // New TD fields
   const [isSearching, setIsSearching] = useState(true)
   const [pairLessons, setPairLessons] = useState(false)
@@ -115,9 +116,9 @@ export default function TutorProfilePage() {
   const handleSpecializationChange = (value: SpecialistType) => {
     setSpecialization(value)
     if (subjects.length <= 2) setSubjects(getDefaultSubjects(value))
-    
+
     updateSpecialistTheme(value)
-    
+
     setTimeout(() => {
       window.location.reload()
     }, 100)
@@ -125,7 +126,7 @@ export default function TutorProfilePage() {
 
   return (
     <SidebarLayout userType="tutor">
-      <div className="container mx-auto max-w-4xl space-y-8 px-4 py-8">
+      <div className="container mx-auto max-w-4xl space-y-8 px-3 sm:px-4 md:px-6 py-8">
         <div className="space-y-2">
           <h1 className="text-[32px] font-bold text-[#121117]">Мій профіль</h1>
           <p className="text-[16px] text-[#69686f]">Налаштуйте свій публічний профіль для клієнтів</p>
@@ -162,7 +163,7 @@ export default function TutorProfilePage() {
                   <CardTitle className="text-[20px] font-bold text-[#121117]">Налаштування пошуку</CardTitle>
                   <CardDescription className="text-[#69686f] text-[14px]">Керуйте видимістю анкети та форматами</CardDescription>
                 </div>
-                <Search className="h-6 w-6 text-[#00c5a6]" />
+                <Search className="h-6 w-6 text-[var(--theme-primary)]" />
               </div>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -192,7 +193,7 @@ export default function TutorProfilePage() {
                       </div>
                       <Switch checked={foreignProgram} onCheckedChange={setForeignProgram} />
                     </div>
-                    
+
                     {foreignProgram && (
                       <div className="pt-4 border-t border-slate-100">
                         <Label className="text-[14px] font-[600] mb-2 block">Оберіть країну *</Label>
@@ -262,7 +263,7 @@ export default function TutorProfilePage() {
                     <SelectItem value="speech-therapist">Логопед</SelectItem>
                   </SelectContent>
                 </Select>
-                <div className="mt-2 rounded-[8px] px-3 py-2 text-[13px] font-[500] bg-[#e8fffb] text-[#00a389]">
+                <div className="mt-2 rounded-[8px] px-3 py-2 text-[13px] font-[500] bg-[var(--theme-primary-light)] text-[var(--theme-primary-dark)]">
                   {specialization === "tutor" && "Репетитор - навчальні предмети та мови"}
                   {specialization === "psychologist" && "Психолог - психологічні консультації"}
                   {specialization === "speech-therapist" && "Логопед - корекція мовлення"}
@@ -338,15 +339,15 @@ export default function TutorProfilePage() {
                 <Label className="text-[14px] font-[600]">Формати занять</Label>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 bg-[#f0f3f3]/50 p-3 rounded-[8px]">
-                    <Checkbox id="online" checked={formatOnline} onCheckedChange={(c) => setFormatOnline(c as boolean)} className="data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6]" />
+                    <Checkbox id="online" checked={formatOnline} onCheckedChange={(c) => setFormatOnline(c as boolean)} className="data-[state=checked]:bg-[var(--theme-primary)] data-[state=checked]:border-[var(--theme-primary)]" />
                     <Label htmlFor="online" className="font-[500] cursor-pointer text-[#121117]">Онлайн заняття</Label>
                   </div>
                   <div className="flex items-center space-x-3 bg-[#f0f3f3]/50 p-3 rounded-[8px]">
-                    <Checkbox id="offline" checked={formatOffline} onCheckedChange={(c) => setFormatOffline(c as boolean)} className="data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6]" />
+                    <Checkbox id="offline" checked={formatOffline} onCheckedChange={(c) => setFormatOffline(c as boolean)} className="data-[state=checked]:bg-[var(--theme-primary)] data-[state=checked]:border-[var(--theme-primary)]" />
                     <Label htmlFor="offline" className="font-[500] cursor-pointer text-[#121117]">Офлайн заняття</Label>
                   </div>
                   <div className="flex items-center space-x-3 bg-[#f0f3f3]/50 p-3 rounded-[8px]">
-                    <Checkbox id="home" checked={formatHomeVisit} onCheckedChange={(c) => setFormatHomeVisit(c as boolean)} className="data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6]" />
+                    <Checkbox id="home" checked={formatHomeVisit} onCheckedChange={(c) => setFormatHomeVisit(c as boolean)} className="data-[state=checked]:bg-[var(--theme-primary)] data-[state=checked]:border-[var(--theme-primary)]" />
                     <Label htmlFor="home" className="font-[500] cursor-pointer text-[#121117]">Виїзд додому до учня</Label>
                   </div>
                 </div>
@@ -383,30 +384,30 @@ export default function TutorProfilePage() {
           </Card>
 
           <Card className="border-slate-200/80 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[24px] overflow-hidden">
-            <CardHeader className="bg-[#e8fffb] border-b border-[#00c5a6]/20 pb-6">
-              <CardTitle className="flex items-center gap-2 text-[20px] font-bold text-[#00a389]">
+            <CardHeader className="bg-[var(--theme-primary-light)] border-b border-[var(--theme-primary)]/20 pb-6">
+              <CardTitle className="flex items-center gap-2 text-[20px] font-bold text-[var(--theme-primary-dark)]">
                 <Users className="h-5 w-5" />
                 Реферальна програма
               </CardTitle>
-              <CardDescription className="text-[#00a389]/80 text-[14px]">Запрошуйте колег та отримуйте бонуси</CardDescription>
+              <CardDescription className="text-[var(--theme-primary-dark)]/80 text-[14px]">Запрошуйте колег та отримуйте бонуси</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
               {/* Referral Link */}
               <div className="space-y-2">
                 <Label className="text-[14px] font-[600]">Ваше реферальне посилання</Label>
                 <div className="flex gap-2">
-                  <Input 
-                    value={`https://libitum.education/ref/tutor/${user?.id || "specialist-1"}`} 
-                    readOnly 
+                  <Input
+                    value={`https://libitum.education/ref/tutor/${user?.id || "specialist-1"}`}
+                    readOnly
                     className="bg-slate-50 h-[44px] rounded-[8px] font-mono text-[13px]"
                   />
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => {
                       navigator.clipboard.writeText(`https://libitum.education/ref/tutor/${user?.id || "specialist-1"}`)
                       toast({ title: "Посилання скопійовано", description: "Поділіться ним з колегами" })
                     }}
-                    className="h-[44px] rounded-[8px] border-[#00c5a6] text-[#00c5a6] hover:bg-[#e8fffb] font-[600]"
+                    className="h-[44px] rounded-[8px] border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] font-[600]"
                   >
                     Копіювати
                   </Button>
@@ -426,9 +427,9 @@ export default function TutorProfilePage() {
                   <div className="text-[24px] font-bold text-[#121117]">2</div>
                   <div className="text-[13px] text-[#69686f] font-[500]">Активних</div>
                 </div>
-                <div className="text-center p-4 rounded-[12px] bg-[#e8fffb]">
-                  <div className="text-[24px] font-bold text-[#00c5a6]">+500</div>
-                  <div className="text-[13px] text-[#00a389] font-[500]">XP зароблено</div>
+                <div className="text-center p-4 rounded-[12px] bg-[var(--theme-primary-light)]">
+                  <div className="text-[24px] font-bold text-[var(--theme-primary)]">+500</div>
+                  <div className="text-[13px] text-[var(--theme-primary-dark)] font-[500]">XP зароблено</div>
                 </div>
               </div>
 
@@ -441,7 +442,7 @@ export default function TutorProfilePage() {
                 <p className="text-[14px] text-[#69686f] leading-relaxed">
                   Переведіть своїх учнів на платформу та отримуйте XP за кожне їх заняття без комісії.
                 </p>
-                <Button 
+                <Button
                   className="w-full text-[15px] font-[600] h-[44px] rounded-[8px] bg-white border border-slate-200 text-[#121117] hover:bg-slate-50"
                   onClick={() => router.push("/tutor/clients")}
                 >
@@ -452,9 +453,9 @@ export default function TutorProfilePage() {
           </Card>
 
           <div className="flex justify-end pt-4 pb-12">
-            <Button 
-              onClick={handleSave} 
-              className="h-[52px] px-8 rounded-[8px] text-[16px] font-[600] bg-[#00c5a6] hover:bg-[#00a389] text-white transition-colors"
+            <Button
+              onClick={handleSave}
+              className="h-[52px] px-8 rounded-[8px] text-[16px] font-[600] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white transition-colors"
             >
               <Save className="mr-2 h-5 w-5" />
               Зберегти всі зміни

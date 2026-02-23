@@ -173,23 +173,23 @@ export default function AdminDictionariesPage() {
                     key={subject.id}
                     className="overflow-hidden rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
                   >
-                    <div className="flex items-center justify-between border-b border-slate-200/80 bg-[#f0f3f3]/50 p-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 bg-[#f0f3f3]/50 p-4">
                       <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 font-[700] text-[#121117] text-lg">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 font-[700] text-[#121117] text-lg">
                           {subject.name[0]}
                         </div>
-                        <div>
-                          <h3 className="font-[700] text-[18px] text-[#121117]">{subject.name}</h3>
-                          <div className="flex items-center gap-2 text-[13px] font-[500] text-[#69686f] mt-1">
+                        <div className="min-w-0">
+                          <h3 className="font-[700] text-[18px] text-[#121117] break-words">{subject.name}</h3>
+                          <div className="flex flex-wrap items-center gap-2 text-[13px] font-[500] text-[#69686f] mt-1">
                             <span className="font-mono bg-white border border-slate-200/80 px-2 py-0.5 rounded-[6px] text-[#121117] font-[600]">
                               {subject.slug}
                             </span>
-                            <span>•</span>
+                            <span className="hidden sm:inline">•</span>
                             <span>Базова: {subject.defaultBasePrice} грн</span>
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center sm:justify-end gap-3 w-full sm:w-auto">
                         <Switch
                           checked={subject.status === "active"}
                           onCheckedChange={() => toggleSubjectStatus(subject.id)}
@@ -294,9 +294,9 @@ export default function AdminDictionariesPage() {
                         <div className="text-[16px] font-[700] text-[#121117]">{city.name}</div>
                         <div className="text-[13px] font-[500] text-[#69686f] font-mono mt-1 bg-[#f0f3f3] px-2 py-0.5 rounded-[6px] inline-block border border-slate-200">slug: {city.slug}</div>
                       </div>
-                      <Switch 
-                        checked={city.status === "active"} 
-                        onCheckedChange={() => toggleCityStatus(city.id)} 
+                      <Switch
+                        checked={city.status === "active"}
+                        onCheckedChange={() => toggleCityStatus(city.id)}
                         className="data-[state=checked]:bg-[#00c5a6]"
                       />
                     </div>

@@ -72,7 +72,12 @@ export function SpecialistCard({
             {s.subject}
           </p>
 
-          <div className="flex items-center justify-end mt-auto pt-2.5">
+          <div className="flex items-center justify-between mt-auto pt-2.5">
+            <div className="flex items-center gap-1">
+              <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+              <span className="text-[11px] font-semibold text-slate-700">{s.rating}</span>
+              <span className="text-[10px] text-slate-400">({s.reviews})</span>
+            </div>
             <span className="text-[12px] font-bold tracking-tight" style={{ color: palette.price }}>
               {"\u20B4"}{s.price}
             </span>

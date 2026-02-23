@@ -44,8 +44,8 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
   const sidebarTheme = {
     logoBg: userType === "admin" ? "bg-slate-700" : "",
-    activeItem: userType === "admin" 
-      ? "bg-slate-100 text-slate-800" 
+    activeItem: userType === "admin"
+      ? "bg-slate-100 text-slate-800"
       : "",
     activeIcon: userType === "admin" ? "text-slate-700" : "",
     label: userType === "admin" ? "text-slate-500" : "",
@@ -190,8 +190,8 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                 variant="ghost"
                 className={cn(
                   "w-full justify-start gap-3 rounded-[8px] h-[48px] transition-all font-[600]",
-                  isActive 
-                    ? userType === "admin" 
+                  isActive
+                    ? userType === "admin"
                       ? sidebarTheme.activeItem
                       : "text-[#121117] bg-[#f0f3f3]"
                     : "text-[#69686f] hover:bg-gray-100 hover:text-[#121117]"
@@ -217,7 +217,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         <div className="rounded-[16px] border border-gray-200 bg-white p-4">
           <div className="flex items-center gap-3 mb-3">
             <Avatar className="h-10 w-10 border border-gray-100">
-              <AvatarFallback 
+              <AvatarFallback
                 className="font-bold text-white"
                 style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
               >
@@ -264,17 +264,17 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
       <div className="flex-1 overflow-y-auto">
         {/* Mobile Header */}
-        <header className="flex items-center justify-between border-b border-gray-200 bg-white p-4 lg:hidden sticky top-0 z-10">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            onClick={() => setIsMobileMenuOpen(true)} 
+        <header className="flex items-center justify-between border-b border-gray-200 bg-white p-4 lg:hidden sticky top-0 z-40">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsMobileMenuOpen(true)}
             className="-ml-2 hover:bg-gray-100 transition-colors"
           >
             <Menu className="h-6 w-6 text-[#121117]" />
           </Button>
           <div className="flex items-center gap-2">
-            <div 
+            <div
               className="flex h-8 w-8 items-center justify-center rounded-[8px]"
               style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
             >
@@ -286,7 +286,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-[#f0f3f3] p-4 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-[#f0f3f3] p-2 sm:p-4 lg:p-8">{children}</main>
       </div>
     </div>
   )

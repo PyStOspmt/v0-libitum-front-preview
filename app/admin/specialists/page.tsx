@@ -232,10 +232,10 @@ function SpecialistCard({ specialist }: { specialist: any }) {
     <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-3">
-              <div>
-                <h3 className="font-[700] text-[18px] text-[#121117]">{specialist.name}</h3>
+          <div className="flex-1 space-y-3 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+              <div className="w-full sm:w-auto">
+                <h3 className="font-[700] text-[18px] text-[#121117] break-words">{specialist.name}</h3>
                 <p className="text-[14px] font-[500] text-[#69686f]">{specialist.specialization}</p>
               </div>
               {specialist.verified && (
@@ -255,8 +255,8 @@ function SpecialistCard({ specialist }: { specialist: any }) {
                 className={cn(
                   "font-[600] border-0",
                   specialist.status === "active" ? "bg-[#00c5a6] text-white" :
-                  specialist.status === "pending" ? "bg-orange-100 text-orange-700" :
-                  "bg-red-100 text-red-700"
+                    specialist.status === "pending" ? "bg-orange-100 text-orange-700" :
+                      "bg-red-100 text-red-700"
                 )}
               >
                 {specialist.status === "active"
@@ -294,10 +294,10 @@ function SpecialistCard({ specialist }: { specialist: any }) {
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full shrink-0 md:w-auto">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                   <Eye className="mr-2 h-4 w-4" />
                   Деталі
                 </Button>
@@ -368,10 +368,10 @@ function SpecialistCard({ specialist }: { specialist: any }) {
             </Dialog>
 
             {specialist.status === "pending" && (
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                 <AlertDialog open={confirmAction === "approve"} onOpenChange={(open) => setConfirmAction(open ? "approve" : null)}>
                   <AlertDialogTrigger asChild>
-                    <Button size="sm" variant="default" className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
+                    <Button size="sm" variant="default" className="w-full sm:w-auto rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
                       <CheckCircle2 className="mr-2 h-4 w-4" />
                       Підтвердити
                     </Button>
@@ -390,7 +390,7 @@ function SpecialistCard({ specialist }: { specialist: any }) {
 
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button size="sm" variant="destructive" className="rounded-[8px] font-[600]">
+                    <Button size="sm" variant="destructive" className="w-full sm:w-auto rounded-[8px] font-[600]">
                       <XCircle className="mr-2 h-4 w-4" />
                       Відхилити
                     </Button>
@@ -421,7 +421,7 @@ function SpecialistCard({ specialist }: { specialist: any }) {
             {specialist.status !== "blocked" ? (
               <AlertDialog open={confirmAction === "block"} onOpenChange={(open) => setConfirmAction(open ? "block" : null)}>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="rounded-[8px] border-red-200 text-red-600 hover:bg-red-50 font-[600]">
+                  <Button size="sm" variant="outline" className="w-full sm:w-auto rounded-[8px] border-red-200 text-red-600 hover:bg-red-50 font-[600]">
                     <Ban className="mr-2 h-4 w-4" />
                     Заблокувати
                   </Button>
@@ -440,7 +440,7 @@ function SpecialistCard({ specialist }: { specialist: any }) {
             ) : (
               <AlertDialog open={confirmAction === "unblock"} onOpenChange={(open) => setConfirmAction(open ? "unblock" : null)}>
                 <AlertDialogTrigger asChild>
-                  <Button size="sm" variant="default" className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+                  <Button size="sm" variant="default" className="w-full sm:w-auto rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
                     Розблокувати
                   </Button>
                 </AlertDialogTrigger>
@@ -457,7 +457,7 @@ function SpecialistCard({ specialist }: { specialist: any }) {
               </AlertDialog>
             )}
 
-            <Button size="sm" variant="secondary" onClick={handleImpersonate} disabled={specialist.status === "blocked"} className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
+            <Button size="sm" variant="secondary" onClick={handleImpersonate} disabled={specialist.status === "blocked"} className="w-full sm:w-auto rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
               <LogIn className="mr-2 h-4 w-4" />
               Support Access
             </Button>

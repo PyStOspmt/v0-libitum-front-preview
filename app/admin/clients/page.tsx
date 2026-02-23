@@ -208,10 +208,10 @@ function ClientCard({ client }: { client: AdminClient }) {
     <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
       <CardContent className="p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex-1 space-y-3">
-            <div className="flex items-center gap-3">
-              <div>
-                <h3 className="font-[700] text-[18px] text-[#121117]">{client.name}</h3>
+          <div className="flex-1 space-y-3 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 lg:gap-3">
+              <div className="w-full sm:w-auto">
+                <h3 className="font-[700] text-[18px] text-[#121117] break-words">{client.name}</h3>
                 <p className="text-[14px] font-[500] text-[#69686f]">{roleLabel}</p>
               </div>
               <Badge variant={client.status === "active" ? "default" : "destructive"} className={cn(
@@ -248,10 +248,10 @@ function ClientCard({ client }: { client: AdminClient }) {
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-2 w-full shrink-0 md:w-auto">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                   <Eye className="mr-2 h-4 w-4" />
                   Деталі
                 </Button>
@@ -324,19 +324,19 @@ function ClientCard({ client }: { client: AdminClient }) {
             </Dialog>
 
             {client.status === "active" ? (
-              <Button size="sm" variant="destructive" className="rounded-[8px] font-[600]">
+              <Button size="sm" variant="destructive" className="w-full sm:w-auto rounded-[8px] font-[600]">
                 <Ban className="mr-2 h-4 w-4" />
                 Заблокувати
               </Button>
             ) : (
-              <Button size="sm" variant="default" className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+              <Button size="sm" variant="default" className="w-full sm:w-auto rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
                 <CheckCircle2 className="mr-2 h-4 w-4" />
                 Розблокувати
               </Button>
             )}
             <AlertDialog open={supportConfirmOpen} onOpenChange={setSupportConfirmOpen}>
               <AlertDialogTrigger asChild>
-                <Button size="sm" variant="outline" disabled={client.status !== "active"} className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-[#e8fffb] hover:text-[#00a389] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button size="sm" variant="outline" disabled={client.status !== "active"} className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-[#e8fffb] hover:text-[#00a389] hover:border-[#00c5a6]/20 shadow-sm">
                   <LogIn className="mr-2 h-4 w-4" />
                   Support Access
                 </Button>

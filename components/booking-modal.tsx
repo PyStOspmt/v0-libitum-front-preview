@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Calendar } from "@/components/ui/calendar"
 import { Badge } from "@/components/ui/badge"
@@ -32,6 +33,7 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [format, setFormat] = useState<"online" | "offline">("online")
   const [selectedTime, setSelectedTime] = useState<string>("")
+  const [phone, setPhone] = useState("")
   const [message, setMessage] = useState("")
   const { addRequest, getActiveTrialCount } = useRequestStore()
   const { toast } = useToast()
@@ -55,6 +57,7 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
     if (!date || !selectedTime) return
 
     addRequest({
+      type: "private",
       clientId,
       clientName: user?.name || "Гість",
       specialistId: specialist.id || "specialist-1",
@@ -63,6 +66,7 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
       date: date.toISOString().split("T")[0],
       time: selectedTime,
       format,
+      clientPhone: phone,
       message,
     })
 
@@ -168,6 +172,20 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
             </div>
           </div>
 
+          {/* Phone */}
+          <div className="space-y-3">
+            <Label htmlFor="phone">Контактний телефон (обов'язково)</Label>
+            <Input
+              id="phone"
+              type="tel"
+              placeholder="+380..."
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={hasReachedLimit}
+              required
+            />
+          </div>
+
           {/* Message */}
           <div className="space-y-3">
             <Label htmlFor="message">Повідомлення спеціалісту (необов'язково)</Label>
@@ -210,13 +228,12 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
             </div>
           )}
 
-          {/* Actions */}
           <div className="flex gap-3">
             <Button variant="outline" className="flex-1 bg-transparent" onClick={() => onOpenChange(false)}>
               {hasReachedLimit ? "Закрити" : "Скасувати"}
             </Button>
-            <Button className="flex-1" onClick={handleSubmit} disabled={!date || !selectedTime || hasReachedLimit}>
-              Відправити запит
+            <Button className="flex-1 bg-[#00c5a6] hover:bg-[#00a389] text-white" onClick={handleSubmit} disabled={!date || !selectedTime || !phone || hasReachedLimit}>
+              Відправити заявку
             </Button>
           </div>
 

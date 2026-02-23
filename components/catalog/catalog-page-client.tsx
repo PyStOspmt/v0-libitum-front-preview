@@ -20,6 +20,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useToast } from "@/hooks/use-toast"
+import { Users } from "lucide-react"
 
 type CatalogPageClientProps = {
   subjectSlug: string
@@ -46,7 +47,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
   const [priceRange, setPriceRange] = useState([200, 800])
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["en"])
   const [selectedCountries, setSelectedCountries] = useState<string[]>([])
-  
+
   const { user } = useAuth()
   const { t } = useTranslation(user?.language || "UA")
   const { toast } = useToast()
@@ -201,13 +202,13 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
       <main>
         {/* Hero Banner */}
-        <section className="relative py-8 px-4 lg:px-8">
+        <section className="relative py-8 px-3 lg:px-8">
           <div className="container mx-auto">
-            <div className="relative bg-white rounded-[2.5rem] p-10 lg:p-14 overflow-hidden border border-slate-100/80">
+            <div className="relative bg-white rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 lg:p-14 overflow-hidden border border-slate-100/80">
               {/* Decorative shapes - soft sage green */}
               <div className="absolute top-0 right-0 w-72 h-72 bg-[#e8f5e9] rounded-full translate-x-1/3 -translate-y-1/3" />
               <div className="absolute bottom-0 left-0 w-56 h-56 bg-[#e0f2f1] rounded-full -translate-x-1/4 translate-y-1/4" />
-              
+
               <svg className="absolute right-8 bottom-0 w-80 h-80 text-[#c8e6c9]/50" viewBox="0 0 200 200">
                 <path fill="currentColor" d="M45.3,-51.2C58.3,-40.9,68.1,-25.5,71.2,-8.5C74.3,8.5,70.6,27.1,60.1,40.3C49.6,53.5,32.3,61.3,14.1,66.1C-4.1,70.9,-23.2,72.7,-39.7,66.1C-56.2,59.5,-70.1,44.5,-75.4,27C-80.7,9.5,-77.4,-10.5,-68.4,-26.3C-59.4,-42.1,-44.7,-53.7,-29.5,-63.2C-14.3,-72.7,1.4,-80.1,15.7,-77.3C30,-74.5,32.3,-61.5,45.3,-51.2Z" transform="translate(100 100)" />
               </svg>
@@ -221,7 +222,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 <h1 className="text-4xl lg:text-6xl font-bold text-slate-800 mb-8 font-heading leading-[1.1] tracking-tight">
                   {t("hero.title")}
                 </h1>
-                
+
                 <p className="text-lg text-slate-500 mb-10 max-w-xl leading-relaxed">
                   {t("hero.subtitle")}
                 </p>
@@ -231,7 +232,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                      <Input 
+                      <Input
                         placeholder="Пошук за предметом, мовою або іменем..."
                         className="h-13 pl-12 rounded-xl border-0 bg-white text-slate-800 placeholder:text-slate-400 focus-visible:ring-[#43a047]"
                       />
@@ -245,11 +246,10 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                 {/* Language tags */}
                 <div className="flex flex-wrap items-center gap-3 mt-8">
                   {["Англійська", "Німецька", "Українська", "Іспанська", "Французька"].map((lang, i) => (
-                    <span 
+                    <span
                       key={lang}
-                      className={`px-5 py-2.5 rounded-full text-sm font-medium cursor-pointer transition-colors ${
-                        i === 0 ? "bg-[#43a047] text-white" : "bg-white text-slate-600 hover:bg-[#e8f5e9] border border-slate-100/80"
-                      }`}
+                      className={`px-5 py-2.5 rounded-full text-sm font-medium cursor-pointer transition-colors ${i === 0 ? "bg-[#43a047] text-white" : "bg-white text-slate-600 hover:bg-[#e8f5e9] border border-slate-100/80"
+                        }`}
                     >
                       {lang}
                     </span>
@@ -261,7 +261,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
         </section>
 
         {/* Results Section */}
-        <section className="container mx-auto px-4 lg:px-8 py-8">
+        <section className="container mx-auto px-3 sm:px-4 lg:px-8 py-8">
           {/* Filter Bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-3">
@@ -299,7 +299,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   <div className="space-y-4">
                     {languages.map(lang => (
                       <label key={lang.id} className="flex items-center gap-3 cursor-pointer group">
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedLanguages.includes(lang.id)}
                           onCheckedChange={() => toggleLanguage(lang.id)}
                           className="border-slate-200 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047] rounded"
@@ -320,9 +320,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                   <div className="space-y-4">
                     {countries.map(country => (
                       <label key={country.id} className="flex items-center gap-3 cursor-pointer group">
-                        <Checkbox 
+                        <Checkbox
                           checked={selectedCountries.includes(country.id)}
-                          onCheckedChange={() => setSelectedCountries(prev => 
+                          onCheckedChange={() => setSelectedCountries(prev =>
                             prev.includes(country.id) ? prev.filter(c => c !== country.id) : [...prev, country.id]
                           )}
                           className="border-slate-200 data-[state=checked]:bg-[#43a047] data-[state=checked]:border-[#43a047] rounded"
@@ -341,24 +341,24 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                     <ChevronDown className="h-4 w-4 text-slate-400" />
                   </div>
                   <div className="flex items-center gap-3 mb-4">
-                    <Input 
-                      type="number" 
-                      value={priceRange[0]} 
+                    <Input
+                      type="number"
+                      value={priceRange[0]}
                       onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
                       className="h-10 rounded-xl text-center text-sm"
                     />
                     <span className="text-slate-400">—</span>
-                    <Input 
-                      type="number" 
-                      value={priceRange[1]} 
+                    <Input
+                      type="number"
+                      value={priceRange[1]}
                       onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
                       className="h-10 rounded-xl text-center text-sm"
                     />
                   </div>
-                  <input 
-                    type="range" 
-                    min="100" 
-                    max="1000" 
+                  <input
+                    type="range"
+                    min="100"
+                    max="1000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
                     className="w-full accent-emerald-600"
@@ -391,9 +391,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
             {/* Teachers List */}
             <div className="flex-1 space-y-4">
               {specialists.map((specialist) => (
-                <div 
-                  key={specialist.id} 
-                  className="bg-white rounded-3xl p-6 border border-slate-100/80 hover:shadow-md transition-shadow"
+                <div
+                  key={specialist.id}
+                  className="bg-white rounded-[1.5rem] sm:rounded-3xl p-4 sm:p-6 border border-slate-100/80 hover:shadow-md transition-shadow"
                 >
                   <div className="flex gap-6">
                     {/* Photo */}
@@ -416,26 +416,41 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                         <div>
                           <div className="flex items-center gap-3 mb-2">
                             <h3 className="text-xl font-bold text-slate-800">{specialist.name}</h3>
-                            <button 
+                            <button
                               onClick={() => toggleWishlist(specialist.id)}
                               className="text-slate-300 hover:text-rose-500 transition-colors"
                             >
                               <Heart className={`h-5 w-5 ${wishlist.includes(specialist.id) ? "fill-rose-500 text-rose-500" : ""}`} />
                             </button>
                           </div>
-                          
-                          <div className="flex flex-wrap items-center gap-2.5">
-                            <span className="inline-flex items-center gap-1.5 bg-[#fff8e1] text-[#f9a825] px-3 py-1 rounded-full text-xs font-medium">
-                              <Star className="h-3 w-3 fill-[#ffc107]" />
-                              {specialist.rating}
-                            </span>
-                            <span className="text-sm text-slate-500">{specialist.reviews} відгуків</span>
-                            <span className="text-sm text-slate-500">{specialist.experience} р. досвіду</span>
-                            <span className="bg-[#e8f5e9] text-[#2e7d32] px-3 py-1 rounded-full text-xs font-medium">
+
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-2 mb-2">
+                            <div className="flex items-center gap-1.5 bg-[#fff8e1]/80 border border-[#ffc800]/30 px-2 py-1.5 rounded-[8px] shadow-sm">
+                              <Star className="h-4 w-4 fill-[#ffc800] text-[#ffc800]" />
+                              <span className="font-bold text-[#f57c00] text-[14px] leading-none">{specialist.rating}</span>
+                              <span className="text-[13px] font-medium text-[#f57c00]/90 border-l border-[#f57c00]/30 pl-2 ml-0.5 leading-none hover:text-[#f57c00] cursor-pointer">
+                                {specialist.reviews} відгуків
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 bg-[#f0f3f3] border border-slate-200 px-2.5 py-1.5 rounded-[8px] shadow-sm">
+                              <Users className="h-4 w-4 text-[#00c5a6]" />
+                              <span className="text-[13px] font-medium text-[#4d4c53] leading-none">
+                                <strong className="text-[#121117] font-bold">{specialist.students}</strong> учнів
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 bg-[#f0f3f3] border border-slate-200 px-2.5 py-1.5 rounded-[8px] shadow-sm">
+                              <span className="text-[13px] font-medium text-[#4d4c53] leading-none">
+                                Досвід <strong className="text-[#121117] font-bold">{specialist.experience} р.</strong>
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span className="bg-[#e8fffb] text-[#00a389] border border-[#00c5a6]/20 px-2.5 py-0.5 rounded-full text-xs font-semibold">
                               {specialist.languages} мов
                             </span>
                             {specialist.available && (
-                              <span className="bg-[#43a047] text-white px-3 py-1 rounded-full text-xs font-medium">
+                              <span className="bg-[#00c5a6] text-white px-2.5 py-0.5 rounded-full text-xs font-semibold shadow-sm">
                                 Онлайн
                               </span>
                             )}

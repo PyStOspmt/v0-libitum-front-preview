@@ -274,7 +274,7 @@ function PaymentTable({ payments }: { payments: Payment[] }) {
                 </div>
                 <div className="text-[14px] font-[500] text-[#69686f]">{p.method}</div>
                 <div className="flex items-center gap-2 text-[14px]">{statusBadge(p.status)}</div>
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full mt-2 md:mt-0">
                   <PaymentDetails payment={p} />
                   {p.status === "pending" && <ConfirmMarkPaid paymentId={p.id} />}
                   {p.status === "paid" && <ConfirmRefund paymentId={p.id} />}
@@ -292,7 +292,7 @@ function PaymentDetails({ payment }: { payment: Payment }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+        <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
           <Eye className="mr-2 h-4 w-4" /> Деталі
         </Button>
       </DialogTrigger>
@@ -353,7 +353,7 @@ function ConfirmMarkPaid({ paymentId }: { paymentId: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant="secondary" className="rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
+        <Button size="sm" variant="secondary" className="w-full sm:w-auto rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0">
           <ShieldCheck className="mr-2 h-4 w-4" /> Позначити оплачено
         </Button>
       </AlertDialogTrigger>
@@ -375,7 +375,7 @@ function ConfirmRefund({ paymentId }: { paymentId: string }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="sm" variant="outline" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
+        <Button size="sm" variant="outline" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
           <XCircle className="mr-2 h-4 w-4" /> Оформити повернення
         </Button>
       </AlertDialogTrigger>

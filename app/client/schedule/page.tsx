@@ -55,7 +55,7 @@ export default function ClientSchedulePage() {
   return (
     <ProtectedRoute allowedRoles={["client"]}>
       <SidebarLayout userType="client">
-        <div className="container mx-auto max-w-[1200px] space-y-6 sm:space-y-8 px-3 py-6 sm:p-6 font-sans">
+        <div className="container mx-auto max-w-[1200px] space-y-4 sm:space-y-8 px-1 py-4 sm:p-6 font-sans">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -72,11 +72,10 @@ export default function ClientSchedulePage() {
                 <button
                   key={child.id}
                   onClick={() => router.push(`/client/schedule?child=${child.id}`)}
-                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${
-                    child.id === selectedChildId
+                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${child.id === selectedChildId
                       ? "bg-[#121117] text-white border-transparent"
                       : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   {child.label}
                 </button>
@@ -91,7 +90,7 @@ export default function ClientSchedulePage() {
             transition={{ delay: 0.2, duration: 0.5 }}
             ref={calendarRef}
           >
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] border border-slate-200/80 p-4 sm:p-6 shadow-[0_15px_35px_rgba(0,0,0,0.08)] overflow-hidden">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] border border-slate-200/80 p-2 sm:p-6 shadow-[0_15px_35px_rgba(0,0,0,0.08)] overflow-hidden">
               <FullCalendar userType="client" userId={selectedChildId || user?.id || "client-1"} />
             </div>
           </motion.div>
@@ -106,7 +105,7 @@ export default function ClientSchedulePage() {
             <button
               type="button"
               onClick={scrollToCalendar}
-              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 hover:border-[#00c5a6]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#00c5a6] group"
+              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 hover:border-[#00c5a6]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#00c5a6] group"
             >
               <div className="flex items-center gap-4 mb-2 sm:mb-6">
                 <div className="h-12 w-12 rounded-full bg-[#e8fffb] flex items-center justify-center group-hover:bg-[#00c5a6]/20 transition-colors">
@@ -127,7 +126,7 @@ export default function ClientSchedulePage() {
             <button
               type="button"
               onClick={() => router.push(`/client/progress?child=${selectedChildId}`)}
-              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 hover:border-[#ffc107]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#ffc107] group"
+              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 hover:border-[#ffc107]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#ffc107] group"
             >
               <div className="flex items-center gap-4 mb-2 sm:mb-6">
                 <div className="h-12 w-12 rounded-full bg-[#fff8e1] flex items-center justify-center group-hover:bg-[#ffc107]/20 transition-colors">
@@ -148,7 +147,7 @@ export default function ClientSchedulePage() {
             <button
               type="button"
               onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
-              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-6 sm:p-8 border border-slate-200/80 hover:border-[#3b82f6]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] group"
+              className="text-left flex flex-col gap-4 sm:gap-6 bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 hover:border-[#3b82f6]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-[#3b82f6] group"
             >
               <div className="flex items-center gap-4 mb-2 sm:mb-6">
                 <div className="h-12 w-12 rounded-full bg-[#eff6ff] flex items-center justify-center group-hover:bg-[#3b82f6]/20 transition-colors">
@@ -225,13 +224,12 @@ export default function ClientSchedulePage() {
                           <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t border-gray-100 sm:border-0">
                             <Badge
                               variant="outline"
-                              className={`rounded-[6px] px-3 py-1.5 font-[600] border-0 flex-shrink-0 ${
-                                isPsychology
+                              className={`rounded-[6px] px-3 py-1.5 font-[600] border-0 flex-shrink-0 ${isPsychology
                                   ? "bg-orange-100 text-orange-700"
                                   : lesson.format === "online"
                                     ? "bg-[#e8fffb] text-[#00a389]"
                                     : "bg-blue-50 text-blue-700"
-                              }`}
+                                }`}
                             >
                               {lesson.format === "online" ? (
                                 <><Video className="h-4 w-4 mr-1.5 inline" /> Онлайн</>

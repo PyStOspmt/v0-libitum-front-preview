@@ -26,7 +26,6 @@ import {
   Share,
   Play,
   ChevronRight,
-  MessageCircle,
   Check,
 } from "lucide-react"
 
@@ -185,7 +184,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     if (!user) {
       toast({
         title: "Потрібна авторизація",
-        description: "Увійдіть в акаунт, щоб записатися до спеціаліста",
+        description: "Увійдіть в акаунт, щоб залишити заявку",
         variant: "destructive",
       })
       router.push("/login")
@@ -200,33 +199,6 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
       return
     }
     setBookingOpen(true)
-  }
-
-  const handleMessageClick = async () => {
-    if (!user) {
-      toast({
-        title: "Потрібна авторизація",
-        description: "Увійдіть, щоб написати спеціалісту",
-        variant: "destructive",
-      })
-      router.push("/login")
-      return
-    }
-
-    const shareUrl = typeof window !== "undefined" ? window.location.href : ""
-
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: `Повідомлення для ${specialist.name}`, url: shareUrl })
-        toast({ title: "Відкрийте ваш месенджер", description: "Надішліть посилання спеціалісту" })
-        return
-      }
-
-      await navigator.clipboard.writeText(shareUrl)
-      toast({ title: "Посилання скопійовано", description: "Вставте у ваш месенджер, щоб написати спеціалісту" })
-    } catch (error) {
-      toast({ title: "Не вдалося поділитися", variant: "destructive" })
-    }
   }
 
   const reviews = [
@@ -306,7 +278,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
           {/* Main Content */}
           <div className="flex-1 min-w-0">
             {/* Profile Header */}
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start bg-white rounded-[24px] p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
               <div className="relative shrink-0 mx-auto sm:mx-0">
                 <Avatar className="h-32 w-32 sm:h-48 sm:w-48 rounded-[24px] border border-slate-200/80 shadow-sm">
                   <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
@@ -351,7 +323,23 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </div>
                 </div>
 
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-4">
+                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-[14px] text-[#69686f] font-medium">
+                  <div className="flex items-center gap-1.5">
+                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                    <span className="font-bold text-[#121117]">{specialist.rating}</span>
+                    <span>({specialist.reviews} відгуків)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-[#b2b1b9]" />
+                    {specialist.location}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-[#b2b1b9]" />
+                    {specialist.completedSessions} занять
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                   {specialist.subjects.map((subject: string) => (
                     <span key={subject} className="inline-flex items-center rounded-full bg-[#f0f3f3] px-3 py-1.5 text-[14px] font-[600] text-[#121117]">
                       {subject}
@@ -371,6 +359,12 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   Про спеціаліста
                 </TabsTrigger>
                 <TabsTrigger
+                  value="reviews"
+                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
+                >
+                  Відгуки ({specialist.reviews})
+                </TabsTrigger>
+                <TabsTrigger
                   value="schedule"
                   className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
                 >
@@ -380,7 +374,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
               <TabsContent value="about" className="space-y-8">
                 {/* Bio */}
-                <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                <section className="bg-white rounded-[24px] p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                   <h3 className="text-[20px] font-bold text-[#121117] mb-4">Про мене</h3>
                   <p className="text-[16px] leading-relaxed text-[#3e3d45] whitespace-pre-line font-medium">
                     {specialist.bio}
@@ -389,7 +383,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                 {/* Video */}
                 {specialist.videoIntroUrl && (
-                  <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                  <section className="bg-white rounded-[24px] p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                     <h3 className="text-[20px] font-bold text-[#121117] mb-4">Відео-візитівка</h3>
                     <div className="relative overflow-hidden rounded-[16px] bg-slate-900 aspect-video border border-slate-200/80">
                       <video controls poster={specialist.avatarUrl} className="w-full h-full object-cover">
@@ -401,7 +395,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                 <div className="grid gap-6 md:grid-cols-2">
                   {/* Education */}
-                  <section className="bg-[#f0f3f3] rounded-[24px] p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
+                  <section className="bg-[#f0f3f3] rounded-[24px] p-4 sm:p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
                     <h3 className="text-[18px] font-bold text-[#121117] mb-4">Освіта</h3>
                     <div className="flex gap-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white text-[#00c5a6] border border-slate-200/80 shadow-sm">
@@ -415,7 +409,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </section>
 
                   {/* Certificates */}
-                  <section className="bg-[#f0f3f3] rounded-[24px] p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
+                  <section className="bg-[#f0f3f3] rounded-[24px] p-4 sm:p-6 border border-slate-200/50 hover:border-slate-300 transition-colors">
                     <h3 className="text-[18px] font-bold text-[#121117] mb-4">Сертифікати</h3>
                     <div className="space-y-4">
                       {specialist.certificates.map((cert: { title: string; description: string }) => (
@@ -434,7 +428,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                 </div>
 
                 {/* Pricing */}
-                <section className="bg-white rounded-[24px] p-6 sm:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                <section className="bg-white rounded-[24px] p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                   <h3 className="text-[20px] font-bold text-[#121117] mb-6">Вартість навчання</h3>
                   <div className="grid gap-6">
                     {specialist.subjectsDetails.map(
@@ -443,41 +437,68 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                         levels: { label: string; priceOnline?: number; priceOffline?: number; groupPrice?: number }[]
                         groupAvailable?: boolean
                       }) => (
-                      <div key={subject.subject} className="rounded-[16px] border border-slate-200/80 bg-white p-6 hover:border-slate-300 transition-colors shadow-sm">
-                        <div className="mb-4 flex items-center justify-between">
-                          <h4 className="text-[18px] font-bold text-[#121117]">{subject.subject}</h4>
-                          {subject.groupAvailable && (
-                            <span className="inline-flex items-center rounded-full bg-[#e8fffb] px-3 py-1 text-[12px] font-[600] text-[#00a389]">
-                              Групові доступні
-                            </span>
-                          )}
-                        </div>
-                        <div className="overflow-hidden rounded-[12px] border border-slate-200/80">
-                          <div className="grid grid-cols-4 bg-[#f0f3f3] px-4 py-3 text-[12px] font-[600] uppercase tracking-wider text-[#69686f]">
-                            <span>Рівень</span>
-                            <span>Онлайн</span>
-                            <span>Офлайн</span>
-                            <span>Група</span>
+                        <div key={subject.subject} className="rounded-[16px] border border-slate-200/80 bg-white p-4 sm:p-6 hover:border-slate-300 transition-colors shadow-sm">
+                          <div className="mb-4 flex items-center justify-between">
+                            <h4 className="text-[18px] font-bold text-[#121117]">{subject.subject}</h4>
+                            {subject.groupAvailable && (
+                              <span className="inline-flex items-center rounded-full bg-[#e8fffb] px-3 py-1 text-[12px] font-[600] text-[#00a389]">
+                                Групові доступні
+                              </span>
+                            )}
                           </div>
-                          <div className="divide-y divide-slate-100 bg-white">
-                            {subject.levels.map((level: { label: string; priceOnline?: number; priceOffline?: number; groupPrice?: number }) => (
-                              <div key={level.label} className="grid grid-cols-4 items-center px-4 py-3 text-sm hover:bg-[#fafaf8] transition-colors">
-                                <span className="font-medium text-slate-800">{level.label}</span>
-                                <span className="text-slate-600">{level.priceOnline ? `${level.priceOnline} ₴` : "---"}</span>
-                                <span className="text-slate-600">{level.priceOffline ? `${level.priceOffline} ₴` : "---"}</span>
-                                <span className="text-slate-600">{level.groupPrice ? `${level.groupPrice} ₴` : "---"}</span>
-                              </div>
-                            ))}
+                          <div className="overflow-hidden rounded-[12px] border border-slate-200/80">
+                            <div className="grid grid-cols-4 bg-[#f0f3f3] px-4 py-3 text-[12px] font-[600] uppercase tracking-wider text-[#69686f]">
+                              <span>Рівень</span>
+                              <span>Онлайн</span>
+                              <span>Офлайн</span>
+                              <span>Група</span>
+                            </div>
+                            <div className="divide-y divide-slate-100 bg-white">
+                              {subject.levels.map((level: { label: string; priceOnline?: number; priceOffline?: number; groupPrice?: number }) => (
+                                <div key={level.label} className="grid grid-cols-4 items-center px-4 py-3 text-sm hover:bg-[#fafaf8] transition-colors">
+                                  <span className="font-medium text-slate-800">{level.label}</span>
+                                  <span className="text-slate-600">{level.priceOnline ? `${level.priceOnline} ₴` : "---"}</span>
+                                  <span className="text-slate-600">{level.priceOffline ? `${level.priceOffline} ₴` : "---"}</span>
+                                  <span className="text-slate-600">{level.groupPrice ? `${level.groupPrice} ₴` : "---"}</span>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 </section>
               </TabsContent>
 
+              <TabsContent value="reviews" className="space-y-4">
+                {reviews.map((review) => (
+                  <div key={review.id} className="rounded-[16px] border border-slate-200/80 bg-white p-4 sm:p-6 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f0f3f3] font-bold text-[#121117] text-[16px]">
+                          {review.clientName[0]}
+                        </div>
+                        <div>
+                          <p className="font-bold text-[#121117] text-[15px]">{review.clientName}</p>
+                          <p className="text-[13px] font-medium text-[#69686f] mt-0.5">{review.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-0.5">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${i < review.rating ? "fill-amber-400 text-amber-400" : "fill-slate-100 text-slate-200"}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-[#3e3d45] leading-relaxed text-[15px] font-medium">{review.text}</p>
+                  </div>
+                ))}
+              </TabsContent>
+
               <TabsContent value="schedule" className="space-y-6">
-                <div className="rounded-[24px] border border-slate-200/80 bg-white p-6 sm:p-8 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+                <div className="rounded-[24px] border border-slate-200/80 bg-white p-4 sm:p-6 md:p-8 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                   <h3 className="text-[20px] font-bold text-[#121117] mb-2">Тижневий графік</h3>
                   <p className="text-[14px] font-medium text-[#69686f] mb-6">Вільні слоти для бронювання</p>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -488,7 +509,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                       { day: "Четвер", slots: ["11:00", "17:00"] },
                       { day: "П'ятниця", slots: ["10:00", "13:00"] },
                     ].map((day) => (
-                      <div key={day.day} className="rounded-[16px] bg-[#f0f3f3] p-5 border border-slate-200/50">
+                      <div key={day.day} className="rounded-[16px] bg-[#f0f3f3] p-4 sm:p-5 border border-slate-200/50">
                         <div className="mb-4 flex items-center justify-between font-bold text-[#121117]">
                           <span>{day.day}</span>
                           <Calendar className="h-4 w-4 text-[#69686f]" />
@@ -513,7 +534,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
             <div className="sticky top-24 flex flex-col gap-4">
               {/* Price card */}
               <div className="rounded-[24px] border border-slate-200/80 bg-white overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-                <div className="bg-white p-6 border-b border-slate-100 text-center relative overflow-hidden">
+                <div className="bg-white p-4 sm:p-6 border-b border-slate-100 text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#f0f3f3]/50 to-transparent pointer-events-none" />
                   <div className="relative z-10">
                     <p className="text-[13px] font-[600] text-[#69686f] mb-2 uppercase tracking-wider">Вартість заняття</p>
@@ -525,7 +546,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </div>
                 </div>
 
-                <div className="p-6 flex flex-col gap-5">
+                <div className="p-4 sm:p-6 flex flex-col gap-5">
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between rounded-[12px] bg-[#f0f3f3] p-3.5 border border-slate-200/50">
                       <div className="flex items-center gap-3">
@@ -557,26 +578,23 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="flex flex-col gap-3 pt-2">
                     <Button
-                      className="w-full h-[52px] rounded-[12px] bg-[#121117] text-white text-[16px] font-bold hover:bg-[#121117]/90 cursor-pointer shadow-sm"
+                      className="w-full h-[52px] rounded-[12px] bg-[#00c5a6] hover:bg-[#00a389] text-white text-[16px] font-bold cursor-pointer shadow-sm transition-colors"
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
-                      Записатися на пробне
+                      Залишити заявку
                     </Button>
-                    <Button
-                      variant="outline"
-                      className="w-full h-[48px] rounded-[12px] border border-slate-200/80 text-[#121117] text-[15px] font-bold hover:bg-[#f8f9fa] cursor-pointer"
-                      onClick={handleMessageClick}
-                    >
-                      <MessageCircle className="mr-2 h-4 w-4" />
-                      Написати
-                    </Button>
+                  </div>
+
+                  <div className="flex items-center justify-center gap-2 text-[13px] font-[600] text-[#69686f] pt-1 bg-[#f0f3f3] py-2 rounded-[8px]">
+                    <Users className="h-4 w-4" />
+                    <span>{specialist.currentStudents} учнів вже навчаються</span>
                   </div>
                 </div>
               </div>
 
               {/* Quick stats */}
-              <div className="rounded-[24px] border border-slate-200/80 bg-white p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
+              <div className="rounded-[24px] border border-slate-200/80 bg-white p-4 sm:p-6 shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                 <div className="grid grid-cols-2 gap-x-4 gap-y-6">
                   <div className="text-center">
                     <div className="text-[24px] font-bold text-[#121117]">{specialist.experience}</div>
