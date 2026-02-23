@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye, SlidersHorizontal } from "lucide-react"
-import { useSearchParams } from "next/navigation"
 
 /* ═══════════════════════════════════════════════════
    Data
@@ -286,11 +285,9 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
 /* ═══════════════════════════════════════════════════
    Main Page
    ═══════════════════════════════════════════════════ */
-export default function SpecialistsPage() {
-  const searchParams = useSearchParams()
-  const categoryParam = searchParams.get("category")
+export function CatalogView() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [category, setCategory] = useState(categoryParam && ["tutor", "psychologist", "speech-therapist"].includes(categoryParam) ? categoryParam : "all")
+  const [category, setCategory] = useState("all")
   const [format, setFormat] = useState("all")
   const [priceRange, setPriceRange] = useState("all")
   const [city, setCity] = useState("all")
@@ -317,11 +314,12 @@ export default function SpecialistsPage() {
 
   // Handle category query parameter changes
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
     const categoryParam = searchParams.get("category")
     if (categoryParam && ["tutor", "psychologist", "speech-therapist"].includes(categoryParam)) {
       setCategory(categoryParam)
     }
-  }, [searchParams])
+  }, [])
 
   // Sticky filters shadow on scroll
   useEffect(() => {
@@ -467,38 +465,7 @@ export default function SpecialistsPage() {
     })
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white overflow-x-clip">
-      {/* ── Header ── */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="text-lg font-bold tracking-tight text-slate-800">Libitum</span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
-              <Link href="/specialists" className="text-slate-900">Знайти спеціаліста</Link>
-              <Link href="/about" className="hover:text-slate-900 transition-colors">Про нас</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-sm font-medium text-slate-600">Увійти</Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm" className="rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-sm">Реєстрація</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Floating gradient orbs - desktop only */}
-      <div className="hidden sm:block fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
-      <div className="hidden sm:block fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
-      <div className="hidden sm:block fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
-
+    <div className="bg-gradient-to-br from-slate-50 via-white to-white overflow-x-clip">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
         {/* ── Title ── */}
         <div className="pt-6 pb-2 sm:pt-8">

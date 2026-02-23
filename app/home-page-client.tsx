@@ -2,67 +2,15 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useRef } from "react"
-import { ArrowRight, Check, ChevronDown, ChevronLeft, ChevronRight, Search, Star, Globe, ShieldCheck, MessageCircle, Menu, X } from "lucide-react"
+import { useState } from "react"
+import { ArrowRight, Check, ChevronDown, Search, Star, Globe, ShieldCheck, MessageCircle, Menu, X } from "lucide-react"
 
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
 
-// Mock specialists for the carousel
-const featuredSpecialists = [
-  {
-    id: "1",
-    name: "Олена І.",
-    specialization: "Репетитор",
-    subjects: ["Англійська мова", "Німецька мова"],
-    rating: 4.9,
-    reviews: 48,
-    price: 400,
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "2",
-    name: "Марія К.",
-    specialization: "Психолог",
-    subjects: ["Індивідуальна терапія", "Сімейна терапія"],
-    rating: 5.0,
-    reviews: 62,
-    price: 600,
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "3",
-    name: "Ігор П.",
-    specialization: "Логопед",
-    subjects: ["Корекція звуковимови", "Розвиток мовлення"],
-    rating: 4.8,
-    reviews: 35,
-    price: 450,
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "4",
-    name: "Анна С.",
-    specialization: "Репетитор",
-    subjects: ["Математика", "Фізика"],
-    rating: 4.9,
-    reviews: 89,
-    price: 350,
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "5",
-    name: "Дмитро В.",
-    specialization: "Репетитор",
-    subjects: ["Програмування (Python)", "Веб-розробка"],
-    rating: 5.0,
-    reviews: 120,
-    price: 500,
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
-  }
-]
+import { CatalogView } from "@/components/catalog-view"
 
 /* ── Brand palette ── */
 const BRAND = {
@@ -77,17 +25,6 @@ export function HomePageClient() {
   const { t } = useTranslation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
-  const carouselRef = useRef<HTMLDivElement>(null)
-
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (carouselRef.current) {
-      const scrollAmount = 350 // approx card width + gap
-      carouselRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
-  }
 
   const dashboardHref = user?.role === "client" ? "/client" : user?.role === "specialist" ? "/tutor" : "/admin"
   const specialistHref = user?.role === "client" ? "/client/specialists" : "/specialists"
@@ -97,11 +34,6 @@ export function HomePageClient() {
     { q: t("faq.q2.q"), a: t("faq.q2.a") },
     { q: t("faq.q3.q"), a: t("faq.q3.a") },
     { q: t("faq.q4.q"), a: t("faq.q4.a") },
-  ]
-  const plans = [
-    { title: "Start", lessons: "4 yroki", price: "990 ⁴", features: ["Підбір спеціаліста", "Онлайн-кабінет", "Підтримка"] },
-    { title: "Popular", lessons: "12 уроків", price: "2199 ⁴", features: ["Персональний план", "Пріоритетна підтримка", "Звіт прогресу"], highlighted: true },
-    { title: "Pro", lessons: "24 уроки", price: "5199 ⁴", features: ["Глибока програма", "Щотижневий фідбек", "Підготовка до цілей"] },
   ]
 
   return (
@@ -276,101 +208,10 @@ export function HomePageClient() {
           </div>
         </section>
 
-        {/* Featured Specialists Carousel */}
-        <section className="py-20 lg:py-28 bg-white border-b border-gray-200 overflow-hidden">
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-[#121117]">
-                Наші найкращі спеціалісти
-              </h2>
-              <div className="hidden sm:flex gap-3">
-                <button 
-                  onClick={() => scrollCarousel('left')}
-                  className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-slate-50 hover:border-slate-300 transition-colors"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button 
-                  onClick={() => scrollCarousel('right')}
-                  className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-slate-50 hover:border-slate-300 transition-colors"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-              </div>
-            </div>
-
-            <div className="relative -mx-4 sm:mx-0">
-              <div 
-                ref={carouselRef}
-                className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory hide-scrollbar px-4 sm:px-0 pb-8"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {featuredSpecialists.map((specialist) => (
-                  <Link 
-                    key={specialist.id} 
-                    href={`/specialists/${specialist.id}`}
-                    className="flex-none w-[280px] sm:w-[320px] snap-start group"
-                  >
-                    <div className="bg-white border border-slate-200 rounded-[20px] p-5 shadow-sm hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:border-slate-300 transition-all duration-300 h-full flex flex-col">
-                      <div className="flex gap-4 items-start mb-4">
-                        <div className="relative w-16 h-16 rounded-full overflow-hidden shrink-0 border border-slate-100">
-                          <Image 
-                            src={specialist.image} 
-                            alt={specialist.name} 
-                            fill 
-                            className="object-cover object-center group-hover:scale-105 transition-transform duration-500" 
-                            sizes="64px"
-                          />
-                        </div>
-                        <div>
-                          <h3 className="font-bold text-[18px] text-[#121117] leading-tight group-hover:text-primary transition-colors">{specialist.name}</h3>
-                          <p className="text-[14px] text-[#69686f] font-medium mt-1">{specialist.specialization}</p>
-                          <div className="flex items-center gap-1.5 mt-1.5 bg-[#fff8e1] w-fit px-2 py-0.5 rounded-[6px]">
-                            <Star className="w-3.5 h-3.5 fill-[#ffc800] text-[#ffc800]" />
-                            <span className="text-[13px] font-bold text-[#f57c00]">{specialist.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="mb-4 flex-grow">
-                        <div className="flex flex-wrap items-start gap-2">
-                          {specialist.subjects.slice(0, 2).map((subject, idx) => (
-                            <span key={idx} className="bg-[#f0f3f3] text-[#121117] px-2.5 py-1 rounded-[6px] text-[13px] font-medium leading-tight">
-                              {subject}
-                            </span>
-                          ))}
-                          {specialist.subjects.length > 2 && (
-                            <span className="bg-[#f0f3f3] text-[#121117] px-2.5 py-1 rounded-[6px] text-[13px] font-medium leading-tight">
-                              +{specialist.subjects.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-4 border-t border-gray-100 mt-auto">
-                        <div>
-                          <span className="text-[18px] font-bold text-[#121117]">₴{specialist.price}</span>
-                          <span className="text-[13px] text-[#69686f] ml-1">/ год</span>
-                        </div>
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#121117] transition-colors">
-                          <ArrowRight className="w-4 h-4" />
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            
-            <div className="mt-6 flex justify-center sm:hidden">
-              <Link 
-                href={specialistHref}
-                className="text-[#00c5a6] font-bold flex items-center gap-1 hover:underline underline-offset-2"
-              >
-                Всі спеціалісти <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
+        {/* Full Specialists Catalog */}
+        <section className="bg-slate-50 relative pb-20 pt-8" id="catalog">
+          <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-white to-transparent pointer-events-none" />
+          <CatalogView />
         </section>
 
         {/* How it works (Preply Card Layout) */}
@@ -397,43 +238,6 @@ export function HomePageClient() {
           </div>
         </section>
 
-        <section className="bg-[#f0f3f3] py-20 lg:py-28">
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-center text-[#121117] mb-4">
-              Обери свій план
-            </h2>
-            <p className="text-center text-[18px] text-[#69686f] mb-16 max-w-2xl mx-auto">{t("pricing.subtitle")}</p>
-            <div className="grid lg:grid-cols-3 gap-6 max-w-[1200px] mx-auto">
-              {plans.map((plan) => (
-                <div
-                  key={plan.title}
-                  className={`rounded-[24px] p-8 border ${plan.highlighted ? "bg-[#121117] text-white border-transparent" : "bg-white border-slate-200/80"}`}
-                  style={!plan.highlighted ? { boxShadow: "0 15px 35px rgba(0,0,0,0.08)" } : {}}
-                >
-                  <p className={`text-[16px] font-medium ${plan.highlighted ? "text-gray-300" : "text-[#69686f]"}`}>{plan.lessons}</p>
-                  <h3 className="text-[32px] font-bold mt-2 mb-2">{plan.price}</h3>
-                  <p className="font-bold text-[18px] mb-8">{plan.title}</p>
-                  <Link
-                    href={specialistHref}
-                    className={`h-[48px] rounded-[8px] px-6 inline-flex items-center justify-center w-full text-[16px] font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] border-2 ${
-                      plan.highlighted ? "bg-white text-[#121117] border-transparent hover:bg-gray-100" : "bg-primary text-[#121117] border-[#121117] hover:bg-primary/90 hover:border-[#121117]"
-                    }`}
-                  >
-                    Обрати план
-                  </Link>
-                  <div className="mt-8 space-y-4">
-                    {plan.features.map((feature) => (
-                      <p key={feature} className={`text-[16px] flex items-start gap-3 ${plan.highlighted ? "text-gray-200" : "text-[#121117]"}`}>
-                        <Check className="h-5 w-5 shrink-0" style={{ color: plan.highlighted ? "#fff" : BRAND.primary }} />
-                        {feature}
-                      </p>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         <section className="py-20 lg:py-28 bg-white">
           <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">

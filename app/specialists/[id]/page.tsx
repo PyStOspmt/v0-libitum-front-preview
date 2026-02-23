@@ -351,23 +351,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   </div>
                 </div>
 
-                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-[14px] text-[#69686f] font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    <span className="font-bold text-[#121117]">{specialist.rating}</span>
-                    <span>({specialist.reviews} відгуків)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-[#b2b1b9]" />
-                    {specialist.location}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Users className="h-4 w-4 text-[#b2b1b9]" />
-                    {specialist.completedSessions} занять
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-4">
                   {specialist.subjects.map((subject: string) => (
                     <span key={subject} className="inline-flex items-center rounded-full bg-[#f0f3f3] px-3 py-1.5 text-[14px] font-[600] text-[#121117]">
                       {subject}
@@ -385,12 +369,6 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                   className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
                 >
                   Про спеціаліста
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reviews"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
-                >
-                  Відгуки ({specialist.reviews})
                 </TabsTrigger>
                 <TabsTrigger
                   value="schedule"
@@ -498,33 +476,6 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                 </section>
               </TabsContent>
 
-              <TabsContent value="reviews" className="space-y-4">
-                {reviews.map((review) => (
-                  <div key={review.id} className="rounded-[16px] border border-slate-200/80 bg-white p-6 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f0f3f3] font-bold text-[#121117] text-[16px]">
-                          {review.clientName[0]}
-                        </div>
-                        <div>
-                          <p className="font-bold text-[#121117] text-[15px]">{review.clientName}</p>
-                          <p className="text-[13px] font-medium text-[#69686f] mt-0.5">{review.date}</p>
-                        </div>
-                      </div>
-                      <div className="flex gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`h-4 w-4 ${i < review.rating ? "fill-amber-400 text-amber-400" : "fill-slate-100 text-slate-200"}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-[#3e3d45] leading-relaxed text-[15px] font-medium">{review.text}</p>
-                  </div>
-                ))}
-              </TabsContent>
-
               <TabsContent value="schedule" className="space-y-6">
                 <div className="rounded-[24px] border border-slate-200/80 bg-white p-6 sm:p-8 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                   <h3 className="text-[20px] font-bold text-[#121117] mb-2">Тижневий графік</h3>
@@ -620,11 +571,6 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                       <MessageCircle className="mr-2 h-4 w-4" />
                       Написати
                     </Button>
-                  </div>
-
-                  <div className="flex items-center justify-center gap-2 text-[13px] font-[600] text-[#69686f] pt-1 bg-[#f0f3f3] py-2 rounded-[8px]">
-                    <Users className="h-4 w-4" />
-                    <span>{specialist.currentStudents} учнів вже навчаються</span>
                   </div>
                 </div>
               </div>
