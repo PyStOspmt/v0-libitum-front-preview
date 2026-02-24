@@ -244,7 +244,7 @@ function PaymentTable({ payments }: { payments: Payment[] }) {
         <CardDescription className="text-[#69686f] font-[500]">Оплати, повернення та помилки</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="hidden grid-cols-8 gap-3 rounded-[12px] bg-[#f0f3f3] px-4 py-3 text-[13px] font-[600] text-[#69686f] md:grid">
+        <div className="hidden md:grid gap-3 rounded-[12px] bg-[#f0f3f3] px-4 py-3 text-[13px] font-[600] text-[#69686f] md:grid-cols-[repeat(7,minmax(0,1fr))_auto]">
           <span>ID</span>
           <span>Запит</span>
           <span>Клієнт</span>
@@ -257,7 +257,7 @@ function PaymentTable({ payments }: { payments: Payment[] }) {
         <div className="space-y-3">
           {payments.map((p) => (
             <Card key={p.id} className="border-slate-200/80 md:border-0 md:bg-transparent md:shadow-none transition-colors hover:bg-slate-50/50 rounded-[16px]">
-              <CardContent className="grid gap-3 px-4 py-4 md:grid-cols-8 md:items-center md:rounded-[12px] md:bg-white md:border md:border-slate-200/80 shadow-sm">
+              <CardContent className="grid gap-3 px-4 py-4 md:items-center md:rounded-[12px] md:bg-white md:border md:border-slate-200/80 shadow-sm md:grid-cols-[repeat(7,minmax(0,1fr))_auto]">
                 <div className="text-[14px] font-[600] text-[#121117]">{p.id}</div>
                 <div className="text-[14px] font-[500] text-[#69686f]">{p.requestId}</div>
                 <div>

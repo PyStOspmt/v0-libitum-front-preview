@@ -1,3 +1,5 @@
+import { useI18nStore } from "./i18n-store"
+
 export type Locale = "UA" | "EN" | "RU"
 
 export const translations = {
@@ -283,11 +285,15 @@ export function normalizeLocale(input?: string): Locale {
   return "UA"
 }
 
-export function useTranslation(lang: string | Locale = "UA") {
-  const locale = normalizeLocale(lang)
+export function useTranslation(langOverride?: string | Locale) {
+  // We use the language from store, but allow an override if explicitly provided
+  const storeLanguage = useI18nStore((state) => state.language);
+  const locale = normalizeLocale(langOverride || storeLanguage);
+
   const t = (key: keyof typeof translations.UA) => {
     const dictionary = translations[locale] || translations.UA
     return dictionary[key] || translations.UA[key] || key
   }
+
   return { t, locale }
 }

@@ -887,8 +887,8 @@ export default function SpecialistsPage() {
                       </div>
                     </article>
 
-                    {/* Video sidebar anchored to card — landscape, compact */}
-                    <div className={`absolute top-0 right-[-236px] hidden lg:block flex-shrink-0 w-[220px] transition-all duration-300 z-0 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4 pointer-events-none"}`}>
+                    {/* Video sidebar anchored inside card, sliding over middle content */}
+                    <div className={`absolute top-0 right-[248px] hidden lg:block flex-shrink-0 w-[220px] transition-all duration-300 z-20 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"}`}>
                       <div className="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
                         <div
                           className="relative aspect-[3/4] bg-slate-900 cursor-pointer"

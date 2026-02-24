@@ -136,6 +136,9 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         </Link>
 
         <div className="flex items-center gap-2">
+          <div className="hidden lg:block">
+            <LanguageSwitcher />
+          </div>
           <div className="lg:hidden">
             <Button
               variant="ghost"
@@ -150,10 +153,6 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             <LanguageSwitcher />
           </div>
         </div>
-      </div>
-
-      <div className="px-5 mb-4 hidden lg:block">
-        <LanguageSwitcher />
       </div>
 
       <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-2">
