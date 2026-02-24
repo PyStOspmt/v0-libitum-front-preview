@@ -31,7 +31,7 @@ export default function StudentMaterialsPage() {
 
   const studentId = user?.id || "student-child-1"
   const studentLessons = lessons.filter((l) => l.clientId === studentId)
-  
+
   const homeworks = studentLessons
     .filter((l) => l.homework)
     .map((l) => ({
@@ -97,7 +97,7 @@ export default function StudentMaterialsPage() {
                       <p className="text-sm text-muted-foreground">{hw.description}</p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
-                        Здати до: {new Date(hw.dueDate).toLocaleDateString("uk-UA")}
+                        Здати до: {hw.dueDate ? new Date(hw.dueDate).toLocaleDateString("uk-UA") : ""}
                       </div>
                       {hw.status === "pending" && (
                         <Button className="w-full" onClick={() => setSelectedHomework(hw)}>
@@ -156,8 +156,8 @@ export default function StudentMaterialsPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="answer">Твоя відповідь</Label>
-                <Textarea 
-                  id="answer" 
+                <Textarea
+                  id="answer"
                   value={submissionText}
                   onChange={(e) => setSubmissionText(e.target.value)}
                   placeholder="Напиши тут відповідь або посилання на роботу..."

@@ -21,10 +21,7 @@ export function LanguageSwitcher() {
 
   useEffect(() => {
     setMounted(true)
-    if (user?.language && user.language !== language) {
-      setLanguage(user.language as Locale)
-    }
-  }, [user?.language, language, setLanguage])
+  }, [])
 
   const languages: { code: Locale; label: string }[] = [
     { code: "UA", label: "Українська" },
@@ -44,7 +41,7 @@ export function LanguageSwitcher() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-border/50">
+      <Button variant="ghost" size="icon" className="h-9 w-12 rounded-xl border border-border/50">
         <Globe className="h-5 w-5" />
       </Button>
     )
@@ -53,8 +50,8 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl border border-border/50">
-          <Globe className="h-5 w-5" />
+        <Button variant="ghost" size="icon" className="h-9 w-12 rounded-xl border border-border/50">
+          <Globe className="h-4 w-4" />
           <span className="ml-1 text-xs font-semibold">{language}</span>
         </Button>
       </DropdownMenuTrigger>

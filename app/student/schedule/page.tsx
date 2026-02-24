@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth-context"
 export default function StudentSchedulePage() {
   const { user } = useAuth()
   const { getLessonsByClient } = useLessonStore()
-  
+
   const studentLessons = getLessonsByClient(user?.id || "student-child-1")
 
   return (
@@ -20,9 +20,9 @@ export default function StudentSchedulePage() {
             <h1 className="text-3xl font-bold">Мій розклад</h1>
             <p className="text-muted-foreground">Перегляд запланованих занять</p>
           </div>
-          
-          <CalendarView 
-            lessons={studentLessons} 
+
+          <CalendarView
+            sessions={studentLessons as any}
             userType="client"
           />
         </div>

@@ -55,16 +55,20 @@ export function HomePageClient() {
 
             <div className="flex items-center gap-3 ml-2">
               {user ? (
-                <Link href={dashboardHref} className="h-[48px] px-6 rounded-[8px] border-2 border-transparent bg-primary text-[#121117] hover:bg-primary/90 hover:border-[#121117] flex items-center justify-center font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
-                  Dashboard
+                <Link href={dashboardHref}>
+                  <Button className="h-[48px] px-6 rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                    Dashboard
+                  </Button>
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" className="hover:text-primary transition-colors hidden sm:block px-2 font-[600]">
+                  <Link href="/login" className="hover:text-[var(--theme-primary)] transition-colors hidden sm:block px-2 font-[600]">
                     {t("btn.login")}
                   </Link>
-                  <Link href="/register" className="h-[48px] px-6 rounded-[8px] border-2 border-transparent bg-primary text-[#121117] hover:bg-primary/90 hover:border-[#121117] flex items-center justify-center font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
-                    {t("btn.register")}
+                  <Link href="/register">
+                    <Button className="h-[48px] px-6 rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                      {t("btn.register")}
+                    </Button>
                   </Link>
                 </>
               )}
@@ -99,16 +103,22 @@ export function HomePageClient() {
             </nav>
             <div className="flex flex-col gap-3 pt-2">
               {user ? (
-                <Link href={dashboardHref} className="h-[48px] w-full rounded-[8px] bg-primary text-[#121117] hover:bg-primary/90 flex items-center justify-center font-[600] transition-colors">
-                  Dashboard
+                <Link href={dashboardHref}>
+                  <Button className="h-[48px] w-full rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm transition-all">
+                    Dashboard
+                  </Button>
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" className="h-[48px] w-full rounded-[8px] border-2 border-[#121117] text-[#121117] hover:bg-gray-50 flex items-center justify-center font-[600] transition-colors">
-                    {t("btn.login")}
+                  <Link href="/login">
+                    <Button variant="outline" className="h-[48px] w-full rounded-[14px] border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
+                      {t("btn.login")}
+                    </Button>
                   </Link>
-                  <Link href="/register" className="h-[48px] w-full rounded-[8px] bg-primary text-[#121117] hover:bg-primary/90 flex items-center justify-center font-[600] transition-colors">
-                    {t("btn.register")}
+                  <Link href="/register">
+                    <Button className="h-[48px] w-full rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm transition-all">
+                      {t("btn.register")}
+                    </Button>
                   </Link>
                 </>
               )}
@@ -129,12 +139,7 @@ export function HomePageClient() {
               </div>
 
               <h1 className="text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.05] font-bold text-[#121117] tracking-[-0.03em] mb-6 text-center lg:text-left">
-                Швидке навчання <br />
-                з вашим ідеальним <br />
-                <span className="relative inline-block mt-2">
-                  спеціалістом.
-                  <svg className="absolute -bottom-3 left-0 w-[110%] h-[20px] text-[#ffc800] -z-10" viewBox="0 0 137 13" fill="currentColor" preserveAspectRatio="none"><path fillRule="evenodd" d="M136.009 2.193c-28.775-1.921-57.94-2.884-86.744-1.921C34.821 1.233 20.378 1.956.126 3.161c-.551.066-1.042.868.175 1.096 16.096 3.011 31.91 5.926 48.064 8.71 28.539 4.931 58.077 4.14 86.815-.992 1.391-.25 2.179-2.124.829-9.782z" clipRule="evenodd"></path></svg>
-                </span>
+                {t("hero.title")}
               </h1>
 
               <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">
@@ -142,14 +147,14 @@ export function HomePageClient() {
                   href={specialistHref}
                   className="inline-flex items-center justify-center gap-2 bg-primary text-[#121117] border-2 border-transparent text-[16px] font-[600] h-[48px] px-6 rounded-[8px] w-full sm:w-auto hover:bg-primary/90 hover:border-[#121117] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                 >
-                  Знайти спеціаліста
+                  {t("hero.cta")}
                   <ArrowRight className="h-5 w-5" />
                 </Link>
                 <Link
                   href="#how"
                   className="inline-flex items-center justify-center gap-2 bg-white text-[#121117] border-[2px] border-[#121117] text-[16px] font-[600] h-[48px] px-6 rounded-[8px] w-full sm:w-auto hover:bg-gray-50 transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                 >
-                  Як це працює
+                  {t("nav.how_it_works")}
                 </Link>
               </div>
             </div>
@@ -173,7 +178,7 @@ export function HomePageClient() {
                 </div>
                 <div>
                   <p className="text-[#121117] font-bold text-lg leading-tight">4.9/5</p>
-                  <p className="text-[#69686f] text-sm">Середня оцінка</p>
+                  <p className="text-[#69686f] text-sm">{t("home.avg_rating") || "Середня оцінка"}</p>
                 </div>
               </div>
             </div>
@@ -183,16 +188,16 @@ export function HomePageClient() {
         {/* Featured Specialists Carousels (Overlapping Hero) */}
         <section className="relative z-20 mt-6 lg:mt-6 pb-12 lg:pb-16 bg-transparent overflow-visible">
           <div className="max-w-[1440px] mx-auto w-full">
-            <SpecialistCarousel title="Популярні репетитори" specialists={tutors} theme="teal" />
-            <SpecialistCarousel title="Сертифіковані психологи" specialists={psychologists} theme="amber" />
-            <SpecialistCarousel title="Досвідчені логопеди" specialists={speechTherapists} theme="amber" />
+            <SpecialistCarousel title={t("home.tutors_title") || "Популярні репетитори"} specialists={tutors} theme="teal" />
+            <SpecialistCarousel title={t("home.psychologists_title") || "Сертифіковані психологи"} specialists={psychologists} theme="amber" />
+            <SpecialistCarousel title={t("home.speech_title") || "Досвідчені логопеди"} specialists={speechTherapists} theme="amber" />
 
             <div className="mt-4 flex justify-center w-full px-4 sm:px-0">
               <Link
                 href={specialistHref}
                 className="inline-flex items-center justify-center gap-2 bg-white text-[#121117] border-[2px] border-slate-200 text-[16px] font-[700] h-[52px] px-8 rounded-[12px] hover:border-[#121117] hover:bg-slate-50 transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] shadow-sm"
               >
-                Всі спеціалісти <ArrowRight className="w-5 h-5 ml-1" />
+                {t("home.all_specialists_btn") || "Всі спеціалісти"} <ArrowRight className="w-5 h-5 ml-1" />
               </Link>
             </div>
           </div>
@@ -209,7 +214,7 @@ export function HomePageClient() {
                 {t("nav.how_it_works")}
               </h2>
               <p className="text-[18px] text-[#69686f] leading-relaxed">
-                Почніть свій шлях до нових знань всього за три простих кроки. Ми зробили процес пошуку спеціаліста максимально зручним.
+                {t("how.subtitle") || "Почніть свій шлях до нових знань всього за три простих кроки. Ми зробили процес пошуку спеціаліста максимально зручним."}
               </p>
             </div>
 
@@ -246,14 +251,13 @@ export function HomePageClient() {
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=2000&q=80')] opacity-10 bg-cover bg-center"></div>
           <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center gap-12 lg:gap-24">
             <div className="w-full md:w-1/2">
-              <h2 className="text-[32px] sm:text-[44px] font-bold tracking-tight mb-6 leading-tight">
-                Гарантуємо якість <br /> <span className="text-[#00c5a6]">кожного заняття</span>
+              <h2 className="text-[32px] sm:text-[44px] font-bold tracking-tight mb-6 leading-tight" dangerouslySetInnerHTML={{ __html: t("guarantee.title") || "Гарантуємо якість <br /> <span class=\"text-[#00c5a6]\">кожного заняття</span>" }}>
               </h2>
               <p className="text-[18px] text-slate-300 leading-relaxed mb-8">
-                Якщо перше заняття вам не сподобається, ми безкоштовно підберемо іншого спеціаліста або повернемо гроші. Ваш результат — наш пріоритет.
+                {t("guarantee.desc") || "Якщо перше заняття вам не сподобається, ми безкоштовно підберемо іншого спеціаліста або повернемо гроші. Ваш результат — наш пріоритет."}
               </p>
               <ul className="space-y-4 mb-10">
-                {['Перевірені дипломи та сертифікати', 'Реальні відгуки від учнів', 'Безпечна оплата через платформу'].map((text, i) => (
+                {[t("guarantee.point1") || 'Перевірені дипломи та сертифікати', t("guarantee.point2") || 'Реальні відгуки від учнів', t("guarantee.point3") || 'Безпечна оплата через платформу'].map((text, i) => (
                   <li key={i} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-[#00c5a6]/20 flex items-center justify-center shrink-0">
                       <Check className="w-4 h-4 text-[#00c5a6]" />
@@ -266,7 +270,7 @@ export function HomePageClient() {
                 href={specialistHref}
                 className="inline-flex items-center justify-center gap-2 bg-[#00c5a6] text-[#121117] text-[16px] font-[700] h-[52px] px-8 rounded-[12px] hover:bg-[#00a389] transition-colors duration-200"
               >
-                Спробувати безкоштовно
+                {t("guarantee.try_free") || "Спробувати безкоштовно"}
               </Link>
             </div>
             <div className="w-full md:w-1/2 relative">
@@ -279,7 +283,7 @@ export function HomePageClient() {
                 </div>
                 <div>
                   <p className="text-[32px] font-black leading-none mb-1">4.9</p>
-                  <p className="text-[14px] text-[#69686f] font-medium">Середній рейтинг</p>
+                  <p className="text-[14px] text-[#69686f] font-medium">{t("home.avg_rating_all") || "Середній рейтинг"}</p>
                 </div>
               </div>
             </div>
@@ -290,9 +294,9 @@ export function HomePageClient() {
           <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-[#121117] mb-4">
-                Часті запитання
+                {t("faq.title") || "Часті запитання"}
               </h2>
-              <p className="text-[18px] text-[#69686f]">Все, що вам потрібно знати про платформу Libitum</p>
+              <p className="text-[18px] text-[#69686f]">{t("faq.desc") || "Все, що вам потрібно знати про платформу Libitum"}</p>
             </div>
 
             <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 overflow-hidden">
@@ -344,16 +348,16 @@ export function HomePageClient() {
             </div>
           </div>
           <div>
-            <p className="font-bold text-[#121117] mb-6 uppercase tracking-wider text-[13px]">Навігація</p>
+            <p className="font-bold text-[#121117] mb-6 uppercase tracking-wider text-[13px]">{t("footer.nav") || "Навігація"}</p>
             <div className="space-y-4">
               <Link href={specialistHref} className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.specialists")}</Link>
               <Link href="#how" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.how_it_works")}</Link>
-              <Link href="#reviews" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.reviews")}</Link>
+              <Link href="#faq" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.reviews")}</Link>
             </div>
           </div>
         </div>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-gray-200 text-[14px] text-[#69686f]">
-          © 2024 Libitum Education. {t("footer.rights")}
+          2024 Libitum Education. {t("footer.rights")}
         </div>
       </footer>
     </div>

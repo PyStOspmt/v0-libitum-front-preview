@@ -19,7 +19,7 @@ export default function SpecialistStatsPage() {
   const nextLevel = levels.find((l) => l.level === currentLevel.level + 1)
 
   const progressToNextLevel = nextLevel
-    ? ((progress.totalSessions - currentLevel.minSessions) / (nextLevel.minSessions - currentLevel.minSessions)) * 100
+    ? ((progress.totalXP - currentLevel.minXP) / (nextLevel.minXP - currentLevel.minXP)) * 100
     : 100
 
   const stats = {
@@ -68,13 +68,13 @@ export default function SpecialistStatsPage() {
                       </CardTitle>
                       <CardDescription className="text-base">
                         {nextLevel
-                          ? `Ще ${nextLevel.minSessions - progress.totalSessions} занять до рівня ${nextLevel.level}`
+                          ? `Ще ${nextLevel.minXP - progress.totalXP} XP до рівня ${nextLevel.level}`
                           : "Максимальний рівень досягнуто!"}
                       </CardDescription>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold">{progress.points}</div>
+                    <div className="text-3xl font-bold">{progress.totalXP}</div>
                     <div className="text-sm text-muted-foreground">балів</div>
                   </div>
                 </div>
@@ -223,9 +223,8 @@ export default function SpecialistStatsPage() {
                   {levels.map((level) => (
                     <div
                       key={level.level}
-                      className={`rounded-lg border p-4 ${
-                        level.level === currentLevel.level ? "border-primary bg-primary/5" : ""
-                      } ${level.level > currentLevel.level ? "opacity-50" : ""}`}
+                      className={`rounded-lg border p-4 ${level.level === currentLevel.level ? "border-primary bg-primary/5" : ""
+                        } ${level.level > currentLevel.level ? "opacity-50" : ""}`}
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -242,11 +241,11 @@ export default function SpecialistStatsPage() {
                             )}
                           </div>
                           <p className="mb-2 text-sm text-muted-foreground">
-                            {level.minSessions === 0
-                              ? `0-${level.maxSessions} занять`
-                              : level.maxSessions === Number.POSITIVE_INFINITY
-                                ? `${level.minSessions}+ занять`
-                                : `${level.minSessions}-${level.maxSessions} занять`}
+                            {level.minXP === 0
+                              ? `0-${level.maxXP} XP`
+                              : level.maxXP === Number.POSITIVE_INFINITY
+                                ? `${level.minXP}+ XP`
+                                : `${level.minXP}-${level.maxXP} XP`}
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {level.benefits.map((benefit) => (

@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye, SlidersHorizontal } from "lucide-react"
 import { useSearchParams } from "next/navigation"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 
 /* ═══════════════════════════════════════════════════
    Data
@@ -99,11 +101,11 @@ const PRICE_RANGES = [
   { label: "₴800+", min: 800, max: Infinity },
 ]
 const SORT_OPTIONS = [
-  { value: "recommended", label: "Рекомендовані" },
-  { value: "price-asc", label: "Ціна: від низької" },
-  { value: "price-desc", label: "Ціна: від високої" },
-  { value: "rating", label: "За рейтингом" },
-  { value: "reviews", label: "За відгуками" },
+  { value: "recommended", label: "Рекомендовані", labelKey: "sort.recommended" },
+  { value: "price-asc", label: "Ціна: від низької", labelKey: "sort.price_asc" },
+  { value: "price-desc", label: "Ціна: від високої", labelKey: "sort.price_desc" },
+  { value: "rating", label: "За рейтингом", labelKey: "sort.rating" },
+  { value: "reviews", label: "За відгуками", labelKey: "sort.reviews" },
 ]
 
 /* ═══════════════════════════════════════════════════
@@ -126,15 +128,15 @@ const accentPalette: Record<AccentKey, {
     ring: "ring-[#80e2d3]/50",
   },
   health: {
-    badge: "bg-[#e6f9f6] text-[#008f78] border-[#80e2d3]",
-    badgeBorder: "border border-[#80e2d3]",
-    cta: "bg-[#00c5a6] hover:bg-[#00a389] text-white border-transparent",
+    badge: "bg-[#fff8e1] text-[#f57c00] border-[#ffc800]/30",
+    badgeBorder: "border border-[#ffc800]/30",
+    cta: "bg-[#f57c00] hover:bg-[#e67600] text-white border-transparent",
     price: "text-slate-900",
-    cardBg: "from-white via-[#e6f9f6]/30 to-white",
-    glow: "rgba(0,197,166,0.08)",
-    soft: "rgba(0,197,166,0.04)",
-    icon: "text-[#00c5a6]",
-    ring: "ring-[#80e2d3]/50",
+    cardBg: "from-white via-[#fff8e1]/30 to-white",
+    glow: "rgba(245,124,0,0.08)",
+    soft: "rgba(245,124,0,0.04)",
+    icon: "text-[#f57c00]",
+    ring: "ring-[#ffc800]/50",
   },
   neutral: {
     badge: "bg-[#e6f9f6] text-[#008f78] border-[#80e2d3]",
@@ -149,6 +151,9 @@ const accentPalette: Record<AccentKey, {
   },
 }
 function getAccent(spec: string): AccentKey {
+  const normalized = spec.trim().toLowerCase()
+  if (normalized.includes("репетитор")) return "tutor"
+  if (normalized.includes("психолог") || normalized.includes("логопед")) return "health"
   return "neutral"
 }
 
@@ -183,6 +188,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
   onChange: (v: string | string[]) => void
   multi?: boolean
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -262,7 +268,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
           {multi && (value as string[]).length > 0 && (
             <div className="border-t border-slate-100 mt-1 pt-1">
               <button onClick={() => { onChange([]); setOpen(false) }} className="w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50">
-                Скинути
+                {t("filter.reset") || "Скинути"}
               </button>
             </div>
           )}
@@ -277,6 +283,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
    ═══════════════════════════════════════════════════ */
 export default function SpecialistsPage() {
   const searchParams = useSearchParams()
+  const { t } = useTranslation()
   const categoryParam = searchParams.get("category")
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState(categoryParam && ["tutor", "psychologist", "speech-therapist"].includes(categoryParam) ? categoryParam : "all")
@@ -454,32 +461,36 @@ export default function SpecialistsPage() {
         default: return 0
       }
     })
-  const onlineNowCount = filtered.filter((item) => item.online).length
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white overflow-x-clip">
       {/* ── Header ── */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
+      <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <Link href="/" className="flex items-center gap-2 min-w-0">
+              <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white">
+                <img src="/logo-education.jpg" alt="Libitum" className="h-full w-full object-cover" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-slate-800">Libitum</span>
+              <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 truncate leading-none">Libitum</span>
             </Link>
             <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
-              <Link href="/specialists" className="text-slate-900">Знайти спеціаліста</Link>
-              <Link href="/about" className="hover:text-slate-900 transition-colors">Про нас</Link>
+              <Link href="/specialists" className="text-slate-900">{t("nav.specialists")}</Link>
+              <Link href="/about" className="hover:text-slate-900 transition-colors">{t("about.title")}</Link>
             </nav>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-sm font-medium text-slate-600">Увійти</Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm" className="rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-sm">Реєстрація</Button>
-            </Link>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="scale-[0.9] sm:scale-100 origin-right">
+              <LanguageSwitcher />
+            </div>
+            <div className="hidden md:flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="h-[40px] px-4 rounded-[12px] text-[14px] font-medium text-slate-600 hover:text-slate-900">{t("btn.login")}</Button>
+              </Link>
+              <Link href="/register">
+                <Button size="sm" className="h-[40px] px-4 rounded-[12px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] text-[14px] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">{t("btn.register")}</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -493,10 +504,10 @@ export default function SpecialistsPage() {
         {/* ── Title ── */}
         <div className="pt-4 pb-2">
           <h1 className="text-[26px] font-bold tracking-tight text-slate-900 leading-tight">
-            Спеціалісти для приватних занять
+            {t("catalog.page_title") || "Спеціалісти для приватних занять"}
           </h1>
           <p className="text-[15px] text-slate-600 mt-1 max-w-2xl leading-relaxed">
-            Оберіть з {filtered.length} перевірених спеціалістів. Запишіться на пробне заняття та почніть навчання вже сьогодні.
+            {t("catalog.page_subtitle_start") || "Оберіть з"} {filtered.length} {t("catalog.page_subtitle_end") || "перевірених спеціалістів. Запишіться на пробне заняття та почніть навчання вже сьогодні."}
           </p>
         </div>
 
@@ -512,10 +523,10 @@ export default function SpecialistsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Всі спеціалісти</SelectItem>
-                    <SelectItem value="tutor">Репетитори</SelectItem>
-                    <SelectItem value="psychologist">Психологи</SelectItem>
-                    <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                    <SelectItem value="all">{t("filter.all_specialists") || "Всі спеціалісти"}</SelectItem>
+                    <SelectItem value="tutor">{t("filter.tutors") || "Репетитори"}</SelectItem>
+                    <SelectItem value="psychologist">{t("filter.psychologists") || "Психологи"}</SelectItem>
+                    <SelectItem value="speech-therapist">{t("filter.speech_therapists") || "Логопеди"}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -554,13 +565,13 @@ export default function SpecialistsPage() {
               <div className="space-y-3 pb-2 animate-in slide-in-from-top-2 duration-200">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Ціна за заняття</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.price") || "Ціна за заняття"}</div>
                     <Select value={priceRange} onValueChange={setPriceRange}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
-                        <SelectValue placeholder="Будь-яка" />
+                        <SelectValue placeholder={t("filter.any") || "Будь-яка"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-яка</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-яка"}</SelectItem>
                         {PRICE_RANGES.slice(1).map((r, i) => (
                           <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
                         ))}
@@ -568,13 +579,13 @@ export default function SpecialistsPage() {
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Місто</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.city") || "Місто"}</div>
                     <Select value={city} onValueChange={setCity}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
-                        <SelectValue placeholder="Будь-яке" />
+                        <SelectValue placeholder={t("filter.any") || "Будь-яке"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-яке</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-яке"}</SelectItem>
                         {ALL_CITIES.map((c) => (
                           <SelectItem key={c} value={c}>{c}</SelectItem>
                         ))}
@@ -582,27 +593,27 @@ export default function SpecialistsPage() {
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Формат занять</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.format") || "Формат занять"}</div>
                     <Select value={format} onValueChange={setFormat}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-який</SelectItem>
-                        <SelectItem value="online">Онлайн</SelectItem>
-                        <SelectItem value="offline">Офлайн</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-який"}</SelectItem>
+                        <SelectItem value="online">{t("filter.online") || "Онлайн"}</SelectItem>
+                        <SelectItem value="offline">{t("filter.offline") || "Офлайн"}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Сортування</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.sort") || "Сортування"}</div>
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {SORT_OPTIONS.map(o => (
-                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                          <SelectItem key={o.value} value={o.value}>{t(o.labelKey as any) || o.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -610,7 +621,7 @@ export default function SpecialistsPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-2 overflow-visible py-1">
                   <PillDropdown
-                    label="Предмети"
+                    label={t("filter.subjects") || "Предмети"}
                     multi
                     options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
                     value={subjectFilter}
@@ -621,7 +632,7 @@ export default function SpecialistsPage() {
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                       }`}
                   >
-                    Верифіковані
+                    {t("filter.verified") || "Верифіковані"}
                     {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                   </button>
                   <button
@@ -629,7 +640,7 @@ export default function SpecialistsPage() {
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                       }`}
                   >
-                    Обрані
+                    {t("filter.favorites") || "Обрані"}
                     {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                   </button>
                 </div>
@@ -640,7 +651,7 @@ export default function SpecialistsPage() {
           {/* ── DESKTOP: Full FilterBox grid + pill row ── */}
           <div className="hidden sm:block">
             <div className="grid grid-cols-4 gap-3 mb-3">
-              <FilterBox label="Спеціалізація" onClick={() => categorySelectRef.current?.click()}>
+              <FilterBox label={t("filter.specialization") || "Спеціалізація"} onClick={() => categorySelectRef.current?.click()}>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger
                     ref={categorySelectRef}
@@ -649,46 +660,46 @@ export default function SpecialistsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Всі спеціалісти</SelectItem>
-                    <SelectItem value="tutor">Репетитори</SelectItem>
-                    <SelectItem value="psychologist">Психологи</SelectItem>
-                    <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                    <SelectItem value="all">{t("filter.all_specialists") || "Всі спеціалісти"}</SelectItem>
+                    <SelectItem value="tutor">{t("filter.tutors") || "Репетитори"}</SelectItem>
+                    <SelectItem value="psychologist">{t("filter.psychologists") || "Психологи"}</SelectItem>
+                    <SelectItem value="speech-therapist">{t("filter.speech_therapists") || "Логопеди"}</SelectItem>
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
+              <FilterBox label={t("filter.price") || "Ціна за заняття"} onClick={() => priceSelectRef.current?.click()}>
                 <Select value={priceRange} onValueChange={setPriceRange}>
                   <SelectTrigger
                     ref={priceSelectRef}
                     className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
                   >
-                    <SelectValue placeholder="Будь-яка" />
+                    <SelectValue placeholder={t("filter.any") || "Будь-яка"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-яка</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-яка"}</SelectItem>
                     {PRICE_RANGES.slice(1).map((r, i) => (
                       <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
+              <FilterBox label={t("filter.city") || "Місто"} onClick={() => citySelectRef.current?.click()}>
                 <Select value={city} onValueChange={setCity}>
                   <SelectTrigger
                     ref={citySelectRef}
                     className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
                   >
-                    <SelectValue placeholder="Будь-яке" />
+                    <SelectValue placeholder={t("filter.any") || "Будь-яке"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-яке</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-яке"}</SelectItem>
                     {ALL_CITIES.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
+              <FilterBox label={t("filter.format") || "Формат занять"} onClick={() => formatSelectRef.current?.click()}>
                 <Select value={format} onValueChange={setFormat}>
                   <SelectTrigger
                     ref={formatSelectRef}
@@ -697,9 +708,9 @@ export default function SpecialistsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-який</SelectItem>
-                    <SelectItem value="online">Онлайн</SelectItem>
-                    <SelectItem value="offline">Офлайн</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-який"}</SelectItem>
+                    <SelectItem value="online">{t("filter.online") || "Онлайн"}</SelectItem>
+                    <SelectItem value="offline">{t("filter.offline") || "Офлайн"}</SelectItem>
                   </SelectContent>
                 </Select>
               </FilterBox>
@@ -708,7 +719,7 @@ export default function SpecialistsPage() {
             <div className="flex items-center justify-between gap-3 pb-1">
               <div className="flex items-center gap-2">
                 <PillDropdown
-                  label="Предмети"
+                  label={t("filter.subjects") || "Предмети"}
                   multi
                   options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
                   value={subjectFilter}
@@ -719,7 +730,7 @@ export default function SpecialistsPage() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                     }`}
                 >
-                  Верифіковані
+                  {t("filter.verified") || "Верифіковані"}
                   {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                 </button>
                 <button
@@ -727,13 +738,13 @@ export default function SpecialistsPage() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                     }`}
                 >
-                  Обрані
+                  {t("filter.favorites") || "Обрані"}
                   {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                 </button>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <PillDropdown
-                  label={`Сортувати: ${SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
+                  label={`${t("filter.sort") || "Сортувати"}: ${t(SORT_OPTIONS.find(o => o.value === sortBy)?.labelKey as any) || SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
                   options={SORT_OPTIONS}
                   value={sortBy}
                   onChange={(v) => setSortBy(v as string)}
@@ -741,7 +752,7 @@ export default function SpecialistsPage() {
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
                   <Input
-                    placeholder="Пошук за ім'ям"
+                    placeholder={t("filter.search_name") || "Пошук за ім'ям"}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="h-8 w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
@@ -755,7 +766,7 @@ export default function SpecialistsPage() {
 
         {/* ── Results count ── */}
         <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-5">
-          {filtered.length} спеціалістів доступні
+          {filtered.length} {t("specialists.available") || "спеціалістів доступні"}
         </h2>
 
         {/* ── Specialist cards ── */}
@@ -765,18 +776,19 @@ export default function SpecialistsPage() {
             return filtered.map((specialist, index) => {
               const key = accentKeys[index]
               const a = accentPalette[key]
+              const isHealth = key === "health"
               const isFav = favorites.includes(specialist.id)
               const isExpanded = expandedBio === specialist.id
               const isHovered = hoveredSpecialist === specialist.id
               const isVideoActive = videoPlaying === specialist.id
 
               return (
-                <div key={specialist.id} className="relative">
+                <div key={specialist.id} className="relative group/card z-10 hover:z-[30] transition-all duration-300">
                   {/* ═══ DESKTOP: Card + Video sidebar ═══ */}
                   <div
-                    className="hidden sm:flex gap-4 items-start relative z-10"
+                    className="hidden sm:flex w-full"
                     onMouseEnter={() => setHoveredSpecialist(specialist.id)}
-                    onMouseLeave={() => { setHoveredSpecialist(null); setVideoPlaying(null) }}
+                    onMouseLeave={() => setHoveredSpecialist(null)}
                   >
                     <article
                       className={`flex-1 min-w-0 bg-white border rounded-[24px] p-6 transition-all duration-200 ${isHovered ? `border-slate-300 shadow-[0_8px_30px_rgb(0,0,0,0.08)] ring-1 ring-slate-200` : "border-slate-200 shadow-[0_2px_10px_rgb(0,0,0,0.02)]"}`}
@@ -794,7 +806,7 @@ export default function SpecialistsPage() {
                             )}
                             {specialist.online && (
                               <div className="absolute bottom-2 left-2 flex items-center justify-center bg-white rounded-full p-0.5">
-                                <div className="w-3 h-3 rounded-full bg-[#00c5a6] border-2 border-white" />
+                                <div className={`w-3 h-3 rounded-full border-2 border-white ${isHealth ? "bg-[#f57c00]" : "bg-[#00c5a6]"}`} />
                               </div>
                             )}
                           </div>
@@ -805,12 +817,12 @@ export default function SpecialistsPage() {
                           <div className="flex items-center justify-between mb-1.5">
                             <div className="flex items-center gap-3 flex-wrap">
                               <Link href={`/specialists/${specialist.id}`}>
-                                <h3 className="text-[22px] font-bold text-[#121117] hover:text-[#43a047] transition-colors leading-tight">{specialist.name}</h3>
+                                <h3 className={`text-[22px] font-bold text-[#121117] transition-colors leading-tight ${isHealth ? "hover:text-[#f57c00]" : "hover:text-[#00c5a6]"}`}>{specialist.name}</h3>
                               </Link>
                               {specialist.verified && (
-                                <span className="bg-[#e8f5e9] text-[#2e7d32] px-2 py-0.5 rounded-full text-[12px] font-bold flex items-center gap-1 border border-[#a5d6a7]/50">
-                                  <Award className="h-3.5 w-3.5 fill-[#43a047] text-[#43a047] flex-shrink-0" />
-                                  <span>Верифіковано</span>
+                                <span className={`px-2 py-0.5 rounded-full text-[12px] font-bold flex items-center gap-1 border ${isHealth ? "bg-[#fff8e1] text-[#f57c00] border-[#ffc800]/40" : "bg-[#e8f5e9] text-[#00c5a6] border-[#a5d6a7]/50"}`}>
+                                  <Award className={`h-3.5 w-3.5 flex-shrink-0 ${isHealth ? "fill-[#f57c00] text-[#f57c00]" : "fill-[#00c5a6] text-[#00c5a6]"}`} />
+                                  <span>{t("catalog.verified_badge") || "Верифіковано"}</span>
                                 </span>
                               )}
 
@@ -819,9 +831,19 @@ export default function SpecialistsPage() {
                                   <Star className="h-3.5 w-3.5 fill-[#ffc800] text-[#ffc800] -mt-0.5" />
                                   {specialist.rating}
                                 </span>
-                                <span className="text-[#69686f] text-[13px] font-medium underline decoration-dashed underline-offset-2 ml-1 cursor-pointer hover:text-[#f57c00]">
-                                  {specialist.reviews} відгуків
-                                </span>
+                                <Link href={`/specialists/${specialist.id}?tab=reviews`} className="text-[#69686f] text-[13px] font-medium underline decoration-dashed underline-offset-2 ml-1 cursor-pointer hover:text-[#f57c00]">
+                                  {specialist.reviews} {t("catalog.reviews_count") || "відгуків"}
+                                </Link>
+                              </div>
+                              <div className="flex items-center gap-4 text-[13px] text-[#69686f] ml-auto mr-12 hidden md:flex">
+                                <div className="flex flex-col items-center">
+                                  <span className="font-bold text-[#121117] leading-none">{specialist.activeStudents}</span>
+                                  <span className="text-[11px] mt-0.5">{t("catalog.students_label") || "учнів"}</span>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                  <span className="font-bold text-[#121117] leading-none">{specialist.lessonsCompleted}</span>
+                                  <span className="text-[11px] mt-0.5">{t("catalog.lessons_label") || "занять"}</span>
+                                </div>
                               </div>
                             </div>
                             <button
@@ -834,10 +856,10 @@ export default function SpecialistsPage() {
 
                           <div className="flex items-center gap-2 mb-3">
                             <span className={`text-[13px] font-bold px-3 py-1 rounded-full ${a.badge} border-transparent inline-flex items-center shadow-sm`}>
-                              {specialist.specialization}
+                              {specialist.specialization === "Репетитор" ? (t("filter.tutors") || "Репетитори") : specialist.specialization === "Психолог" ? (t("filter.psychologists") || "Психологи") : (t("filter.speech_therapists") || "Логопеди")}
                             </span>
                             <span className="text-[13px] font-medium bg-[#f0f3f3] text-[#4d4c53] px-3 py-1 rounded-full border border-slate-200 shadow-sm leading-none flex items-center h-[26px]">
-                              Досвід: <strong className="text-[#121117] ml-1">{specialist.experience} років</strong>
+                              {t("catalog.experience") || "Досвід:"} <strong className="text-[#121117] ml-1">{specialist.experience} {t("catalog.years") || "років"}</strong>
                             </span>
                           </div>
 
@@ -868,30 +890,43 @@ export default function SpecialistsPage() {
                         </div>
 
                         {/* COL 3: CTA & Stats */}
-                        <div className="flex flex-col flex-shrink-0 w-[220px] pl-6 border-l border-slate-100 justify-center gap-5">
-                          <div className="w-full">
-                            <div className="flex items-end gap-1 mb-1">
-                              <span className="text-[32px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
-                            </div>
-                            <div className="text-[14px] font-medium text-[#69686f]">/ {specialist.lessonDuration} заняття</div>
+                        <div className="flex flex-col flex-shrink-0 w-[240px] pl-6 border-l border-slate-100 justify-center">
+                          <div className="bg-slate-50/50 rounded-2xl p-4 border border-slate-100/50 mb-4 flex items-center justify-center gap-1.5">
+                            <span className="text-[32px] font-black text-[#121117] leading-none tracking-tight">₴{specialist.pricePerLesson}</span>
+                            <span className="text-[14px] font-medium text-[#69686f] mt-2">/ {specialist.lessonDuration}</span>
                           </div>
 
+                          <Link href={`/specialists/${specialist.id}`} className="w-full">
+                            <Button
+                              className={`w-full h-[48px] rounded-[14px] text-[15px] font-bold text-white transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 ${a.cta}`}
+                            >
+                              {t("catalog.book_lesson") || "Записатись"}
+                            </Button>
+                          </Link>
+                          
                           <Link href={`/specialists/${specialist.id}`} className="w-full mt-2">
                             <Button
-                              className="w-full h-[48px] rounded-[12px] text-[16px] font-bold text-white transition-colors shadow-sm bg-[#00c5a6] hover:bg-[#00a389]"
+                              variant="outline"
+                              className="w-full h-[48px] rounded-[14px] text-[15px] font-bold border-slate-200 text-slate-700 bg-white hover:bg-slate-50 hover:text-slate-900 transition-colors"
                             >
-                              Залишити заявку
+                              Детальніше
                             </Button>
                           </Link>
                         </div>
                       </div>
                     </article>
 
-                    {/* Video sidebar anchored inside card, sliding over middle content */}
-                    <div className={`absolute top-0 right-[248px] hidden lg:block flex-shrink-0 w-[220px] transition-all duration-300 z-20 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"}`}>
-                      <div className="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+                    {/* Video sidebar anchored inside card, sliding over on the right */}
+                    <div className={`absolute top-0 right-[-10px] hidden 2xl:block flex-shrink-0 w-[260px] pl-4 transition-all duration-300 z-50 ${isVideoActive ? 'opacity-100 translate-x-full pointer-events-auto' : 'pointer-events-none opacity-0 translate-x-[90%] group-hover/card:opacity-100 group-hover/card:translate-x-full group-hover/card:pointer-events-auto'}`}
+                         onMouseEnter={() => setHoveredSpecialist(specialist.id)}
+                         onMouseLeave={() => setHoveredSpecialist(null)}
+                    >
+                      {/* Invisible bridge to prevent hover loss between card and sidebar */}
+                      <div className="absolute inset-y-0 -left-6 w-10 bg-transparent z-0" />
+                      
+                      <div className="relative z-10 border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_20px_40px_-20px_rgba(0,0,0,0.2)]">
                         <div
-                          className="relative aspect-[3/4] bg-slate-900 cursor-pointer"
+                          className="relative aspect-[3/4] bg-slate-900 cursor-pointer group/video"
                           onClick={() => setVideoPlaying(isVideoActive ? null : specialist.id)}
                         >
                           {isVideoActive ? (
@@ -937,13 +972,13 @@ export default function SpecialistsPage() {
                           <Link href={`/specialists/${specialist.id}#schedule`} className="block">
                             <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
                               <Calendar className="h-4 w-4 text-[#69686f]" />
-                              Розклад
+                              {t("sidebar.schedule") || "Розклад"}
                             </Button>
                           </Link>
                           <Link href={`/specialists/${specialist.id}`} className="block">
                             <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
                               <Eye className="h-4 w-4 text-[#69686f]" />
-                              Профіль
+                              {t("sidebar.profile") || "Профіль"}
                             </Button>
                           </Link>
                         </div>
@@ -951,23 +986,22 @@ export default function SpecialistsPage() {
                     </div>
                   </div>
 
-                  {/* ═══ MOBILE: Vertical card ═══ */}
+                  {/* ═══ MOBILE: Compact vertical card ═══ */}
                   <article
-                    className={`sm:hidden bg-gradient-to-br ${a.cardBg} border border-slate-200 rounded-2xl p-4 hover:shadow-md transition-shadow`}
-                    style={getDiffuseBackground(index, accentKeys)}
+                    className={`sm:hidden bg-white border border-slate-200 rounded-2xl p-4 hover:shadow-md transition-shadow`}
                   >
                     <div className="flex gap-3 mb-3">
                       <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0">
-                        <div className="relative w-[96px] h-[96px] rounded-xl overflow-hidden bg-slate-100">
+                        <div className="relative w-[88px] h-[88px] rounded-xl overflow-hidden bg-slate-100">
                           {specialist.image ? (
-                            <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="96px" />
+                            <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="88px" />
                           ) : (
                             <Avatar className="h-full w-full rounded-xl">
                               <AvatarFallback className="bg-slate-100 text-lg font-bold text-slate-600 rounded-xl">{specialist.name[0]}</AvatarFallback>
                             </Avatar>
                           )}
                           {specialist.online && (
-                            <div className="absolute bottom-1 left-1 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
+                            <div className={`absolute bottom-1 left-1 w-2.5 h-2.5 rounded-full border-2 border-white ${isHealth ? "bg-[#f57c00]" : "bg-emerald-500"}`} />
                           )}
                         </div>
                       </Link>
@@ -975,9 +1009,9 @@ export default function SpecialistsPage() {
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1.5">
                             <Link href={`/specialists/${specialist.id}`}>
-                              <h3 className="text-[16px] font-semibold text-[#121117] leading-tight">{specialist.name}</h3>
+                              <h3 className="text-[16px] font-bold text-[#121117] leading-tight">{specialist.name}</h3>
                             </Link>
-                            {specialist.verified && <Award className="h-3.5 w-3.5 text-[#00c5a6] flex-shrink-0" />}
+                            {specialist.verified && <Award className={`h-3.5 w-3.5 flex-shrink-0 ${isHealth ? "text-[#f57c00]" : "text-[#00c5a6]"}`} />}
                           </div>
                           <button
                             onClick={(e) => toggleFavorite(e, specialist.id)}
@@ -986,7 +1020,7 @@ export default function SpecialistsPage() {
                             <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
                           </button>
                         </div>
-                        <div className="flex items-center gap-1.5 mb-1.5 text-[12px] text-[#69686f]">
+                        <div className="flex items-center gap-1.5 mb-2 text-[12px] text-[#69686f]">
                           <MapPin className="h-3 w-3 text-[#b2b1b9] flex-shrink-0" />
                           <span className="truncate">{specialist.location}</span>
                           {getAvailability(specialist) && (
@@ -996,57 +1030,72 @@ export default function SpecialistsPage() {
                             </>
                           )}
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${a.badge} border-transparent inline-flex items-center`}>
-                            <div className={`w-1 h-1 rounded-full mr-1 ${a.icon.replace('text', 'bg')}`}></div>
-                            {specialist.specialization}
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[11px] font-semibold px-2 py-1 rounded-lg ${a.badge} border-transparent`}>
+                            {specialist.specialization === "Репетитор" ? (t("filter.tutors") || "Репетитор") : specialist.specialization === "Психолог" ? (t("filter.psychologists") || "Психолог") : (t("filter.speech_therapists") || "Логопед")}
                           </span>
+                          <div className="flex items-center gap-1 bg-[#fff8e1] px-2 py-1 rounded-lg">
+                            <Star className="h-3 w-3 fill-[#ffc800] text-[#ffc800]" />
+                            <span className="text-[11px] font-bold text-[#f57c00]">{specialist.rating}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="mb-3">
-                      <SubjectsLine specialist={specialist} textClass="text-[16px] text-[#121117] font-semibold" iconClass={a.icon} maxCharsFallback={24} />
+                      <SubjectsLine specialist={specialist} textClass="text-[15px] text-[#121117] font-semibold" iconClass={a.icon} maxCharsFallback={26} />
                     </div>
+
                     <div
-                      className="mb-4 cursor-pointer"
+                      className="mb-3 cursor-pointer"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
-                      <p className={`text-[15px] text-[#3e3d45] leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-2"}`}>
-                        <span className="font-bold text-[#121117] mr-1.5">{specialist.bioTitle} •</span>
-                        {specialist.bioText}
+                      <p className={`text-[14px] text-[#3e3d45] leading-snug ${isExpanded ? "" : "line-clamp-2"}`}>
+                        <span className="font-semibold text-[#121117]">{specialist.bioTitle}</span>
+                        <span className="text-[#69686f]"> • {specialist.bioText}</span>
                       </p>
                     </div>
 
-                    <div className="bg-[#f0f3f3]/50 rounded-[16px] p-4 flex items-center justify-between border border-slate-100 mt-auto">
-                      <div>
-                        <div className="text-[24px] font-bold text-[#121117] leading-none mb-1.5">₴{specialist.pricePerLesson}</div>
-                        <div className="text-[13px] font-medium text-[#69686f]">/ {specialist.lessonDuration}</div>
-                      </div>
+                    {/* Compact stats row */}
+                    <div className="flex items-center gap-3 text-[12px] text-[#69686f] mb-3">
+                      <span><strong className="text-[#121117]">{specialist.experience}</strong> років</span>
+                      <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
+                      <span><strong className="text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
+                      <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
+                      <span><strong className="text-[#121117]">{specialist.lessonsCompleted}</strong> занять</span>
                     </div>
 
-                    <Link href={`/specialists/${specialist.id}`} className="block w-full mt-4">
-                      <Button
-                        className="w-full h-11 rounded-[10px] text-[15px] font-bold text-white transition-colors shadow-sm bg-[#00c5a6] hover:bg-[#00a389]"
-                      >
-                        Залишити заявку
-                      </Button>
-                    </Link>
+                    {/* Price + CTA row */}
+                    <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                      <div className="flex-1">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-[20px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
+                          <span className="text-[12px] text-[#69686f] font-medium">/ {specialist.lessonDuration}</span>
+                        </div>
+                      </div>
+                      <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0">
+                        <Button
+                          className={`h-9 px-4 rounded-lg text-[13px] font-bold text-white transition-all shadow-sm hover:shadow ${a.cta}`}
+                        >
+                          Записатись
+                        </Button>
+                      </Link>
+                    </div>
                   </article>
                 </div>
               )
             })
           })()}
-        </div>
 
-        {/* ── Empty state ── */}
-        {filtered.length === 0 && (
-          <div className="py-20 text-center">
-            <Search className="h-10 w-10 text-slate-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-700 mb-1">Нічого не знайдено</h3>
-            <p className="text-sm text-slate-400">Спробуйте змінити фільтри або пошуковий запит</p>
-          </div>
-        )}
+          {/* ── Empty state ── */}
+          {filtered.length === 0 && (
+            <div className="py-20 text-center">
+              <Search className="h-10 w-10 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-700 mb-1">{t("catalog.empty_title") || "Нічого не знайдено"}</h3>
+              <p className="text-sm text-slate-400">{t("catalog.empty_desc") || "Спробуйте змінити фільтри або пошуковий запит"}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -8,12 +8,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/`,
-      changefreq: "weekly",
+      changeFrequency: "weekly",
       priority: 1,
     },
     {
       url: `${baseUrl}/specialists`,
-      changefreq: "daily",
+      changeFrequency: "daily",
       priority: 0.8,
     },
   ]
@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const catalogPages: MetadataRoute.Sitemap = SUBJECTS.flatMap((subject) =>
     CITIES.map((city) => ({
       url: `${baseUrl}/${subject.slug}/${city.slug}`,
-      changefreq: "daily",
+      changeFrequency: "daily",
       priority: 0.7,
     })),
   )

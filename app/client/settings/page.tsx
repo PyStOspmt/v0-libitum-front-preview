@@ -303,15 +303,15 @@ export default function ClientSettingsPage() {
 
               {/* Share buttons */}
               <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[14px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Telegram
                 </Button>
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[14px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Facebook
                 </Button>
-                <Button variant="outline" className="w-full rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
+                <Button variant="outline" className="w-full rounded-[14px] border-slate-200/80 text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] hover:border-[#00c5a6]/20 shadow-sm">
                   <Share2 className="mr-2 h-4 w-4" />
                   Viber
                 </Button>

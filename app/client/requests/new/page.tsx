@@ -126,10 +126,10 @@ export default function ClientNewRequestPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client/requests/new?child=${child.id}${selectedSpecialist ? `&specialist=${selectedSpecialist}` : ""}`)}
-                  className={`rounded-full transition-all ${
+                  className={`rounded-[14px] transition-all ${
                     child.id === selectedChildId 
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md" 
-                      : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                      ? "bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white shadow-md hover:-translate-y-0.5" 
+                      : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm"
                   }`}
                 >
                   {child.label}
@@ -315,23 +315,22 @@ export default function ClientNewRequestPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="flex flex-col gap-3 sm:flex-row sm:justify-end"
+            className="flex flex-col gap-3 sm:flex-row sm:justify-end pb-8"
           >
-            <Button 
-              variant="outline" 
-              onClick={() => router.back()} 
-              className="rounded-full border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all"
+            <Button
+              variant="outline"
+              onClick={() => router.back()}
+              className="rounded-[14px] border-slate-200 h-[48px] px-6 text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             >
               Скасувати
             </Button>
-            <SquishyButton 
-              bgColor={B.pri}
-              className="rounded-full px-6 py-2 inline-flex items-center gap-2"
+            <Button
               onClick={handleSubmit}
+              className="rounded-[14px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] h-[48px] px-8 text-white shadow-md hover:-translate-y-0.5 transition-all"
             >
+              <ArrowRight className="mr-2 h-4 w-4" />
               Створити запит
-              <ArrowRight className="h-4 w-4" />
-            </SquishyButton>
+            </Button>
           </motion.div>
         </div>
       </SidebarLayout>

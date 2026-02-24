@@ -23,6 +23,7 @@ export default function StudentAccessPage() {
         isEmailVerified: true,
         hasPassedQuiz: true,
         status: "active",
+        language: "UA",
       })
       router.push("/student")
     }, 2000)

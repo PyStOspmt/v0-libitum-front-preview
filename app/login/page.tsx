@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Chrome, Eye, EyeOff, ArrowLeft, Star, Shield, BookOpen } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -115,19 +116,23 @@ export default function LoginPage() {
               </div>
               <span className="text-lg font-bold text-slate-800">LIBITUM</span>
             </Link>
-            <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
-              <ArrowLeft className="h-4 w-4" />
-              На головну
-            </Link>
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+                <ArrowLeft className="h-4 w-4" />
+                На головну
+              </Link>
+            </div>
           </div>
         </header>
 
         {/* Desktop back link */}
-        <div className="hidden lg:flex px-8 pt-6">
+        <div className="hidden lg:flex px-8 pt-6 justify-between items-center w-full">
           <Link href="/" className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-700 transition-colors">
             <ArrowLeft className="h-4 w-4" />
             На головну
           </Link>
+          <LanguageSwitcher />
         </div>
 
         <div className="flex-1 flex items-center justify-center px-6 py-12">

@@ -60,11 +60,10 @@ export default function GamificationPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client/gamification?child=${child.id}`)}
-                  className={`rounded-full transition-all ${
-                    child.id === selectedChildId 
-                      ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md" 
+                  className={`rounded-full transition-all ${child.id === selectedChildId
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
                       : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
-                  }`}
+                    }`}
                 >
                   {child.label}
                 </Button>
@@ -95,24 +94,24 @@ export default function GamificationPage() {
                   <div className="flex flex-wrap items-center justify-between text-sm text-slate-600 mb-2 gap-2">
                     <span>Прогрес до наступного рівня</span>
                     <span className="font-semibold text-emerald-700">
-                      {Math.round(((progress.totalSessions - levelInfo.minSessions) / (levelInfo.maxSessions - levelInfo.minSessions)) * 100)}%
+                      {Math.round(((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) * 100)}%
                     </span>
                   </div>
                   <Progress
-                    value={((progress.totalSessions - levelInfo.minSessions) / (levelInfo.maxSessions - levelInfo.minSessions)) * 100}
+                    value={((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) * 100}
                     className="h-2.5 bg-slate-200 [&>div]:bg-gradient-to-r [&>div]:from-emerald-500 [&>div]:to-emerald-600"
                   />
                   <p className="text-sm text-slate-500 mt-2">
-                    {progress.totalSessions < levelInfo.maxSessions
-                      ? `Ще ${levelInfo.maxSessions - progress.totalSessions} занять до рівня ${progress.level + 1}`
+                    {progress.totalXP < levelInfo.maxXP
+                      ? `Ще ${levelInfo.maxXP - progress.totalXP} балів до рівня ${progress.level + 1}`
                       : "Ви досягли максимального рівня!"}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="rounded-xl border border-slate-100 p-4 text-center">
-                    <div className="text-3xl font-bold text-emerald-600">{progress.points}</div>
-                    <div className="text-sm text-slate-600 mt-1">Заробано балів</div>
+                    <div className="text-3xl font-bold text-emerald-600">{progress.totalXP}</div>
+                    <div className="text-sm text-slate-600 mt-1">Досвід (XP)</div>
                   </div>
                   <div className="rounded-xl border border-slate-100 p-4 text-center">
                     <div className="text-3xl font-bold text-amber-600">{progress.currentStreak}</div>
@@ -207,8 +206,8 @@ export default function GamificationPage() {
               <Card className="border-amber-200 bg-amber-50">
                 <CardContent className="p-6 text-center">
                   <Zap className="h-8 w-8 text-amber-600 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-amber-700">{progress.points}</div>
-                  <div className="text-sm text-amber-600">Балів</div>
+                  <div className="text-2xl font-bold text-amber-700">{progress.totalXP}</div>
+                  <div className="text-sm text-amber-600">Досвід (XP)</div>
                 </CardContent>
               </Card>
               <Card className="border-purple-200 bg-purple-50">

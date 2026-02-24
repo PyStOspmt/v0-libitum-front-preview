@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye, SlidersHorizontal } from "lucide-react"
 import { useSearchParams } from "next/navigation"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 
 /* ═══════════════════════════════════════════════════
    Data
@@ -99,11 +101,11 @@ const PRICE_RANGES = [
   { label: "₴800+", min: 800, max: Infinity },
 ]
 const SORT_OPTIONS = [
-  { value: "recommended", label: "Рекомендовані" },
-  { value: "price-asc", label: "Ціна: від низької" },
-  { value: "price-desc", label: "Ціна: від високої" },
-  { value: "rating", label: "За рейтингом" },
-  { value: "reviews", label: "За відгуками" },
+  { value: "recommended", label: "Рекомендовані", labelKey: "sort.recommended" },
+  { value: "price-asc", label: "Ціна: від низької", labelKey: "sort.price_asc" },
+  { value: "price-desc", label: "Ціна: від високої", labelKey: "sort.price_desc" },
+  { value: "rating", label: "За рейтингом", labelKey: "sort.rating" },
+  { value: "reviews", label: "За відгуками", labelKey: "sort.reviews" },
 ]
 
 /* ═══════════════════════════════════════════════════
@@ -277,6 +279,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
    ═══════════════════════════════════════════════════ */
 export default function SpecialistsPage() {
   const searchParams = useSearchParams()
+  const { t } = useTranslation()
   const categoryParam = searchParams.get("category")
   const [searchQuery, setSearchQuery] = useState("")
   const [category, setCategory] = useState(categoryParam && ["tutor", "psychologist", "speech-therapist"].includes(categoryParam) ? categoryParam : "all")
@@ -468,17 +471,20 @@ export default function SpecialistsPage() {
               <span className="text-lg font-bold tracking-tight text-slate-800">Libitum</span>
             </Link>
             <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
-              <Link href="/specialists" className="text-slate-900">Знайти спеціаліста</Link>
-              <Link href="/about" className="hover:text-slate-900 transition-colors">Про нас</Link>
+              <Link href="/specialists" className="text-slate-900">{t("nav.specialists")}</Link>
+              <Link href="/about" className="hover:text-slate-900 transition-colors">{t("about.title")}</Link>
             </nav>
           </div>
-          <div className="flex items-center gap-2">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-sm font-medium text-slate-600">Увійти</Button>
-            </Link>
-            <Link href="/register">
-              <Button size="sm" className="rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-sm">Реєстрація</Button>
-            </Link>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <div className="flex items-center gap-2">
+              <Link href="/login">
+                <Button variant="ghost" size="sm" className="text-sm font-medium text-slate-600">{t("btn.login")}</Button>
+              </Link>
+              <Link href="/register">
+                <Button size="sm" className="rounded-lg bg-slate-900 text-white hover:bg-slate-800 text-sm">{t("btn.register")}</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -553,13 +559,13 @@ export default function SpecialistsPage() {
               <div className="space-y-3 pb-2 animate-in slide-in-from-top-2 duration-200">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Ціна за заняття</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.price") || "Ціна за заняття"}</div>
                     <Select value={priceRange} onValueChange={setPriceRange}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
-                        <SelectValue placeholder="Будь-яка" />
+                        <SelectValue placeholder={t("filter.any") || "Будь-яка"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-яка</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-яка"}</SelectItem>
                         {PRICE_RANGES.slice(1).map((r, i) => (
                           <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
                         ))}
@@ -567,13 +573,13 @@ export default function SpecialistsPage() {
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Місто</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.city") || "Місто"}</div>
                     <Select value={city} onValueChange={setCity}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
-                        <SelectValue placeholder="Будь-яке" />
+                        <SelectValue placeholder={t("filter.any") || "Будь-яке"} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-яке</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-яке"}</SelectItem>
                         {ALL_CITIES.map((c) => (
                           <SelectItem key={c} value={c}>{c}</SelectItem>
                         ))}
@@ -581,27 +587,27 @@ export default function SpecialistsPage() {
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Формат занять</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.format") || "Формат занять"}</div>
                     <Select value={format} onValueChange={setFormat}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">Будь-який</SelectItem>
-                        <SelectItem value="online">Онлайн</SelectItem>
-                        <SelectItem value="offline">Офлайн</SelectItem>
+                        <SelectItem value="all">{t("filter.any") || "Будь-який"}</SelectItem>
+                        <SelectItem value="online">{t("filter.online") || "Онлайн"}</SelectItem>
+                        <SelectItem value="offline">{t("filter.offline") || "Офлайн"}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="border border-slate-200 rounded-lg px-3 py-2.5 hover:border-slate-400 transition-colors bg-white">
-                    <div className="text-[10px] text-slate-400 leading-none mb-1">Сортування</div>
+                    <div className="text-[10px] text-slate-400 leading-none mb-1">{t("filter.sort") || "Сортування"}</div>
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {SORT_OPTIONS.map(o => (
-                          <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                          <SelectItem key={o.value} value={o.value}>{t(o.labelKey as any) || o.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -609,7 +615,7 @@ export default function SpecialistsPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-2 overflow-visible py-1">
                   <PillDropdown
-                    label="Предмети"
+                    label={t("filter.subjects") || "Предмети"}
                     multi
                     options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
                     value={subjectFilter}
@@ -620,7 +626,7 @@ export default function SpecialistsPage() {
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                       }`}
                   >
-                    Верифіковані
+                    {t("filter.verified") || "Верифіковані"}
                     {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                   </button>
                   <button
@@ -628,7 +634,7 @@ export default function SpecialistsPage() {
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap flex-shrink-0 ${showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                       }`}
                   >
-                    Обрані
+                    {t("filter.favorites") || "Обрані"}
                     {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                   </button>
                 </div>
@@ -639,7 +645,7 @@ export default function SpecialistsPage() {
           {/* ── DESKTOP: Full FilterBox grid + pill row ── */}
           <div className="hidden sm:block">
             <div className="grid grid-cols-4 gap-3 mb-3">
-              <FilterBox label="Спеціалізація" onClick={() => categorySelectRef.current?.click()}>
+              <FilterBox label={t("filter.specialization") || "Спеціалізація"} onClick={() => categorySelectRef.current?.click()}>
                 <Select value={category} onValueChange={setCategory}>
                   <SelectTrigger
                     ref={categorySelectRef}
@@ -648,46 +654,46 @@ export default function SpecialistsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Всі спеціалісти</SelectItem>
-                    <SelectItem value="tutor">Репетитори</SelectItem>
-                    <SelectItem value="psychologist">Психологи</SelectItem>
-                    <SelectItem value="speech-therapist">Логопеди</SelectItem>
+                    <SelectItem value="all">{t("filter.all_specialists") || "Всі спеціалісти"}</SelectItem>
+                    <SelectItem value="tutor">{t("filter.tutors") || "Репетитори"}</SelectItem>
+                    <SelectItem value="psychologist">{t("filter.psychologists") || "Психологи"}</SelectItem>
+                    <SelectItem value="speech-therapist">{t("filter.speech_therapists") || "Логопеди"}</SelectItem>
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Ціна за заняття" onClick={() => priceSelectRef.current?.click()}>
+              <FilterBox label={t("filter.price") || "Ціна за заняття"} onClick={() => priceSelectRef.current?.click()}>
                 <Select value={priceRange} onValueChange={setPriceRange}>
                   <SelectTrigger
                     ref={priceSelectRef}
                     className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
                   >
-                    <SelectValue placeholder="Будь-яка" />
+                    <SelectValue placeholder={t("filter.any") || "Будь-яка"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-яка</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-яка"}</SelectItem>
                     {PRICE_RANGES.slice(1).map((r, i) => (
                       <SelectItem key={i} value={`price-${i + 1}`}>{r.label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Місто" onClick={() => citySelectRef.current?.click()}>
+              <FilterBox label={t("filter.city") || "Місто"} onClick={() => citySelectRef.current?.click()}>
                 <Select value={city} onValueChange={setCity}>
                   <SelectTrigger
                     ref={citySelectRef}
                     className="h-auto p-0 border-0 shadow-none text-sm font-medium text-slate-800 focus:ring-0 [&>svg]:h-3.5 [&>svg]:w-3.5 pointer-events-none"
                   >
-                    <SelectValue placeholder="Будь-яке" />
+                    <SelectValue placeholder={t("filter.any") || "Будь-яке"} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-яке</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-яке"}</SelectItem>
                     {ALL_CITIES.map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </FilterBox>
-              <FilterBox label="Формат занять" onClick={() => formatSelectRef.current?.click()}>
+              <FilterBox label={t("filter.format") || "Формат занять"} onClick={() => formatSelectRef.current?.click()}>
                 <Select value={format} onValueChange={setFormat}>
                   <SelectTrigger
                     ref={formatSelectRef}
@@ -696,9 +702,9 @@ export default function SpecialistsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Будь-який</SelectItem>
-                    <SelectItem value="online">Онлайн</SelectItem>
-                    <SelectItem value="offline">Офлайн</SelectItem>
+                    <SelectItem value="all">{t("filter.any") || "Будь-який"}</SelectItem>
+                    <SelectItem value="online">{t("filter.online") || "Онлайн"}</SelectItem>
+                    <SelectItem value="offline">{t("filter.offline") || "Офлайн"}</SelectItem>
                   </SelectContent>
                 </Select>
               </FilterBox>
@@ -707,7 +713,7 @@ export default function SpecialistsPage() {
             <div className="flex items-center justify-between gap-3 pb-1">
               <div className="flex items-center gap-2">
                 <PillDropdown
-                  label="Предмети"
+                  label={t("filter.subjects") || "Предмети"}
                   multi
                   options={ALL_SUBJECTS.map(s => ({ value: s, label: s }))}
                   value={subjectFilter}
@@ -718,7 +724,7 @@ export default function SpecialistsPage() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${verifiedOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                     }`}
                 >
-                  Верифіковані
+                  {t("filter.verified") || "Верифіковані"}
                   {verifiedOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setVerifiedOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                 </button>
                 <button
@@ -726,13 +732,13 @@ export default function SpecialistsPage() {
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors whitespace-nowrap ${showFavoritesOnly ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:border-slate-400"
                     }`}
                 >
-                  Обрані
+                  {t("filter.favorites") || "Обрані"}
                   {showFavoritesOnly ? <X className="h-3 w-3 ml-0.5" onClick={(e) => { e.stopPropagation(); setShowFavoritesOnly(false) }} /> : <ChevronDown className="h-3.5 w-3.5 opacity-50" />}
                 </button>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">
                 <PillDropdown
-                  label={`Сортувати: ${SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
+                  label={`${t("filter.sort") || "Сортувати"}: ${t(SORT_OPTIONS.find(o => o.value === sortBy)?.labelKey as any) || SORT_OPTIONS.find(o => o.value === sortBy)?.label}`}
                   options={SORT_OPTIONS}
                   value={sortBy}
                   onChange={(v) => setSortBy(v as string)}
@@ -740,7 +746,7 @@ export default function SpecialistsPage() {
                 <div className="relative">
                   <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
                   <Input
-                    placeholder="Пошук за ім'ям"
+                    placeholder={t("filter.search_name") || "Пошук за ім'ям"}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="h-8 w-[180px] rounded-full border-slate-200 bg-white pl-8 text-sm focus-visible:ring-slate-300"
@@ -754,7 +760,7 @@ export default function SpecialistsPage() {
 
         {/* ── Results count ── */}
         <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-5">
-          {filtered.length} спеціалістів доступні
+          {filtered.length} {t("specialists.available") || "спеціалістів доступні"}
         </h2>
 
         {/* ── Specialist cards ── */}
@@ -770,10 +776,10 @@ export default function SpecialistsPage() {
               const isVideoActive = videoPlaying === specialist.id
 
               return (
-                <div key={specialist.id} className="relative">
+                <div key={specialist.id} className="relative group/card z-10 hover:z-[60] transition-all duration-300">
                   {/* ═══ DESKTOP: Card + Video sidebar ═══ */}
                   <div
-                    className="hidden sm:flex gap-4 items-start relative z-10"
+                    className="hidden sm:flex w-full"
                     onMouseEnter={() => setHoveredSpecialist(specialist.id)}
                     onMouseLeave={() => { setHoveredSpecialist(null); setVideoPlaying(null) }}
                   >
@@ -809,7 +815,7 @@ export default function SpecialistsPage() {
                               {specialist.verified && (
                                 <span className="bg-[#e8f5e9] text-[#2e7d32] px-2 py-0.5 rounded-full text-[12px] font-bold flex items-center gap-1 border border-[#a5d6a7]/50">
                                   <Award className="h-3.5 w-3.5 fill-[#43a047] text-[#43a047] flex-shrink-0" />
-                                  <span>Верифіковано</span>
+                                  <span>{t("catalog.verified_badge") || "Верифіковано"}</span>
                                 </span>
                               )}
 
@@ -819,7 +825,7 @@ export default function SpecialistsPage() {
                                   {specialist.rating}
                                 </span>
                                 <span className="text-[#69686f] text-[13px] font-medium underline decoration-dashed underline-offset-2 ml-1 cursor-pointer hover:text-[#f57c00]">
-                                  {specialist.reviews} відгуків
+                                  {specialist.reviews} {t("catalog.reviews_count") || "відгуків"}
                                 </span>
                               </div>
                             </div>
@@ -836,7 +842,7 @@ export default function SpecialistsPage() {
                               {specialist.specialization}
                             </span>
                             <span className="text-[13px] font-medium bg-[#f0f3f3] text-[#4d4c53] px-3 py-1 rounded-full border border-slate-200 shadow-sm leading-none flex items-center h-[26px]">
-                              Досвід: <strong className="text-[#121117] ml-1">{specialist.experience} років</strong>
+                              {t("catalog.experience") || "Досвід:"} <strong className="text-[#121117] ml-1">{specialist.experience} {t("catalog.years") || "років"}</strong>
                             </span>
                           </div>
 
@@ -872,23 +878,24 @@ export default function SpecialistsPage() {
                             <div className="flex items-end gap-1 mb-1">
                               <span className="text-[32px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
                             </div>
-                            <div className="text-[14px] font-medium text-[#69686f]">/ {specialist.lessonDuration} заняття</div>
+                            <div className="text-[14px] font-medium text-[#69686f]">/ {specialist.lessonDuration} {t("catalog.lesson") || "заняття"}</div>
                           </div>
 
                           <Link href={`/specialists/${specialist.id}`} className="w-full mt-2">
                             <Button
                               className="w-full h-[48px] rounded-[12px] text-[16px] font-bold text-white transition-colors shadow-sm bg-[#00c5a6] hover:bg-[#00a389]"
                             >
-                              Залишити заявку
+                              {t("catalog.book_lesson") || "Залишити заявку"}
                             </Button>
                           </Link>
                         </div>
                       </div>
                     </article>
 
-                    {/* Video sidebar anchored inside card, sliding over middle content */}
-                    <div className={`absolute top-0 right-[248px] hidden lg:block flex-shrink-0 w-[220px] transition-all duration-300 z-20 ${isHovered ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4 pointer-events-none"}`}>
-                      <div className="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+                    {/* Video sidebar anchored inside card, sliding over filters on the left */}
+                    {/* The pr-6 adds an invisible hit area bridge between the card and the popup */}
+                    <div className="absolute top-0 left-[-264px] hidden lg:block flex-shrink-0 w-[264px] pr-6 transition-all duration-300 pointer-events-none group-hover/card:opacity-100 group-hover/card:translate-x-0 group-hover/card:pointer-events-auto opacity-0 -translate-x-4 z-50">
+                      <div className="border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_20px_40px_-20px_rgba(0,0,0,0.2)]">
                         <div
                           className="relative aspect-[3/4] bg-slate-900 cursor-pointer"
                           onClick={() => setVideoPlaying(isVideoActive ? null : specialist.id)}
@@ -936,13 +943,13 @@ export default function SpecialistsPage() {
                           <Link href={`/specialists/${specialist.id}#schedule`} className="block">
                             <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
                               <Calendar className="h-4 w-4 text-[#69686f]" />
-                              Розклад
+                              {t("sidebar.schedule") || "Розклад"}
                             </Button>
                           </Link>
                           <Link href={`/specialists/${specialist.id}`} className="block">
                             <Button variant="outline" className="w-full h-10 rounded-[10px] text-[13px] font-bold border-slate-200 text-[#121117] bg-white hover:bg-slate-50 flex items-center justify-center gap-2">
                               <Eye className="h-4 w-4 text-[#69686f]" />
-                              Профіль
+                              {t("sidebar.profile") || "Профіль"}
                             </Button>
                           </Link>
                         </div>
@@ -1028,7 +1035,7 @@ export default function SpecialistsPage() {
                       <Button
                         className="w-full h-11 rounded-[10px] text-[15px] font-bold text-white transition-colors shadow-sm bg-[#00c5a6] hover:bg-[#00a389]"
                       >
-                        Залишити заявку
+                        {t("catalog.book_lesson") || "Залишити заявку"}
                       </Button>
                     </Link>
                   </article>
@@ -1041,8 +1048,8 @@ export default function SpecialistsPage() {
           {filtered.length === 0 && (
             <div className="py-20 text-center">
               <Search className="h-10 w-10 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-slate-700 mb-1">Нічого не знайдено</h3>
-              <p className="text-sm text-slate-400">Спробуйте змінити фільтри або пошуковий запит</p>
+              <h3 className="text-lg font-semibold text-slate-700 mb-1">{t("catalog.empty_title") || "Нічого не знайдено"}</h3>
+              <p className="text-sm text-slate-400">{t("catalog.empty_desc") || "Спробуйте змінити фільтри або пошуковий запит"}</p>
             </div>
           )}
         </div>

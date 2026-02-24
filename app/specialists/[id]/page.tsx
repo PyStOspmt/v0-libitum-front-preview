@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookingModal } from "@/components/booking-modal"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import {
   BookOpen,
   Star,
@@ -245,13 +246,14 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               </Link>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link href="/login">
-                <Button variant="outline" className="h-9 rounded-lg px-5 text-sm font-medium border border-slate-200 text-slate-700 hover:border-black transition-colors cursor-pointer">
+                <Button variant="outline" className="h-[40px] rounded-[12px] px-5 text-[14px] font-medium border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
                   Увійти
                 </Button>
               </Link>
               <Link href="/register">
-                <Button className="h-9 rounded-lg bg-[#009688] px-5 text-sm font-medium text-white hover:bg-[#00796B] cursor-pointer">
+                <Button className="h-[40px] rounded-[12px] px-5 text-[14px] font-medium bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
                   Реєстрація
                 </Button>
               </Link>
@@ -278,99 +280,122 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
           {/* Main Content */}
           <div className="flex-1 min-w-0">
             {/* Profile Header */}
-            <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start bg-white rounded-[24px] p-4 sm:p-6 md:p-8 border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
-              <div className="relative shrink-0 mx-auto sm:mx-0">
-                <Avatar className="h-32 w-32 sm:h-48 sm:w-48 rounded-[24px] border border-slate-200/80 shadow-sm">
-                  <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
-                  <AvatarFallback className="text-4xl font-bold bg-[#f0f3f3] text-[#121117]">{specialist.name[0]}</AvatarFallback>
-                </Avatar>
-                {specialist.verified && (
-                  <div className="absolute -bottom-2 -right-2 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white border border-slate-200/80 shadow-md z-10">
-                    <Award className="h-5 w-5 sm:h-6 sm:w-6 text-[#00c5a6]" />
-                  </div>
-                )}
+            <div className="mb-6 sm:mb-8 bg-white rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-[0_4px_20px_rgb(0,0,0,0.03)] sm:shadow-sm relative overflow-hidden">
+              {/* Decorative top gradient */}
+              <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-slate-50 to-transparent pointer-events-none" />
+
+              {/* Action buttons - Absolute top right on desktop, top right on mobile */}
+              <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 z-20">
+                <button
+                  onClick={handleWishlist}
+                  className="h-10 w-10 sm:h-10 sm:w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+                >
+                  <Heart className={`h-4 w-4 transition-colors ${wishlisted ? "fill-[#ff4757] text-[#ff4757]" : "text-slate-400 group-hover:text-slate-600"}`} />
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="h-10 w-10 sm:h-10 sm:w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+                >
+                  <Share className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
+                </button>
               </div>
 
-              <div className="flex-1 pt-1 text-center sm:text-left">
-                <div className="mb-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-3">
-                  <div className="space-y-3">
-                    <h1 className="text-[28px] font-bold text-[#121117] leading-tight">{specialist.name}</h1>
-                    <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
-                      <span className="inline-flex items-center rounded-full px-3 py-1 text-[13px] font-[600] bg-[#e8fffb] text-[#00a389]">
-                        {specialist.specialization}
-                      </span>
-                      {specialist.badges.map((badge: string) => (
-                        <span key={badge} className="inline-flex items-center rounded-full border border-slate-200/80 bg-white px-3 py-1 text-[13px] font-medium text-[#69686f]">
-                          {badge}
+              <div className="relative z-10 flex flex-col sm:flex-row gap-5 sm:gap-8 items-center sm:items-start pt-4 sm:pt-0">
+                <div className="relative shrink-0 mx-auto sm:mx-0">
+                  <div className="relative h-[110px] w-[110px] sm:h-[160px] sm:w-[160px] rounded-[32px] sm:rounded-2xl overflow-hidden ring-4 ring-white shadow-lg">
+                    <Avatar className="h-full w-full rounded-none">
+                      <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
+                      <AvatarFallback className="text-4xl font-bold bg-[#f0f3f3] text-[#121117]">{specialist.name[0]}</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  {specialist.verified && (
+                    <div className="absolute -bottom-2 -right-2 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white border border-slate-200/80 shadow-md z-10">
+                      <Award className={`h-5 w-5 sm:h-6 sm:w-6 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 pt-1 sm:pt-2 text-center sm:text-left w-full">
+                  <div className="mb-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+                    <div className="space-y-3 w-full sm:pr-24">
+                      <h1 className="text-[26px] sm:text-[36px] font-bold text-[#121117] leading-tight tracking-tight">{specialist.name}</h1>
+                      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-1.5 sm:gap-2">
+                        <span className={`inline-flex items-center rounded-lg px-2.5 py-1 sm:px-3 sm:py-1.5 text-[13px] sm:text-[14px] font-[600] ${specialist.specialization === "Репетитор" ? "bg-[#e8fffb] text-[#00a389]" : "bg-[#fff8e1] text-[#d87b00]"}`}>
+                          {specialist.specialization}
+                        </span>
+                        {specialist.badges.map((badge: string) => (
+                          <span key={badge} className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 sm:px-3 sm:py-1.5 text-[12px] sm:text-[13px] font-semibold text-slate-600">
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-4 mt-2 sm:mt-6">
+                    <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-x-5 gap-y-2 sm:gap-y-3 text-[14px] sm:text-[15px] text-[#69686f] font-medium bg-slate-50/80 sm:bg-slate-50/50 p-3 sm:p-4 rounded-2xl w-full max-w-2xl border border-slate-100 mx-auto sm:mx-0">
+                      <div className="flex flex-wrap justify-center items-center gap-2 w-full sm:w-auto">
+                        <div className="flex items-center gap-1.5">
+                          <div className="bg-[#fff8e1] p-1 sm:p-1.5 rounded-md flex items-center justify-center">
+                            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-amber-400 text-amber-500" />
+                          </div>
+                          <span className="font-bold text-[#121117] text-[15px] sm:text-[16px]">{specialist.rating}</span>
+                        </div>
+                        <span className="text-slate-500 underline decoration-dashed underline-offset-2 hover:text-slate-800 cursor-pointer transition-colors px-1">
+                          {specialist.reviews} відгуків
+                        </span>
+                        <div className="w-1 h-1 rounded-full bg-slate-300 mx-1"></div>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                          <span className="text-slate-600">{specialist.location}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="w-full h-px bg-slate-200/50 sm:hidden my-0.5"></div>
+                      <div className="w-1 h-1 rounded-full bg-slate-300 hidden sm:block"></div>
+                      
+                      <div className="flex items-center gap-1.5 sm:gap-2 justify-center w-full sm:w-auto">
+                        <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
+                        <span className="text-slate-600"><strong className="text-[#121117]">{specialist.completedSessions}</strong> занять</span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 sm:gap-2 mt-1 sm:mt-2">
+                      {specialist.subjects.map((subject: string) => (
+                        <span key={subject} className="inline-flex items-center rounded-xl bg-white border border-slate-200 px-3 py-1.5 text-[13px] sm:text-[14px] font-[600] text-slate-700 shadow-sm">
+                          {subject}
                         </span>
                       ))}
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={handleWishlist}
-                      className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
-                    >
-                      <Heart className={`h-5 w-5 ${wishlisted ? "fill-[#ff4757] text-[#ff4757]" : "text-[#b2b1b9]"}`} />
-                    </button>
-                    <button
-                      onClick={handleShare}
-                      className="h-10 w-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors cursor-pointer"
-                    >
-                      <Share className="h-5 w-5 text-[#b2b1b9]" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mb-5 flex flex-wrap justify-center sm:justify-start items-center gap-x-6 gap-y-2 text-[14px] text-[#69686f] font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    <span className="font-bold text-[#121117]">{specialist.rating}</span>
-                    <span>({specialist.reviews} відгуків)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-[#b2b1b9]" />
-                    {specialist.location}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Users className="h-4 w-4 text-[#b2b1b9]" />
-                    {specialist.completedSessions} занять
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                  {specialist.subjects.map((subject: string) => (
-                    <span key={subject} className="inline-flex items-center rounded-full bg-[#f0f3f3] px-3 py-1.5 text-[14px] font-[600] text-[#121117]">
-                      {subject}
-                    </span>
-                  ))}
                 </div>
               </div>
             </div>
 
             {/* Tabs */}
-            <Tabs defaultValue="about" className="space-y-8">
-              <TabsList className="w-full justify-start border-b border-slate-200/80 bg-transparent p-0 h-auto gap-8 rounded-none">
-                <TabsTrigger
-                  value="about"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
-                >
-                  Про спеціаліста
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reviews"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
-                >
-                  Відгуки ({specialist.reviews})
-                </TabsTrigger>
-                <TabsTrigger
-                  value="schedule"
-                  className="rounded-none border-b-2 border-transparent px-0 py-3 text-[16px] font-[600] text-[#69686f] data-[state=active]:border-[#121117] data-[state=active]:text-[#121117] data-[state=active]:shadow-none hover:text-[#121117] bg-transparent cursor-pointer transition-colors"
-                >
-                  Розклад
-                </TabsTrigger>
-              </TabsList>
+            <Tabs defaultValue="about" className="space-y-6">
+              <div className="w-full flex justify-center">
+                <TabsList className="flex h-auto w-full sm:w-auto items-center justify-between sm:justify-center rounded-[16px] sm:rounded-xl bg-slate-100/80 p-1 text-slate-500 mb-2">
+                  <TabsTrigger
+                    value="about"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center whitespace-nowrap rounded-[12px] sm:rounded-lg px-2 sm:px-6 py-2.5 text-[13px] sm:text-sm font-bold ring-offset-white transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm cursor-pointer"
+                  >
+                    Про мене
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="reviews"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center whitespace-nowrap rounded-[12px] sm:rounded-lg px-2 sm:px-6 py-2.5 text-[13px] sm:text-sm font-bold ring-offset-white transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm cursor-pointer"
+                  >
+                    Відгуки <span className="ml-1 sm:ml-1.5 px-1.5 sm:px-2 py-0.5 rounded-full bg-slate-200/50 text-[11px] sm:text-[12px]">{specialist.reviews}</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="schedule"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center whitespace-nowrap rounded-[12px] sm:rounded-lg px-2 sm:px-6 py-2.5 text-[13px] sm:text-sm font-bold ring-offset-white transition-all data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm cursor-pointer"
+                  >
+                    Розклад
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="about" className="space-y-8">
                 {/* Bio */}
@@ -531,9 +556,9 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
           {/* Sidebar */}
           <div className="lg:w-[340px] xl:w-[380px] flex-shrink-0">
-            <div className="sticky top-24 flex flex-col gap-4">
+            <div className="sticky top-24 flex flex-col gap-4 pb-6">
               {/* Price card */}
-              <div className="rounded-[24px] border border-slate-200/80 bg-white overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+              <div className="rounded-[24px] border border-slate-200/80 bg-white overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.08)] shrink-0">
                 <div className="bg-white p-4 sm:p-6 border-b border-slate-100 text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-[#f0f3f3]/50 to-transparent pointer-events-none" />
                   <div className="relative z-10">
@@ -542,7 +567,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                       <span className="text-[36px] font-bold text-[#121117] leading-none">{specialist.priceOnline} ₴</span>
                       <span className="text-[16px] font-[600] text-[#69686f] mb-1">/ год</span>
                     </div>
-                    <p className="text-[13px] text-[#00a389] mt-2 font-bold bg-[#e8fffb] inline-block px-3 py-1 rounded-full">Перше пробне заняття безкоштовно</p>
+                    <p className={`text-[13px] mt-2 font-bold inline-block px-3 py-1 rounded-full ${specialist.specialization === "Репетитор" ? "text-[#00a389] bg-[#e8fffb]" : "text-[#d87b00] bg-[#fff8e1]"}`}>Перше пробне заняття безкоштовно</p>
                   </div>
                 </div>
 
@@ -578,7 +603,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
                   <div className="flex flex-col gap-3 pt-2">
                     <Button
-                      className="w-full h-[52px] rounded-[12px] bg-[#00c5a6] hover:bg-[#00a389] text-white text-[16px] font-bold cursor-pointer shadow-sm transition-colors"
+                      className={`w-full h-[52px] rounded-[12px] text-white text-[16px] font-bold cursor-pointer shadow-sm transition-colors ${specialist.specialization === "Репетитор" ? "bg-[#00c5a6] hover:bg-[#00a389]" : "bg-[#f57c00] hover:bg-[#e65100]"}`}
                       onClick={handleBookingClick}
                     >
                       <Calendar className="mr-2 h-5 w-5" />
@@ -609,19 +634,19 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <div className="text-[12px] font-[600] text-[#69686f] mt-1">час відповіді</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-[24px] font-bold text-[#00c5a6]">{specialist.completedSessions}</div>
+                    <div className={`text-[24px] font-bold ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`}>{specialist.completedSessions}</div>
                     <div className="text-[12px] font-[600] text-[#69686f] mt-1">проведено занять</div>
                   </div>
                 </div>
               </div>
 
               {/* Guarantee */}
-              <div className="rounded-[16px] bg-[#e8fffb] p-5 text-center border border-[#00c5a6]/20">
+              <div className={`rounded-[16px] p-5 text-center border ${specialist.specialization === "Репетитор" ? "bg-[#e8fffb] border-[#00c5a6]/20" : "bg-[#fff8e1] border-[#f57c00]/20"}`}>
                 <div className="flex items-center justify-center gap-2 mb-2">
-                  <Check className="h-5 w-5 text-[#00a389]" />
-                  <span className="text-[15px] font-bold text-[#00a389]">Гарантія якості</span>
+                  <Check className={`h-5 w-5 ${specialist.specialization === "Репетитор" ? "text-[#00a389]" : "text-[#d87b00]"}`} />
+                  <span className={`text-[15px] font-bold ${specialist.specialization === "Репетитор" ? "text-[#00a389]" : "text-[#d87b00]"}`}>Гарантія якості</span>
                 </div>
-                <p className="text-[13px] font-medium text-[#00a389]/80 leading-relaxed">
+                <p className={`text-[13px] font-medium leading-relaxed ${specialist.specialization === "Репетитор" ? "text-[#00a389]/80" : "text-[#d87b00]/80"}`}>
                   Повернення коштів, якщо заняття не відбудеться або не сподобається.
                 </p>
               </div>

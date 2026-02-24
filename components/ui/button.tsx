@@ -5,29 +5,29 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[8px] border-2 text-[16px] font-[600] transition-colors duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[14px] font-bold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 active:scale-[0.98]",
   {
     variants: {
       variant: {
         default:
-          'text-[#121117] border-[#121117] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] hover:border-[#121117]',
+          'bg-[var(--theme-primary)] text-white shadow-sm hover:bg-[var(--theme-primary-hover)] hover:shadow-md hover:-translate-y-0.5 border border-transparent',
         destructive:
-          'bg-destructive text-white hover:bg-destructive/90 border-transparent',
+          'bg-red-500 text-white shadow-sm hover:bg-red-600 hover:shadow-md hover:-translate-y-0.5 border border-transparent',
         outline:
-          'border-[#121117] bg-white text-[#121117] hover:bg-gray-50',
+          'border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900',
         secondary:
-          'bg-[#E2E8F0] border-transparent text-[#121117] hover:bg-[#CBD5E1]',
+          'bg-slate-100 text-slate-900 hover:bg-slate-200 border border-transparent',
         ghost:
-          'border-transparent bg-transparent text-[#121117] hover:bg-gray-100 hover:border-gray-100',
-        link: 'text-primary underline-offset-4 hover:underline border-transparent',
+          'text-slate-700 hover:bg-slate-100 hover:text-slate-900 border border-transparent',
+        link: 'text-[var(--theme-primary)] underline-offset-4 hover:underline border border-transparent',
       },
       size: {
-        default: 'h-[48px] px-6 py-2',
-        sm: 'h-[40px] px-4 py-1.5 text-[14px]',
-        lg: 'h-[56px] px-8 py-3 text-[18px]',
-        icon: 'size-[48px]',
-        'icon-sm': 'size-[40px]',
-        'icon-lg': 'size-[56px]',
+        default: 'h-[48px] px-6 text-[15px]',
+        sm: 'h-[40px] px-4 text-[14px] rounded-[12px]',
+        lg: 'h-[56px] px-8 text-[16px] rounded-[16px]',
+        icon: 'h-[48px] w-[48px]',
+        'icon-sm': 'h-[40px] w-[40px] rounded-[12px]',
+        'icon-lg': 'h-[56px] w-[56px] rounded-[16px]',
       },
     },
     defaultVariants: {

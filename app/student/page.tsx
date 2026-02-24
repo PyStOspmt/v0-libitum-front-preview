@@ -21,7 +21,7 @@ export default function StudentDashboardPage() {
   const allLessons = getLessonsByClient(studentId)
   const scheduledLessons = allLessons.filter((l) => l.status === "scheduled")
   const completedLessons = allLessons.filter((l) => l.status === "completed")
-  
+
   const progress = getProgress(studentId)
   const currentLevel = getLevelInfo(progress.totalSessions)
 
@@ -94,8 +94,8 @@ export default function StudentDashboardPage() {
                     <p className="text-xs text-muted-foreground">Пройдено</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-2xl font-bold">{progress.points}</p>
-                    <p className="text-xs text-muted-foreground">Балів XP</p>
+                    <p className="text-2xl font-bold">{progress.totalXP}</p>
+                    <p className="text-xs text-muted-foreground">Досвід XP</p>
                   </div>
                 </div>
               </CardContent>
@@ -120,8 +120,8 @@ export default function StudentDashboardPage() {
                         <div>
                           <p className="text-sm font-medium">{lesson.homework?.title || lesson.subject}</p>
                           <p className="text-xs text-muted-foreground">
-                            {lesson.homework?.dueDate 
-                              ? `Здати до ${new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA")}` 
+                            {lesson.homework?.dueDate
+                              ? `Здати до ${new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA")}`
                               : "Матеріали до уроку"}
                           </p>
                         </div>

@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuth } from "@/lib/auth-context"
 import { useTheme } from "@/lib/theme-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { useTranslation } from "@/lib/i18n"
 import {
   BookOpen,
   LayoutDashboard,
@@ -41,6 +42,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
+  const { t } = useTranslation()
 
   const sidebarTheme = {
     logoBg: userType === "admin" ? "bg-slate-700" : "",
@@ -71,37 +73,37 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   }
 
   const clientNavItems = [
-    { href: "/client", label: "Дашборд", icon: LayoutDashboard },
-    { href: "/client/schedule", label: "Розклад", icon: Calendar },
-    { href: "/client/requests", label: "Заявки", icon: ClipboardList },
-    { href: "/client/progress", label: "Прогрес", icon: TrendingUp },
-    { href: "/client/settings", label: "Налаштування", icon: Settings },
+    { href: "/client", label: t("sidebar.dashboard"), icon: LayoutDashboard },
+    { href: "/client/schedule", label: t("sidebar.schedule"), icon: Calendar },
+    { href: "/client/requests", label: t("sidebar.requests"), icon: ClipboardList },
+    { href: "/client/progress", label: t("sidebar.progress"), icon: TrendingUp },
+    { href: "/client/settings", label: t("sidebar.settings"), icon: Settings },
   ]
 
   const tutorNavItems = [
-    { href: "/tutor", label: "Дашборд", icon: LayoutDashboard },
-    { href: "/tutor/requests", label: "Мої заявки", icon: ClipboardList },
-    { href: "/tutor/exchange", label: "Біржа", icon: TrendingUp },
-    { href: "/tutor/clients", label: "Учні", icon: Users },
-    { href: "/tutor/schedule", label: "Розклад", icon: Calendar },
-    { href: "/tutor/finances", label: "Фінанси", icon: DollarSign },
-    { href: "/tutor/rewards", label: "Магазин винагород", icon: TrendingUp },
-    { href: "/tutor/profile", label: "Профіль", icon: UserCog },
-    { href: "/tutor/settings", label: "Налаштування", icon: Settings },
+    { href: "/tutor", label: t("sidebar.dashboard"), icon: LayoutDashboard },
+    { href: "/tutor/requests", label: t("sidebar.requests"), icon: ClipboardList },
+    { href: "/tutor/exchange", label: t("sidebar.exchange"), icon: TrendingUp },
+    { href: "/tutor/clients", label: t("sidebar.clients"), icon: Users },
+    { href: "/tutor/schedule", label: t("sidebar.schedule"), icon: Calendar },
+    { href: "/tutor/finances", label: t("sidebar.finances"), icon: DollarSign },
+    { href: "/tutor/rewards", label: t("sidebar.rewards"), icon: TrendingUp },
+    { href: "/tutor/profile", label: t("sidebar.profile"), icon: UserCog },
+    { href: "/tutor/settings", label: t("sidebar.settings"), icon: Settings },
   ]
 
   const adminNavItems = [
-    { href: "/admin", label: "Дашборд", icon: LayoutDashboard },
-    { href: "/admin/clients", label: "Користувачі", icon: Users },
-    { href: "/admin/specialists", label: "Репетитори", icon: UserCog },
-    { href: "/admin/moderation", label: "Модерація", icon: CheckCircle2 },
-    { href: "/admin/verifications", label: "Верифікація", icon: ShieldCheck },
-    { href: "/admin/payments", label: "Фінанси", icon: DollarSign },
-    { href: "/admin/analytics", label: "Аналітика", icon: TrendingUp },
-    { href: "/admin/dictionaries", label: "Довідники", icon: ClipboardList },
-    { href: "/admin/seo", label: "SEO", icon: Globe },
-    { href: "/admin/support-access", label: "Support Access", icon: ShieldCheck },
-    { href: "/admin/settings", label: "Налаштування", icon: Settings },
+    { href: "/admin", label: t("sidebar.dashboard"), icon: LayoutDashboard },
+    { href: "/admin/clients", label: t("sidebar.clients"), icon: Users },
+    { href: "/admin/specialists", label: t("sidebar.specialists"), icon: UserCog },
+    { href: "/admin/moderation", label: t("sidebar.moderation"), icon: CheckCircle2 },
+    { href: "/admin/verifications", label: t("sidebar.verifications"), icon: ShieldCheck },
+    { href: "/admin/payments", label: t("sidebar.finances"), icon: DollarSign },
+    { href: "/admin/analytics", label: t("sidebar.analytics"), icon: TrendingUp },
+    { href: "/admin/dictionaries", label: t("sidebar.dictionaries"), icon: ClipboardList },
+    { href: "/admin/seo", label: t("sidebar.seo"), icon: Globe },
+    { href: "/admin/support-access", label: t("sidebar.support_access"), icon: ShieldCheck },
+    { href: "/admin/settings", label: t("sidebar.settings"), icon: Settings },
   ]
 
   const navItems = userType === "client" ? clientNavItems : userType === "tutor" ? tutorNavItems : adminNavItems
@@ -123,22 +125,15 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             <p className="text-lg font-bold text-[#121117] leading-tight">Libitum</p>
             <p className={cn("text-xs font-medium", sidebarTheme.label)}>
               {userType === "client"
-                ? "Кабінет учня"
+                ? t("role.client")
                 : userType === "tutor"
-                  ? theme.type === "psychologist"
-                    ? "Кабінет психолога"
-                    : theme.type === "speech-therapist"
-                      ? "Кабінет логопеда"
-                      : "Кабінет викладача"
-                  : "Адмін-панель"}
+                  ? t("role.tutor")
+                  : t("role.admin")}
             </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-2">
-          <div className="hidden lg:block">
-            <LanguageSwitcher />
-          </div>
           <div className="lg:hidden">
             <Button
               variant="ghost"
@@ -148,9 +143,6 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             >
               <X className="h-5 w-5 text-[#69686f]" />
             </Button>
-          </div>
-          <div className="lg:hidden">
-            <LanguageSwitcher />
           </div>
         </div>
       </div>
@@ -163,7 +155,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             onClick={handleStopImpersonating}
           >
             <ShieldCheck className="h-5 w-5" />
-            <span>Повернутися в Адмін</span>
+            <span>{t("sidebar.return_admin")}</span>
           </Button>
         )}
 
@@ -174,7 +166,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <Home className="h-5 w-5" />
-            <span>На головну</span>
+            <span>{t("sidebar.home")}</span>
           </Button>
         </Link>
 
@@ -234,7 +226,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             onClick={logout}
           >
             <LogOut className="h-4 w-4" />
-            <span className="text-[14px]">Вийти з акаунту</span>
+            <span className="text-[14px]">{t("sidebar.logout")}</span>
           </Button>
         </div>
       </div>
@@ -281,8 +273,15 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             </div>
             <span className="font-bold text-[#121117]">Libitum</span>
           </div>
-          <div className="w-10" />
+          <div className="flex items-center justify-end w-12">
+            <LanguageSwitcher />
+          </div>
         </header>
+
+        {/* Desktop Language Switcher */}
+        <div className="hidden lg:block fixed top-6 right-8 z-50">
+          <LanguageSwitcher />
+        </div>
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto bg-[#f0f3f3] p-2 sm:p-4 lg:p-8">{children}</main>
