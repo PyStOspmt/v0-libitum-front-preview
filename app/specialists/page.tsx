@@ -903,7 +903,7 @@ export default function SpecialistsPage() {
                               {t("catalog.book_lesson") || "Записатись"}
                             </Button>
                           </Link>
-                          
+
                           <Link href={`/specialists/${specialist.id}`} className="w-full mt-2">
                             <Button
                               variant="outline"
@@ -918,12 +918,12 @@ export default function SpecialistsPage() {
 
                     {/* Video sidebar anchored inside card, sliding over on the right */}
                     <div className={`absolute top-0 right-[-10px] hidden 2xl:block flex-shrink-0 w-[260px] pl-4 transition-all duration-300 z-50 ${isVideoActive ? 'opacity-100 translate-x-full pointer-events-auto' : 'pointer-events-none opacity-0 translate-x-[90%] group-hover/card:opacity-100 group-hover/card:translate-x-full group-hover/card:pointer-events-auto'}`}
-                         onMouseEnter={() => setHoveredSpecialist(specialist.id)}
-                         onMouseLeave={() => setHoveredSpecialist(null)}
+                      onMouseEnter={() => setHoveredSpecialist(specialist.id)}
+                      onMouseLeave={() => setHoveredSpecialist(null)}
                     >
                       {/* Invisible bridge to prevent hover loss between card and sidebar */}
                       <div className="absolute inset-y-0 -left-6 w-10 bg-transparent z-0" />
-                      
+
                       <div className="relative z-10 border border-slate-200 rounded-[24px] overflow-hidden bg-white shadow-[0_20px_40px_-20px_rgba(0,0,0,0.2)]">
                         <div
                           className="relative aspect-[3/4] bg-slate-900 cursor-pointer group/video"
@@ -988,94 +988,104 @@ export default function SpecialistsPage() {
 
                   {/* ═══ MOBILE: Compact vertical card ═══ */}
                   <article
-                    className={`sm:hidden bg-white border border-slate-200 rounded-2xl p-4 hover:shadow-md transition-shadow`}
+                    className={`sm:hidden bg-white border border-slate-200 rounded-[20px] p-4 sm:p-5 hover:shadow-md transition-shadow relative overflow-hidden`}
                   >
-                    <div className="flex gap-3 mb-3">
-                      <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0">
-                        <div className="relative w-[88px] h-[88px] rounded-xl overflow-hidden bg-slate-100">
+                    <div className="flex gap-4 items-start mb-4">
+                      <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0 relative">
+                        <div className="relative w-[96px] h-[96px] rounded-[16px] overflow-hidden bg-slate-100 ring-1 ring-slate-100">
                           {specialist.image ? (
-                            <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="88px" />
+                            <Image src={specialist.image} alt={specialist.name} fill className="object-cover object-center" sizes="96px" />
                           ) : (
-                            <Avatar className="h-full w-full rounded-xl">
-                              <AvatarFallback className="bg-slate-100 text-lg font-bold text-slate-600 rounded-xl">{specialist.name[0]}</AvatarFallback>
+                            <Avatar className="h-full w-full rounded-[16px]">
+                              <AvatarFallback className="bg-slate-100 text-[22px] font-bold text-slate-600 rounded-[16px]">{specialist.name[0]}</AvatarFallback>
                             </Avatar>
                           )}
                           {specialist.online && (
-                            <div className={`absolute bottom-1 left-1 w-2.5 h-2.5 rounded-full border-2 border-white ${isHealth ? "bg-[#f57c00]" : "bg-emerald-500"}`} />
+                            <div className={`absolute bottom-1 right-1 w-3 h-3 rounded-full border-2 border-white ${isHealth ? "bg-[#f57c00]" : "bg-[#00c5a6]"}`} />
                           )}
                         </div>
                       </Link>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-1.5">
-                            <Link href={`/specialists/${specialist.id}`}>
-                              <h3 className="text-[16px] font-bold text-[#121117] leading-tight">{specialist.name}</h3>
+                      <div className="flex-1 min-w-0 flex flex-col pt-0.5">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <div className="flex items-center gap-1.5 min-w-0 pr-2">
+                            <Link href={`/specialists/${specialist.id}`} className="min-w-0 block">
+                              <h3 className="text-[18px] font-bold text-[#121117] leading-tight truncate">{specialist.name}</h3>
                             </Link>
-                            {specialist.verified && <Award className={`h-3.5 w-3.5 flex-shrink-0 ${isHealth ? "text-[#f57c00]" : "text-[#00c5a6]"}`} />}
+                            {specialist.verified && <Award className={`h-4 w-4 flex-shrink-0 ${isHealth ? "text-[#f57c00]" : "text-[#00c5a6]"}`} />}
                           </div>
                           <button
                             onClick={(e) => toggleFavorite(e, specialist.id)}
-                            className={`p-1 ${isFav ? "text-[#ff4757]" : "text-[#b2b1b9]"}`}
+                            className={`p-1.5 -mr-1.5 -mt-1.5 rounded-full ${isFav ? "text-[#ff4757] bg-red-50" : "text-[#b2b1b9] hover:bg-slate-50"}`}
                           >
                             <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
                           </button>
                         </div>
-                        <div className="flex items-center gap-1.5 mb-2 text-[12px] text-[#69686f]">
-                          <MapPin className="h-3 w-3 text-[#b2b1b9] flex-shrink-0" />
-                          <span className="truncate">{specialist.location}</span>
-                          {getAvailability(specialist) && (
-                            <>
-                              <span className="mx-0.5 flex-shrink-0 w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
-                              <span className="truncate">{getAvailability(specialist)}</span>
-                            </>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[11px] font-semibold px-2 py-1 rounded-lg ${a.badge} border-transparent`}>
+
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`text-[12px] font-bold px-2.5 py-1 rounded-[8px] ${a.badge} border-transparent inline-flex items-center`}>
                             {specialist.specialization === "Репетитор" ? (t("filter.tutors") || "Репетитор") : specialist.specialization === "Психолог" ? (t("filter.psychologists") || "Психолог") : (t("filter.speech_therapists") || "Логопед")}
                           </span>
-                          <div className="flex items-center gap-1 bg-[#fff8e1] px-2 py-1 rounded-lg">
-                            <Star className="h-3 w-3 fill-[#ffc800] text-[#ffc800]" />
-                            <span className="text-[11px] font-bold text-[#f57c00]">{specialist.rating}</span>
-                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-auto">
+                          <span className="bg-[#fff8e1]/80 text-[#f57c00] border border-[#ffc800]/30 px-2.5 py-1 rounded-[6px] flex items-center gap-1.5 shadow-sm text-[13px] font-bold">
+                            <Star className="h-3.5 w-3.5 fill-[#ffc800] text-[#ffc800] -mt-0.5" />
+                            {specialist.rating}
+                          </span>
+                          <span className="text-[13px] text-[#69686f] font-medium">{specialist.reviews} відгуків</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mb-3">
-                      <SubjectsLine specialist={specialist} textClass="text-[15px] text-[#121117] font-semibold" iconClass={a.icon} maxCharsFallback={26} />
+                    <div className="space-y-2.5 mb-4">
+                      <SubjectsLine specialist={specialist} textClass="text-[15px] text-[#121117] font-semibold" iconClass={a.icon} maxCharsFallback={32} />
+
+                      {/* Location - Less prominent */}
+                      <div className="flex items-center gap-2 text-[13px] text-[#8a8990]">
+                        <MapPin className="h-3.5 w-3.5 text-[#d7d7d9] flex-shrink-0" />
+                        <span className="truncate">{specialist.location}</span>
+                        {getAvailability(specialist) && (
+                          <>
+                            <span className="flex-shrink-0 w-1 h-1 rounded-full bg-[#e3e3e5]"></span>
+                            <span className="truncate">{getAvailability(specialist)}</span>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Stats - Larger numbers, added 'досвіду' */}
+                      <div className="flex items-center gap-3 text-[13px] text-[#69686f] pt-0.5">
+                        <div className="flex items-center gap-1">
+                          <Users className="h-3.5 w-3.5 text-[#b2b1b9]" />
+                          <span><strong className="text-[14px] text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
+                        </div>
+                        <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
+                        <span><strong className="text-[14px] text-[#121117]">{specialist.lessonsCompleted}</strong> занять</span>
+                        <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
+                        <span><strong className="text-[14px] text-[#121117]">{specialist.experience}</strong> років досвіду</span>
+                      </div>
                     </div>
 
                     <div
-                      className="mb-3 cursor-pointer"
+                      className="mb-4 cursor-pointer pt-1"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
-                      <p className={`text-[14px] text-[#3e3d45] leading-snug ${isExpanded ? "" : "line-clamp-2"}`}>
-                        <span className="font-semibold text-[#121117]">{specialist.bioTitle}</span>
-                        <span className="text-[#69686f]"> • {specialist.bioText}</span>
+                      <p className={`text-[14px] text-[#3e3d45] leading-relaxed ${isExpanded ? "" : "line-clamp-2"}`}>
+                        <strong className="text-[#121117] mr-1.5">{specialist.bioTitle}</strong>
+                        <span className="text-[#69686f]">{specialist.bioText}</span>
                       </p>
                     </div>
 
-                    {/* Compact stats row */}
-                    <div className="flex items-center gap-3 text-[12px] text-[#69686f] mb-3">
-                      <span><strong className="text-[#121117]">{specialist.experience}</strong> років</span>
-                      <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
-                      <span><strong className="text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
-                      <span className="w-1 h-1 rounded-full bg-[#d7d7d9]"></span>
-                      <span><strong className="text-[#121117]">{specialist.lessonsCompleted}</strong> занять</span>
-                    </div>
-
-                    {/* Price + CTA row */}
-                    <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
-                      <div className="flex-1">
+                    {/* Price + CTA at bottom as requested, but CTA is larger */}
+                    <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
+                      <div className="flex items-baseline justify-between">
                         <div className="flex items-baseline gap-1">
-                          <span className="text-[20px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
-                          <span className="text-[12px] text-[#69686f] font-medium">/ {specialist.lessonDuration}</span>
+                          <span className="text-[22px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
+                          <span className="text-[13px] text-[#69686f] font-medium">/ 50 хв</span>
                         </div>
                       </div>
-                      <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0">
+                      <Link href={`/specialists/${specialist.id}`} className="w-full">
                         <Button
-                          className={`h-9 px-4 rounded-lg text-[13px] font-bold text-white transition-all shadow-sm hover:shadow ${a.cta}`}
+                          className={`w-full h-[48px] rounded-[14px] text-[16px] font-bold text-white transition-all shadow-sm active:scale-[0.98] ${a.cta}`}
                         >
                           Записатись
                         </Button>

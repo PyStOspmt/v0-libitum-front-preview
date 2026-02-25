@@ -277,11 +277,13 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
     return (
         <div className="mb-10 last:mb-0 relative z-20 max-w-[1440px] mx-auto">
             <div className="flex items-center justify-between mb-4 px-3 sm:px-6 lg:px-8">
-                <Link href="/specialists" className="group/title flex items-center gap-2">
+                <Link href="/specialists" className="group/title flex items-center gap-2 active:scale-95 transition-all">
                     <h2 className="text-[22px] sm:text-[28px] font-bold tracking-tight text-[#121117] group-hover/title:text-primary transition-colors">
                         {title}
                     </h2>
-                    <ArrowRight className="w-5 h-5 text-primary opacity-0 -translate-x-2 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all" />
+                    <div className="flex h-7 w-7 sm:h-auto sm:w-auto items-center justify-center rounded-full bg-slate-100 sm:bg-transparent">
+                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-primary sm:opacity-0 sm:-translate-x-2 group-hover/title:opacity-100 group-hover/title:translate-x-0 transition-all" />
+                    </div>
                 </Link>
                 <div className="flex gap-2">
                     <button

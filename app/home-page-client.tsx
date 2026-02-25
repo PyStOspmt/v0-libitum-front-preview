@@ -188,9 +188,9 @@ export function HomePageClient() {
         {/* Featured Specialists Carousels (Overlapping Hero) */}
         <section className="relative z-20 mt-6 lg:mt-6 pb-12 lg:pb-16 bg-transparent overflow-visible">
           <div className="max-w-[1440px] mx-auto w-full">
-            <SpecialistCarousel title={t("home.tutors_title") || "Популярні репетитори"} specialists={tutors} theme="teal" />
-            <SpecialistCarousel title={t("home.psychologists_title") || "Сертифіковані психологи"} specialists={psychologists} theme="amber" />
-            <SpecialistCarousel title={t("home.speech_title") || "Досвідчені логопеди"} specialists={speechTherapists} theme="amber" />
+            <SpecialistCarousel title={t("home.tutors_title") || "Репетитори"} specialists={tutors} theme="teal" />
+            <SpecialistCarousel title={t("home.psychologists_title") || "Психологи"} specialists={psychologists} theme="amber" />
+            <SpecialistCarousel title={t("home.speech_title") || "Логопеди"} specialists={speechTherapists} theme="amber" />
 
             <div className="mt-4 flex justify-center w-full px-4 sm:px-0">
               <Link
