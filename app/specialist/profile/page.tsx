@@ -52,38 +52,38 @@ export default function SpecialistProfilePage() {
           </div>
         </header>
 
-        <div className="container mx-auto max-w-4xl px-3 sm:px-4 md:px-6 py-8">
-          <div className="space-y-6">
-            {/* Profile Photo */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Фото профілю</CardTitle>
-                <CardDescription>Додайте професійне фото для вашого профілю</CardDescription>
+        <div className="container mx-auto max-w-5xl px-3 sm:px-4 md:px-6 py-6 sm:py-8">
+          <div className="grid gap-4 sm:gap-6 lg:gap-8">
+            {/* Profile Photo - Full width on mobile, half on desktop */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg sm:text-xl">Фото профілю</CardTitle>
+                <CardDescription className="text-sm">Додайте професійне фото для вашого профілю</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-6">
-                  <Avatar className="h-24 w-24">
-                    <AvatarFallback className="text-2xl">{user?.name[0]}</AvatarFallback>
+                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+                  <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
+                    <AvatarFallback className="text-xl sm:text-2xl">{user?.name[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="space-y-2">
-                    <Button>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
+                    <Button className="w-full sm:w-auto">
                       <Upload className="mr-2 h-4 w-4" />
                       Завантажити фото
                     </Button>
-                    <p className="text-sm text-muted-foreground">JPG, PNG або GIF. Максимум 5MB.</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">JPG, PNG або GIF. Максимум 5MB.</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Basic Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Основна інформація</CardTitle>
-                <CardDescription>Ваші особисті дані</CardDescription>
+            {/* Basic Info - Optimized grid */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg sm:text-xl">Основна інформація</CardTitle>
+                <CardDescription className="text-sm">Ваші особисті дані</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="firstName">Ім'я</Label>
                     <Input id="firstName" defaultValue="Олена" />
@@ -92,37 +92,47 @@ export default function SpecialistProfilePage() {
                     <Label htmlFor="lastName">Прізвище</Label>
                     <Input id="lastName" defaultValue="Іваненко" />
                   </div>
+                  <div className="space-y-2 sm:col-span-2 lg:col-span-1">
+                    <Label htmlFor="phone">Телефон</Label>
+                    <Input id="phone" type="tel" placeholder="+380 XX XXX XX XX" />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input id="email" type="email" defaultValue={user?.email} disabled />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Телефон</Label>
-                  <Input id="phone" type="tel" placeholder="+380 XX XXX XX XX" />
-                </div>
               </CardContent>
             </Card>
 
-            {/* Professional Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Професійна інформація</CardTitle>
-                <CardDescription>Розкажіть про свій досвід та кваліфікацію</CardDescription>
+            {/* Professional Info - Better organization */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg sm:text-xl">Професійна інформація</CardTitle>
+                <CardDescription className="text-sm">Розкажіть про свій досвід та кваліфікацію</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="specialization">Спеціалізація</Label>
-                  <Select defaultValue="tutor">
-                    <SelectTrigger id="specialization">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="tutor">Репетитор</SelectItem>
-                      <SelectItem value="psychologist">Психолог</SelectItem>
-                      <SelectItem value="speech-therapist">Логопед</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="specialization">Спеціалізація</Label>
+                    <Select defaultValue="tutor">
+                      <SelectTrigger id="specialization">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tutor">Репетитор</SelectItem>
+                        <SelectItem value="psychologist">Психолог</SelectItem>
+                        <SelectItem value="speech-therapist">Логопед</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="experience">Досвід (років)</Label>
+                    <Input id="experience" type="number" defaultValue="5" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location">Місто</Label>
+                    <Input id="location" defaultValue="Київ" />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -143,16 +153,12 @@ export default function SpecialistProfilePage() {
                       value={newSubject}
                       onChange={(e) => setNewSubject(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && addSubject()}
+                      className="flex-1"
                     />
-                    <Button type="button" onClick={addSubject}>
+                    <Button type="button" onClick={addSubject} size="icon">
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="experience">Досвід роботи (років)</Label>
-                  <Input id="experience" type="number" defaultValue="5" />
                 </div>
 
                 <div className="space-y-2">
@@ -171,20 +177,20 @@ export default function SpecialistProfilePage() {
                     id="bio"
                     placeholder="Розкажіть про себе, свій підхід до навчання..."
                     defaultValue="Маю 5 років досвіду викладання англійської мови. Працюю з учнями різного віку та рівня підготовки. Використовую комунікативну методику та сучасні матеріали."
-                    rows={5}
+                    rows={4}
                   />
                 </div>
               </CardContent>
             </Card>
 
-            {/* Pricing & Availability */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Ціни та доступність</CardTitle>
-                <CardDescription>Налаштуйте вартість занять та графік роботи</CardDescription>
+            {/* Pricing & Availability - Optimized layout */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg sm:text-xl">Ціни та доступність</CardTitle>
+                <CardDescription className="text-sm">Налаштуйте вартість занять та графік роботи</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="priceOnline">Ціна онлайн (грн/год)</Label>
                     <Input id="priceOnline" type="number" defaultValue="400" />
@@ -195,67 +201,66 @@ export default function SpecialistProfilePage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label>Формати занять</Label>
-                  <div className="space-y-2">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     <div className="flex items-center space-x-2">
                       <Checkbox id="online" defaultChecked />
-                      <Label htmlFor="online" className="font-normal">
+                      <Label htmlFor="online" className="font-normal text-sm">
                         Онлайн заняття
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox id="offline" defaultChecked />
-                      <Label htmlFor="offline" className="font-normal">
+                      <Label htmlFor="offline" className="font-normal text-sm">
                         Офлайн заняття
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox id="home" />
-                      <Label htmlFor="home" className="font-normal">
-                        Виїзд додому до учня
+                      <Label htmlFor="home" className="font-normal text-sm">
+                        Виїзд додому
                       </Label>
                     </div>
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="location">Місто</Label>
-                  <Input id="location" defaultValue="Київ" />
-                </div>
               </CardContent>
             </Card>
 
-            {/* Documents */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Документи</CardTitle>
-                <CardDescription>Завантажте документи для верифікації</CardDescription>
+            {/* Documents - Side by side on desktop */}
+            <Card className="lg:col-span-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg sm:text-xl">Документи</CardTitle>
+                <CardDescription className="text-sm">Завантажте документи для верифікації</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label>Диплом про освіту</Label>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Завантажити диплом
-                  </Button>
-                </div>
-                <div className="space-y-2">
-                  <Label>Сертифікати</Label>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Upload className="mr-2 h-4 w-4" />
-                    Завантажити сертифікати
-                  </Button>
+              <CardContent>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Диплом про освіту</Label>
+                    <Button variant="outline" className="w-full bg-transparent">
+                      <Upload className="mr-2 h-4 w-4" />
+                      Завантажити диплом
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Сертифікати</Label>
+                    <Button variant="outline" className="w-full bg-transparent">
+                      <Upload className="mr-2 h-4 w-4" />
+                      Завантажити сертифікати
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Save Button */}
-            <div className="flex justify-end gap-3">
-              <Link href="/specialist/dashboard">
-                <Button variant="outline">Скасувати</Button>
-              </Link>
-              <Button>Зберегти зміни</Button>
+            {/* Save Button - Sticky on mobile */}
+            <div className="lg:col-span-2 sticky bottom-0 bg-background/95 backdrop-blur-sm p-4 -mx-3 sm:mx-0 border-t sm:border-0 sm:static sm:bg-transparent sm:backdrop-blur-none sm:p-0 sm:pt-4">
+              <div className="flex justify-end gap-3">
+                <Link href="/specialist/dashboard">
+                  <Button variant="outline" className="w-full sm:w-auto">Скасувати</Button>
+                </Link>
+                <Button className="w-full sm:w-auto">Зберегти зміни</Button>
+              </div>
             </div>
           </div>
         </div>

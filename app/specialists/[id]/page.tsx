@@ -13,7 +13,7 @@ import { BookingModal } from "@/components/booking-modal"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import {
   ArrowLeft, Star, Heart, Share, MapPin, Calendar, Clock, Award, Shield,
-  Check, Play, ChevronRight, MessageCircle, BookOpen, Users, GraduationCap, Video, Home as HomeIcon
+  Check, Play, ChevronRight, ChevronUp, ChevronDown, MessageCircle, BookOpen, Users, GraduationCap, Video, Home as HomeIcon
 } from "lucide-react"
 import { Header } from "@/components/header"
 
@@ -24,6 +24,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
   const { getActiveTrialCount } = useRequestStore()
   const [bookingOpen, setBookingOpen] = useState(false)
   const [wishlisted, setWishlisted] = useState(false)
+  const [showAllReviews, setShowAllReviews] = useState(false)
   const [activeSection, setActiveSection] = useState('about')
   const resolvedParams = use(params)
 
@@ -48,8 +49,8 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     return () => observer.disconnect()
   }, [])
 
-  const scrollToSection = (id: string, e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
+  const scrollToSection = (id: string, e?: React.MouseEvent<HTMLAnchorElement>) => {
+    e?.preventDefault()
     const element = document.getElementById(id)
     if (element) {
       const y = element.getBoundingClientRect().top + window.scrollY - 130
@@ -224,6 +225,11 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
     { id: 1, clientName: "Марія К.", rating: 5, date: "15.01.2025", text: "Чудовий викладач! Олена дуже професійна та уважна. За 2 місяці занять мій рівень англійської значно покращився." },
     { id: 2, clientName: "Іван П.", rating: 5, date: "10.01.2025", text: "Рекомендую! Зрозумілі пояснення, цікаві матеріали. Підготувався до IELTS на 7.5 балів." },
     { id: 3, clientName: "Софія Б.", rating: 4, date: "05.01.2025", text: "Гарний викладач, але іноді бракує часу на практику розмовної мови." },
+    { id: 4, clientName: "Андрій Л.", rating: 5, date: "28.12.2024", text: "Дуже задоволений результатами! Олена допомогла подолати мовний бар'єр. Тепер спілкуюся англійською впевнено." },
+    { id: 5, clientName: "Оксана М.", rating: 5, date: "20.12.2024", text: "Професійний підхід до кожного учня. Індивідуальна програма, яка дійсно працює. Рекомендую!" },
+    { id: 6, clientName: "Сергій Т.", rating: 4, date: "15.12.2024", text: "Хороший викладач, пояснює складні теми просто. Іноді занять відбуваються онлайн з невеликими затримками." },
+    { id: 7, clientName: "Наталія К.", rating: 5, date: "10.12.2024", text: "Олена - найкращий викладач, з яким я займався! Результат перевершив усі очікування. Дякую!" },
+    { id: 8, clientName: "Дмитро В.", rating: 5, date: "05.12.2024", text: "Системний підхід, чудові матеріали. Підготувався до співбесіди в міжнародну компанію." },
   ]
 
   const handleWishlist = () => {
@@ -276,51 +282,48 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
             )}
 
             {/* Profile Header */}
-            <div className="mb-4 sm:mb-6 bg-white rounded-3xl p-4 sm:p-6 border border-slate-200 shadow-[0_4px_20px_rgb(0,0,0,0.03)] sm:shadow-sm relative overflow-hidden">
-              {/* Decorative top gradient */}
-              <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-slate-50 to-transparent pointer-events-none" />
-
-              {/* Action buttons - Absolute top right on desktop, top right on mobile */}
+            <div className="mb-4 sm:mb-6 bg-white rounded-[24px] sm:rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-[0_4px_20px_rgb(0,0,0,0.03)] sm:shadow-sm relative overflow-hidden">
+              {/* Action buttons - Absolute top right */}
               <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-2 z-20">
                 <button
                   onClick={handleWishlist}
-                  className="h-10 w-10 sm:h-10 sm:w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+                  className="h-10 w-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center hover:bg-white hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
                 >
                   <Heart className={`h-4 w-4 transition-colors ${wishlisted ? "fill-[#ff4757] text-[#ff4757]" : "text-slate-400 group-hover:text-slate-600"}`} />
                 </button>
                 <button
                   onClick={handleShare}
-                  className="h-10 w-10 sm:h-10 sm:w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
+                  className="h-10 w-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center hover:bg-white hover:border-slate-300 hover:shadow-sm transition-all cursor-pointer group"
                 >
                   <Share className="h-4 w-4 text-slate-400 group-hover:text-slate-600" />
                 </button>
               </div>
 
-              <div className="relative z-10 flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start pt-2 sm:pt-0">
-                <div className="relative shrink-0 mx-auto sm:mx-0">
-                  <div className="relative h-[110px] w-[110px] sm:h-[160px] sm:w-[160px] rounded-[28px] sm:rounded-2xl overflow-hidden ring-4 ring-white shadow-sm">
+              <div className="relative z-10 flex flex-col sm:flex-row gap-5 sm:gap-0 items-center sm:items-start pt-2 sm:pt-0">
+                <div className="relative shrink-0 mx-auto sm:mx-0 mt-2 sm:mt-0 sm:w-[220px]">
+                  <div className="relative h-[130px] w-[130px] sm:h-[180px] sm:w-[180px] rounded-full overflow-hidden ring-4 ring-slate-50 shadow-sm mx-auto sm:mx-0">
                     <Avatar className="h-full w-full rounded-none">
                       <AvatarImage src={specialist.avatarUrl} alt={specialist.name} className="object-cover object-top" />
                       <AvatarFallback className="text-4xl font-bold bg-[#f0f3f3] text-[#121117]">{specialist.name[0]}</AvatarFallback>
                     </Avatar>
                   </div>
                   {specialist.verified && (
-                    <div className="absolute -bottom-2 -right-2 flex h-9 w-9 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white border border-slate-200/80 shadow-md z-10">
+                    <div className="absolute bottom-0 right-0 sm:bottom-2 sm:right-6 flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white border-2 border-slate-50 shadow-sm z-10">
                       <Award className={`h-5 w-5 sm:h-6 sm:w-6 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`} />
                     </div>
                   )}
                 </div>
 
-                <div className="flex-1 pt-1 sm:pt-2 text-center sm:text-left w-full">
-                  <div className="mb-4 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
-                    <div className="space-y-3 w-full sm:pr-24">
-                      <h1 className="text-[26px] sm:text-[36px] font-bold text-[#121117] leading-tight tracking-tight">{specialist.name}</h1>
-                      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-1.5 sm:gap-2">
-                        <span className={`inline-flex items-center rounded-lg px-2.5 py-1 sm:px-3 sm:py-1.5 text-[13px] sm:text-[14px] font-[600] ${specialist.specialization === "Репетитор" ? "bg-[#e8fffb] text-[#00a389]" : "bg-[#fff8e1] text-[#d87b00]"}`}>
+                <div className="flex-1 pt-1 sm:pt-2 text-center sm:text-left w-full sm:pr-20">
+                  <div className="mb-4 sm:mb-5 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-3 sm:gap-4">
+                    <div className="space-y-3 w-full">
+                      <h1 className="text-[28px] sm:text-[36px] font-bold text-[#121117] leading-tight tracking-tight">{specialist.name}</h1>
+                      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-2">
+                        <span className={`inline-flex items-center rounded-lg px-3 py-1.5 sm:px-3 sm:py-1.5 text-[13px] sm:text-[14px] font-[700] ${specialist.specialization === "Репетитор" ? "bg-[#e8fffb] text-[#00a389]" : "bg-[#fff8e1] text-[#d87b00]"}`}>
                           {specialist.specialization}
                         </span>
                         {specialist.badges.map((badge: string) => (
-                          <span key={badge} className="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 sm:px-3 sm:py-1.5 text-[12px] sm:text-[13px] font-semibold text-slate-600">
+                          <span key={badge} className="inline-flex items-center rounded-lg bg-slate-100 px-3 py-1.5 sm:px-3 sm:py-1.5 text-[12px] sm:text-[13px] font-[600] text-slate-700">
                             {badge}
                           </span>
                         ))}
@@ -328,64 +331,80 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 mt-2 sm:mt-6">
-                    <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-x-5 gap-y-2 sm:gap-y-3 text-[14px] sm:text-[15px] text-[#69686f] font-medium bg-slate-50/80 sm:bg-slate-50/50 p-3 sm:p-4 rounded-2xl w-full max-w-2xl border border-slate-100 mx-auto sm:mx-0">
-                      <div className="flex flex-wrap justify-center items-center gap-2 w-full sm:w-auto">
-                        <div className="flex items-center gap-1.5">
-                          <div className="bg-[#fff8e1] p-1 sm:p-1.5 rounded-md flex items-center justify-center">
-                            <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-amber-400 text-amber-500" />
+                  <div className="flex flex-col gap-4 mt-2">
+                    <div className="flex flex-col sm:flex-row justify-center sm:justify-start items-center gap-x-6 gap-y-3 sm:gap-y-0 text-[14px] text-[#69686f] font-medium bg-[#f8f9fa] p-3.5 sm:p-4 rounded-[16px] w-full sm:w-fit border border-slate-100 mx-auto sm:mx-0">
+                      <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-[#fff8e1] p-1.5 rounded-[8px] flex items-center justify-center shadow-sm">
+                            <Star className="h-4 w-4 fill-amber-400 text-amber-500" />
                           </div>
-                          <span className="font-bold text-[#121117] text-[15px] sm:text-[16px]">{specialist.rating}</span>
+                          <span className="font-bold text-[#121117] text-[16px]">{specialist.rating}</span>
                         </div>
-                        <span className="text-slate-500 underline decoration-dashed underline-offset-2 hover:text-slate-800 cursor-pointer transition-colors px-1">
+                        
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden sm:block"></div>
+                        
+                        <button 
+                          onClick={() => {
+                            setShowAllReviews(true)
+                            scrollToSection('reviews')
+                          }}
+                          className="text-slate-500 underline decoration-dashed underline-offset-4 hover:text-slate-800 cursor-pointer transition-colors font-[600]"
+                        >
                           {specialist.reviews} відгуків
-                        </span>
-                        <div className="w-1 h-1 rounded-full bg-slate-300 mx-1"></div>
+                        </button>
+                      </div>
+
+                      <div className="w-full h-px bg-slate-200/60 sm:hidden"></div>
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden sm:block"></div>
+                      
+                      <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto gap-3">
                         <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                          <span className="text-slate-600">{specialist.location}</span>
+                          <MapPin className="h-4 w-4 text-slate-400" />
+                          <span className="text-slate-600 font-[600]">{specialist.location}</span>
                         </div>
-                      </div>
 
-                      <div className="w-full h-px bg-slate-200/50 sm:hidden my-0.5"></div>
-                      <div className="w-1 h-1 rounded-full bg-slate-300 hidden sm:block"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-300 hidden sm:block"></div>
 
-                      <div className="flex items-center gap-1.5 sm:gap-2 justify-center w-full sm:w-auto">
-                        <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
-                        <span className="text-slate-600"><strong className="text-[#121117]">{specialist.completedSessions}</strong> занять</span>
+                        <div className="flex items-center gap-1.5">
+                          <Users className="h-4 w-4 text-slate-400" />
+                          <span className="text-slate-600 font-[600]"><strong className="text-[#121117]">{specialist.completedSessions}</strong> занять</span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-3">
-                      <div className="w-full sm:w-auto flex items-center gap-2 mb-1 sm:mb-0">
-                        <BookOpen className="h-4 w-4 text-slate-400 shrink-0" />
-                        <span className="text-[13px] font-[600] text-slate-500 whitespace-nowrap">Викладає:</span>
+                    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 mt-2 w-full">
+                      <div className="flex items-center gap-2 shrink-0 pt-0.5">
+                        <BookOpen className="h-4 w-4 text-slate-400" />
+                        <span className="text-[14px] font-[600] text-slate-500">Викладає:</span>
                       </div>
-                      {specialist.subjects.map((subject: string) => (
-                        <span key={subject} className="inline-flex items-center rounded-xl bg-white border border-slate-200 px-3 py-1.5 text-[13px] font-[600] text-[#121117] shadow-sm hover:border-slate-300 transition-colors">
-                          {subject}
-                        </span>
-                      ))}
-                    </div>
-
-                    {specialist.education && (
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-1">
-                        <div className="w-full sm:w-auto flex items-center gap-2">
-                          <GraduationCap className="h-4 w-4 text-slate-400 shrink-0" />
-                          <span className="text-[13px] font-[600] text-slate-500 whitespace-nowrap">Освіта:</span>
-                          <span className="text-[13px] font-medium text-[#3e3d45]">{specialist.education}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {specialist.achievements && specialist.achievements.length > 0 && (
-                      <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-2 pt-2 border-t border-slate-100 w-full max-w-2xl">
-                        {specialist.achievements.map((ach: string) => (
-                          <span key={ach} className="inline-flex items-center rounded-lg bg-[#f8f9fa] border border-slate-100 text-[#121117] px-2.5 py-1 text-[12px] font-[600]">
-                            <Check className={`w-3.5 h-3.5 mr-1 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`} />
-                            {ach}
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-1.5 w-full max-w-[500px]">
+                        {specialist.subjects.map((subject: string) => (
+                          <span key={subject} className="inline-flex items-center rounded-lg bg-white border border-slate-200 px-2.5 py-1 text-[13px] font-[600] text-[#121117] shadow-sm hover:border-slate-300 hover:shadow-md transition-all cursor-default">
+                            {subject}
                           </span>
                         ))}
+                      </div>
+                    </div>
+
+                    {(specialist.education || (specialist.achievements && specialist.achievements.length > 0)) && (
+                      <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-slate-100 w-full max-w-3xl">
+                        {specialist.education && (
+                          <div className="flex items-start justify-center sm:justify-start gap-2 text-center sm:text-left">
+                            <GraduationCap className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
+                            <span className="text-[13px] font-medium text-[#3e3d45] leading-snug">{specialist.education}</span>
+                          </div>
+                        )}
+                        
+                        {specialist.achievements && specialist.achievements.length > 0 && (
+                          <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                            {specialist.achievements.map((ach: string) => (
+                              <span key={ach} className="inline-flex items-center rounded-lg bg-[#f8f9fa] border border-slate-100 text-[#121117] px-2.5 py-1.5 text-[12px] font-[600]">
+                                <Check className={`w-3.5 h-3.5 mr-1 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`} />
+                                {ach}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -517,7 +536,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
               {/* Reviews Section */}
               <section id="reviews" className="scroll-mt-32 space-y-4 block">
                 <h3 className="text-[20px] font-bold text-[#121117] mb-6 pl-1 pt-2">Відгуки учнів</h3>
-                {reviews.map((review) => (
+                {reviews.slice(0, showAllReviews ? reviews.length : 3).map((review) => (
                   <div key={review.id} className="rounded-[16px] border border-slate-200/80 bg-white p-5 sm:p-6 hover:border-slate-300 transition-colors shadow-[0_2px_10px_rgb(0,0,0,0.02)]">
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -541,6 +560,28 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                     <p className="text-[#3e3d45] leading-relaxed text-[15px] font-medium">{review.text}</p>
                   </div>
                 ))}
+                
+                {reviews.length > 3 && (
+                  <div className="flex justify-center pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowAllReviews(!showAllReviews)}
+                      className="px-6 py-2 rounded-[12px] border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all"
+                    >
+                      {showAllReviews ? (
+                        <>
+                          <ChevronUp className="w-4 h-4 mr-2" />
+                          Показати менше відгуків
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4 mr-2" />
+                          Показати всі {reviews.length} відгуків
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
               </section>
 
               {/* Schedule Section */}
