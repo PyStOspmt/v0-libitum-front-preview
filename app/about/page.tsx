@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Users, Award, Shield, Star, ArrowRight } from "lucide-react"
+import { Header } from "@/components/header"
 
 import { useTranslation } from "@/lib/i18n"
 
@@ -50,6 +51,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white relative overflow-hidden">
+      <Header />
       {/* Floating gradient orbs */}
       <div className="fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
       <div className="fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
@@ -90,14 +92,14 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-6">
             {features.map((feature, index) => (
               <Card key={feature.title} className={`group hover:shadow-lg transition-all duration-300 bg-gradient-to-br ${index % 2 === 0
-                  ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50"
-                  : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
+                ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50"
+                : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
                 }`}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${index % 2 === 0
-                        ? "bg-emerald-100 text-emerald-600"
-                        : "bg-amber-100 text-amber-600"
+                      ? "bg-emerald-100 text-emerald-600"
+                      : "bg-amber-100 text-amber-600"
                       }`}>
                       <feature.icon className="h-6 w-6" />
                     </div>
@@ -109,8 +111,8 @@ export default function AboutPage() {
                 </CardHeader>
                 <CardContent>
                   <Button asChild className={`${index % 2 === 0
-                      ? "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110"
-                      : "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110"
+                    ? "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110"
+                    : "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110"
                     } text-white border-transparent shadow-md transition-all duration-300`}>
                     <Link href={feature.link} className="inline-flex items-center gap-2">
                       {feature.linkText}

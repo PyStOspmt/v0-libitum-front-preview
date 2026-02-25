@@ -13,22 +13,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookingModal } from "@/components/booking-modal"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import {
-  BookOpen,
-  Star,
-  MapPin,
-  Video,
-  Home as HomeIcon,
-  Award,
-  Calendar,
-  ArrowLeft,
-  GraduationCap,
-  Users,
-  Heart,
-  Share,
-  Play,
-  ChevronRight,
-  Check,
+  ArrowLeft, Star, Heart, Share, MapPin, Calendar, Clock, Award, Shield,
+  Check, Play, ChevronRight, MessageCircle, BookOpen, Users, GraduationCap, Video, Home as HomeIcon
 } from "lucide-react"
+import { Header } from "@/components/header"
 
 export default function SpecialistProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
@@ -229,38 +217,7 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-6">
-              <Link href="/" className="flex items-center gap-2.5">
-                <div className="relative h-9 w-9 overflow-hidden rounded-lg">
-                  <Image src={logoSrc} alt="Libitum" fill className="object-cover" />
-                </div>
-                <span className="text-lg font-bold text-slate-800">LIBITUM</span>
-              </Link>
-              <Link href={specialistsListHref} className="hidden sm:flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                <ArrowLeft className="h-4 w-4" />
-                До каталогу
-              </Link>
-            </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <Link href="/login">
-                <Button variant="outline" className="h-[40px] rounded-[12px] px-5 text-[14px] font-medium border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer">
-                  Увійти
-                </Button>
-              </Link>
-              <Link href="/register">
-                <Button className="h-[40px] rounded-[12px] px-5 text-[14px] font-medium bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all cursor-pointer">
-                  Реєстрація
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header theme={isHealthSpecialist ? "health" : "education"} />
 
       {/* Breadcrumbs */}
       <div className="border-b border-slate-100 bg-[#f8f9fa]">
@@ -350,10 +307,10 @@ export default function SpecialistProfilePage({ params }: { params: Promise<{ id
                           <span className="text-slate-600">{specialist.location}</span>
                         </div>
                       </div>
-                      
+
                       <div className="w-full h-px bg-slate-200/50 sm:hidden my-0.5"></div>
                       <div className="w-1 h-1 rounded-full bg-slate-300 hidden sm:block"></div>
-                      
+
                       <div className="flex items-center gap-1.5 sm:gap-2 justify-center w-full sm:w-auto">
                         <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-400" />
                         <span className="text-slate-600"><strong className="text-[#121117]">{specialist.completedSessions}</strong> занять</span>

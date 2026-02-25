@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Chrome, Eye, EyeOff, ArrowLeft, Star, Shield, BookOpen } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { Header } from "@/components/header"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -107,33 +108,7 @@ export default function LoginPage() {
 
       {/* Right side - form */}
       <div className="flex-1 flex flex-col">
-        {/* Mobile header */}
-        <header className="lg:hidden px-6 py-5 border-b border-slate-100">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="relative h-9 w-9 overflow-hidden rounded-lg">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="text-lg font-bold text-slate-800">LIBITUM</span>
-            </Link>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
-              <Link href="/" className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                <ArrowLeft className="h-4 w-4" />
-                На головну
-              </Link>
-            </div>
-          </div>
-        </header>
-
-        {/* Desktop back link */}
-        <div className="hidden lg:flex px-8 pt-6 justify-between items-center w-full">
-          <Link href="/" className="flex items-center gap-2 text-sm text-slate-400 hover:text-slate-700 transition-colors">
-            <ArrowLeft className="h-4 w-4" />
-            На головну
-          </Link>
-          <LanguageSwitcher />
-        </div>
+        <Header />
 
         <div className="flex-1 flex items-center justify-center px-6 py-12">
           <div className="w-full max-w-[420px]">

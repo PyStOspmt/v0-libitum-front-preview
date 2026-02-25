@@ -1,15 +1,18 @@
 "use client"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { BookOpen, Award, Users, MapPin, Search, Heart, HeartOff, PlayCircle, PauseCircle, Globe, ChevronDown, X, Star, Play, Calendar, Eye, SlidersHorizontal } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
+import { Button } from "@/components/ui/button"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { Header } from "@/components/header"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { ChevronDown, Search, Star, MapPin, Globe, Users, Heart, X, Calendar, Eye, Award, Play, SlidersHorizontal } from "lucide-react"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { useSearchParams } from "next/navigation"
 
 /* ═══════════════════════════════════════════════════
    Data
@@ -282,6 +285,7 @@ function PillDropdown({ label, options, value, onChange, multi = false }: {
    Main Page
    ═══════════════════════════════════════════════════ */
 export default function SpecialistsPage() {
+  const { user } = useAuth()
   const searchParams = useSearchParams()
   const { t } = useTranslation()
   const categoryParam = searchParams.get("category")
@@ -302,6 +306,7 @@ export default function SpecialistsPage() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [showMobileSearch, setShowMobileSearch] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   // Refs for Select triggers
   const categorySelectRef = useRef<HTMLButtonElement>(null)
@@ -401,10 +406,13 @@ export default function SpecialistsPage() {
         type="button"
         ref={containerRef}
         className={`relative flex items-start gap-2 text-left w-full ${textClass}`}
-        onClick={() => setExpandedSubjects(isExpanded ? null : specialist.id)}
+        onClick={(e) => {
+          e.stopPropagation()
+          setExpandedSubjects(isExpanded ? null : specialist.id)
+        }}
       >
         <Globe className={`h-3.5 w-3.5 mt-0.5 flex-shrink-0 ${iconClass}`} />
-        <span className="block truncate">
+        <span className={`${isExpanded ? "" : "block truncate"}`}>
           {subjectsToShow.join(", ")}
           {!isExpanded && hiddenCount > 0 && <span className="text-slate-500"> +{hiddenCount}</span>}
         </span>
@@ -464,36 +472,7 @@ export default function SpecialistsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-white overflow-x-clip">
-      {/* ── Header ── */}
-      <header className="sticky top-0 z-[100] border-b border-slate-200 bg-white">
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-            <Link href="/" className="flex items-center gap-2 min-w-0">
-              <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-white">
-                <img src="/logo-education.jpg" alt="Libitum" className="h-full w-full object-cover" />
-              </div>
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 truncate leading-none">Libitum</span>
-            </Link>
-            <nav className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600">
-              <Link href="/specialists" className="text-slate-900">{t("nav.specialists")}</Link>
-              <Link href="/about" className="hover:text-slate-900 transition-colors">{t("about.title")}</Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <div className="scale-[0.9] sm:scale-100 origin-right">
-              <LanguageSwitcher />
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <Link href="/login">
-                <Button variant="ghost" size="sm" className="h-[40px] px-4 rounded-[12px] text-[14px] font-medium text-slate-600 hover:text-slate-900">{t("btn.login")}</Button>
-              </Link>
-              <Link href="/register">
-                <Button size="sm" className="h-[40px] px-4 rounded-[12px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] text-[14px] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">{t("btn.register")}</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Floating gradient orbs - desktop only */}
       <div className="hidden sm:block fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
@@ -512,7 +491,7 @@ export default function SpecialistsPage() {
         </div>
 
         {/* ── Sticky Filters Container ── */}
-        <div className="sticky top-14 z-40 bg-white/80 backdrop-blur-md pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100/50 [&.stuck]:shadow-sm [&.stuck]:bg-white/90" ref={stickyFiltersRef}>
+        <div className="sticky top-[72px] z-40 bg-white/80 backdrop-blur-md pt-3 pb-2 -mx-4 sm:-mx-6 px-4 sm:px-6 border-b border-transparent [&.stuck]:border-slate-100/50 [&.stuck]:shadow-sm [&.stuck]:bg-white/90" ref={stickyFiltersRef}>
 
           {/* ── MOBILE: Compact filter bar (Preply-style) ── */}
           <div className="sm:hidden">
@@ -1032,17 +1011,19 @@ export default function SpecialistsPage() {
                             <Star className="h-3.5 w-3.5 fill-[#ffc800] text-[#ffc800] -mt-0.5" />
                             {specialist.rating}
                           </span>
-                          <span className="text-[13px] text-[#69686f] font-medium">{specialist.reviews} відгуків</span>
+                          <Link href={`/specialists/${specialist.id}?tab=reviews`} className="text-[#69686f] text-[13px] font-medium underline decoration-dashed underline-offset-2 cursor-pointer hover:text-[#f57c00]">
+                            {specialist.reviews} відгуків
+                          </Link>
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-2.5 mb-4">
+                    <div className="flex flex-col gap-[3px] mb-2">
                       <SubjectsLine specialist={specialist} textClass="text-[15px] text-[#121117] font-semibold" iconClass={a.icon} maxCharsFallback={32} />
 
                       {/* Location - Less prominent */}
                       <div className="flex items-center gap-2 text-[13px] text-[#8a8990]">
-                        <MapPin className="h-3.5 w-3.5 text-[#d7d7d9] flex-shrink-0" />
+                        <MapPin className="h-3.5 w-3.5 text-[#d7d7d9" />
                         <span className="truncate">{specialist.location}</span>
                         {getAvailability(specialist) && (
                           <>
@@ -1053,7 +1034,7 @@ export default function SpecialistsPage() {
                       </div>
 
                       {/* Stats - Larger numbers, added 'досвіду' */}
-                      <div className="flex items-center gap-3 text-[13px] text-[#69686f] pt-0.5">
+                      <div className="flex items-center gap-3 text-[13px] text-[#69686f]">
                         <div className="flex items-center gap-1">
                           <Users className="h-3.5 w-3.5 text-[#b2b1b9]" />
                           <span><strong className="text-[14px] text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
@@ -1066,7 +1047,7 @@ export default function SpecialistsPage() {
                     </div>
 
                     <div
-                      className="mb-4 cursor-pointer pt-1"
+                      className="mb-1 cursor-pointer"
                       onClick={() => setExpandedBio(isExpanded ? null : specialist.id)}
                     >
                       <p className={`text-[14px] text-[#3e3d45] leading-relaxed ${isExpanded ? "" : "line-clamp-2"}`}>
@@ -1075,17 +1056,15 @@ export default function SpecialistsPage() {
                       </p>
                     </div>
 
-                    {/* Price + CTA at bottom as requested, but CTA is larger */}
-                    <div className="flex flex-col gap-3 pt-4 border-t border-slate-100">
-                      <div className="flex items-baseline justify-between">
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-[22px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
-                          <span className="text-[13px] text-[#69686f] font-medium">/ 50 хв</span>
-                        </div>
+                    {/* Price + CTA at bottom in same row */}
+                    <div className="flex items-center justify-between gap-3 pt-[3px] border-t border-slate-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-[22px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
+                        <span className="text-[13px] text-[#69686f] font-medium">/ 50 хв</span>
                       </div>
-                      <Link href={`/specialists/${specialist.id}`} className="w-full">
+                      <Link href={`/specialists/${specialist.id}`} className="flex-shrink-0">
                         <Button
-                          className={`w-full h-[48px] rounded-[14px] text-[16px] font-bold text-white transition-all shadow-sm active:scale-[0.98] ${a.cta}`}
+                          className={`h-[48px] px-12 rounded-[14px] text-[15px] font-bold text-white transition-all shadow-sm active:scale-[0.98] ${a.cta}`}
                         >
                           Записатись
                         </Button>

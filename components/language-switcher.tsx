@@ -41,7 +41,7 @@ export function LanguageSwitcher() {
 
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="h-9 w-12 rounded-xl border border-border/50">
+      <Button variant="ghost" size="icon" className="h-10 w-14 rounded-xl border border-border/50">
         <Globe className="h-5 w-5" />
       </Button>
     )
@@ -50,8 +50,8 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-12 rounded-xl border border-border/50">
-          <Globe className="h-4 w-4" />
+        <Button variant="ghost" size="icon" className="h-10 w-14 rounded-xl border border-border/50">
+          <Globe className="h-5 w-5" />
           <span className="ml-1 text-xs font-semibold">{language}</span>
         </Button>
       </DropdownMenuTrigger>

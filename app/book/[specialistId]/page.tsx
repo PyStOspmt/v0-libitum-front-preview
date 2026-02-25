@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BookOpen, ArrowLeft, CheckCircle } from "lucide-react"
 import { useRequestStore } from "@/lib/request-store"
+import { Header } from "@/components/header"
 
 export default function GuestBookingPage({ params }: { params: Promise<{ specialistId: string }> }) {
   const { specialistId } = use(params)
@@ -93,29 +94,8 @@ export default function GuestBookingPage({ params }: { params: Promise<{ special
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-libitum-teal to-libitum-emerald">
-                <BookOpen className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xl font-semibold">Libitum</span>
-                <span className="block text-xs text-muted-foreground">Education</span>
-              </div>
-            </Link>
-            <Link href={`/specialists/${specialistId}`}>
-              <Button variant="ghost">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Назад до профілю
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-muted/30 text-[#111827]">
+      <Header />
 
       <div className="container mx-auto max-w-2xl px-4 py-8">
         {/* Progress */}

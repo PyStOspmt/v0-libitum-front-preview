@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart, Star, MapPin, Video, Home, Users, BookOpen, Award } from "lucide-react"
 import Image from "next/image"
+import { Header } from "@/components/header"
 
 // Mock data - in real app this would come from API or context
 const mockSpecialists = [
@@ -99,7 +100,7 @@ export default function FavoritesPage() {
   }
 
   const toggleFavorite = (id: number) => {
-    setFavorites(prev => 
+    setFavorites(prev =>
       prev.includes(id) ? prev.filter(fId => fId !== id) : [...prev, id]
     )
   }
@@ -107,32 +108,14 @@ export default function FavoritesPage() {
   const favoriteSpecialists = mockSpecialists.filter(s => favorites.includes(s.id))
 
   return (
-    <div className="min-h-screen bg-slate-50/50">
-      <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-              <div className="relative h-10 w-10 overflow-hidden rounded-full ring-1 ring-slate-200 shadow-sm">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="text-xl font-bold tracking-tight text-slate-800">Libitum</span>
-            </Link>
-            <div className="flex items-center gap-3">
-              <Link href="/specialists">
-                <Button variant="ghost" className="font-medium text-slate-600 hover:text-slate-800">
-                  До спеціалістів
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-slate-50/50 text-[#111827]">
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold tracking-tight text-slate-800">Обрані спеціалісти</h1>
           <p className="text-slate-600">
-            {favoriteSpecialists.length === 0 
+            {favoriteSpecialists.length === 0
               ? "У вас ще немає обраних спеціалістів"
               : `У вас ${favoriteSpecialists.length} ${favoriteSpecialists.length === 1 ? 'обраний' : 'обраних'} спеціаліст${favoriteSpecialists.length > 1 ? 'ів' : ''}`
             }
@@ -164,11 +147,10 @@ export default function FavoritesPage() {
                   {/* Favorite Button */}
                   <button
                     onClick={() => toggleFavorite(specialist.id)}
-                    className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all hover:scale-110 shadow-md ${
-                      favorites.includes(specialist.id)
+                    className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all hover:scale-110 shadow-md ${favorites.includes(specialist.id)
                         ? 'text-red-500 bg-white hover:bg-red-50'
                         : 'text-slate-400 bg-white hover:text-red-500 hover:bg-red-50'
-                    }`}
+                      }`}
                   >
                     <Heart className={`h-4 w-4 ${favorites.includes(specialist.id) ? 'fill-current' : ''}`} />
                   </button>

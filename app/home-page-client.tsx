@@ -3,22 +3,20 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState, useCallback, useEffect } from "react"
-import { ArrowRight, Check, ChevronDown, Search, Star, MessageCircle, Menu, X, CheckCircle2 } from "lucide-react"
+import { ArrowRight, Check, ChevronDown, Search, Star, MessageCircle, CheckCircle2 } from "lucide-react"
 
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import { Header } from "@/components/header"
 import { SpecialistCarousel, tutors, psychologists, speechTherapists } from "@/components/home/specialist-carousel"
 
 
 export function HomePageClient() {
   const { user } = useAuth()
   const { t } = useTranslation()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(0)
-
-  const dashboardHref = user?.role === "client" ? "/client" : user?.role === "specialist" ? "/tutor" : "/admin"
   const specialistHref = user?.role === "client" ? "/client/specialists" : "/specialists"
 
   const faqs = [
@@ -30,102 +28,7 @@ export function HomePageClient() {
 
   return (
     <div className="min-h-screen bg-white text-[#111827] font-sans">
-      {/* Preply-style Header */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
-          {/* Left: Logo + Primary Nav */}
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="relative h-8 w-8 overflow-hidden rounded-md">
-                <Image src="/logo-education.jpg" alt="Libitum" fill className="object-cover" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-[#121117]">Libitum</span>
-            </Link>
-
-            <nav className="hidden lg:flex items-center gap-6 text-[15px] font-medium text-[#121117]">
-              <Link href={specialistHref} className="hover:text-primary transition-colors">{t("nav.specialists")}</Link>
-              <Link href="#how" className="hover:text-primary transition-colors">{t("nav.how_it_works")}</Link>
-              <Link href="#reviews" className="hover:text-primary transition-colors">{t("nav.reviews")}</Link>
-            </nav>
-          </div>
-
-          {/* Right: Secondary Nav + Auth (Desktop) */}
-          <div className="hidden lg:flex items-center gap-4 text-[15px] font-medium text-[#121117]">
-            <LanguageSwitcher />
-
-            <div className="flex items-center gap-3 ml-2">
-              {user ? (
-                <Link href={dashboardHref}>
-                  <Button className="h-[48px] px-6 rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link href="/login" className="hover:text-[var(--theme-primary)] transition-colors hidden sm:block px-2 font-[600]">
-                    {t("btn.login")}
-                  </Link>
-                  <Link href="/register">
-                    <Button className="h-[48px] px-6 rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
-                      {t("btn.register")}
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <LanguageSwitcher />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="hover:bg-gray-100 transition-colors rounded-full ml-1"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-[#121117]" />
-              ) : (
-                <Menu className="h-6 w-6 text-[#121117]" />
-              )}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu Content */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-[72px] left-0 w-full bg-white border-b border-gray-200 shadow-lg p-4 flex flex-col gap-4 z-40">
-            <nav className="flex flex-col gap-4 text-[16px] font-medium text-[#121117] border-b border-gray-100 pb-4">
-              <Link href={specialistHref} onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.specialists")}</Link>
-              <Link href="#how" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.how_it_works")}</Link>
-              <Link href="#reviews" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-primary transition-colors py-2">{t("nav.reviews")}</Link>
-            </nav>
-            <div className="flex flex-col gap-3 pt-2">
-              {user ? (
-                <Link href={dashboardHref}>
-                  <Button className="h-[48px] w-full rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm transition-all">
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link href="/login">
-                    <Button variant="outline" className="h-[48px] w-full rounded-[14px] border-slate-200 text-slate-700 hover:bg-slate-50 transition-all">
-                      {t("btn.login")}
-                    </Button>
-                  </Link>
-                  <Link href="/register">
-                    <Button className="h-[48px] w-full rounded-[14px] bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)] shadow-sm transition-all">
-                      {t("btn.register")}
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </header>
+      <Header />
 
       <main>
         {/* Preply-style Hero Section */}
