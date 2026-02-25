@@ -18,6 +18,7 @@ export const tutors = [
         price: 400,
         activeStudents: 49,
         lessonsCompleted: 4975,
+        experience: 5,
         image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -28,6 +29,9 @@ export const tutors = [
         rating: 4.9,
         reviews: 89,
         price: 350,
+        activeStudents: 67,
+        lessonsCompleted: 3420,
+        experience: 4,
         image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -38,6 +42,9 @@ export const tutors = [
         rating: 5.0,
         reviews: 120,
         price: 500,
+        activeStudents: 85,
+        lessonsCompleted: 6100,
+        experience: 7,
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -48,6 +55,9 @@ export const tutors = [
         rating: 5.0,
         reviews: 75,
         price: 450,
+        activeStudents: 52,
+        lessonsCompleted: 2890,
+        experience: 6,
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -58,6 +68,9 @@ export const tutors = [
         rating: 4.9,
         reviews: 210,
         price: 550,
+        activeStudents: 120,
+        lessonsCompleted: 8500,
+        experience: 8,
         image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -68,6 +81,9 @@ export const tutors = [
         rating: 4.8,
         reviews: 94,
         price: 350,
+        activeStudents: 73,
+        lessonsCompleted: 4150,
+        experience: 5,
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
     }
 ];
@@ -81,6 +97,9 @@ export const psychologists = [
         rating: 5.0,
         reviews: 62,
         price: 600,
+        activeStudents: 38,
+        lessonsCompleted: 3100,
+        experience: 10,
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -91,6 +110,9 @@ export const psychologists = [
         rating: 4.8,
         reviews: 45,
         price: 550,
+        activeStudents: 28,
+        lessonsCompleted: 2250,
+        experience: 6,
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -101,6 +123,9 @@ export const psychologists = [
         rating: 4.9,
         reviews: 112,
         price: 700,
+        activeStudents: 65,
+        lessonsCompleted: 5600,
+        experience: 12,
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -111,6 +136,9 @@ export const psychologists = [
         rating: 4.7,
         reviews: 40,
         price: 500,
+        activeStudents: 22,
+        lessonsCompleted: 1800,
+        experience: 5,
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -121,6 +149,9 @@ export const psychologists = [
         rating: 5.0,
         reviews: 88,
         price: 650,
+        activeStudents: 45,
+        lessonsCompleted: 3520,
+        experience: 8,
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -131,6 +162,9 @@ export const psychologists = [
         rating: 4.8,
         reviews: 65,
         price: 550,
+        activeStudents: 33,
+        lessonsCompleted: 2640,
+        experience: 7,
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
     }
 ];
@@ -144,6 +178,9 @@ export const speechTherapists = [
         rating: 4.8,
         reviews: 35,
         price: 450,
+        activeStudents: 25,
+        lessonsCompleted: 1750,
+        experience: 4,
         image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -154,6 +191,9 @@ export const speechTherapists = [
         rating: 5.0,
         reviews: 80,
         price: 500,
+        activeStudents: 42,
+        lessonsCompleted: 3360,
+        experience: 8,
         image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -164,6 +204,9 @@ export const speechTherapists = [
         rating: 4.7,
         reviews: 29,
         price: 400,
+        activeStudents: 18,
+        lessonsCompleted: 1160,
+        experience: 3,
         image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -174,6 +217,9 @@ export const speechTherapists = [
         rating: 4.9,
         reviews: 82,
         price: 450,
+        activeStudents: 35,
+        lessonsCompleted: 2870,
+        experience: 6,
         image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -184,6 +230,9 @@ export const speechTherapists = [
         rating: 5.0,
         reviews: 50,
         price: 500,
+        activeStudents: 30,
+        lessonsCompleted: 2000,
+        experience: 5,
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
     },
     {
@@ -194,6 +243,9 @@ export const speechTherapists = [
         rating: 4.8,
         reviews: 41,
         price: 350,
+        activeStudents: 22,
+        lessonsCompleted: 1435,
+        experience: 4,
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
     }
 ];
@@ -312,7 +364,7 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                         return (
                             <div
                                 key={specialist.id}
-                                className="flex-none w-[80vw] sm:w-[320px] md:w-[340px] min-w-0"
+                                className="flex-none w-[60vw] sm:w-[260px] md:w-[280px] min-w-0"
                             >
                                 <Link href={`/specialists/${specialist.id}`} className="block h-full group">
                                     <div className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isActiveSlide ? activeThemeClasses.card : ""} ${isMobileActive ? activeThemeClasses.card : ""}`}>
@@ -343,7 +395,7 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                             </div>
                                         </div>
 
-                                        <div className="mb-4 w-full relative z-10 flex-1">
+                                        <div className="mb-3 w-full relative z-10 flex-1">
                                             <div className="flex items-center gap-2 mb-2 text-[13px] text-[#69686f] font-medium">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
                                                 <span>Викладає {specialist.subjects.length} {specialist.subjects.length === 1 ? 'предмет' : 'предмети'}</span>
@@ -359,6 +411,31 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                                         +{specialist.subjects.length - 2}
                                                     </span>
                                                 )}
+                                            </div>
+                                        </div>
+
+                                        {/* Experience and Stats - moved to bottom */}
+                                        <div className="flex items-center gap-3 text-[12px] text-[#69686f] mb-3">
+                                            <div className="flex items-center gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                                </svg>
+                                                <span><strong className="text-[13px] text-[#121117]">{specialist.experience}</strong> років</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                                                    <circle cx="9" cy="7" r="4"/>
+                                                    <path d="m22 21-3-3 3-3"/>
+                                                </svg>
+                                                <span><strong className="text-[13px] text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
+                                                    <path d="M3 9h18l-1 12H4L3 9Z"/>
+                                                    <path d="M9 9V6a3 3 0 1 1 6 0v3"/>
+                                                </svg>
+                                                <span><strong className="text-[13px] text-[#121117]">{specialist.lessonsCompleted}</strong> занять</span>
                                             </div>
                                         </div>
 

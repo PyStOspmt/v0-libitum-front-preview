@@ -1057,7 +1057,7 @@ export default function SpecialistsPage() {
                     </div>
 
                     {/* Price + CTA at bottom in same row */}
-                    <div className="flex items-center justify-between gap-3 pt-[3px] border-t border-slate-100">
+                    <div className="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
                       <div className="flex items-baseline gap-1">
                         <span className="text-[22px] font-black text-[#121117] leading-none">₴{specialist.pricePerLesson}</span>
                         <span className="text-[13px] text-[#69686f] font-medium">/ 50 хв</span>
