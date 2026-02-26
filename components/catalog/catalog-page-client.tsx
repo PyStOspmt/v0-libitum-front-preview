@@ -5,12 +5,17 @@ import Image from "next/image"
 import { useMemo, useState } from "react"
 import {
   Search,
-  Star,
   Heart,
   ArrowRight,
   Play,
   ChevronDown,
   Filter,
+  MapPin,
+  Award,
+  BookOpen,
+  Clock,
+  Star,
+  Users
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -20,7 +25,6 @@ import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useToast } from "@/hooks/use-toast"
-import { Users } from "lucide-react"
 
 type CatalogPageClientProps = {
   subjectSlug: string

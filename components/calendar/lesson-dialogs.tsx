@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import {
@@ -16,11 +15,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CalendarIcon, Clock, Video, MapPin, DollarSign } from "lucide-react"
+import { MapPin, Video, Clock, Calendar, DollarSign, Target, Plus, Trash2, CheckCircle2, Circle, Calendar as CalendarIcon } from "lucide-react"
 import { useGoalStore } from "@/lib/goal-store"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Target, Plus, Trash2, CheckCircle2, Circle } from "lucide-react"
 import type { Lesson } from "@/lib/lesson-store"
 
 export interface LessonFormData {

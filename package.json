@@ -6,6 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
     "start": "next start"
   },
   "dependencies": {
@@ -66,10 +68,19 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",
+    "@typescript-eslint/eslint-plugin": "^8",
+    "@typescript-eslint/parser": "^8",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15",
+    "eslint-config-prettier": "^10",
+    "eslint-plugin-import": "^2",
+    "eslint-plugin-simple-import-sort": "^12",
     "postcss": "^8.5",
+    "prettier": "^3",
+    "prettier-plugin-tailwindcss": "^0.6",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",
     "typescript": "^5"

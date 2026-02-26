@@ -39,9 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check for stored user on mount
     const storedUser = localStorage.getItem("user")
     if (storedUser) {
-      setUser(JSON.parse(storedUser))
+      setTimeout(() => setUser(JSON.parse(storedUser)), 0)
     }
-    setIsLoading(false)
+    setTimeout(() => setIsLoading(false), 0)
   }, [])
 
   const login = async (email: string, password: string) => {

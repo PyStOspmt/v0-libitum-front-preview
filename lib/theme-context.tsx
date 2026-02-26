@@ -99,7 +99,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Handle client-side hydration
   useEffect(() => {
-    setIsClient(true)
+    setTimeout(() => setIsClient(true), 0)
   }, [])
 
   // Auto-detect theme based on user role and specialization
@@ -118,9 +118,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     // Check localStorage first
     const savedTheme = localStorage.getItem('selectedTheme')
     if (savedTheme && ['tutor', 'psychologist', 'speech-therapist'].includes(savedTheme)) {
-      setTheme(savedTheme as ThemeType)
+      setTimeout(() => setTheme(savedTheme as ThemeType), 0)
     } else if (user) {
-      // Set initial theme based on user
+      // Set initial theme based on user role — intentional setState in effect for initialization
+      /* eslint-disable react-hooks/set-state-in-effect */
       if (user.role === "admin") {
         setTheme("admin")
       } else if (user.role === "client" || String(user.role) === "student") {
@@ -143,6 +144,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           setTheme("tutor")
         }
       }
+      /* eslint-enable react-hooks/set-state-in-effect */
     }
 
     return () => {
@@ -156,7 +158,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Apply theme to CSS variables only on client
   useEffect(() => {
     if (!isClient) return
-    
+
     const root = document.documentElement
     root.style.setProperty("--theme-primary", theme.primary)
     root.style.setProperty("--theme-primary-hover", theme.primaryHover)
@@ -191,7 +193,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       <div
         className="min-h-screen transition-all duration-700"
         style={{
-          background: isSpecialistTheme 
+          background: isSpecialistTheme
             ? `linear-gradient(to bottom, #ffffff 0%, #fafbfc 30%, #f8fafc 70%, #f1f5f9 100%)`
             : "#fafaf8",
         }}

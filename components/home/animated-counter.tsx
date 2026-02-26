@@ -31,46 +31,43 @@ const STATS = [
   { icon: Award, label: "Верифікованих спеціалістів", value: 350, suffix: "+" },
 ]
 
+function StatCard({ stat, index, visible }: { stat: any, index: number, visible: boolean }) {
+  const Icon = stat.icon
+  const count = useCountUp(
+    stat.decimal ? Math.round(stat.value * 10) : stat.value,
+    2200 + index * 200,
+    visible
+  )
+  const display = stat.decimal
+    ? (count / 10).toFixed(1)
+    : count.toLocaleString("uk-UA")
+
+  return (
+    <div
+      className={`relative group bg-white border border-slate-200/80 rounded-[20px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 overflow-hidden ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+      style={{ transitionDelay: `${index * 150}ms` }}
+    >
+      <div className="absolute -right-6 -top-6 w-24 h-24 bg-[#00c5a6]/[0.03] rounded-full group-hover:scale-150 group-hover:bg-[#00c5a6]/[0.05] transition-transform duration-500" />
+      <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4 relative z-10">
+        <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-[#e8fffb] text-[#00a389] group-hover:scale-110 transition-transform duration-300">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+        </div>
+        <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#121117] flex items-baseline">
+          {display}
+          {stat.suffix && <span className="text-[#00a389] ml-0.5">{stat.suffix}</span>}
+        </div>
+      </div>
+      <p className="text-[13px] sm:text-[14px] font-medium text-[#69686f] leading-snug relative z-10">{stat.label}</p>
+    </div>
+  )
+}
+
 export function AnimatedCounter({ visible }: { visible: boolean }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-      {STATS.map((stat, i) => {
-        const Icon = stat.icon
-        const count = useCountUp(
-          stat.decimal ? Math.round(stat.value * 10) : stat.value,
-          2200 + i * 200,
-          visible
-        )
-        const display = stat.decimal
-          ? (count / 10).toFixed(1)
-          : count.toLocaleString("uk-UA")
-
-        return (
-          <div
-            key={i}
-            className="relative text-center py-4 px-3 rounded-xl bg-white border border-slate-100 shadow-sm
-              hover:shadow-md hover:-translate-y-0.5 transition-all duration-300"
-            style={{
-              opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0)" : "translateY(12px)",
-              transitionDelay: `${i * 100}ms`,
-              transitionDuration: "500ms",
-            }}
-          >
-            <div className="flex items-center justify-center mb-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center">
-                <Icon className="h-4 w-4 text-teal-600" />
-              </div>
-            </div>
-            <div className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight tabular-nums">
-              {display}{stat.suffix}
-            </div>
-            <div className="text-[11px] text-slate-500 mt-0.5 font-medium">
-              {stat.label}
-            </div>
-          </div>
-        )
-      })}
+      {STATS.map((stat, i) => (
+        <StatCard key={i} stat={stat} index={i} visible={visible} />
+      ))}
     </div>
   )
 }

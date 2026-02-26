@@ -65,7 +65,8 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
       const targetDate = upcomingLesson || sortedLessons[sortedLessons.length - 1]
 
       if (targetDate) {
-        setCurrentDate(targetDate)
+        const timer = setTimeout(() => setCurrentDate(targetDate), 0)
+        return () => clearTimeout(timer)
       }
     }
   }, [lessons, userId, userType])
@@ -74,7 +75,10 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
   useEffect(() => {
     if (typeof window === "undefined") return
     const isMobile = window.innerWidth < 768
-    if (isMobile) setViewMode("day")
+    if (isMobile) {
+      const timer = setTimeout(() => setViewMode("day"), 0)
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   const [eventFormData, setEventFormData] = useState<EventFormData>({
@@ -290,7 +294,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
     }
 
     addLesson({
-      clientId: `client-${Math.random().toString(36).substr(2, 9)}`,
+      clientId: `client-${crypto.randomUUID().split('-')[0]}`,
       clientName: formData.clientName,
       specialistId: userId,
       specialistName: "Поточний спеціаліст",

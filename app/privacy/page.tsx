@@ -1,6 +1,11 @@
-"use client"
+export const dynamic = "force-dynamic"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+export const metadata = {
+  title: "Конфіденційність | Libitum",
+  description: "Політика конфіденційності платформи Libitum.",
+}
 
 const privacyBlocks = [
   {
@@ -38,11 +43,10 @@ export default function PrivacyPage() {
           {privacyBlocks.map((block, index) => (
             <Card
               key={block.title}
-              className={`bg-gradient-to-br ${
-                index % 2 === 0
+              className={`bg-gradient-to-br ${index % 2 === 0
                   ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50"
                   : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
-              } transition-all duration-300`}
+                } transition-all duration-300`}
             >
               <CardHeader>
                 <CardTitle className="text-lg text-slate-900">{block.title}</CardTitle>

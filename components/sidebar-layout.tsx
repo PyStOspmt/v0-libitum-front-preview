@@ -60,7 +60,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
       return Boolean(localStorage.getItem("admin_user"))
     }
 
-    setIsImpersonating(readFlag())
+    setTimeout(() => setIsImpersonating(readFlag()), 0)
 
     const handleStorage = () => setIsImpersonating(readFlag())
     window.addEventListener("storage", handleStorage)
@@ -108,7 +108,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
   const navItems = userType === "client" ? clientNavItems : userType === "tutor" ? tutorNavItems : adminNavItems
 
-  const NavContent = () => (
+  const navContent = (
     <>
       <div className="flex items-center justify-between p-6 pb-4">
         <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
@@ -237,7 +237,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     <div className="flex h-screen overflow-hidden bg-[#f0f3f3] font-sans text-[#121117]">
       {/* Desktop Sidebar */}
       <aside className="hidden w-[280px] flex-col border-r border-gray-200 bg-white lg:flex">
-        <NavContent />
+        {navContent}
       </aside>
 
       {/* Mobile Menu */}
@@ -248,7 +248,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <aside className="absolute left-0 top-0 h-full w-[280px] flex-col border-r border-gray-200 bg-white flex animate-in slide-in-from-left duration-300 shadow-2xl">
-            <NavContent />
+            {navContent}
           </aside>
         </div>
       )}

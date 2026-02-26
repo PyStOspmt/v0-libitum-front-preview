@@ -1,55 +1,18 @@
-"use client"
+export const dynamic = "force-dynamic"
 
-import type React from "react"
-
-import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useAuth } from "@/lib/auth-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Chrome, Eye, EyeOff, ArrowLeft, Star, Shield, BookOpen } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
-import { LanguageSwitcher } from "@/components/language-switcher"
+import { Shield, Star, BookOpen } from "lucide-react"
+
 import { Header } from "@/components/header"
+import { LoginForm } from "@/features/auth/components/login-form"
+
+export const metadata = {
+  title: "Увійти | Libitum",
+  description: "Увійдіть у свій акаунт Libitum, щоб продовжити навчання",
+}
 
 export default function LoginPage() {
-  const { login } = useAuth()
-  const { toast } = useToast()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-
-  const testAccounts = [
-    { role: "Клієнт", email: "client@test.com", password: "password123" },
-    { role: "Спеціаліст", email: "specialist@test.com", password: "password123" },
-    { role: "Адмін", email: "admin@test.com", password: "password123" },
-  ]
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    try {
-      await login(email, password)
-    } catch (error) {
-      toast({
-        title: "Помилка входу",
-        description: "Невірний email або пароль. Спробуйте ще раз.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const quickLogin = (email: string, password: string) => {
-    setEmail(email)
-    setPassword(password)
-  }
-
   return (
     <div className="min-h-screen bg-white flex">
       {/* Left decorative panel - hidden on mobile */}
@@ -117,104 +80,8 @@ export default function LoginPage() {
               <p className="text-slate-500 text-sm">Увійдіть у свій акаунт, щоб продовжити</p>
             </div>
 
-            {/* Test Accounts */}
-            <div className="mb-6 rounded-lg bg-slate-50 border border-slate-100 p-4">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Тестові акаунти</p>
-              <div className="flex flex-wrap gap-2">
-                {testAccounts.map((account) => (
-                  <Button
-                    key={account.email}
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    className="h-8 rounded-lg text-xs border-slate-200 bg-white hover:bg-[#E0F2F1] hover:text-[#009688] hover:border-[#b2ebf2] cursor-pointer"
-                    onClick={() => quickLogin(account.email, account.password)}
-                  >
-                    {account.role}
-                  </Button>
-                ))}
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email адреса</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-sm font-medium text-slate-700">Пароль</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Введіть пароль"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="h-11 rounded-lg border-4 border-slate-200 bg-white px-4 pr-11 text-sm hover:border-black focus:border-[#009688] focus:ring-0 transition-colors"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox className="border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]" />
-                  <span className="text-sm text-slate-600">Запам{"'"}ятати мене</span>
-                </label>
-                <Link href="/forgot-password" className="text-sm font-semibold text-[#009688] hover:text-[#00796B]">
-                  Забули пароль?
-                </Link>
-              </div>
-
-              <Button
-                type="submit"
-                className="h-11 w-full rounded-lg bg-[#009688] text-sm font-semibold text-white hover:bg-[#00796B] cursor-pointer"
-                disabled={isLoading}
-              >
-                {isLoading ? "Завантаження..." : "Увійти"}
-              </Button>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200"></div>
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="bg-white px-4 text-slate-400">або</span>
-                </div>
-              </div>
-
-              <Button
-                type="button"
-                variant="outline"
-                className="h-11 w-full rounded-lg border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 text-sm cursor-pointer"
-              >
-                <Chrome className="mr-2 h-4 w-4" />
-                Увійти через Google
-              </Button>
-            </form>
-
-            <div className="mt-8 text-center text-sm text-slate-500">
-              Ще немає акаунту?{" "}
-              <Link href="/register" className="font-semibold text-[#009688] hover:text-[#00796B]">
-                Зареєструватись
-              </Link>
-            </div>
+            {/* Client Component — form with RHF + Zod */}
+            <LoginForm />
           </div>
         </div>
 

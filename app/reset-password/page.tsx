@@ -1,58 +1,16 @@
-"use client"
+export const dynamic = "force-dynamic"
 
-import type React from "react"
-
-import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { BookOpen } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+
+import { ResetPasswordForm } from "@/features/auth/components/reset-password-form"
+
+export const metadata = {
+  title: "Новий пароль | Libitum",
+  description: "Встановіть новий пароль для вашого акаунту Libitum.",
+}
 
 export default function ResetPasswordPage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (password !== confirmPassword) {
-      toast({
-        title: "Помилка",
-        description: "Паролі не співпадають",
-        variant: "destructive",
-      })
-      return
-    }
-
-    if (password.length < 8) {
-      toast({
-        title: "Помилка",
-        description: "Пароль повинен містити мінімум 8 символів",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsLoading(true)
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false)
-      toast({
-        title: "Пароль оновлено",
-        description: "Ваш пароль успішно змінено",
-      })
-      router.push("/login")
-    }, 1500)
-  }
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
       <div className="w-full max-w-md">
@@ -65,52 +23,7 @@ export default function ResetPasswordPage() {
           </Link>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Новий пароль</CardTitle>
-            <CardDescription>Введіть новий пароль для вашого акаунту</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">Новий пароль</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
-                <p className="text-xs text-muted-foreground">Мінімум 8 символів</p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Підтвердіть пароль</Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
-              </div>
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Зміна паролю..." : "Змінити пароль"}
-              </Button>
-            </form>
-
-            <div className="mt-6 text-center text-sm">
-              <Link href="/login" className="font-medium text-primary hover:underline">
-                Повернутися до входу
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+        <ResetPasswordForm />
       </div>
     </div>
   )

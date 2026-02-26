@@ -1,8 +1,13 @@
-"use client"
+export const dynamic = "force-dynamic"
 
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+
+export const metadata = {
+  title: "Правила | Libitum",
+  description: "Правила взаємодії на платформі Libitum.",
+}
 
 const rulesSections = [
   {
@@ -44,11 +49,10 @@ export default function RulesPage() {
           {rulesSections.map((section, index) => (
             <Card
               key={section.title}
-              className={`bg-gradient-to-br ${
-                index % 2 === 0
+              className={`bg-gradient-to-br ${index % 2 === 0
                   ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50"
                   : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
-              } transition-all duration-300`}
+                } transition-all duration-300`}
             >
               <CardHeader>
                 <CardTitle className="text-lg text-slate-900">{section.title}</CardTitle>
@@ -57,11 +61,10 @@ export default function RulesPage() {
               <CardContent>
                 <Button
                   asChild
-                  className={`${
-                    index % 2 === 0
+                  className={`${index % 2 === 0
                       ? "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110"
                       : "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110"
-                  } text-white border-transparent shadow-md transition-all duration-300`}
+                    } text-white border-transparent shadow-md transition-all duration-300`}
                 >
                   <Link href="/contacts">Поставити запитання</Link>
                 </Button>

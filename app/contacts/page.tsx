@@ -1,7 +1,12 @@
-"use client"
+export const dynamic = "force-dynamic"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+
+export const metadata = {
+  title: "Контакти | Libitum",
+  description: "Зв'яжіться з командою Libitum та службою підтримки.",
+}
 
 export default function ContactsPage() {
   return (
@@ -10,7 +15,7 @@ export default function ContactsPage() {
       <div className="fixed top-20 -left-32 w-64 h-64 rounded-full bg-emerald-100/40 blur-3xl animate-orb pointer-events-none" />
       <div className="fixed top-40 -right-32 w-96 h-96 rounded-full bg-amber-100/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "1s" }} />
       <div className="fixed bottom-40 left-1/4 w-80 h-80 rounded-full bg-emerald-50/30 blur-3xl animate-orb pointer-events-none" style={{ animationDelay: "2s" }} />
-      
+
       <div className="container mx-auto max-w-4xl space-y-8 px-6 py-10 relative z-10">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-slate-900">Контакти</h1>

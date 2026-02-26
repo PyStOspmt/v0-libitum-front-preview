@@ -1,15 +1,22 @@
-"use client"
+export const dynamic = "force-dynamic"
 
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { BookOpen, Users, Award, Shield, Star, ArrowRight } from "lucide-react"
 import { Header } from "@/components/header"
+import { translations } from "@/lib/i18n"
 
-import { useTranslation } from "@/lib/i18n"
+export const metadata = {
+  title: "Про нас | Libitum",
+  description: "Сучасна платформа, що поєднує найкращих репетиторів, психологів та логопедів з учнями по всій Україні.",
+}
+
+const t = (key: string) => {
+  return (translations as Record<string, Record<string, string>>)["UA"]?.[key] || key
+}
 
 export default function AboutPage() {
-  const { t } = useTranslation()
 
   const features = [
     {

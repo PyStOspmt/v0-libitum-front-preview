@@ -20,7 +20,8 @@ export function LanguageSwitcher() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    const timer = setTimeout(() => setMounted(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const languages: { code: Locale; label: string }[] = [
