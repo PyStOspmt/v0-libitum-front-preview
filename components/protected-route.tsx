@@ -4,13 +4,11 @@ import type React from "react"
 
 import { useEffect, useMemo } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuth } from "@/lib/auth-context"
-
-type UserRole = "client" | "specialist" | "admin"
+import { useAuth, type LegacyRole } from "@/lib/auth-context"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
-  allowedRoles?: UserRole[]
+  allowedRoles?: LegacyRole[]
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -24,15 +22,12 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
       if (typeof window !== "undefined" && localStorage.getItem("user")) return null
       return "/login"
     }
-    if (!user.isEmailVerified && pathname !== "/verify-email") return "/verify-email"
-    if (user.role === "specialist" && !user.hasPassedQuiz && pathname !== "/tutor/onboarding") {
-      return "/tutor/onboarding"
-    }
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-      return user.role === "specialist" ? "/tutor" : "/client"
+    if (!user.isVerified && pathname !== "/verify-email") return "/verify-email"
+    if (allowedRoles && !allowedRoles.includes(user.legacyRole)) {
+      return user.legacyRole === "specialist" ? "/tutor" : "/client"
     }
     return null
-  }, [user, pathname, allowedRoles])
+  }, [user, pathname, allowedRoles, isLoading])
 
   useEffect(() => {
     if (redirectPath) {

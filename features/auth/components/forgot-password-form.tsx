@@ -3,7 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ArrowLeft, CheckCircle } from "lucide-react"
+import { useMutation } from "@apollo/client/react"
+import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
@@ -18,6 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { REQUEST_RESET_PASSWORD } from "@/lib/graphql/auth"
 
 import {
     forgotPasswordSchema,
@@ -29,20 +31,29 @@ export function ForgotPasswordForm() {
     const [isSent, setIsSent] = useState(false)
     const [sentEmail, setSentEmail] = useState("")
 
+    const [requestReset] = useMutation(REQUEST_RESET_PASSWORD)
+
     const form = useForm<ForgotPasswordValues>({
         resolver: zodResolver(forgotPasswordSchema),
         defaultValues: { email: "" },
     })
 
-    const onSubmit = (data: ForgotPasswordValues) => {
-        setSentEmail(data.email)
-        setTimeout(() => {
+    const onSubmit = async (data: ForgotPasswordValues) => {
+        try {
+            await requestReset()
+            setSentEmail(data.email)
             setIsSent(true)
             toast({
                 title: "Листа відправлено",
                 description: "Перевірте вашу пошту для відновлення паролю",
             })
-        }, 1500)
+        } catch {
+            toast({
+                title: "Помилка",
+                description: "Не вдалося відправити запит. Спробуйте пізніше.",
+                variant: "destructive",
+            })
+        }
     }
 
     if (isSent) {
@@ -102,7 +113,14 @@ export function ForgotPasswordForm() {
                             className="h-12 w-full rounded-xl bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] text-base font-semibold text-white shadow-lg shadow-emerald-100 transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
                             disabled={form.formState.isSubmitting}
                         >
-                            {form.formState.isSubmitting ? "Відправка..." : "Надіслати інструкції"}
+                            {form.formState.isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Відправка...
+                                </>
+                            ) : (
+                                "Надіслати інструкції"
+                            )}
                         </Button>
                     </form>
                 </Form>

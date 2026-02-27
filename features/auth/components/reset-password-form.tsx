@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@apollo/client/react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
@@ -17,26 +18,64 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { useToast } from "@/hooks/use-toast"
+import { RESET_PASSWORD } from "@/lib/graphql/auth"
 
 import {
     resetPasswordSchema,
     type ResetPasswordValues,
 } from "../schemas/reset-password.schema"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { useState } from "react"
+import type { ResetPasswordData, ResetPasswordVariables } from "../types/auth.types"
 
 export function ResetPasswordForm() {
     const router = useRouter()
+    const searchParams = useSearchParams()
     const { toast } = useToast()
+    const token = searchParams.get("token")
+    const [showPassword, setShowPassword] = useState(false)
+
+    const [resetPassword] = useMutation<ResetPasswordData, ResetPasswordVariables>(RESET_PASSWORD)
 
     const form = useForm<ResetPasswordValues>({
         resolver: zodResolver(resetPasswordSchema),
         defaultValues: { password: "", confirmPassword: "" },
     })
 
-    const onSubmit = (_data: ResetPasswordValues) => {
-        setTimeout(() => {
-            toast({ title: "Пароль оновлено", description: "Ваш пароль успішно змінено" })
-            router.push("/login")
-        }, 1500)
+    const onSubmit = async (data: ResetPasswordValues) => {
+        if (!token) {
+            toast({
+                title: "Помилка",
+                description: "Токен відсутній. Спробуйте запросити скидання паролю ще раз.",
+                variant: "destructive",
+            })
+            return
+        }
+
+        try {
+            const { data: result } = await resetPassword({
+                variables: {
+                    resetPasswordPayload: { token, password: data.password },
+                },
+            })
+
+            if (result?.resetPassword) {
+                toast({ title: "Пароль оновлено", description: "Ваш пароль успішно змінено" })
+                router.push("/login")
+            } else {
+                toast({
+                    title: "Помилка",
+                    description: "Не вдалося змінити пароль. Токен може бути недійсним.",
+                    variant: "destructive",
+                })
+            }
+        } catch {
+            toast({
+                title: "Помилка",
+                description: "Не вдалося змінити пароль. Спробуйте запросити скидання ще раз.",
+                variant: "destructive",
+            })
+        }
     }
 
     return (
@@ -46,6 +85,11 @@ export function ResetPasswordForm() {
                 <CardDescription>Введіть новий пароль для вашого акаунту</CardDescription>
             </CardHeader>
             <CardContent>
+                {!token && (
+                    <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-4">
+                        Токен для скидання паролю відсутній. Перейдіть за посиланням з email.
+                    </div>
+                )}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         <FormField
@@ -55,7 +99,20 @@ export function ResetPasswordForm() {
                                 <FormItem>
                                     <FormLabel>Новий пароль</FormLabel>
                                     <FormControl>
-                                        <Input type="password" placeholder="••••••••" {...field} />
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="••••••••"
+                                                {...field}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword((p) => !p)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                            >
+                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </button>
+                                        </div>
                                     </FormControl>
                                     <p className="text-xs text-muted-foreground">Мінімум 8 символів</p>
                                     <FormMessage />
@@ -75,8 +132,19 @@ export function ResetPasswordForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                            {form.formState.isSubmitting ? "Зміна паролю..." : "Змінити пароль"}
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={form.formState.isSubmitting || !token}
+                        >
+                            {form.formState.isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Зміна паролю...
+                                </>
+                            ) : (
+                                "Змінити пароль"
+                            )}
                         </Button>
                     </form>
                 </Form>

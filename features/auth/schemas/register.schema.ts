@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { PASSWORD_RULES } from "@/features/auth/types/auth.types"
 
 export const registerSchema = z
     .object({
@@ -9,9 +10,13 @@ export const registerSchema = z
         email: z.string().email({ message: "Введіть коректну email-адресу" }),
         password: z
             .string()
-            .min(8, { message: "Пароль має містити принаймні 8 символів" })
+            .min(PASSWORD_RULES.minLength, {
+                message: `Пароль має містити принаймні ${PASSWORD_RULES.minLength} символів`,
+            })
             .regex(/[A-Z]/, { message: "Пароль має містити хоча б одну велику літеру" })
-            .regex(/[0-9]/, { message: "Пароль має містити хоча б одну цифру" }),
+            .regex(/[a-z]/, { message: "Пароль має містити хоча б одну малу літеру" })
+            .regex(/[0-9]/, { message: "Пароль має містити хоча б одну цифру" })
+            .regex(/[^A-Za-z0-9]/, { message: "Пароль має містити хоча б один спецсимвол" }),
         confirmPassword: z.string(),
         role: z.enum(["client", "specialist"], {
             required_error: "Оберіть роль",

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { type RegisterFormValues,registerSchema } from "@/features/auth/schemas/register.schema"
+import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas/register.schema"
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/lib/hooks/use-auth"
 
@@ -19,11 +20,13 @@ import { AlertCircle, Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 export function RegisterForm() {
-    const { register } = useAuth()
+    const { register, loginWithGoogle } = useAuth()
     const { toast } = useToast()
+    const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [showRules, setShowRules] = useState(false)
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
     const form = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
@@ -47,11 +50,15 @@ export function RegisterForm() {
         setIsLoading(true)
         try {
             await register(values.name, values.email, values.password, values.role)
-            // Redirect happens in useAuth on success
+            router.push("/verify-email")
         } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Не вдалося створити акаунт. Спробуйте інший email."
             toast({
                 title: "Помилка",
-                description: "Не вдалося створити акаунт. Спробуйте інший email.",
+                description: message,
                 variant: "destructive",
             })
         } finally {
@@ -59,16 +66,137 @@ export function RegisterForm() {
         }
     }
 
+    async function handleGoogleRegister() {
+        setIsGoogleLoading(true)
+        try {
+            await loginWithGoogle()
+        } catch {
+            toast({
+                title: "Помилка",
+                description: "Не вдалося підключити Google. Спробуйте пізніше.",
+                variant: "destructive",
+            })
+            setIsGoogleLoading(false)
+        }
+    }
+
     return (
         <>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-                    {/* User Type */}
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                    {/* Name */}
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-sm font-semibold text-slate-800">
+                                    Ім&apos;я
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        placeholder="Ваше ім'я"
+                                        autoComplete="name"
+                                        className="h-11 rounded-lg border-slate-200 bg-[#f8f9fa] focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Email */}
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-sm font-semibold text-slate-800">
+                                    Email
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="email"
+                                        placeholder="your@email.com"
+                                        autoComplete="email"
+                                        className="h-11 rounded-lg border-slate-200 bg-[#f8f9fa] focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Password */}
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-sm font-semibold text-slate-800">
+                                    Пароль
+                                </FormLabel>
+                                <FormControl>
+                                    <div className="relative">
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            autoComplete="new-password"
+                                            className="h-11 rounded-lg border-slate-200 bg-[#f8f9fa] pr-11 focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
+                                            {...field}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword((p) => !p)}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                            aria-label={showPassword ? "Приховати" : "Показати"}
+                                        >
+                                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </button>
+                                    </div>
+                                </FormControl>
+                                <p className="text-xs text-slate-400">
+                                    Мінімум 8 символів, 1 велика літера, 1 цифра
+                                </p>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Confirm Password */}
+                    <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel className="text-sm font-semibold text-slate-800">
+                                    Підтвердження паролю
+                                </FormLabel>
+                                <FormControl>
+                                    <Input
+                                        type="password"
+                                        placeholder="••••••••"
+                                        autoComplete="new-password"
+                                        className="h-11 rounded-lg border-slate-200 bg-[#f8f9fa] focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Role */}
                     <FormField
                         control={form.control}
                         name="role"
                         render={({ field }) => (
-                            <FormItem className="space-y-3">
+                            <FormItem>
+                                <FormLabel className="text-sm font-semibold text-slate-800">
+                                    Я хочу
+                                </FormLabel>
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
@@ -79,20 +207,18 @@ export function RegisterForm() {
                                             <RadioGroupItem value="client" id="client" className="peer sr-only" />
                                             <Label
                                                 htmlFor="client"
-                                                className="flex flex-col items-center justify-between rounded-xl border-2 border-slate-200 bg-white p-4 hover:bg-slate-50 peer-data-[state=checked]:border-[#009688] peer-data-[state=checked]:bg-[#e0f2f1]/50 cursor-pointer transition-all"
+                                                className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#009688] peer-data-[state=checked]:border-[#009688] peer-data-[state=checked]:bg-[#E0F2F1]"
                                             >
-                                                <span className="text-sm font-semibold text-slate-800">Я учень</span>
-                                                <span className="text-xs text-slate-500 mt-1">Шукаю спеціаліста</span>
+                                                Знайти спеціаліста
                                             </Label>
                                         </div>
                                         <div>
                                             <RadioGroupItem value="specialist" id="specialist" className="peer sr-only" />
                                             <Label
                                                 htmlFor="specialist"
-                                                className="flex flex-col items-center justify-between rounded-xl border-2 border-slate-200 bg-white p-4 hover:bg-slate-50 peer-data-[state=checked]:border-[#009688] peer-data-[state=checked]:bg-[#e0f2f1]/50 cursor-pointer transition-all"
+                                                className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#f57c00] peer-data-[state=checked]:border-[#f57c00] peer-data-[state=checked]:bg-[#FFF3E0]"
                                             >
-                                                <span className="text-sm font-semibold text-slate-800">Я спеціаліст</span>
-                                                <span className="text-xs text-slate-500 mt-1">Хочу викладати</span>
+                                                Стати спеціалістом
                                             </Label>
                                         </div>
                                     </RadioGroup>
@@ -102,119 +228,26 @@ export function RegisterForm() {
                         )}
                     />
 
-                    <div className="grid gap-5">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm font-semibold text-slate-800">Ім&apos;я та Прізвище</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Іван Петренко"
-                                            className="h-11 rounded-lg border-slate-200 bg-slate-50 text-sm focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm font-semibold text-slate-800">Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="email"
-                                            placeholder="your@email.com"
-                                            className="h-11 rounded-lg border-slate-200 bg-slate-50 text-sm focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm font-semibold text-slate-800">Пароль</FormLabel>
-                                    <FormControl>
-                                        <div className="relative">
-                                            <Input
-                                                type={showPassword ? "text" : "password"}
-                                                placeholder="Мінімум 8 символів"
-                                                className="h-11 rounded-lg border-slate-200 bg-slate-50 pr-10 text-sm focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
-                                                {...field}
-                                            />
-                                            <button
-                                                type="button"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                            >
-                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                            </button>
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="confirmPassword"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm font-semibold text-slate-800">Підтвердіть пароль</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="Повторіть пароль"
-                                            className="h-11 rounded-lg border-slate-200 bg-slate-50 text-sm focus:border-[#009688] focus:bg-white focus:ring-[#009688]/20"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                    </div>
-
+                    {/* Terms */}
                     <FormField
                         control={form.control}
                         name="agreeToTerms"
                         render={({ field }) => (
-                            <FormItem className="flex flex-col gap-2">
-                                <div className="flex items-center gap-2">
+                            <FormItem>
+                                <div className="flex items-start gap-2.5">
                                     <FormControl>
                                         <Checkbox
                                             checked={field.value}
-                                            onCheckedChange={(checked) => {
-                                                field.onChange(checked);
-                                                if (checked && !field.value) {
-                                                    setShowRules(true);
-                                                }
-                                            }}
-                                            className="border-slate-300 data-[state=checked]:border-[#009688] data-[state=checked]:bg-[#009688]"
+                                            onCheckedChange={field.onChange}
+                                            className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
                                         />
                                     </FormControl>
-                                    <FormLabel className="text-sm text-slate-600">
+                                    <FormLabel className="text-sm font-normal text-slate-600 leading-tight cursor-pointer">
                                         Я погоджуюсь з{" "}
                                         <button
                                             type="button"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setShowRules(true);
-                                            }}
-                                            className="font-medium text-[#009688] hover:underline cursor-pointer"
+                                            onClick={() => setShowRules(true)}
+                                            className="font-semibold text-[#009688] hover:underline"
                                         >
                                             правилами платформи
                                         </button>{" "}
@@ -253,9 +286,15 @@ export function RegisterForm() {
                     <Button
                         type="button"
                         variant="outline"
+                        disabled={isGoogleLoading}
+                        onClick={handleGoogleRegister}
                         className="h-11 w-full rounded-lg border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 text-sm cursor-pointer"
                     >
-                        <Chrome className="mr-2 h-4 w-4" />
+                        {isGoogleLoading ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                            <Chrome className="mr-2 h-4 w-4" />
+                        )}
                         Зареєструватись через Google
                     </Button>
                 </form>

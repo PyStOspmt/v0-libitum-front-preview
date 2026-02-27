@@ -122,11 +122,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else if (user) {
       // Set initial theme based on user role — intentional setState in effect for initialization
       /* eslint-disable react-hooks/set-state-in-effect */
-      if (user.role === "admin") {
+      if (user.legacyRole === "admin") {
         setTheme("admin")
-      } else if (user.role === "client" || String(user.role) === "student") {
+      } else if (user.legacyRole === "client" || String(user.legacyRole) === "student") {
         setTheme("client")
-      } else if (user.role === "specialist" || user.role === "tutor") {
+      } else if (user.legacyRole === "specialist" || user.legacyRole === "tutor") {
         // Check specialization
         const subjects = user.subjects || []
         const isPsychologist = subjects.some((s: string) =>

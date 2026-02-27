@@ -1,9 +1,10 @@
-import { useI18nStore } from "./i18n-store"
+import { useLocale } from "./locale-context"
 
-export type Locale = "UA" | "EN" | "RU"
+export type { Locale } from "./i18n/config"
+export { defaultLocale, locales, isValidLocale } from "./i18n/config"
 
 export const translations = {
-  UA: {
+  uk: {
     "nav.specialists": "Спеціалісти",
     "nav.how_it_works": "Як це працює",
     "nav.reviews": "Відгуки",
@@ -177,7 +178,7 @@ export const translations = {
     "about.cta.title": "Готові почати навчання?",
     "about.cta.subtitle": "Приєднуйтесь до тисяч задоволених клієнтів та знайдіть ідеального спеціаліста для ваших цілей",
   },
-  EN: {
+  en: {
     "nav.specialists": "Specialists",
     "nav.how_it_works": "How it works",
     "nav.reviews": "Reviews",
@@ -199,7 +200,7 @@ export const translations = {
     "how.step1.title": "Choose a direction",
     "how.step1.desc": "Search by subject, format, and city in the catalog.",
     "how.step2.title": "Submit a request",
-    "how.step2.desc": "Describe your goal and get a specialist’s response.",
+    "how.step2.desc": "Describe your goal and get a specialist's response.",
     "how.step3.title": "Start learning",
     "how.step3.desc": "After the trial lesson, confirm cooperation.",
     "specialists.subtitle": "Categories selected for the most popular requests. You can always open the full catalog and use filters.",
@@ -214,7 +215,7 @@ export const translations = {
     "categories.speech.stat": "100+ speech therapists",
     "pricing.subtitle": "Pay for a lead only after a successful trial. Transparent terms and SLA control.",
     "pricing.item1.title": "0 ₴ before trial",
-    "pricing.item1.desc": "You don’t pay for the intro and first contact — decide after real interaction.",
+    "pricing.item1.desc": "You don't pay for the intro and first contact — decide after real interaction.",
     "pricing.item2.title": "Post-payment",
     "pricing.item2.desc": "Fee is charged only after a successful trial and confirmed cooperation.",
     "pricing.item3.title": "Transparent rules",
@@ -351,7 +352,7 @@ export const translations = {
     "about.cta.title": "Ready to start learning?",
     "about.cta.subtitle": "Join thousands of satisfied clients and find the perfect specialist for your goals",
   },
-  RU: {
+  ru: {
     "nav.specialists": "Специалисты",
     "nav.how_it_works": "Как это работает",
     "nav.reviews": "Отзывы",
@@ -527,21 +528,22 @@ export const translations = {
   }
 }
 
-export function normalizeLocale(input?: string): Locale {
-  if (!input) return "UA"
-  const upper = input.toUpperCase()
-  if (upper === "UA" || upper === "EN" || upper === "RU") return upper as Locale
-  return "UA"
+export type TranslationKey = keyof typeof translations.uk
+
+export function getTranslation(locale: string) {
+  const l = (locale === "uk" || locale === "en" || locale === "ru") ? locale : "uk"
+  const dictionary = translations[l]
+  return (key: TranslationKey) => {
+    return dictionary[key] || translations.uk[key] || key
+  }
 }
 
-export function useTranslation(langOverride?: string | Locale) {
-  // We use the language from store, but allow an override if explicitly provided
-  const storeLanguage = useI18nStore((state) => state.language);
-  const locale = normalizeLocale(langOverride || storeLanguage);
+export function useTranslation() {
+  const locale = useLocale()
+  const dictionary = translations[locale] || translations.uk
 
-  const t = (key: keyof typeof translations.UA) => {
-    const dictionary = translations[locale] || translations.UA
-    return dictionary[key] || translations.UA[key] || key
+  const t = (key: TranslationKey) => {
+    return dictionary[key] || translations.uk[key] || key
   }
 
   return { t, locale }

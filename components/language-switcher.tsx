@@ -6,17 +6,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useAuth } from "@/lib/auth-context"
 import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Globe } from "lucide-react"
-import { Locale } from "@/lib/i18n"
-import { useI18nStore } from "@/lib/i18n-store"
+import { useLocale } from "@/lib/locale-context"
+import { type Locale, locales, defaultLocale } from "@/lib/i18n/config"
+
+const languageLabels: Record<Locale, string> = {
+  uk: "Українська",
+  en: "English",
+  ru: "Русский",
+}
+
+const languageShort: Record<Locale, string> = {
+  uk: "UA",
+  en: "EN",
+  ru: "RU",
+}
 
 export function LanguageSwitcher() {
-  const { user } = useAuth()
-  const { language, setLanguage } = useI18nStore()
-  // Hydration safeguard 
+  const locale = useLocale()
+  const router = useRouter()
+  const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -24,20 +36,25 @@ export function LanguageSwitcher() {
     return () => clearTimeout(timer)
   }, [])
 
-  const languages: { code: Locale; label: string }[] = [
-    { code: "UA", label: "Українська" },
-    { code: "EN", label: "English" },
-    { code: "RU", label: "Русский" },
-  ]
+  const handleLanguageChange = (newLocale: Locale) => {
+    if (newLocale === locale) return
 
-  const handleLanguageChange = (code: Locale) => {
-    setLanguage(code)
-    // If they change language here, we don't necessarily need to reload.
-    // The store should update everywhere context is used if they rerender properly.
-    if (user) {
-      const updatedUser = { ...user, language: code }
-      localStorage.setItem("user", JSON.stringify(updatedUser))
+    let pathWithoutLocale = pathname
+    for (const loc of locales) {
+      if (pathname.startsWith(`/${loc}/`)) {
+        pathWithoutLocale = pathname.slice(`/${loc}`.length)
+        break
+      } else if (pathname === `/${loc}`) {
+        pathWithoutLocale = "/"
+        break
+      }
     }
+
+    const newPath = newLocale === defaultLocale
+      ? pathWithoutLocale || "/"
+      : `/${newLocale}${pathWithoutLocale}`
+
+    router.push(newPath)
   }
 
   if (!mounted) {
@@ -53,17 +70,17 @@ export function LanguageSwitcher() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-10 w-14 rounded-xl border border-border/50">
           <Globe className="h-5 w-5" />
-          <span className="ml-1 text-xs font-semibold">{language}</span>
+          <span className="ml-1 text-xs font-semibold">{languageShort[locale]}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="z-[100]">
-        {languages.map((lang) => (
+        {locales.map((loc) => (
           <DropdownMenuItem
-            key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
-            className={language === lang.code ? "bg-accent font-bold" : ""}
+            key={loc}
+            onClick={() => handleLanguageChange(loc)}
+            className={locale === loc ? "bg-accent font-bold" : ""}
           >
-            {lang.label}
+            {languageLabels[loc]}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

@@ -1,161 +1,215 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
+import { useMutation, useApolloClient } from "@apollo/client/react"
+import {
+  LOGIN,
+  REGISTER,
+  REFRESH_TOKEN,
+  GET_OAUTH_URL,
+} from "@/lib/graphql/auth"
+import {
+  UserRoles,
+  ROLE_MAP,
+  type FrontendRole,
+} from "@/features/auth/types/auth.types"
+import type { User } from "@/features/user/types/user.types"
 
-type UserRole = "client" | "specialist" | "admin"
+/** Legacy role string used across existing UI components */
+export type LegacyRole = "client" | "specialist" | "admin"
 
-interface User {
-  id: string
+/** Map backend UserRoles to legacy role strings used in UI */
+function toLegacyRole(role: UserRoles): LegacyRole {
+  switch (role) {
+    case UserRoles.SUPER_ADMIN:
+      return "admin"
+    case UserRoles.SPECIALIST:
+      return "specialist"
+    default:
+      return "client"
+  }
+}
+
+/** Extended user interface for UI (adds fields not yet available from backend) */
+export interface AppUser extends User {
+  /** Legacy role string for backward-compatible comparisons ("client" | "specialist" | "admin") */
+  legacyRole: LegacyRole
+  /** Display name (placeholder until `me` query provides it) */
   name: string
-  email: string
-  role: UserRole
-  avatar?: string
-  subjects?: string[]
-  isEmailVerified: boolean
-  hasPassedQuiz: boolean
-  status: "pending" | "active" | "rejected"
-  language: "UA" | "EN" | "RU"
 }
 
 interface AuthContextType {
-  user: User | null
-  login: (email: string, password: string) => Promise<void>
-  register: (name: string, email: string, password: string, role: UserRole) => Promise<void>
-  logout: () => void
+  user: AppUser | null
+  isAuthenticated: boolean
   isLoading: boolean
-  impersonate: (user: User) => void
+  login: (email: string, password: string) => Promise<void>
+  register: (name: string, email: string, password: string, role: FrontendRole) => Promise<void>
+  logout: () => void
+  loginWithGoogle: () => Promise<void>
+  refreshSession: () => Promise<boolean>
+  impersonate: (user: AppUser) => void
   stopImpersonating: () => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+function makeAppUser(base: Omit<User, "createdAt" | "updatedAt"> & Partial<Pick<User, "createdAt" | "updatedAt">> & { name?: string }): AppUser {
+  return {
+    id: base.id,
+    email: base.email,
+    isVerified: base.isVerified,
+    role: base.role,
+    createdAt: base.createdAt ?? new Date().toISOString(),
+    updatedAt: base.updatedAt ?? new Date().toISOString(),
+    legacyRole: toLegacyRole(base.role),
+    name: base.name ?? base.email.split("@")[0],
+  }
+}
+
+// Mutation response types (until codegen is set up)
+type LoginData = { loginWithEmailAndPassword: boolean }
+type RegisterData = { registerUserWithEmailAndPassword: boolean }
+type RefreshData = { refreshToken: boolean }
+type OAuthURLData = { getOAuthURL: string }
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AppUser | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const client = useApolloClient()
+
+  const [loginMutation] = useMutation<LoginData>(LOGIN)
+  const [registerMutation] = useMutation<RegisterData>(REGISTER)
+  const [refreshMutation] = useMutation<RefreshData>(REFRESH_TOKEN)
+
+  const refreshSession = useCallback(async (): Promise<boolean> => {
+    try {
+      const { data } = await refreshMutation()
+      const success = !!data?.refreshToken
+      setIsAuthenticated(success)
+      if (success) {
+        const stored = localStorage.getItem("user")
+        if (stored) {
+          try {
+            const parsed = JSON.parse(stored)
+            setUser(makeAppUser(parsed))
+          } catch { /* ignore */ }
+        }
+      }
+      return success
+    } catch {
+      setIsAuthenticated(false)
+      setUser(null)
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }, [refreshMutation])
 
   useEffect(() => {
-    // Check for stored user on mount
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) {
-      setTimeout(() => setUser(JSON.parse(storedUser)), 0)
-    }
-    setTimeout(() => setIsLoading(false), 0)
-  }, [])
+    refreshSession()
+  }, [refreshSession])
 
   const login = async (email: string, password: string) => {
-    // Mock login - in production, this would call your API
-    let role: UserRole = "client"
+    const { data } = await loginMutation({
+      variables: { userPayload: { email, password } },
+    })
 
-    if (email.includes("admin")) {
-      role = "admin"
-    } else if (email.includes("specialist") || email.includes("tutor") || email.includes("teacher") || email.includes("psych")) {
-      role = "specialist"
+    if (!data?.loginWithEmailAndPassword) {
+      throw new Error("Login failed")
     }
 
-    const isPsychologist = email.includes("psych")
-
-    const mockUser: User = {
-      id: "1",
-      name: role === "admin" ? "Адміністратор" : isPsychologist ? "Олена Психолог" : "Іван Петренко",
+    const appUser = makeAppUser({
+      id: "authenticated",
       email,
-      role,
-      subjects: role === "specialist" 
-        ? (isPsychologist ? ["Психологія", "Консультації"] : ["Англійська мова", "Математика"]) 
-        : undefined,
-      isEmailVerified: true,
-      hasPassedQuiz: true,
-      status: "active",
-      language: "UA",
-    }
-    setUser(mockUser)
-    localStorage.setItem("user", JSON.stringify(mockUser))
+      isVerified: true,
+      role: UserRoles.STUDENT,
+    })
 
-    if (mockUser.role === "specialist") {
-      router.push("/tutor")
-    } else if (mockUser.role === "admin") {
-      router.push("/admin")
-    } else {
-      router.push("/client")
-    }
+    setUser(appUser)
+    setIsAuthenticated(true)
+    localStorage.setItem("user", JSON.stringify(appUser))
   }
 
-  const register = async (name: string, email: string, password: string, role: UserRole) => {
-    // Mock registration
-    const mockUser: User = {
-      id: Math.random().toString(36).substr(2, 9),
-      name,
-      email,
-      role,
-      subjects: role === "specialist" ? ["Англійська мова", "Математика"] : undefined,
-      isEmailVerified: false, // New users must verify email
-      hasPassedQuiz: false,
-      status: "pending",
-      language: "UA",
-    }
-    setUser(mockUser)
-    localStorage.setItem("user", JSON.stringify(mockUser))
+  const register = async (name: string, email: string, password: string, role: FrontendRole) => {
+    const backendRole = ROLE_MAP[role]
 
-    if (role === "specialist") {
-      router.push("/tutor")
-    } else {
-      router.push("/client")
+    const { data } = await registerMutation({
+      variables: { userPayload: { email, password, role: backendRole } },
+    })
+
+    if (!data?.registerUserWithEmailAndPassword) {
+      throw new Error("Registration failed")
     }
+
+    const appUser = makeAppUser({
+      id: "authenticated",
+      email,
+      isVerified: false,
+      role: backendRole,
+      name,
+    })
+
+    setUser(appUser)
+    setIsAuthenticated(true)
+    localStorage.setItem("user", JSON.stringify(appUser))
   }
 
   const logout = () => {
     setUser(null)
+    setIsAuthenticated(false)
     localStorage.removeItem("user")
     localStorage.removeItem("admin_user")
+    client.clearStore()
     router.push("/")
   }
 
-  const impersonate = (targetUser: User) => {
-    if (user?.role !== "admin" && !localStorage.getItem("admin_user")) return
-    
-    // Save current admin if not already saved
+  const loginWithGoogle = async () => {
+    const { data } = await client.query<OAuthURLData>({ query: GET_OAUTH_URL, fetchPolicy: "no-cache" })
+    const url = data?.getOAuthURL
+    if (url) {
+      window.location.href = url
+    }
+  }
+
+  const impersonate = (targetUser: AppUser) => {
+    if (user?.role !== UserRoles.SUPER_ADMIN && !localStorage.getItem("admin_user")) return
     if (!localStorage.getItem("admin_user")) {
       localStorage.setItem("admin_user", JSON.stringify(user))
     }
-    
     setUser(targetUser)
     localStorage.setItem("user", JSON.stringify(targetUser))
-    router.push(targetUser.role === "specialist" ? "/tutor" : "/client")
+    router.push(targetUser.role === UserRoles.SPECIALIST ? "/tutor" : "/client")
   }
 
   const stopImpersonating = () => {
     const adminUser = localStorage.getItem("admin_user")
-
     if (adminUser) {
-      const parsedAdmin = JSON.parse(adminUser)
-      setUser(parsedAdmin)
+      const parsed = JSON.parse(adminUser)
+      setUser(makeAppUser(parsed))
       localStorage.setItem("user", adminUser)
       localStorage.removeItem("admin_user")
-    } else {
-      const fallbackAdmin =
-        user?.role === "admin"
-          ? user
-          : {
-              id: "admin-fallback",
-              name: "Адміністратор",
-              email: "admin@example.com",
-              role: "admin" as const,
-              isEmailVerified: true,
-              hasPassedQuiz: true,
-              status: "active" as const,
-              language: "UA" as const,
-            }
-      setUser(fallbackAdmin)
-      localStorage.setItem("user", JSON.stringify(fallbackAdmin))
     }
-
-    // Жорсткий перехід, щоб 100% підхопити оновлений localStorage та уникнути спінера
     window.location.replace("/admin")
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading, impersonate, stopImpersonating }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        isLoading,
+        login,
+        register,
+        logout,
+        loginWithGoogle,
+        refreshSession,
+        impersonate,
+        stopImpersonating,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

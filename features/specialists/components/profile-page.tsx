@@ -248,7 +248,7 @@ export function SpecialistProfilePage({ id }: { id: string }) {
 
   const isHealthSpecialist = ["Психолог", "Логопед"].includes(specialist.specialization)
   const logoSrc = isHealthSpecialist ? "/logo-health.jpg" : "/logo-education.jpg"
-  const specialistsListHref = user?.role === "client" ? "/client/specialists" : "/specialists"
+  const specialistsListHref = user?.legacyRole === "client" ? "/client/specialists" : "/specialists"
 
   return (
     <div className="min-h-screen bg-white">

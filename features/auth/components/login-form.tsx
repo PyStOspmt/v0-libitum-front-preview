@@ -19,14 +19,15 @@ import { Input } from "@/components/ui/input"
 import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema"
 import { useAuth } from "@/lib/hooks/use-auth"
 
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { Eye, EyeOff, Loader2, Chrome } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 export function LoginForm() {
-    const { login } = useAuth()
+    const { login, loginWithGoogle } = useAuth()
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [serverError, setServerError] = useState<string | null>(null)
+    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -46,8 +47,22 @@ export function LoginForm() {
         try {
             await login(values.email, values.password)
             router.push("/")
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "Невірний email або пароль. Спробуйте ще раз."
+            setServerError(message)
+        }
+    }
+
+    async function handleGoogleLogin() {
+        setIsGoogleLoading(true)
+        try {
+            await loginWithGoogle()
         } catch {
-            setServerError("Невірний email або пароль. Спробуйте ще раз.")
+            setServerError("Не вдалося підключити Google. Спробуйте пізніше.")
+            setIsGoogleLoading(false)
         }
     }
 
@@ -161,6 +176,32 @@ export function LoginForm() {
                     )}
                 </Button>
 
+                {/* Divider */}
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200"></div>
+                    </div>
+                    <div className="relative flex justify-center text-xs">
+                        <span className="bg-white px-4 text-slate-400">або</span>
+                    </div>
+                </div>
+
+                {/* Google Login */}
+                <Button
+                    type="button"
+                    variant="outline"
+                    disabled={isGoogleLoading}
+                    onClick={handleGoogleLogin}
+                    className="h-[52px] w-full rounded-[12px] border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 text-[15px] cursor-pointer"
+                >
+                    {isGoogleLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Chrome className="mr-2 h-5 w-5" />
+                    )}
+                    Увійти через Google
+                </Button>
+
                 {/* Register link */}
                 <p className="text-center text-[14px] text-[#69686f]">
                     Немає акаунту?{" "}
@@ -168,51 +209,6 @@ export function LoginForm() {
                         Зареєструватись
                     </Link>
                 </p>
-
-                {/* Test accounts */}
-                <div className="mt-4 space-y-2 rounded-[12px] border border-dashed border-slate-200 bg-[#f8f9fa] p-4">
-                    <p className="text-center text-[12px] font-[600] uppercase tracking-wider text-slate-400 mb-3">
-                        Тестові акаунти
-                    </p>
-                    <div className="grid grid-cols-3 gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#009688] hover:text-[#009688]"
-                            onClick={() => {
-                                form.setValue("email", "client@test.com")
-                                form.setValue("password", "password")
-                                form.handleSubmit(onSubmit)()
-                            }}
-                        >
-                            Клієнт
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#f57c00] hover:text-[#f57c00]"
-                            onClick={() => {
-                                form.setValue("email", "specialist@test.com")
-                                form.setValue("password", "password")
-                                form.handleSubmit(onSubmit)()
-                            }}
-                        >
-                            Спеціаліст
-                        </Button>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#9c27b0] hover:text-[#9c27b0]"
-                            onClick={() => {
-                                form.setValue("email", "admin@test.com")
-                                form.setValue("password", "password")
-                                form.handleSubmit(onSubmit)()
-                            }}
-                        >
-                            Адмін
-                        </Button>
-                    </div>
-                </div>
             </form>
         </Form>
     )

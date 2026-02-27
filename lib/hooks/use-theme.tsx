@@ -120,11 +120,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setTimeout(() => setTimeout(() => setTheme(savedTheme as ThemeType), 0), 0)
     } else if (user) {
       // Set initial theme based on user
-      if (user.role === "admin") {
+      if (user.legacyRole === "admin") {
         setTimeout(() => setTheme('admin'), 0)
-      } else if (user.role === "client" || String(user.role) === "student") {
+      } else if (user.legacyRole === "client" || String(user.legacyRole) === "student") {
         setTimeout(() => setTheme('client'), 0)
-      } else if (user.role === "specialist" || user.role === "tutor") {
+      } else if (user.legacyRole === "specialist" || user.legacyRole === "tutor") {
         // Check specialization
         const subjects = user.subjects || []
         const isPsychologist = subjects.some((s: string) =>

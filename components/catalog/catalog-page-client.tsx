@@ -180,7 +180,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
 
             <div className="flex items-center gap-3">
               {user ? (
-                <Link href={user.role === "specialist" ? "/tutor" : user.role === "admin" ? "/admin" : "/client"}>
+                <Link href={user.legacyRole === "specialist" ? "/tutor" : user.legacyRole === "admin" ? "/admin" : "/client"}>
                   <Button className="h-10 rounded-full bg-[#43a047] px-6 text-sm font-medium text-white hover:bg-[#388e3c]">
                     Dashboard
                   </Button>
