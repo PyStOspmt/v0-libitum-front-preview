@@ -5,14 +5,13 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Calendar, Clock, CheckCircle2, XCircle, Video, Home, Phone, MessageCircle, DollarSign } from "lucide-react"
-import type { BookingRequest } from "@/lib/request-store"
+import { useRequestStore, type CommunicationStatus, type TrialResult, type BookingRequest } from "@/lib/request-store"
 import { CountdownTimer } from "./countdown-timer"
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useRequestStore, type CommunicationStatus, type TrialResult } from "@/lib/request-store"
 
 interface RequestCardProps {
   request: BookingRequest
@@ -38,17 +37,17 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
 
   const paymentAmount = request.currentPrice ?? request.basePrice
 
-  const canMarkClientNotResponding = (() => {
+  const [canMarkClientNotResponding] = useState(() => {
     if (!request.acceptedAt) return false
     const acceptedAt = new Date(request.acceptedAt).getTime()
     return Date.now() - acceptedAt >= 60 * 60 * 1000
-  })()
+  })
 
-  const isPastTrialDateTime = (() => {
+  const [isPastTrialDateTime] = useState(() => {
     if (!request.date || !request.time) return false
     const dt = new Date(`${request.date}T${request.time}`)
     return !Number.isNaN(dt.getTime()) && Date.now() >= dt.getTime()
-  })()
+  })
 
   const getStatusBadge = () => {
     // Determine subject category for color coding

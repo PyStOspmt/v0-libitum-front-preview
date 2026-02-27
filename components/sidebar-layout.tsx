@@ -3,7 +3,6 @@
 import type React from "react"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -11,6 +10,9 @@ import { useAuth } from "@/lib/auth-context"
 import { useTheme } from "@/lib/theme-context"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { useTranslation } from "@/lib/i18n"
+import { LocaleLink } from "@/components/locale-link"
+import { useLocale } from "@/lib/locale-context"
+import { locales } from "@/lib/i18n/config"
 import {
   BookOpen,
   LayoutDashboard,
@@ -39,10 +41,22 @@ interface SidebarLayoutProps {
 export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   const { user, logout, stopImpersonating } = useAuth()
   const { theme } = useTheme()
-  const pathname = usePathname()
+  const rawPathname = usePathname()
+  const locale = useLocale()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isImpersonating, setIsImpersonating] = useState(false)
   const { t } = useTranslation()
+
+  let pathname = rawPathname
+  for (const loc of locales) {
+    if (rawPathname.startsWith(`/${loc}/`)) {
+      pathname = rawPathname.slice(`/${loc}`.length)
+      break
+    } else if (rawPathname === `/${loc}`) {
+      pathname = "/"
+      break
+    }
+  }
 
   const sidebarTheme = {
     logoBg: userType === "admin" ? "bg-slate-700" : "",
@@ -60,7 +74,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
       return Boolean(localStorage.getItem("admin_user"))
     }
 
-    setIsImpersonating(readFlag())
+    setTimeout(() => setIsImpersonating(readFlag()), 0)
 
     const handleStorage = () => setIsImpersonating(readFlag())
     window.addEventListener("storage", handleStorage)
@@ -108,10 +122,10 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
 
   const navItems = userType === "client" ? clientNavItems : userType === "tutor" ? tutorNavItems : adminNavItems
 
-  const NavContent = () => (
+  const navContent = (
     <>
       <div className="flex items-center justify-between p-6 pb-4">
-        <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+        <LocaleLink href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
           <div
             className={cn(
               "flex h-11 w-11 items-center justify-center rounded-[12px]",
@@ -131,7 +145,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                   : t("role.admin")}
             </p>
           </div>
-        </Link>
+        </LocaleLink>
 
         <div className="flex items-center gap-2">
           <div className="lg:hidden">
@@ -159,7 +173,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
           </Button>
         )}
 
-        <Link href="/">
+        <LocaleLink href="/">
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 mb-2 rounded-[8px] text-[#69686f] hover:bg-gray-100 hover:text-[#121117] h-[48px] font-[600] transition-all"
@@ -168,7 +182,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             <Home className="h-5 w-5" />
             <span>{t("sidebar.home")}</span>
           </Button>
-        </Link>
+        </LocaleLink>
 
         <div className="h-px bg-gray-200 my-4 mx-2" />
 
@@ -176,7 +190,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
           const Icon = item.icon
           const isActive = pathname === item.href
           return (
-            <Link key={item.href} href={item.href}>
+            <LocaleLink key={item.href} href={item.href}>
               <Button
                 variant="ghost"
                 className={cn(
@@ -199,7 +213,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                 />
                 <span>{item.label}</span>
               </Button>
-            </Link>
+            </LocaleLink>
           )
         })}
       </nav>
@@ -237,7 +251,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     <div className="flex h-screen overflow-hidden bg-[#f0f3f3] font-sans text-[#121117]">
       {/* Desktop Sidebar */}
       <aside className="hidden w-[280px] flex-col border-r border-gray-200 bg-white lg:flex">
-        <NavContent />
+        {navContent}
       </aside>
 
       {/* Mobile Menu */}
@@ -248,7 +262,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <aside className="absolute left-0 top-0 h-full w-[280px] flex-col border-r border-gray-200 bg-white flex animate-in slide-in-from-left duration-300 shadow-2xl">
-            <NavContent />
+            {navContent}
           </aside>
         </div>
       )}

@@ -119,7 +119,7 @@ export function AdvancedCalendar({ userType, userId }: AdvancedCalendarProps) {
     }
 
     addLesson({
-      clientId: `client-${Math.random().toString(36).substr(2, 9)}`,
+      clientId: `client-${crypto.randomUUID().split("-")[0]}`,
       clientName: formData.clientName,
       specialistId: userId,
       specialistName: "Поточний спеціаліст",
