@@ -209,6 +209,51 @@ export function LoginForm() {
                         Зареєструватись
                     </Link>
                 </p>
+
+                {/* Test accounts */}
+                <div className="mt-4 space-y-2 rounded-[12px] border border-dashed border-slate-200 bg-[#f8f9fa] p-4">
+                    <p className="text-center text-[12px] font-[600] uppercase tracking-wider text-slate-400 mb-3">
+                        Тестові акаунти
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#009688] hover:text-[#009688]"
+                            onClick={() => {
+                                form.setValue("email", "client@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Клієнт
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#f57c00] hover:text-[#f57c00]"
+                            onClick={() => {
+                                form.setValue("email", "specialist@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Спеціаліст
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#9c27b0] hover:text-[#9c27b0]"
+                            onClick={() => {
+                                form.setValue("email", "admin@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Адмін
+                        </Button>
+                    </div>
+                </div>
             </form>
         </Form>
     )

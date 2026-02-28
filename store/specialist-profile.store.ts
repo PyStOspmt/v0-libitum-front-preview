@@ -5,6 +5,19 @@ import { persist } from "zustand/middleware"
 
 export type SpecialistType = "tutor" | "psychologist" | "speech-therapist"
 
+export interface SubjectLevelPricing {
+  label: string
+  priceOnline?: number
+  priceOffline?: number
+  groupPrice?: number
+}
+
+export interface SubjectDetails {
+  subject: string
+  groupAvailable: boolean
+  levels: SubjectLevelPricing[]
+}
+
 export interface SpecialistProfile {
   id: string
   firstName: string
@@ -13,12 +26,13 @@ export interface SpecialistProfile {
   phone: string
   specialization: SpecialistType
   subjects: string[]
+  subjectsDetails?: SubjectDetails[] // New detailed structure
   experience: number
   education: string
   bio: string
-  priceOnline: number
-  priceOffline: number
-  priceHomeVisit: number
+  priceOnline: number // Deprecated, kept for backward compatibility
+  priceOffline: number // Deprecated
+  priceHomeVisit: number // Deprecated
   formats: {
     online: boolean
     offline: boolean
@@ -30,6 +44,11 @@ export interface SpecialistProfile {
     diploma?: string
     certificates?: string[]
   }
+  // New TD fields
+  isSearching?: boolean
+  pairLessons?: boolean
+  foreignProgram?: boolean
+  foreignCountry?: string
 }
 
 interface SpecialistProfileStore {

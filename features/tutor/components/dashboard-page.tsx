@@ -13,6 +13,8 @@ import { useToast } from "@/hooks/use-toast"
 import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight, Flame, Target, Coins, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import { format } from "date-fns"
+import { uk } from "date-fns/locale"
 
 export function TutorDashboardPage() {
   const { toast } = useToast()
@@ -42,10 +44,17 @@ export function TutorDashboardPage() {
   }
 
   const [goals, setGoals] = useState([
-    { id: 1, title: "Заповнити звіт по уроку", completed: false },
-    { id: 2, title: "Перевірити ДЗ (3)", completed: true },
-    { id: 3, title: "Додати нового учня", completed: false },
+    { id: 1, title: "Заповнити звіт по уроку", completed: false, xp: 10, lc: 0 },
+    { id: 2, title: "Перевірити ДЗ", completed: true, xp: 15, lc: 0 },
+    { id: 3, title: "Додати матеріал", completed: false, xp: 5, lc: 0 },
+    { id: 4, title: "Додати власного учня", completed: false, xp: 50, lc: 0 },
   ])
+
+  // Mock next lessons
+  const nextLessons = [
+    { id: "1", studentName: "Марія Коваленко", subject: "Англійська мова", time: "14:00", date: new Date(), url: "https://zoom.us/j/123456789" },
+    { id: "2", studentName: "Олександр Петренко", subject: "Математика", time: "16:00", date: new Date(), url: "https://meet.google.com/abc-defg-hij" },
+  ]
 
   const handleToggleGoal = (id: number) => {
     setGoals(goals.map(g => g.id === id ? { ...g, completed: !g.completed } : g))
@@ -76,6 +85,30 @@ export function TutorDashboardPage() {
           <div>
             <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Головна</h1>
             <p className="text-[#69686f] mt-1 text-[16px]">Кабінет спеціаліста</p>
+          </div>
+
+          {/* Next Lessons */}
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
+            {nextLessons.map((lesson) => (
+              <div key={lesson.id} className="bg-white rounded-[20px] sm:rounded-[24px] p-5 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="text-[18px] font-bold text-[#121117]">{lesson.studentName}</h3>
+                      <p className="text-[14px] text-[#69686f]">{lesson.subject}</p>
+                    </div>
+                    <Badge variant="outline" className="bg-[#f8f9fb] border-slate-200">
+                      Сьогодні, {lesson.time}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <a href={lesson.url} target="_blank" rel="noopener noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[var(--theme-primary)] text-white text-[15px] font-[600] h-[44px] rounded-[8px] hover:bg-[var(--theme-primary-hover)] transition-colors">
+                    Приєднатися до уроку
+                  </a>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Stats Grid */}

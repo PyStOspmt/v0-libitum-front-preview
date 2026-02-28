@@ -37,6 +37,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
   const [isViewEventDialogOpen, setIsViewEventDialogOpen] = useState(false)
 
   const [formData, setFormData] = useState<LessonFormData>({
+    clientId: "",
     clientName: "",
     subject: "",
     date: "",
@@ -46,6 +47,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
     topic: "",
     description: "",
     price: "400",
+    isRecurring: false,
   })
 
   // Center view on the nearest lesson for this user (client or tutor)
@@ -442,6 +444,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
   const openEditDialog = (lesson: Lesson) => {
     setSelectedLesson(lesson)
     setFormData({
+      clientId: lesson.clientId,
       clientName: lesson.clientName,
       subject: lesson.subject,
       date: lesson.date,
@@ -451,6 +454,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
       topic: lesson.topic || "",
       description: lesson.description || "",
       price: lesson.price.toString(),
+      isRecurring: false,
     })
     setIsEditDialogOpen(true)
   }
@@ -480,6 +484,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
 
   const resetForm = () => {
     setFormData({
+      clientId: "",
       clientName: "",
       subject: "",
       date: "",
@@ -489,6 +494,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
       topic: "",
       description: "",
       price: "400",
+      isRecurring: false,
     })
   }
 

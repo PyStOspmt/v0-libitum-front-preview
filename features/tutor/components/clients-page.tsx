@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Users, Plus } from "lucide-react"
+import { Calendar, User, Users, Plus, Link as LinkIcon, Copy, Check } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -22,6 +22,7 @@ export function TutorClientsPage() {
   const { getRequestsBySpecialist, getStudentsByTutor, addOwnStudent } = useRequestStore()
   const { user } = useAuth()
   const [showAddStudent, setShowAddStudent] = useState(false)
+  const [copied, setCopied] = useState(false)
   const [newStudent, setNewStudent] = useState({
     name: "",
     grade: "",
@@ -30,9 +31,20 @@ export function TutorClientsPage() {
   })
 
   const tutorId = user?.id || "specialist-1"
+  const inviteLink = `https://libitum.com.ua/register?ref=${tutorId}`
 
   const students = getStudentsByTutor(tutorId)
   const specialistRequests = getRequestsBySpecialist(tutorId)
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(inviteLink)
+    setCopied(true)
+    toast({
+      title: "Посилання скопійовано",
+      description: "Тепер ви можете надіслати його учню",
+    })
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const handleAddStudent = () => {
     if (!newStudent.name || !newStudent.subject) {
@@ -86,9 +98,24 @@ export function TutorClientsPage() {
                 <DialogContent className="sm:max-w-lg">
                   <DialogHeader>
                     <DialogTitle>Додати свого учня</DialogTitle>
+                    <CardDescription>Учень буде доданий до вашого списку, але для отримання бонусів він має зареєструватися.</CardDescription>
                   </DialogHeader>
-                  <div className="space-y-4 pt-4">
+                  <div className="grid gap-4 py-4">
                     <div className="space-y-2">
+                      <Label>Посилання для реєстрації</Label>
+                      <div className="flex items-center gap-2">
+                        <Input value={inviteLink} readOnly className="bg-slate-50 font-mono text-sm text-slate-600" />
+                        <Button size="icon" variant="outline" onClick={handleCopyLink} className="shrink-0 w-[40px] h-[40px]">
+                          {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                      <p className="text-xs text-slate-500">Надішліть це посилання учню. Після його реєстрації ви зможете повноцінно взаємодіяти.</p>
+                    </div>
+                    <div className="relative py-2">
+                      <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div>
+                      <div className="relative flex justify-center"><span className="bg-white px-2 text-xs text-slate-500 uppercase">або додати вручну зараз</span></div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
                       <Label htmlFor="name">
                         Ім'я учня <span className="text-red-500">*</span>
                       </Label>

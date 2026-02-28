@@ -409,10 +409,6 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                                 }
                                             }}
                                         >
-                                            <div className="flex items-center gap-2 mb-2 text-[13px] text-[#69686f] font-medium shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
-                                                <span>Викладає {specialist.subjects.length} {specialist.subjects.length === 1 ? 'предмет' : 'предмети'}</span>
-                                            </div>
                                             <div className="flex items-center w-full relative overflow-hidden rounded-r-lg" style={{ maskImage: 'linear-gradient(to right, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 100%)' }}>
                                                 <div
                                                     className={`flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5 ${isMobileActive ? '![animation-play-state:running]' : '![animation-play-state:paused]'}`}

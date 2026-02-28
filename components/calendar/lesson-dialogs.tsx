@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -15,13 +15,16 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MapPin, Video, Clock, Calendar, DollarSign, Target, Plus, Trash2, CheckCircle2, Circle, Calendar as CalendarIcon } from "lucide-react"
+import { MapPin, Video, Clock, Calendar, DollarSign, Target, Plus, Trash2, CheckCircle2, Circle, Calendar as CalendarIcon, RepeatIcon } from "lucide-react"
 import { useGoalStore } from "@/lib/goal-store"
 import { Progress } from "@/components/ui/progress"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { Lesson } from "@/lib/lesson-store"
+import { useRequestStore } from "@/lib/request-store"
+import { useAuth } from "@/lib/auth-context"
 
 export interface LessonFormData {
+  clientId: string
   clientName: string
   subject: string
   date: string
@@ -33,6 +36,8 @@ export interface LessonFormData {
   topic?: string
   description?: string
   price: string
+  isRecurring: boolean
+  recurrenceRule?: string
 }
 
 interface LessonDialogsProps {
@@ -70,6 +75,23 @@ export function LessonDialogs({
   onMarkPaid,
   onOpenEdit,
 }: LessonDialogsProps) {
+  const { getStudentsByTutor } = useRequestStore()
+  const { user } = useAuth()
+  const tutorId = user?.id || "specialist-1"
+  const tutorStudents = useMemo(() => getStudentsByTutor(tutorId).filter(s => s.status === "active"), [getStudentsByTutor, tutorId])
+
+  const handleStudentSelect = (studentId: string) => {
+    const student = tutorStudents.find(s => s.id === studentId)
+    if (student) {
+      setFormData({
+        ...formData,
+        clientId: student.id,
+        clientName: student.name,
+        subject: student.subject,
+      })
+    }
+  }
+
   return (
     <>
       {/* View Lesson Dialog */}
@@ -220,13 +242,32 @@ export function LessonDialogs({
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="clientName" className="text-[14px] font-[600] text-[#121117]">Ім'я учня *</Label>
-                <Input
-                  id="clientName"
-                  value={formData.clientName}
-                  onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-                  placeholder="Іван Петренко"
-                  className="h-[48px] rounded-[8px] border-slate-200 focus-visible:ring-0 focus-visible:border-[#00c5a6]"
-                />
+                {userType === "tutor" ? (
+                  <Select value={formData.clientId} onValueChange={handleStudentSelect}>
+                    <SelectTrigger className="h-[48px] rounded-[8px] border-slate-200 focus:ring-0 focus:border-[#00c5a6]">
+                      <SelectValue placeholder="Оберіть учня" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tutorStudents.length > 0 ? (
+                        tutorStudents.map(student => (
+                          <SelectItem key={student.id} value={student.id}>
+                            {student.name} ({student.subject})
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="empty" disabled>Немає активних учнів</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <Input
+                    id="clientName"
+                    value={formData.clientName}
+                    onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                    placeholder="Іван Петренко"
+                    className="h-[48px] rounded-[8px] border-slate-200 focus-visible:ring-0 focus-visible:border-[#00c5a6]"
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject" className="text-[14px] font-[600] text-[#121117]">Предмет *</Label>
@@ -280,6 +321,40 @@ export function LessonDialogs({
                 </Select>
               </div>
             </div>
+
+            {userType === "tutor" && (
+              <div className="flex items-center gap-3 p-4 bg-[#f0f3f3]/50 rounded-[12px]">
+                <Checkbox 
+                  id="isRecurring" 
+                  checked={formData.isRecurring} 
+                  onCheckedChange={(c) => setFormData({ ...formData, isRecurring: c as boolean })}
+                  className="data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6]"
+                />
+                <div className="space-y-1 leading-none">
+                  <Label htmlFor="isRecurring" className="text-[15px] font-[600] cursor-pointer">Зробити заняття повторюваним</Label>
+                  <p className="text-[13px] text-[#69686f]">Створити серію занять у цей же час</p>
+                </div>
+              </div>
+            )}
+
+            {formData.isRecurring && (
+              <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
+                <Label className="text-[14px] font-[600] text-[#121117]">Правило повторення</Label>
+                <Select
+                  value={formData.recurrenceRule || "weekly"}
+                  onValueChange={(value) => setFormData({ ...formData, recurrenceRule: value })}
+                >
+                  <SelectTrigger className="h-[48px] rounded-[8px] border-slate-200 focus:ring-0 focus:border-[#00c5a6]">
+                    <SelectValue placeholder="Оберіть періодичність" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-[12px] border-slate-200">
+                    <SelectItem value="weekly" className="rounded-[8px]">Кожного тижня (в цей день)</SelectItem>
+                    <SelectItem value="biweekly" className="rounded-[8px]">Кожні 2 тижні</SelectItem>
+                    <SelectItem value="monthly" className="rounded-[8px]">Кожного місяця</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-2">

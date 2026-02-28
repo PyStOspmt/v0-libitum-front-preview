@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useTheme } from "@/lib/theme-context"
-import { useSpecialistProfileStore, type SpecialistType } from "@/lib/specialist-profile-store"
+import { useSpecialistProfileStore, type SpecialistType, type SubjectDetails } from "@/lib/specialist-profile-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -49,6 +49,8 @@ export function TutorProfilePage() {
   const [foreignProgram, setForeignProgram] = useState(false)
   const [foreignCountry, setForeignCountry] = useState("")
 
+  const [subjectsDetails, setSubjectsDetails] = useState<SubjectDetails[]>([])
+
   useEffect(() => {
     if (user?.id) {
       const profile = getProfile(user.id)
@@ -69,11 +71,28 @@ export function TutorProfilePage() {
           setFormatOnline(profile.formats?.online ?? true)
           setFormatOffline(profile.formats?.offline ?? true)
           setFormatHomeVisit(profile.formats?.homeVisit ?? false)
-          // Mock loading new fields
-          setIsSearching(true)
-          setPairLessons(false)
-          setForeignProgram(false)
-          setForeignCountry("")
+          
+          setIsSearching(profile.isSearching ?? true)
+          setPairLessons(profile.pairLessons ?? false)
+          setForeignProgram(profile.foreignProgram ?? false)
+          setForeignCountry(profile.foreignCountry ?? "")
+          
+          if (profile.subjectsDetails?.length) {
+            setSubjectsDetails(profile.subjectsDetails)
+          } else {
+            // Init empty subject details
+            setSubjectsDetails(
+              (profile.subjects?.length ? profile.subjects : ["Англійська мова", "Німецька мова"]).map(sub => ({
+                subject: sub,
+                groupAvailable: false,
+                levels: [
+                  { label: "1-4 клас", priceOnline: 400, priceOffline: 500 },
+                  { label: "5-9 клас", priceOnline: 450, priceOffline: 550 },
+                  { label: "10-11 клас, ЗНО", priceOnline: 500, priceOffline: 600 }
+                ]
+              }))
+            )
+          }
         }, 0)
         return () => clearTimeout(timer)
       }
@@ -83,12 +102,35 @@ export function TutorProfilePage() {
   const addSubject = () => {
     if (newSubject && !subjects.includes(newSubject)) {
       setSubjects([...subjects, newSubject])
+      setSubjectsDetails([...subjectsDetails, {
+        subject: newSubject,
+        groupAvailable: pairLessons,
+        levels: [
+          { label: "1-4 клас", priceOnline: Number(priceOnline), priceOffline: Number(priceOffline) },
+          { label: "5-9 клас", priceOnline: Number(priceOnline) + 50, priceOffline: Number(priceOffline) + 50 },
+          { label: "10-11 клас, ЗНО", priceOnline: Number(priceOnline) + 100, priceOffline: Number(priceOffline) + 100 }
+        ]
+      }])
       setNewSubject("")
     }
   }
 
   const removeSubject = (subject: string) => {
     setSubjects(subjects.filter((s) => s !== subject))
+    setSubjectsDetails(subjectsDetails.filter(s => s.subject !== subject))
+  }
+
+  const handleLevelPriceChange = (subjectName: string, levelLabel: string, field: 'priceOnline' | 'priceOffline' | 'groupPrice', value: string) => {
+    setSubjectsDetails(prev => prev.map(s => {
+      if (s.subject !== subjectName) return s;
+      return {
+        ...s,
+        levels: s.levels.map(l => {
+          if (l.label !== levelLabel) return l;
+          return { ...l, [field]: Number(value) || undefined }
+        })
+      }
+    }))
   }
 
   const handleSave = () => {
@@ -98,11 +140,11 @@ export function TutorProfilePage() {
     }
     updateProfile(user.id, {
       firstName, lastName, email: user.email, phone, specialization, subjects,
+      subjectsDetails,
       experience: Number(experience), education, bio,
       priceOnline: Number(priceOnline), priceOffline: Number(priceOffline), priceHomeVisit: Number(priceHomeVisit),
       formats: { online: formatOnline, offline: formatOffline, homeVisit: formatHomeVisit },
       location,
-      // @ts-ignore - Mock saving new fields
       isSearching, pairLessons, foreignProgram, foreignCountry
     })
     toast({ title: "Профіль оновлено", description: "Ваші зміни успішно збережено" })
@@ -316,30 +358,8 @@ export function TutorProfilePage() {
               <CardDescription className="text-[#69686f] text-[14px]">Налаштуйте вартість занять та графік роботи</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="priceOnline" className="text-[14px] font-[600]">Ціна онлайн (грн/год)</Label>
-                  <Input id="priceOnline" type="number" value={priceOnline} onChange={(e) => setPriceOnline(e.target.value)} className="h-[44px] rounded-[8px]" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="priceOffline" className="text-[14px] font-[600]">Ціна офлайн (грн/год)</Label>
-                  <Input id="priceOffline" type="number" value={priceOffline} onChange={(e) => setPriceOffline(e.target.value)} className="h-[44px] rounded-[8px]" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="priceHomeVisit" className="text-[14px] font-[600]">Ціна виїзду додому (грн/год)</Label>
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5 text-[#69686f]" />
-                  <Input id="priceHomeVisit" type="number" value={priceHomeVisit} onChange={(e) => setPriceHomeVisit(e.target.value)} disabled={!formatHomeVisit} className={`h-[44px] rounded-[8px] ${!formatHomeVisit ? "bg-slate-50 text-slate-400" : ""}`} />
-                </div>
-                <p className="text-[13px] text-[#69686f]">
-                  {formatHomeVisit ? "Виїзд додому активовано. Вкажіть ціну за годину." : "Увімкніть 'Виїзд додому' нижче, щоб встановити ціну."}
-                </p>
-              </div>
-
               <div className="space-y-3">
-                <Label className="text-[14px] font-[600]">Формати занять</Label>
+                <Label className="text-[16px] font-[600]">Формати занять</Label>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 bg-[#f0f3f3]/50 p-3 rounded-[8px]">
                     <Checkbox id="online" checked={formatOnline} onCheckedChange={(c) => setFormatOnline(c as boolean)} className="data-[state=checked]:bg-[var(--theme-primary)] data-[state=checked]:border-[var(--theme-primary)]" />
@@ -357,7 +377,82 @@ export function TutorProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location" className="text-[14px] font-[600]">Місто</Label>
+                <Label htmlFor="priceHomeVisit" className="text-[14px] font-[600]">Ціна виїзду додому (грн/год)</Label>
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-[#69686f]" />
+                  <Input id="priceHomeVisit" type="number" value={priceHomeVisit} onChange={(e) => setPriceHomeVisit(e.target.value)} disabled={!formatHomeVisit} className={`h-[44px] rounded-[8px] ${!formatHomeVisit ? "bg-slate-50 text-slate-400" : ""}`} />
+                </div>
+                <p className="text-[13px] text-[#69686f]">
+                  {formatHomeVisit ? "Виїзд додому активовано. Вкажіть ціну за годину." : "Увімкніть 'Виїзд додому' нижче, щоб встановити ціну."}
+                </p>
+              </div>
+
+              <div className="pt-4">
+                <Label className="text-[16px] font-[600] mb-4 block">Вартість навчання за предметами та рівнями</Label>
+                <div className="space-y-6">
+                  {subjectsDetails.map((subject) => (
+                    <div key={subject.subject} className="rounded-[16px] border border-slate-200/80 p-4">
+                      <div className="mb-4 flex items-center justify-between">
+                        <h4 className="text-[16px] font-bold text-[#121117]">{subject.subject}</h4>
+                        {subject.groupAvailable && (
+                          <span className="inline-flex items-center rounded-full bg-[#e8fffb] px-3 py-1 text-[12px] font-[600] text-[#00a389]">
+                            Групові доступні
+                          </span>
+                        )}
+                      </div>
+                      <div className="overflow-hidden rounded-[12px] border border-slate-200/80">
+                        <div className="grid grid-cols-4 bg-[#f0f3f3] px-3 sm:px-4 py-3 text-[11px] sm:text-[12px] font-[600] uppercase tracking-wider text-[#69686f]">
+                          <span>Рівень</span>
+                          <span>Онлайн</span>
+                          <span>Офлайн</span>
+                          <span>Група</span>
+                        </div>
+                        <div className="divide-y divide-slate-100 bg-white">
+                          {subject.levels.map((level) => (
+                            <div key={level.label} className="grid grid-cols-4 gap-2 items-center px-3 sm:px-4 py-3 text-[13px] sm:text-[14px]">
+                              <span className="font-medium text-slate-800 pr-2 leading-tight">{level.label}</span>
+                              <div className="flex items-center gap-1">
+                                <Input 
+                                  type="number" 
+                                  value={level.priceOnline || ""} 
+                                  onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "priceOnline", e.target.value)}
+                                  className="h-8 w-16 px-2 py-1 text-sm"
+                                  placeholder="---"
+                                />
+                                <span className="text-xs text-slate-400">₴</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Input 
+                                  type="number" 
+                                  value={level.priceOffline || ""} 
+                                  onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "priceOffline", e.target.value)}
+                                  className="h-8 w-16 px-2 py-1 text-sm"
+                                  placeholder="---"
+                                />
+                                <span className="text-xs text-slate-400">₴</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Input 
+                                  type="number" 
+                                  value={level.groupPrice || ""} 
+                                  onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "groupPrice", e.target.value)}
+                                  className="h-8 w-16 px-2 py-1 text-sm"
+                                  disabled={!subject.groupAvailable}
+                                  placeholder={subject.groupAvailable ? "---" : "N/A"}
+                                />
+                                {subject.groupAvailable && <span className="text-xs text-slate-400">₴</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <Label htmlFor="location" className="text-[14px] font-[600]">Місто (для офлайн занять)</Label>
                 <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} className="h-[44px] rounded-[8px]" />
               </div>
             </CardContent>

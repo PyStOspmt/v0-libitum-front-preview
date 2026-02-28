@@ -39,7 +39,7 @@ const lessonTags = [
   { id: "tag-4", text: "Сьогодні ти перевершив(ла) себе!", color: "bg-amber-100 text-amber-800 border-amber-200" },
 ]
 
-export function TutorMaterialsPage() {
+export function TutorJournalPage() {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { lessons, checkHomework } = useLessonStore()

@@ -97,13 +97,12 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
   const tutorNavItems = [
     { href: "/tutor", label: t("sidebar.dashboard"), icon: LayoutDashboard },
     { href: "/tutor/requests", label: t("sidebar.requests"), icon: ClipboardList },
-    { href: "/tutor/exchange", label: t("sidebar.exchange"), icon: TrendingUp },
     { href: "/tutor/clients", label: t("sidebar.clients"), icon: Users },
     { href: "/tutor/schedule", label: t("sidebar.schedule"), icon: Calendar },
+    { href: "/tutor/journal", label: "Журнал та ДЗ", icon: BookOpen },
     { href: "/tutor/finances", label: t("sidebar.finances"), icon: DollarSign },
     { href: "/tutor/rewards", label: t("sidebar.rewards"), icon: TrendingUp },
     { href: "/tutor/profile", label: t("sidebar.profile"), icon: UserCog },
-    { href: "/tutor/settings", label: t("sidebar.settings"), icon: Settings },
   ]
 
   const adminNavItems = [
