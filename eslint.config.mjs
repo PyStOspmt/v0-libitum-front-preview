@@ -27,12 +27,7 @@ const config = [
             "simple-import-sort/imports": [
                 "warn",
                 {
-                    groups: [
-                        ["^node:"],
-                        ["^react$", "^next", "^@(?!/)"],
-                        ["^@/"],
-                        ["^\\."],
-                    ],
+                    groups: [["^node:"], ["^react$", "^next", "^@(?!/)"], ["^@/"], ["^\\."]],
                 },
             ],
             "simple-import-sort/exports": "warn",

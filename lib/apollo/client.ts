@@ -1,14 +1,9 @@
-import {
-    ApolloClient,
-    InMemoryCache,
-    HttpLink,
-    from,
-} from "@apollo/client"
-import { ErrorLink } from "@apollo/client/link/error"
-import { CombinedGraphQLErrors } from "@apollo/client/errors"
-import { Observable } from "@apollo/client/utilities"
-import { REFRESH_TOKEN } from "@/lib/graphql/auth"
 import { getFingerprint } from "@/lib/fingerprint"
+import { REFRESH_TOKEN } from "@/lib/graphql/auth"
+import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client"
+import { CombinedGraphQLErrors } from "@apollo/client/errors"
+import { ErrorLink } from "@apollo/client/link/error"
+import { Observable } from "@apollo/client/utilities"
 
 const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
 
@@ -24,14 +19,13 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
     if (!CombinedGraphQLErrors.is(error)) return
 
     const isUnauthenticated = error.errors.some(
-        (err) =>
-            err.extensions?.code === "UNAUTHENTICATED" ||
-            err.message?.toLowerCase().includes("unauthorized"),
+        (err) => err.extensions?.code === "UNAUTHENTICATED" || err.message?.toLowerCase().includes("unauthorized"),
     )
 
     if (!isUnauthenticated) return
 
     const opName = operation.operationName
+
     if (opName === "RefreshToken" || opName === "Login" || opName === "Register") return
 
     if (isRefreshing) {
