@@ -14,66 +14,47 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 
-const QUIZ_QUESTIONS = [
-    {
-        id: 1,
-        question: "Коли ви платите комісію платформі за лід?",
-        options: [
-            { id: "a", text: "Одразу після отримання заявки", correct: false },
-            { id: "b", text: "Після успішного пробного заняття, якщо клієнт продовжує", correct: true },
-            { id: "c", text: "Щомісяця фіксована сума", correct: false },
-            { id: "d", text: "Платформа безкоштовна", correct: false },
-        ],
-    },
-    {
-        id: 2,
-        question: "Скільки часу у вас є на відповідь після отримання заявки?",
-        options: [
-            { id: "a", text: "24 години", correct: false },
-            { id: "b", text: "1 година", correct: false },
-            { id: "c", text: "3 години", correct: true },
-            { id: "d", text: "Необмежено", correct: false },
-        ],
-    },
-    {
-        id: 3,
-        question: "Що станеться, якщо ви відповісте на заявку протягом 20 хвилин?",
-        options: [
-            { id: "a", text: "Нічого особливого", correct: false },
-            { id: "b", text: "Отримаєте бонус до рейтингу", correct: true },
-            { id: "c", text: "Знижка на комісію", correct: false },
-            { id: "d", text: "Додаткова заявка безкоштовно", correct: false },
-        ],
-    },
-    {
-        id: 4,
-        question: "Що робити, якщо клієнт відмовився продовжувати після пробного заняття?",
-        options: [
-            { id: "a", text: "Все одно треба платити комісію", correct: false },
-            { id: "b", text: "Вказати причину в системі, комісія не стягується", correct: true },
-            { id: "c", text: "Написати в підтримку", correct: false },
-            { id: "d", text: "Видалити заявку", correct: false },
-        ],
-    },
-    {
-        id: 5,
-        question: "Скільки часу у вас є на оплату комісії після успішного пробного?",
-        options: [
-            { id: "a", text: "3 години", correct: false },
-            { id: "b", text: "12 годин", correct: false },
-            { id: "c", text: "24 години", correct: true },
-            { id: "d", text: "7 днів", correct: false },
-        ],
-    },
-]
+import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
 
-export function TutorOnboardingPage() {
+interface TutorOnboardingPageProps {
+    quizzes: any // Fallback to any since GetQuizzesQuery is cached as not exported
+}
+
+type LocalQuizQuestion = {
+    id: string
+    question: string
+    explanation?: string | null
+    options: {
+        id: string
+        text: string
+        correct: boolean
+    }[]
+}
+
+export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     const router = useRouter()
     const { user } = useAuth()
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState<Record<number, string>>({})
     const [showResults, setShowResults] = useState(false)
     const [score, setScore] = useState(0)
+
+    const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null
+
+    const QUIZ_QUESTIONS: LocalQuizQuestion[] = useMemo(() => {
+        if (!quiz) return []
+
+        return [...quiz.questions].sort((a: any, b: any) => a.order - b.order).map((q: any) => ({
+            id: String(q.id),
+            question: q.text,
+            explanation: q.explanation,
+            options: q.options.map((opt: any) => ({
+                id: String(opt.id),
+                text: opt.text,
+                correct: opt.isCorrect
+            }))
+        }))
+    }, [quiz])
 
     const handleAnswer = (optionId: string) => {
         setAnswers({ ...answers, [currentQuestion]: optionId })
@@ -110,25 +91,29 @@ export function TutorOnboardingPage() {
 
     const question = QUIZ_QUESTIONS[currentQuestion]
     const shuffledOptions = useMemo(() => {
-        // Randomize options order on question change, to keep it consistent while answering
+        if (!question) return []
         return [...question.options].sort(() => Math.random() - 0.5)
     }, [question])
+
+    if (!quiz || QUIZ_QUESTIONS.length === 0) {
+        return <div className="flex h-screen items-center justify-center p-8">Немає доступних квізів.</div>
+    }
 
 
     const handleStartQuiz = () => setStep("quiz")
 
     const handleComplete = async () => {
-        // In a real app, this would be an API call to update hasPassedQuiz
         if (user) {
             const updatedUser = { ...user, hasPassedQuiz: true }
             localStorage.setItem("user", JSON.stringify(updatedUser))
-            // Trigger a page refresh to update auth context state
             window.location.href = "/tutor"
         }
     }
 
-    const progress = ((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100
-    const isPerfectScore = score === QUIZ_QUESTIONS.length
+    const progress = QUIZ_QUESTIONS.length > 0 ? ((currentQuestion) / QUIZ_QUESTIONS.length) * 100 : 0
+    const scorePercentage = QUIZ_QUESTIONS.length > 0 ? (score / QUIZ_QUESTIONS.length) * 100 : 0
+    const passingScore = quiz?.passingScore ?? 100
+    const isPerfectScore = scorePercentage >= passingScore
 
     if (step === "instructions") {
         return (
@@ -202,7 +187,8 @@ export function TutorOnboardingPage() {
                             {isPerfectScore ? "Вітаємо! Ви пройшли тест" : "Потрібно спробувати ще раз"}
                         </CardTitle>
                         <CardDescription>
-                            Ви відповіли правильно на {score} з {QUIZ_QUESTIONS.length} питань
+                            Ви відповіли правильно на {score} з {QUIZ_QUESTIONS.length} питань ({Math.round(scorePercentage)}%)
+                            {passingScore < 100 && <span className="block mt-1 text-xs">Прохідний бал: {passingScore}%</span>}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -211,7 +197,7 @@ export function TutorOnboardingPage() {
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
                                     <p>
-                                        Для активації профілю необхідно правильно відповісти на всі питання. Будь ласка, уважно
+                                        Для активації профілю необхідно правильно відповісти на {passingScore}% питань. Будь ласка, уважно
                                         перечитайте{" "}
                                         <a href="/rules" className="text-teal-600 hover:underline">
                                             правила платформи
@@ -225,8 +211,8 @@ export function TutorOnboardingPage() {
                         <div className="space-y-3">
                             {QUIZ_QUESTIONS.map((question, index) => {
                                 const userAnswer = answers[index]
-                                const selectedOption = question.options.find((opt) => opt.id === userAnswer)
-                                const correctOption = question.options.find((opt) => opt.correct)
+                                const selectedOption = question.options.find((opt: any) => opt.id === String(userAnswer))
+                                const correctOption = question.options.find((opt: any) => opt.correct)
                                 const isCorrect = selectedOption?.correct
 
                                 return (
@@ -246,9 +232,19 @@ export function TutorOnboardingPage() {
                                             )}
                                         </div>
                                         {!isCorrect && (
-                                            <div className="mt-2 space-y-1 text-sm">
-                                                <p className="text-red-600">Ваша відповідь: {selectedOption?.text}</p>
-                                                <p className="text-green-600">Правильна відповідь: {correctOption?.text}</p>
+                                            <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
+                                                <div className="flex flex-col gap-1 mb-2">
+                                                    <p className="text-red-700 font-medium">Ваша відповідь: <span className="font-normal text-slate-800">{selectedOption?.text}</span></p>
+                                                    <p className="text-green-700 font-medium">Правильна відповідь: <span className="font-normal text-slate-800">{correctOption?.text}</span></p>
+                                                </div>
+                                                {question.explanation && (
+                                                    <p className="text-sm mt-3 pt-3 border-t text-muted-foreground"><span className="font-medium">Пояснення:</span> {question.explanation}</p>
+                                                )}
+                                            </div>
+                                        )}
+                                        {isCorrect && question.explanation && (
+                                            <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
+                                                <p className="text-sm text-muted-foreground"><span className="font-medium">Пояснення:</span> {question.explanation}</p>
                                             </div>
                                         )}
                                     </div>
@@ -259,7 +255,7 @@ export function TutorOnboardingPage() {
                         <div className="flex flex-col gap-3">
                             {isPerfectScore ? (
                                 <Button onClick={handleComplete} className="w-full">
-                                    Продовжити до налаштування профілю
+                                    Продовжити
                                 </Button>
                             ) : (
                                 <>
@@ -274,21 +270,21 @@ export function TutorOnboardingPage() {
                         </div>
                     </CardContent>
                 </Card>
-            </div>
+            </div >
         )
     }
 
     const hasAnswer = answers[currentQuestion] !== undefined
-    const selectedOption = question.options.find((opt) => opt.id === answers[currentQuestion])
+    const selectedOption = question.options.find((opt: any) => String(opt.id) === String(answers[currentQuestion]))
     const isAnswerIncorrect = selectedOption ? !selectedOption.correct : false
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
             <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <CardTitle className="text-2xl">Тест на знання правил платформи</CardTitle>
+                    <CardTitle className="text-2xl">{quiz.title || "Тест на знання правил платформи"}</CardTitle>
                     <CardDescription>
-                        Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання.
+                        {quiz.description || "Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання."}
                     </CardDescription>
                     <Progress value={progress} className="mt-4" />
                     <p className="mt-2 text-sm text-muted-foreground">
