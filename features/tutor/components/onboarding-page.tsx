@@ -2,7 +2,7 @@
 
 import { AlertCircle, ArrowRight, BookOpen, CheckCircle, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { useAuth } from "@/lib/auth-context"
+import { cn } from "@/lib/utils"
 
 const QUIZ_QUESTIONS = [
     {
@@ -106,6 +107,13 @@ export function TutorOnboardingPage() {
     }
 
     const [step, setStep] = useState<"instructions" | "quiz">("instructions")
+
+    const question = QUIZ_QUESTIONS[currentQuestion]
+    const shuffledOptions = useMemo(() => {
+        // Randomize options order on question change, to keep it consistent while answering
+        return [...question.options].sort(() => Math.random() - 0.5)
+    }, [question])
+
 
     const handleStartQuiz = () => setStep("quiz")
 
@@ -202,12 +210,14 @@ export function TutorOnboardingPage() {
                             <Alert>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
-                                    Для активації профілю необхідно правильно відповісти на всі питання. Будь ласка, уважно
-                                    перечитайте{" "}
-                                    <a href="/rules" className="text-teal-600 hover:underline">
-                                        правила платформи
-                                    </a>{" "}
-                                    та спробуйте ще раз.
+                                    <p>
+                                        Для активації профілю необхідно правильно відповісти на всі питання. Будь ласка, уважно
+                                        перечитайте{" "}
+                                        <a href="/rules" className="text-teal-600 hover:underline">
+                                            правила платформи
+                                        </a>{" "}
+                                        та спробуйте ще раз.
+                                    </p>
                                 </AlertDescription>
                             </Alert>
                         )}
@@ -222,11 +232,10 @@ export function TutorOnboardingPage() {
                                 return (
                                     <div
                                         key={question.id}
-                                        className={`rounded-lg border-2 p-4 ${
-                                            isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
-                                        }`}
+                                        className={`rounded-lg border-2 p-4 ${isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                            }`}
                                     >
-                                        <div className="mb-2 flex items-start justify-between">
+                                        <div className="flex items-start justify-between">
                                             <p className="text-sm font-medium">
                                                 {index + 1}. {question.question}
                                             </p>
@@ -247,7 +256,7 @@ export function TutorOnboardingPage() {
                             })}
                         </div>
 
-                        <div className="flex gap-3">
+                        <div className="flex flex-col gap-3">
                             {isPerfectScore ? (
                                 <Button onClick={handleComplete} className="w-full">
                                     Продовжити до налаштування профілю
@@ -269,8 +278,9 @@ export function TutorOnboardingPage() {
         )
     }
 
-    const question = QUIZ_QUESTIONS[currentQuestion]
     const hasAnswer = answers[currentQuestion] !== undefined
+    const selectedOption = question.options.find((opt) => opt.id === answers[currentQuestion])
+    const isAnswerIncorrect = selectedOption ? !selectedOption.correct : false
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
@@ -288,28 +298,32 @@ export function TutorOnboardingPage() {
                 <CardContent className="space-y-6">
                     <div>
                         <h3 className="mb-4 text-lg font-medium">{question.question}</h3>
-                        <RadioGroup value={answers[currentQuestion]} onValueChange={handleAnswer}>
+                        <RadioGroup value={answers[currentQuestion] ?? ""} onValueChange={handleAnswer}>
                             <div className="space-y-3">
-                                {question.options.map((option) => (
-                                    <div
-                                        key={option.id}
-                                        className={`flex items-center space-x-3 rounded-lg border-2 p-4 transition-colors ${
-                                            answers[currentQuestion] === option.id
-                                                ? "border-teal-600 bg-teal-50"
-                                                : "border-gray-200 hover:border-gray-300"
-                                        }`}
+                                {shuffledOptions.map((option) => (
+                                    <Label
+                                        key={`${question.id}-${option.id}`}
+                                        htmlFor={`${question.id}-${option.id}`}
+                                        className={cn(
+                                            "flex items-center space-x-3 cursor-pointer rounded-lg border-2 p-4 transition-colors",
+                                            {
+                                                "border-teal-600 bg-teal-50": answers[currentQuestion] === option.id && option.correct,
+                                                "border-red-600 bg-red-50 text-red-900": answers[currentQuestion] === option.id && !option.correct,
+                                                "border-gray-200 hover:border-gray-300": answers[currentQuestion] !== option.id,
+                                            }
+                                        )}
                                     >
-                                        <RadioGroupItem value={option.id} id={option.id} />
-                                        <Label htmlFor={option.id} className="flex-1 cursor-pointer font-normal">
+                                        <RadioGroupItem value={option.id} id={`${question.id}-${option.id}`} />
+                                        <p className="flex-1 font-normal">
                                             {option.text}
-                                        </Label>
-                                    </div>
+                                        </p>
+                                    </Label>
                                 ))}
                             </div>
                         </RadioGroup>
                     </div>
 
-                    <div className="flex gap-3">
+                    <div className="flex flex-col gap-3">
                         {currentQuestion > 0 && (
                             <Button
                                 variant="outline"
