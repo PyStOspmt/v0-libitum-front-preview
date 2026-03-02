@@ -1,13 +1,12 @@
 "use client"
 
+import { GET_OAUTH_URL, LOGIN, REFRESH_TOKEN, REGISTER } from "@/graphql/auth"
 import { useApolloClient, useMutation } from "@apollo/client/react"
 import { useRouter } from "next/navigation"
 import { type ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react"
 
 import { type FrontendRole, ROLE_MAP, UserRoles } from "@/features/auth/types/auth.types"
 import type { User } from "@/features/user/types/user.types"
-
-import { GET_OAUTH_URL, LOGIN, REFRESH_TOKEN, REGISTER } from "@/lib/graphql/auth"
 
 /** Legacy role string used across existing UI components */
 export type LegacyRole = "client" | "specialist" | "admin"
@@ -75,9 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter()
     const client = useApolloClient()
 
-    const [loginMutation] = useMutation<LoginData>(LOGIN)
-    const [registerMutation] = useMutation<RegisterData>(REGISTER)
-    const [refreshMutation] = useMutation<RefreshData>(REFRESH_TOKEN)
+    const [loginMutation] = useMutation(LOGIN)
+    const [registerMutation] = useMutation(REGISTER)
+    const [refreshMutation] = useMutation(REFRESH_TOKEN)
 
     const refreshSession = useCallback(async (): Promise<boolean> => {
         try {

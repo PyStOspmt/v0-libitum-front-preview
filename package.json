@@ -8,11 +8,14 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
-        "start": "next start"
+        "start": "next start",
+        "codegen": "dotenv -e .env -- graphql-codegen --config lib/config/codegen.config.ts",
+        "codegen:watch": "dotenv -e .env -- graphql-codegen --config lib/config/codegen.config.ts --watch"
     },
     "dependencies": {
         "@apollo/client": "^4.1.6",
         "@fingerprintjs/fingerprintjs": "^5.1.0",
+        "@graphql-typed-document-node/core": "^3.2.0",
         "@hookform/resolvers": "^3.10.0",
         "@radix-ui/react-accordion": "1.2.2",
         "@radix-ui/react-alert-dialog": "1.1.4",
@@ -73,12 +76,16 @@
         "zustand": "5.0.8"
     },
     "devDependencies": {
+        "@graphql-codegen/cli": "^6.1.2",
+        "@graphql-codegen/client-preset": "^5.2.3",
+        "@parcel/watcher": "^2.5.6",
         "@tailwindcss/postcss": "^4.1.9",
         "@types/node": "^22",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@typescript-eslint/eslint-plugin": "^8",
         "@typescript-eslint/parser": "^8",
+        "dotenv-cli": "^11.0.0",
         "eslint": "^9",
         "eslint-config-next": "^15",
         "eslint-config-prettier": "^10",

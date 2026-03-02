@@ -1,5 +1,6 @@
 "use client"
 
+import { VERIFY_USER } from "@/graphql/auth"
 import { useToast } from "@/hooks/use-toast"
 import { useMutation } from "@apollo/client/react"
 import { CheckCircle, Loader2, LogOut, Mail } from "lucide-react"
@@ -10,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { useAuth } from "@/lib/auth-context"
-import { VERIFY_USER } from "@/lib/graphql/auth"
 
 export function VerifyEmailCard() {
     const { user, logout } = useAuth()

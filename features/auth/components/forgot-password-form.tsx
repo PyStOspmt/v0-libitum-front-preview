@@ -1,5 +1,6 @@
 "use client"
 
+import { REQUEST_RESET_PASSWORD } from "@/graphql/auth"
 import { useToast } from "@/hooks/use-toast"
 import { useMutation } from "@apollo/client/react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -12,8 +13,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-
-import { REQUEST_RESET_PASSWORD } from "@/lib/graphql/auth"
 
 import { type ForgotPasswordValues, forgotPasswordSchema } from "../schemas/forgot-password.schema"
 
