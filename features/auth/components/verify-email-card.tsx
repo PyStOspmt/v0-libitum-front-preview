@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 import { useMutation } from "@apollo/client/react"
+import { CheckCircle, Loader2, LogOut, Mail } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, LogOut, CheckCircle, Loader2 } from "lucide-react"
+
 import { useAuth } from "@/lib/auth-context"
-import { useToast } from "@/hooks/use-toast"
 import { VERIFY_USER } from "@/lib/graphql/auth"
 
 export function VerifyEmailCard() {
@@ -47,7 +49,7 @@ export function VerifyEmailCard() {
     const handleResend = async () => {
         setIsResending(true)
         // TODO: Add resend verification email mutation when backend supports it
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        await new Promise((resolve) => setTimeout(resolve, 1500))
         toast({
             title: "Посилання відправлено",
             description: `Ми відправили нове посилання на ${user?.email}`,
@@ -89,14 +91,15 @@ export function VerifyEmailCard() {
                         <Mail className="h-8 w-8 text-primary" />
                     )}
                 </div>
-                <CardTitle className="text-2xl">
-                    {isVerifying ? "Підтвердження..." : "Підтвердіть ваш Email"}
-                </CardTitle>
+                <CardTitle className="text-2xl">{isVerifying ? "Підтвердження..." : "Підтвердіть ваш Email"}</CardTitle>
                 <CardDescription>
-                    {isVerifying
-                        ? "Зачекайте, ми підтверджуємо вашу пошту..."
-                        : <>Ми відправили посилання для підтвердження на адресу <strong>{user?.email}</strong></>
-                    }
+                    {isVerifying ? (
+                        "Зачекайте, ми підтверджуємо вашу пошту..."
+                    ) : (
+                        <>
+                            Ми відправили посилання для підтвердження на адресу <strong>{user?.email}</strong>
+                        </>
+                    )}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

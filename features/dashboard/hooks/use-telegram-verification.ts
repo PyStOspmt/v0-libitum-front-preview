@@ -1,5 +1,6 @@
-import { useSocket, useSocketEvent } from "@/lib/hooks/use-socket"
 import { toast } from "sonner"
+
+import { useSocket, useSocketEvent } from "@/lib/hooks/use-socket"
 
 type ServerToClient = {
     "telegram-verified": (data: { message: string; timestamp: number }) => void

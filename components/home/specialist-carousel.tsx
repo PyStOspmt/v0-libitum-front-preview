@@ -1,10 +1,12 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
-import { LocaleLink } from "@/components/locale-link"
-import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
 import { ArrowRight, Star } from "lucide-react"
+import Image from "next/image"
+import { useCallback, useEffect, useState } from "react"
+
+import { LocaleLink } from "@/components/locale-link"
+
 import { useTranslation } from "@/lib/i18n"
 
 export const tutors = [
@@ -85,8 +87,8 @@ export const tutors = [
         lessonsCompleted: 4150,
         experience: 5,
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80",
-    }
-];
+    },
+]
 
 export const psychologists = [
     {
@@ -166,8 +168,8 @@ export const psychologists = [
         lessonsCompleted: 2640,
         experience: 7,
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
-    }
-];
+    },
+]
 
 export const speechTherapists = [
     {
@@ -247,17 +249,25 @@ export const speechTherapists = [
         lessonsCompleted: 1435,
         experience: 4,
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
-    }
-];
+    },
+]
 
-export function SpecialistCarousel({ title, specialists, theme }: { title: string, specialists: any[], theme: 'teal' | 'amber' }) {
+export function SpecialistCarousel({
+    title,
+    specialists,
+    theme,
+}: {
+    title: string
+    specialists: any[]
+    theme: "teal" | "amber"
+}) {
     const { t } = useTranslation()
     const [emblaRef, emblaApi] = useEmblaCarousel({
         loop: false,
-        align: 'center',
+        align: "center",
         skipSnaps: false,
         dragFree: false,
-        containScroll: 'trimSnaps',
+        containScroll: "trimSnaps",
     })
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [isTouchMode, setIsTouchMode] = useState(false)
@@ -302,29 +312,47 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
         }
     }, [emblaApi])
 
-    const themeClasses: Record<'teal' | 'amber', { bg: string, text: string, borderHighlight: string, arrowBg: string, arrowText: string, pill: string }> = {
-        teal: { bg: 'group-hover:bg-[#e8fffb]', text: 'group-hover:text-[#00a389]', borderHighlight: 'group-hover:border-[#00c5a6]/30', arrowBg: 'bg-[#00c5a6]/10 group-hover:bg-[#00c5a6]', arrowText: 'text-[#00c5a6] group-hover:text-[#121117]', pill: 'bg-[#e8fffb] text-[#00a389]' },
-        amber: { bg: 'group-hover:bg-[#fff8e1]', text: 'group-hover:text-[#d87b00]', borderHighlight: 'group-hover:border-[#ffc800]/40', arrowBg: 'bg-[#ffc800]/20 group-hover:bg-[#ffc800]', arrowText: 'text-[#d87b00] group-hover:text-[#121117]', pill: 'bg-[#fff8e1] text-[#d87b00]' },
-    };
+    const themeClasses: Record<
+        "teal" | "amber",
+        { bg: string; text: string; borderHighlight: string; arrowBg: string; arrowText: string; pill: string }
+    > = {
+        teal: {
+            bg: "group-hover:bg-[#e8fffb]",
+            text: "group-hover:text-[#00a389]",
+            borderHighlight: "group-hover:border-[#00c5a6]/30",
+            arrowBg: "bg-[#00c5a6]/10 group-hover:bg-[#00c5a6]",
+            arrowText: "text-[#00c5a6] group-hover:text-[#121117]",
+            pill: "bg-[#e8fffb] text-[#00a389]",
+        },
+        amber: {
+            bg: "group-hover:bg-[#fff8e1]",
+            text: "group-hover:text-[#d87b00]",
+            borderHighlight: "group-hover:border-[#ffc800]/40",
+            arrowBg: "bg-[#ffc800]/20 group-hover:bg-[#ffc800]",
+            arrowText: "text-[#d87b00] group-hover:text-[#121117]",
+            pill: "bg-[#fff8e1] text-[#d87b00]",
+        },
+    }
 
-    const tClass = themeClasses[theme];
-    const activeThemeClasses = theme === "teal"
-        ? {
-            card: "border-[#00c5a6]/30 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
-            text: "text-[#00a389]",
-            chip: "bg-[#e8fffb] text-[#00a389] border-[#00c5a6]/30",
-            arrow: "bg-[#00c5a6] text-[#121117]",
-            deco: "opacity-[0.06] scale-[1.8]",
-            divider: "border-slate-200",
-        }
-        : {
-            card: "border-[#ffc800]/40 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
-            text: "text-[#d87b00]",
-            chip: "bg-[#fff8e1] text-[#d87b00] border-[#ffc800]/40",
-            arrow: "bg-[#ffc800] text-[#121117]",
-            deco: "opacity-[0.06] scale-[1.8]",
-            divider: "border-slate-200",
-        }
+    const tClass = themeClasses[theme]
+    const activeThemeClasses =
+        theme === "teal"
+            ? {
+                  card: "border-[#00c5a6]/30 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+                  text: "text-[#00a389]",
+                  chip: "bg-[#e8fffb] text-[#00a389] border-[#00c5a6]/30",
+                  arrow: "bg-[#00c5a6] text-[#121117]",
+                  deco: "opacity-[0.06] scale-[1.8]",
+                  divider: "border-slate-200",
+              }
+            : {
+                  card: "border-[#ffc800]/40 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+                  text: "text-[#d87b00]",
+                  chip: "bg-[#fff8e1] text-[#d87b00] border-[#ffc800]/40",
+                  arrow: "bg-[#ffc800] text-[#121117]",
+                  deco: "opacity-[0.06] scale-[1.8]",
+                  divider: "border-slate-200",
+              }
 
     return (
         <div className="mb-10 last:mb-0 relative z-20 max-w-[1440px] mx-auto">
@@ -343,33 +371,60 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                         className="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-white hover:border-slate-300 transition-colors shadow-sm bg-white/50"
                         aria-label="Previous specialist"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
                     </button>
                     <button
                         onClick={scrollNext}
                         className="w-9 h-9 rounded-full border border-slate-200 flex items-center justify-center text-[#121117] hover:bg-white hover:border-slate-300 transition-colors shadow-sm bg-white/50"
                         aria-label="Next specialist"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
                     </button>
                 </div>
             </div>
 
             <div className="overflow-hidden pb-8 pt-2" ref={emblaRef}>
-                <div className="flex touch-pan-y gap-3 sm:gap-6 px-3 sm:px-6 lg:px-8 pr-[15vw] sm:pr-6" style={{ backfaceVisibility: 'hidden' }}>
+                <div
+                    className="flex touch-pan-y gap-3 sm:gap-6 px-3 sm:px-6 lg:px-8 pr-[15vw] sm:pr-6"
+                    style={{ backfaceVisibility: "hidden" }}
+                >
                     {specialists.map((specialist, idx) => {
                         const isActiveSlide = selectedIndex === idx
                         const isMobileActive = isTouchMode && isActiveSlide
 
                         return (
-                            <div
-                                key={specialist.id}
-                                className="flex-none w-[65vw] sm:w-[270px] md:w-[290px] min-w-0"
-                            >
+                            <div key={specialist.id} className="flex-none w-[65vw] sm:w-[270px] md:w-[290px] min-w-0">
                                 <LocaleLink href={`/specialists/${specialist.id}`} className="block h-full group">
-                                    <div className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isMobileActive ? activeThemeClasses.card : ""}`}>
-
-                                        <div className={`absolute -right-12 -top-12 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-[1.8] group-hover:opacity-[0.06] ${theme === 'teal' ? 'bg-[#00c5a6]' : 'bg-[#ffc800]'} ${isMobileActive ? activeThemeClasses.deco : ''}`} />
+                                    <div
+                                        className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isMobileActive ? activeThemeClasses.card : ""}`}
+                                    >
+                                        <div
+                                            className={`absolute -right-12 -top-12 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-[1.8] group-hover:opacity-[0.06] ${theme === "teal" ? "bg-[#00c5a6]" : "bg-[#ffc800]"} ${isMobileActive ? activeThemeClasses.deco : ""}`}
+                                        />
 
                                         <div className="flex gap-4 items-start w-full mb-5 relative z-10">
                                             <div className="relative w-[80px] h-[80px] rounded-full overflow-hidden shrink-0 shadow-sm border-2 border-white ring-1 ring-slate-100">
@@ -383,11 +438,19 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                                 <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#00c5a6] border-2 border-white rounded-full"></div>
                                             </div>
                                             <div className="pt-1 flex-1 min-w-0">
-                                                <h3 className={`font-bold text-[18px] text-[#121117] leading-tight ${tClass.text} transition-colors truncate ${isMobileActive ? activeThemeClasses.text : ""}`}>{specialist.name}</h3>
-                                                <p className="text-[14px] text-[#69686f] font-medium mt-1 truncate">{specialist.specialization}</p>
+                                                <h3
+                                                    className={`font-bold text-[18px] text-[#121117] leading-tight ${tClass.text} transition-colors truncate ${isMobileActive ? activeThemeClasses.text : ""}`}
+                                                >
+                                                    {specialist.name}
+                                                </h3>
+                                                <p className="text-[14px] text-[#69686f] font-medium mt-1 truncate">
+                                                    {specialist.specialization}
+                                                </p>
                                                 <div className="flex items-center gap-1.5 mt-2.5 bg-[#fff8e1]/80 w-fit px-2 py-0.5 rounded-[6px] border border-[#ffc800]/20">
                                                     <Star className="w-3.5 h-3.5 fill-[#ffc800] text-[#ffc800]" />
-                                                    <span className="text-[13px] font-bold text-[#f57c00] leading-none">{specialist.rating}</span>
+                                                    <span className="text-[13px] font-bold text-[#f57c00] leading-none">
+                                                        {specialist.rating}
+                                                    </span>
                                                     <span className="text-[12px] font-medium text-[#f57c00]/80 border-l border-[#f57c00]/20 pl-1.5 ml-0.5 leading-none">
                                                         {specialist.reviews}
                                                     </span>
@@ -395,38 +458,70 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                             </div>
                                         </div>
 
-                                        <div className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee"
+                                        <div
+                                            className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee"
                                             onMouseEnter={(e) => {
                                                 if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector('.animate-tags-marquee') as HTMLElement;
-                                                    if (marquee) marquee.style.animationPlayState = 'running';
+                                                    const marquee = e.currentTarget.querySelector(
+                                                        ".animate-tags-marquee",
+                                                    ) as HTMLElement
+                                                    if (marquee) marquee.style.animationPlayState = "running"
                                                 }
                                             }}
                                             onMouseLeave={(e) => {
                                                 if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector('.animate-tags-marquee') as HTMLElement;
-                                                    if (marquee) marquee.style.animationPlayState = 'paused';
+                                                    const marquee = e.currentTarget.querySelector(
+                                                        ".animate-tags-marquee",
+                                                    ) as HTMLElement
+                                                    if (marquee) marquee.style.animationPlayState = "paused"
                                                 }
                                             }}
                                         >
                                             <div className="flex items-center gap-2 mb-2 text-[13px] text-[#69686f] font-medium shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" /></svg>
-                                                <span>Викладає {specialist.subjects.length} {specialist.subjects.length === 1 ? 'предмет' : 'предмети'}</span>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="16"
+                                                    height="16"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="text-slate-400"
+                                                >
+                                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                                </svg>
+                                                <span>
+                                                    Викладає {specialist.subjects.length}{" "}
+                                                    {specialist.subjects.length === 1 ? "предмет" : "предмети"}
+                                                </span>
                                             </div>
-                                            <div className="flex items-center w-full relative overflow-hidden rounded-r-lg" style={{ maskImage: 'linear-gradient(to right, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 100%)' }}>
+                                            <div
+                                                className="flex items-center w-full relative overflow-hidden rounded-r-lg"
+                                                style={{
+                                                    maskImage: "linear-gradient(to right, black 80%, transparent 100%)",
+                                                    WebkitMaskImage: "linear-gradient(to right, black 80%, transparent 100%)",
+                                                }}
+                                            >
                                                 <div
-                                                    className={`flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5 ${isMobileActive ? '![animation-play-state:running]' : '![animation-play-state:paused]'}`}
+                                                    className={`flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5 ${isMobileActive ? "![animation-play-state:running]" : "![animation-play-state:paused]"}`}
                                                     style={{
-                                                        animationDuration: '15s'
+                                                        animationDuration: "15s",
                                                     }}
                                                 >
-                                                    {[...specialist.subjects, ...specialist.subjects, ...specialist.subjects].map((subject: string, idx: number) => (
+                                                    {[
+                                                        ...specialist.subjects,
+                                                        ...specialist.subjects,
+                                                        ...specialist.subjects,
+                                                    ].map((subject: string, idx: number) => (
                                                         <span
                                                             key={idx}
                                                             className={`bg-[#f0f3f3] text-[#4d4c53] px-2 py-1 rounded-lg text-[12px] font-[600] leading-tight border border-slate-100 shrink-0 transition-colors
-                                                                ${theme === 'teal'
-                                                                    ? 'group-hover/marquee:bg-[#e8fffb] group-hover/marquee:text-[#00a389] group-hover/marquee:border-[#00c5a6]/30'
-                                                                    : 'group-hover/marquee:bg-[#fff8e1] group-hover/marquee:text-[#d87b00] group-hover/marquee:border-[#ffc800]/40'
+                                                                ${
+                                                                    theme === "teal"
+                                                                        ? "group-hover/marquee:bg-[#e8fffb] group-hover/marquee:text-[#00a389] group-hover/marquee:border-[#00c5a6]/30"
+                                                                        : "group-hover/marquee:bg-[#fff8e1] group-hover/marquee:text-[#d87b00] group-hover/marquee:border-[#ffc800]/40"
                                                                 } 
                                                                 ${isMobileActive ? activeThemeClasses.chip : ""}`}
                                                         >
@@ -440,35 +535,90 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                         {/* Experience and Stats - moved to bottom */}
                                         <div className="flex items-center justify-between gap-1 w-full text-[11px] sm:text-[12px] text-[#69686f] mb-3 overflow-hidden">
                                             <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 flex-shrink-0">
-                                                    <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="14"
+                                                    height="14"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="text-slate-400 flex-shrink-0"
+                                                >
+                                                    <circle cx="12" cy="12" r="10" />
+                                                    <polyline points="12 6 12 12 16 14" />
                                                 </svg>
-                                                <span className="truncate"><strong className="text-[12px] sm:text-[13px] text-[#121117]">{specialist.experience}</strong> років</span>
+                                                <span className="truncate">
+                                                    <strong className="text-[12px] sm:text-[13px] text-[#121117]">
+                                                        {specialist.experience}
+                                                    </strong>{" "}
+                                                    років
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden shrink shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 flex-shrink-0">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="14"
+                                                    height="14"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="text-slate-400 flex-shrink-0"
+                                                >
                                                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                                                     <circle cx="9" cy="7" r="4" />
                                                     <path d="m22 21-3-3 3-3" />
                                                 </svg>
-                                                <span className="truncate"><strong className="text-[12px] sm:text-[13px] text-[#121117]">{specialist.activeStudents}</strong> учнів</span>
+                                                <span className="truncate">
+                                                    <strong className="text-[12px] sm:text-[13px] text-[#121117]">
+                                                        {specialist.activeStudents}
+                                                    </strong>{" "}
+                                                    учнів
+                                                </span>
                                             </div>
                                             <div className="flex items-center gap-1 whitespace-nowrap overflow-hidden shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 flex-shrink-0">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="14"
+                                                    height="14"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="text-slate-400 flex-shrink-0"
+                                                >
                                                     <path d="M3 9h18l-1 12H4L3 9Z" />
                                                     <path d="M9 9V6a3 3 0 1 1 6 0v3" />
                                                 </svg>
-                                                <span className="truncate"><strong className="text-[12px] sm:text-[13px] text-[#121117]">{specialist.lessonsCompleted}</strong> занять</span>
+                                                <span className="truncate">
+                                                    <strong className="text-[12px] sm:text-[13px] text-[#121117]">
+                                                        {specialist.lessonsCompleted}
+                                                    </strong>{" "}
+                                                    занять
+                                                </span>
                                             </div>
                                         </div>
 
                                         <div className="flex flex-col mt-auto w-full relative z-10 pt-2">
-                                            <div className={`flex items-center justify-between pt-3 border-t border-gray-100 w-full group-hover:border-slate-200 transition-colors ${isMobileActive ? activeThemeClasses.divider : ""}`}>
+                                            <div
+                                                className={`flex items-center justify-between pt-3 border-t border-gray-100 w-full group-hover:border-slate-200 transition-colors ${isMobileActive ? activeThemeClasses.divider : ""}`}
+                                            >
                                                 <div>
-                                                    <span className="text-[20px] font-bold text-[#121117]">₴{specialist.price}</span>
+                                                    <span className="text-[20px] font-bold text-[#121117]">
+                                                        ₴{specialist.price}
+                                                    </span>
                                                     <span className="text-[13px] text-[#69686f] ml-1 font-medium">/ 50 хв</span>
                                                 </div>
-                                                <div className={`px-4 py-2 rounded-[10px] text-[14px] font-[700] transition-all duration-300 flex items-center gap-1.5 shrink-0 ${isMobileActive ? activeThemeClasses.arrow : `${tClass.arrowBg} ${tClass.arrowText}`} ${theme === 'teal' ? 'group-hover:bg-[#00c5a6] group-hover:text-[#121117]' : 'group-hover:bg-[#ffc800] group-hover:text-[#121117]'}`}>
+                                                <div
+                                                    className={`px-4 py-2 rounded-[10px] text-[14px] font-[700] transition-all duration-300 flex items-center gap-1.5 shrink-0 ${isMobileActive ? activeThemeClasses.arrow : `${tClass.arrowBg} ${tClass.arrowText}`} ${theme === "teal" ? "group-hover:bg-[#00c5a6] group-hover:text-[#121117]" : "group-hover:bg-[#ffc800] group-hover:text-[#121117]"}`}
+                                                >
                                                     Детальніше
                                                     <ArrowRight className="w-4 h-4" />
                                                 </div>

@@ -1,9 +1,10 @@
-import { getFingerprint } from "@/lib/fingerprint"
-import { REFRESH_TOKEN } from "@/lib/graphql/auth"
 import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client"
 import { CombinedGraphQLErrors } from "@apollo/client/errors"
 import { ErrorLink } from "@apollo/client/link/error"
 import { Observable } from "@apollo/client/utilities"
+
+import { getFingerprint } from "@/lib/fingerprint"
+import { REFRESH_TOKEN } from "@/lib/graphql/auth"
 
 const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
 

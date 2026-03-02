@@ -1,19 +1,14 @@
 import { gql } from "@apollo/client"
+
 import type {
-    RegisterVariables,
     LoginVariables,
     OAuthVariables,
-    VerifyUserVariables,
+    RegisterVariables,
     ResetPasswordVariables,
+    VerifyUserVariables,
 } from "@/features/auth/types/auth.types"
 
-export type {
-    RegisterVariables,
-    LoginVariables,
-    OAuthVariables,
-    VerifyUserVariables,
-    ResetPasswordVariables,
-}
+export type { RegisterVariables, LoginVariables, OAuthVariables, VerifyUserVariables, ResetPasswordVariables }
 
 export const GET_OAUTH_URL = gql`
     query GetOAuthURL {

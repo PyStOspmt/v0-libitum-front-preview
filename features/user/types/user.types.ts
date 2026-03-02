@@ -1,7 +1,6 @@
 // ============================================
 // 👤 USER TYPES — Повний скоуп користувачів
 // ============================================
-
 import { UserRoles } from "@/features/auth/types/auth.types"
 
 // Re-export UserRoles for convenience

@@ -1,14 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import Image from "next/image"
 import { Menu, X } from "lucide-react"
+import Image from "next/image"
+import { useState } from "react"
+
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { LocaleLink } from "@/components/locale-link"
+import { Button } from "@/components/ui/button"
 
 import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
-import { Button } from "@/components/ui/button"
-import { LanguageSwitcher } from "@/components/language-switcher"
-import { LocaleLink } from "@/components/locale-link"
 
 export function Header({ theme = "education" }: { theme?: "education" | "health" }) {
     const { user } = useAuth()
@@ -32,9 +33,24 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                     </LocaleLink>
 
                     <nav className="hidden lg:flex items-center gap-6 text-[15px] font-medium text-[#121117]">
-                        <LocaleLink href={specialistHref} className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("nav.specialists")}</LocaleLink>
-                        <LocaleLink href="/#how" className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("nav.how_it_works")}</LocaleLink>
-                        <LocaleLink href="/about" className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("about.title")}</LocaleLink>
+                        <LocaleLink
+                            href={specialistHref}
+                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
+                        >
+                            {t("nav.specialists")}
+                        </LocaleLink>
+                        <LocaleLink
+                            href="/#how"
+                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
+                        >
+                            {t("nav.how_it_works")}
+                        </LocaleLink>
+                        <LocaleLink
+                            href="/about"
+                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
+                        >
+                            {t("about.title")}
+                        </LocaleLink>
                     </nav>
                 </div>
 
@@ -54,7 +70,10 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                             </LocaleLink>
                         ) : (
                             <>
-                                <LocaleLink href="/login" className="hover:text-primary transition-colors px-2 font-[600] text-[15px]">
+                                <LocaleLink
+                                    href="/login"
+                                    className="hover:text-primary transition-colors px-2 font-[600] text-[15px]"
+                                >
                                     {t("btn.login")}
                                 </LocaleLink>
                                 <LocaleLink href="/register">
@@ -93,15 +112,27 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                 <div className="lg:hidden fixed inset-0 top-[73px] z-[100] bg-white animate-in fade-in slide-in-from-top-4 duration-200">
                     <div className="flex flex-col h-full overflow-y-auto p-4 pb-12">
                         <nav className="flex flex-col gap-1 text-[18px] font-semibold text-[#121117] border-b border-gray-100 pb-6 mb-6">
-                            <LocaleLink href={specialistHref} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100">
+                            <LocaleLink
+                                href={specialistHref}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100"
+                            >
                                 {t("nav.specialists")}
                                 <span className="text-slate-300">→</span>
                             </LocaleLink>
-                            <LocaleLink href="/#how" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100">
+                            <LocaleLink
+                                href="/#how"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100"
+                            >
                                 {t("nav.how_it_works")}
                                 <span className="text-slate-300">→</span>
                             </LocaleLink>
-                            <LocaleLink href="/about" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100">
+                            <LocaleLink
+                                href="/about"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100"
+                            >
                                 {t("about.title")}
                                 <span className="text-slate-300">→</span>
                             </LocaleLink>
@@ -117,7 +148,10 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                             ) : (
                                 <>
                                     <LocaleLink href="/login" onClick={() => setIsMobileMenuOpen(false)} className="w-full">
-                                        <Button variant="outline" className="w-full h-[56px] rounded-[16px] text-lg font-bold border-slate-200 hover:bg-slate-50 active:scale-[0.98] transition-transform">
+                                        <Button
+                                            variant="outline"
+                                            className="w-full h-[56px] rounded-[16px] text-lg font-bold border-slate-200 hover:bg-slate-50 active:scale-[0.98] transition-transform"
+                                        >
                                             {t("btn.login")}
                                         </Button>
                                     </LocaleLink>

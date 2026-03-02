@@ -1,10 +1,11 @@
 "use client"
 
+import { AlertCircle, ArrowRight, Clock, DollarSign, TrendingUp, UserCheck, Users } from "lucide-react"
+import Link from "next/link"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { Badge } from "@/components/ui/badge"
-import { Users, UserCheck, Clock, DollarSign, TrendingUp, AlertCircle, ArrowRight } from "lucide-react"
-import Link from "next/link"
 
 const stats = {
     totalUsers: 1247,
@@ -31,7 +32,9 @@ export function AdminDashboard() {
                 <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
                     {/* Header */}
                     <div>
-                        <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Адміністративна панель</h1>
+                        <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">
+                            Адміністративна панель
+                        </h1>
                         <p className="text-[#69686f] mt-1 text-[16px]">Огляд платформи</p>
                     </div>
 
@@ -57,7 +60,9 @@ export function AdminDashboard() {
                                     <UserCheck className="h-5 w-5 text-[#ffb74d]" />
                                 </div>
                             </div>
-                            <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingVerifications}</div>
+                            <div className="text-[32px] font-bold text-[#121117] leading-none">
+                                {stats.pendingVerifications}
+                            </div>
                             <p className="text-[13px] text-[#69686f] mt-2">Нові спеціалісти</p>
                         </div>
 
@@ -79,8 +84,12 @@ export function AdminDashboard() {
                                     <DollarSign className="h-5 w-5 text-[#43a047]" />
                                 </div>
                             </div>
-                            <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.monthlyRevenue.toLocaleString()} ₴</div>
-                            <p className="text-[13px] text-[#43a047] mt-2 font-[600]">+{stats.growthRate}% від минулого місяця</p>
+                            <div className="text-[32px] font-bold text-[#121117] leading-none">
+                                {stats.monthlyRevenue.toLocaleString()} ₴
+                            </div>
+                            <p className="text-[13px] text-[#43a047] mt-2 font-[600]">
+                                +{stats.growthRate}% від минулого місяця
+                            </p>
                         </div>
                     </div>
 
@@ -94,17 +103,27 @@ export function AdminDashboard() {
                                 <h3 className="text-[20px] font-bold text-[#121117]">Потребують уваги</h3>
                             </div>
                             <div className="space-y-4">
-                                <Link href="/admin/verifications" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                                <Link
+                                    href="/admin/verifications"
+                                    className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group"
+                                >
                                     <span className="text-[15px] font-[500] text-[#121117]">Верифікація спеціалістів</span>
                                     <div className="flex items-center gap-3">
-                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">{stats.pendingVerifications}</Badge>
+                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                                            {stats.pendingVerifications}
+                                        </Badge>
                                         <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                                     </div>
                                 </Link>
-                                <Link href="/admin/payments" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                                <Link
+                                    href="/admin/payments"
+                                    className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group"
+                                >
                                     <span className="text-[15px] font-[500] text-[#121117]">Очікують оплати</span>
                                     <div className="flex items-center gap-3">
-                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">{stats.pendingPayments}</Badge>
+                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                                            {stats.pendingPayments}
+                                        </Badge>
                                         <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                                     </div>
                                 </Link>
@@ -121,11 +140,15 @@ export function AdminDashboard() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
                                     <span className="text-[15px] font-[500] text-[#121117]">Нові користувачі (тиждень)</span>
-                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">+47</Badge>
+                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                                        +47
+                                    </Badge>
                                 </div>
                                 <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
                                     <span className="text-[15px] font-[500] text-[#121117]">Завершені заняття (тиждень)</span>
-                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">+156</Badge>
+                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                                        +156
+                                    </Badge>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +162,10 @@ export function AdminDashboard() {
                         </div>
                         <div className="space-y-2">
                             {activities.map((activity) => (
-                                <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-4 px-5 rounded-[12px] hover:bg-gray-50 transition-colors border border-transparent hover:border-slate-200/50">
+                                <div
+                                    key={activity.id}
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between py-4 px-5 rounded-[12px] hover:bg-gray-50 transition-colors border border-transparent hover:border-slate-200/50"
+                                >
                                     <div className="mb-2 sm:mb-0">
                                         <p className="text-[15px] font-[600] text-[#121117]">{activity.text}</p>
                                         <p className="text-[14px] text-[#69686f] mt-1 flex items-center gap-2">

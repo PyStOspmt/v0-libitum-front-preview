@@ -1,11 +1,11 @@
 "use client"
 
+import { ArrowRight } from "lucide-react"
+
 import { LocaleLink } from "@/components/locale-link"
 
 import { useAuth } from "@/lib/hooks/use-auth"
 import { useTranslation } from "@/lib/i18n"
-
-import { ArrowRight } from "lucide-react"
 
 export function HeroClientActions() {
     const { user } = useAuth()

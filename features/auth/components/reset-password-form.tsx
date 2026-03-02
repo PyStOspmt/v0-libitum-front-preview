@@ -1,31 +1,22 @@
 "use client"
 
+import { useToast } from "@/hooks/use-toast"
+import { useMutation } from "@apollo/client/react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@apollo/client/react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
+
 import { RESET_PASSWORD } from "@/lib/graphql/auth"
 
-import {
-    resetPasswordSchema,
-    type ResetPasswordValues,
-} from "../schemas/reset-password.schema"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { useState } from "react"
+import { type ResetPasswordValues, resetPasswordSchema } from "../schemas/reset-password.schema"
 import type { ResetPasswordData, ResetPasswordVariables } from "../types/auth.types"
 
 export function ResetPasswordForm() {
@@ -132,11 +123,7 @@ export function ResetPasswordForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={form.formState.isSubmitting || !token}
-                        >
+                        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !token}>
                             {form.formState.isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

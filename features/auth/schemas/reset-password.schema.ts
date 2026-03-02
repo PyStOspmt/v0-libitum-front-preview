@@ -1,4 +1,5 @@
 import { z } from "zod"
+
 import { PASSWORD_RULES } from "@/features/auth/types/auth.types"
 
 export const resetPasswordSchema = z

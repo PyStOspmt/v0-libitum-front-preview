@@ -1,12 +1,10 @@
 import { z } from "zod"
+
 import { PASSWORD_RULES } from "@/features/auth/types/auth.types"
 
 export const registerSchema = z
     .object({
-        name: z
-            .string()
-            .min(2, { message: "Ім'я має містити принаймні 2 символи" })
-            .max(50, { message: "Ім'я занадто довге" }),
+        name: z.string().min(2, { message: "Ім'я має містити принаймні 2 символи" }).max(50, { message: "Ім'я занадто довге" }),
         email: z.string().email({ message: "Введіть коректну email-адресу" }),
         password: z
             .string()

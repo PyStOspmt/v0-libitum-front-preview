@@ -1,11 +1,13 @@
-import type React from "react"
-import { isValidLocale, type Locale } from "@/lib/i18n/config"
-import { LocaleProvider } from "@/lib/locale-context"
-import { AuthProvider } from "@/lib/auth-context"
-import { ThemeProvider } from "@/lib/theme-context"
-import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
+import type React from "react"
+
+import { Toaster } from "@/components/ui/toaster"
+
 import { ApolloWrapper } from "@/lib/apollo/provider"
+import { AuthProvider } from "@/lib/auth-context"
+import { type Locale, isValidLocale } from "@/lib/i18n/config"
+import { LocaleProvider } from "@/lib/locale-context"
+import { ThemeProvider } from "@/lib/theme-context"
 
 export function generateStaticParams() {
     return [{ locale: "uk" }, { locale: "en" }, { locale: "ru" }]
@@ -26,10 +28,10 @@ export default async function LocaleLayout({
             <body className="antialiased">
                 <ApolloWrapper>
                     <LocaleProvider locale={locale}>
-                    <AuthProvider>
-                        <ThemeProvider>{children}</ThemeProvider>
-                    </AuthProvider>
-                </LocaleProvider>
+                        <AuthProvider>
+                            <ThemeProvider>{children}</ThemeProvider>
+                        </AuthProvider>
+                    </LocaleProvider>
                 </ApolloWrapper>
                 <Toaster />
                 <Analytics />
