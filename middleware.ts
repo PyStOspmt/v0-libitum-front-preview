@@ -1,46 +1,38 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
 
-const locales = ["uk", "en", "ru"] as const
+const locales = ["uk", "en", "ru"]
 const defaultLocale = "uk"
 
-const PUBLIC_FILE = /\.(.*)$/
-
 export function middleware(request: NextRequest) {
-  try {
-    const { pathname } = request.nextUrl
+  const { pathname } = request.nextUrl
 
-    if (
-      pathname.startsWith("/_next") ||
-      pathname.startsWith("/api") ||
-      PUBLIC_FILE.test(pathname)
-    ) {
-      return NextResponse.next()
-    }
+  // Check if there is any supported locale in the pathname
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  )
 
-    const pathnameLocale = locales.find(
-      (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  if (pathnameHasLocale) {
+    const locale = locales.find(
+      (l) => pathname.startsWith(`/${l}/`) || pathname === `/${l}`
     )
-
-    if (pathnameLocale) {
-      const response = NextResponse.next()
-      response.headers.set("x-locale", pathnameLocale)
-      return response
+    const response = NextResponse.next()
+    if (locale) {
+      response.headers.set("x-locale", locale)
     }
-
-    const url = new URL(`/${defaultLocale}${pathname === "/" ? "" : pathname}`, request.url)
-    url.search = request.nextUrl.search
-    
-    const response = NextResponse.rewrite(url)
-    response.headers.set("x-locale", defaultLocale)
     return response
-  } catch (err) {
-    console.error("Middleware error:", err)
-    return NextResponse.next()
   }
+
+  // Rewrite if there is no locale
+  request.nextUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`
+  const response = NextResponse.rewrite(request.nextUrl)
+  response.headers.set("x-locale", defaultLocale)
+  return response
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)",
+    // Skip all internal paths (_next, images, favicon, api)
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 }
