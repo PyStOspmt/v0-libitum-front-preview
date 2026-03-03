@@ -14,6 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n": typeof types.RequestTelegramVerificationDocument,
     "\n    query GetOAuthURL {\n        getOAuthURL\n    }\n": typeof types.GetOAuthUrlDocument,
     "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        registerUserWithEmailAndPassword(userPayload: $userPayload)\n    }\n": typeof types.RegisterWithEmailAndPasswordDocument,
     "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        loginWithEmailAndPassword(userPayload: $userPayload)\n    }\n": typeof types.LoginWithEmailAndPasswordDocument,
@@ -24,6 +25,7 @@ type Documents = {
     "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n": typeof types.ResetPasswordDocument,
 };
 const documents: Documents = {
+    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n": types.RequestTelegramVerificationDocument,
     "\n    query GetOAuthURL {\n        getOAuthURL\n    }\n": types.GetOAuthUrlDocument,
     "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        registerUserWithEmailAndPassword(userPayload: $userPayload)\n    }\n": types.RegisterWithEmailAndPasswordDocument,
     "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        loginWithEmailAndPassword(userPayload: $userPayload)\n    }\n": types.LoginWithEmailAndPasswordDocument,
@@ -48,6 +50,10 @@ const documents: Documents = {
  */
 export function gql(source: string): unknown;
 
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n"): (typeof documents)["\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

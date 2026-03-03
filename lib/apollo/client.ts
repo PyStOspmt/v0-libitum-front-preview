@@ -1,10 +1,11 @@
 import { REFRESH_TOKEN } from "@/graphql/auth"
 import { ApolloClient, HttpLink, InMemoryCache, from } from "@apollo/client"
 import { CombinedGraphQLErrors } from "@apollo/client/errors"
+import { setContext } from "@apollo/client/link/context"
 import { ErrorLink } from "@apollo/client/link/error"
 import { Observable } from "@apollo/client/utilities"
 
-import { getFingerprint } from "@/lib/fingerprint"
+import { getFingerprint } from "@/lib/utils/fingerprint"
 
 const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
 
@@ -15,6 +16,19 @@ function resolvePending() {
     pendingRequests.forEach((cb) => cb())
     pendingRequests = []
 }
+
+const fingerprintLink = setContext(async (_, { headers }) => {
+    const fingerprint = await getFingerprint()
+
+    if (!fingerprint) return { headers }
+
+    return {
+        headers: {
+            ...headers,
+            "x-device-fingerprint": fingerprint,
+        },
+    }
+})
 
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
     if (!CombinedGraphQLErrors.is(error)) return
@@ -61,17 +75,11 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 const httpLink = new HttpLink({
     uri: GRAPHQL_URL,
     credentials: "include",
-    fetch: async (uri, options) => {
-        const fingerprint = await getFingerprint()
-        const headers = new Headers(options?.headers)
-        headers.set("x-fingerprint", fingerprint)
-        return fetch(uri, { ...options, headers })
-    },
 })
 
 export function makeClient() {
     return new ApolloClient({
-        link: from([errorLink, httpLink]),
+        link: from([fingerprintLink, errorLink, httpLink]),
         cache: new InMemoryCache(),
         defaultOptions: {
             watchQuery: { fetchPolicy: "cache-and-network" },

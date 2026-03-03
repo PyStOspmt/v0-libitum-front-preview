@@ -199,6 +199,7 @@ export type Mutation = {
   registerUserWithEmailAndPassword: Scalars['Boolean']['output'];
   rejectTutorProfile: TutorProfileType;
   requestResetPassword: Scalars['Boolean']['output'];
+  requestTelegramVerification: TelegramRedirectType;
   resetPassword: Scalars['Boolean']['output'];
   seedCities: Scalars['Boolean']['output'];
   seedLevels: Scalars['Boolean']['output'];
@@ -507,6 +508,11 @@ export type SubjectType = {
   updatedAt: Scalars['DateTime']['output'];
 };
 
+export type TelegramRedirectType = {
+  __typename?: 'TelegramRedirectType';
+  token: Scalars['String']['output'];
+};
+
 export type TutorEducationType = {
   __typename?: 'TutorEducationType';
   createdAt: Scalars['DateTime']['output'];
@@ -626,6 +632,11 @@ export type VerifyUserDto = {
   token: Scalars['String']['input'];
 };
 
+export type RequestTelegramVerificationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RequestTelegramVerificationMutation = { __typename?: 'Mutation', requestTelegramVerification: { __typename?: 'TelegramRedirectType', token: string } };
+
 export type GetOAuthUrlQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -677,6 +688,7 @@ export type ResetPasswordMutationVariables = Exact<{
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: boolean };
 
 
+export const RequestTelegramVerificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<RequestTelegramVerificationMutation, RequestTelegramVerificationMutationVariables>;
 export const GetOAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetOAuthURL"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOAuthURL"}}]}}]} as unknown as DocumentNode<GetOAuthUrlQuery, GetOAuthUrlQueryVariables>;
 export const RegisterWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerUserWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}]}]}}]} as unknown as DocumentNode<RegisterWithEmailAndPasswordMutation, RegisterWithEmailAndPasswordMutationVariables>;
 export const LoginWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}]}]}}]} as unknown as DocumentNode<LoginWithEmailAndPasswordMutation, LoginWithEmailAndPasswordMutationVariables>;

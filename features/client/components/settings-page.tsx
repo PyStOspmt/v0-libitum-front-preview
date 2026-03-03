@@ -18,6 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 
+import { useTelegramVerification } from "@/features/dashboard/hooks/use-telegram-verification"
+
 import { useAuth } from "@/lib/auth-context"
 
 export function ClientSettingsPage() {
@@ -31,6 +33,7 @@ export function ClientSettingsPage() {
     const [childCity, setChildCity] = useState("")
     const [childNotes, setChildNotes] = useState("")
     const [referralCopied, setReferralCopied] = useState(false)
+    const { handleRequestVerification, loading } = useTelegramVerification()
 
     const [householdChildren, setHouseholdChildren] = useState([
         {
@@ -300,10 +303,12 @@ export function ClientSettingsPage() {
                                         </p>
                                     </div>
                                     <Button
+                                        onClick={handleRequestVerification}
+                                        disabled={loading}
                                         variant="outline"
                                         className="w-full sm:w-auto rounded-[8px] border-[#00c5a6]/20 text-[#00a389] hover:bg-[#e8fffb] font-[600]"
                                     >
-                                        Підключити
+                                        {loading ? "Підключення..." : "Підключити"}
                                     </Button>
                                 </div>
                                 <Separator className="bg-slate-200/80 my-4" />
