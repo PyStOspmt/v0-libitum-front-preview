@@ -23,11 +23,9 @@ export function middleware(request: NextRequest) {
     return response
   }
 
-  // Rewrite if there is no locale
+  // Redirect if there is no locale
   request.nextUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`
-  const response = NextResponse.rewrite(request.nextUrl)
-  response.headers.set("x-locale", defaultLocale)
-  return response
+  return NextResponse.redirect(request.nextUrl)
 }
 
 export const config = {
