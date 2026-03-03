@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { locales, defaultLocale } from "@/lib/i18n/config"
+
+const locales = ["uk", "en", "ru"] as const
+const defaultLocale = "uk"
 
 const PUBLIC_FILE = /\.(.*)$/
 
