@@ -4,11 +4,12 @@ import { CalendarView } from "@/components/calendar-view"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 export function StudentSchedulePage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { getLessonsByClient } = useLessonStore()
 
     const studentLessons = getLessonsByClient(user?.id || "student-child-1")

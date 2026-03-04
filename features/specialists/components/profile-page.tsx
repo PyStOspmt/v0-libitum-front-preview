@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import {
     ArrowLeft,
@@ -34,12 +35,13 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
 
 export function SpecialistProfilePage({ id }: { id: string }) {
     const router = useRouter()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { toast } = useToast()
     const { getActiveTrialCount } = useRequestStore()
     const [bookingOpen, setBookingOpen] = useState(false)
@@ -312,7 +314,10 @@ export function SpecialistProfilePage({ id }: { id: string }) {
 
     const isHealthSpecialist = ["Психолог", "Логопед"].includes(specialist.specialization)
     const logoSrc = isHealthSpecialist ? "/logo-health.jpg" : "/logo-education.jpg"
-    const specialistsListHref = user?.legacyRole === "client" ? "/client/specialists" : "/specialists"
+    const specialistsListHref =
+        user?.role === UserRoles.Parent || user?.role === UserRoles.Student || user?.role === UserRoles.Guest
+            ? "/client/specialists"
+            : "/specialists"
 
     return (
         <div className="min-h-screen bg-white">

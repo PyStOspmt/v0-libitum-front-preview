@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { motion } from "framer-motion"
 import { Award, Clock, Medal, Star, Target, TrendingUp, Trophy, Zap } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -11,17 +12,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useGamificationStore } from "@/lib/gamification-store"
 
 export function ClientGamificationPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { getProgress, getLevelInfo } = useGamificationStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const children = [
-        user ? { id: user.id, name: user.name || "Я", label: user.name ? `${user.name} (я)` : "Я" } : null,
+        user ? { id: user.id, name: user.email || "Я", label: user.email ? `${user.email} (я)` : "Я" } : null,
         { id: "child-1", name: "Марія Коваленко", label: "Марія, 12 років" },
         { id: "child-2", name: "Іван Коваленко", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; name: string; label: string }[]
@@ -33,7 +35,7 @@ export function ClientGamificationPage() {
     const levelInfo = getLevelInfo(progress.totalSessions)
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="p-6 lg:p-10 max-w-6xl mx-auto space-y-8">
                     {/* Header */}

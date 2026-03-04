@@ -148,6 +148,10 @@ export type FindUserRelationDto = {
   id: Scalars['String']['input'];
 };
 
+export type GetQuizByIdDto = {
+  id: Scalars['ID']['input'];
+};
+
 export enum LevelCategory {
   Business = 'BUSINESS',
   Child = 'CHILD',
@@ -193,11 +197,12 @@ export type Mutation = {
   handleCompleteQuiz: Scalars['Boolean']['output'];
   handleCreateQuiz: QuizType;
   inviteChildren: Referral;
-  loginWithEmailAndPassword: Scalars['Boolean']['output'];
-  oauth: Scalars['Boolean']['output'];
+  loginWithEmailAndPassword: UserType;
+  logout: Scalars['Boolean']['output'];
   refreshToken: Scalars['Boolean']['output'];
-  registerUserWithEmailAndPassword: Scalars['Boolean']['output'];
+  registerUserWithEmailAndPassword: UserType;
   rejectTutorProfile: TutorProfileType;
+  requestOAuthUrl: Scalars['String']['output'];
   requestResetPassword: Scalars['Boolean']['output'];
   requestTelegramVerification: TelegramRedirectType;
   resetPassword: Scalars['Boolean']['output'];
@@ -255,11 +260,6 @@ export type MutationLoginWithEmailAndPasswordArgs = {
 };
 
 
-export type MutationOauthArgs = {
-  oauthPayload: OAuthDto;
-};
-
-
 export type MutationRegisterUserWithEmailAndPasswordArgs = {
   userPayload: RegisterWithEmailAndPasswordDto;
 };
@@ -267,6 +267,11 @@ export type MutationRegisterUserWithEmailAndPasswordArgs = {
 
 export type MutationRejectTutorProfileArgs = {
   rejectTutorPayload: RejectTutorProfileDto;
+};
+
+
+export type MutationRequestOAuthUrlArgs = {
+  requestOAuthUrlDto: RequestOAuthUrlDto;
 };
 
 
@@ -294,11 +299,6 @@ export type MutationVerifyUserArgs = {
   verifyUserPayload: VerifyUserDto;
 };
 
-export type OAuthDto = {
-  idToken: Scalars['String']['input'];
-  role: Scalars['String']['input'];
-};
-
 export enum ProfileStatus {
   Banned = 'BANNED',
   Pending = 'PENDING',
@@ -311,8 +311,8 @@ export type Query = {
   cities: Array<CityType>;
   findUser: UserType;
   findUserRelations: UserRelationsType;
+  getCurrentUser: UserType;
   getHello: Scalars['String']['output'];
-  getOAuthURL: Scalars['String']['output'];
   getPendingTutorProfiles: Array<TutorProfileType>;
   getQuizById: QuizType;
   getQuizzes: Array<QuizType>;
@@ -331,7 +331,7 @@ export type QueryFindUserRelationsArgs = {
 
 
 export type QueryGetQuizByIdArgs = {
-  id: Scalars['ID']['input'];
+  getQuizByIdPayload: GetQuizByIdDto;
 };
 
 export type QuizAnswerDto = {
@@ -446,6 +446,10 @@ export type RegisterWithEmailAndPasswordDto = {
 
 export type RejectTutorProfileDto = {
   userId: Scalars['String']['input'];
+};
+
+export type RequestOAuthUrlDto = {
+  role: Scalars['String']['input'];
 };
 
 export type ScheduleRuleType = {
@@ -640,41 +644,46 @@ export type VerifyUserDto = {
   token: Scalars['String']['input'];
 };
 
-export type RequestTelegramVerificationMutationVariables = Exact<{ [key: string]: never; }>;
+export type LoginWithEmailAndPasswordMutationVariables = Exact<{
+  userPayload: LoginWithEmailAndPasswordDto;
+}>;
 
 
-export type RequestTelegramVerificationMutation = { __typename?: 'Mutation', requestTelegramVerification: { __typename?: 'TelegramRedirectType', token: string } };
+export type LoginWithEmailAndPasswordMutation = { __typename?: 'Mutation', user: { __typename?: 'UserType', id: string, email: string, role: UserRoles, isVerified: boolean, createdAt: any, updatedAt: any } };
 
-export type GetOAuthUrlQueryVariables = Exact<{ [key: string]: never; }>;
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOAuthUrlQuery = { __typename?: 'Query', getOAuthURL: string };
+export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: boolean };
 
 export type RegisterWithEmailAndPasswordMutationVariables = Exact<{
   userPayload: RegisterWithEmailAndPasswordDto;
 }>;
 
 
-export type RegisterWithEmailAndPasswordMutation = { __typename?: 'Mutation', registerUserWithEmailAndPassword: boolean };
+export type RegisterWithEmailAndPasswordMutation = { __typename?: 'Mutation', user: { __typename?: 'UserType', id: string, email: string, role: UserRoles, isVerified: boolean, createdAt: any, updatedAt: any } };
 
-export type LoginWithEmailAndPasswordMutationVariables = Exact<{
-  userPayload: LoginWithEmailAndPasswordDto;
+export type RequestOAuthUrlMutationVariables = Exact<{
+  payload: RequestOAuthUrlDto;
 }>;
 
 
-export type LoginWithEmailAndPasswordMutation = { __typename?: 'Mutation', loginWithEmailAndPassword: boolean };
+export type RequestOAuthUrlMutation = { __typename?: 'Mutation', url: string };
 
-export type OAuthMutationVariables = Exact<{
-  oauthPayload: OAuthDto;
-}>;
+export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type OAuthMutation = { __typename?: 'Mutation', oauth: boolean };
+export type GetCurrentUserQuery = { __typename?: 'Query', user: { __typename?: 'UserType', id: string, email: string, role: UserRoles, isVerified: boolean, createdAt: any, updatedAt: any } };
 
-export type RefreshTokenMutationVariables = Exact<{ [key: string]: never; }>;
+export type RequestTelegramVerificationMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RefreshTokenMutation = { __typename?: 'Mutation', refreshToken: boolean };
+export type RequestTelegramVerificationMutation = { __typename?: 'Mutation', requestTelegramVerification: { __typename?: 'TelegramRedirectType', token: string } };
 
 export type VerifyUserMutationVariables = Exact<{
   verifyUserPayload: VerifyUserDto;
@@ -701,12 +710,13 @@ export type GetQuizzesQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetQuizzesQuery = { __typename?: 'Query', getQuizzes: Array<{ __typename?: 'QuizType', id: string, title: string, description?: string | null, type: QuizTarget, passingScore: number, createdAt: any, questions: Array<{ __typename?: 'QuizQuestionType', explanation?: string | null, id: string, mediaId?: string | null, order: number, text: string, options: Array<{ __typename?: 'QuizOptionType', id: string, isCorrect: boolean, text: string }> }> }> };
 
 
-export const RequestTelegramVerificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<RequestTelegramVerificationMutation, RequestTelegramVerificationMutationVariables>;
-export const GetOAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetOAuthURL"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getOAuthURL"}}]}}]} as unknown as DocumentNode<GetOAuthUrlQuery, GetOAuthUrlQueryVariables>;
-export const RegisterWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"registerUserWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}]}]}}]} as unknown as DocumentNode<RegisterWithEmailAndPasswordMutation, RegisterWithEmailAndPasswordMutationVariables>;
-export const LoginWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"loginWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}]}]}}]} as unknown as DocumentNode<LoginWithEmailAndPasswordMutation, LoginWithEmailAndPasswordMutationVariables>;
-export const OAuthDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"OAuth"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"oauthPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OAuthDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"oauth"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"oauthPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"oauthPayload"}}}]}]}}]} as unknown as DocumentNode<OAuthMutation, OAuthMutationVariables>;
+export const LoginWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"user"},"name":{"kind":"Name","value":"loginWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"isVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<LoginWithEmailAndPasswordMutation, LoginWithEmailAndPasswordMutationVariables>;
+export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"}}]}}]} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
 export const RefreshTokenDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RefreshToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}}]}}]} as unknown as DocumentNode<RefreshTokenMutation, RefreshTokenMutationVariables>;
+export const RegisterWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RegisterWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RegisterWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"user"},"name":{"kind":"Name","value":"registerUserWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"isVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<RegisterWithEmailAndPasswordMutation, RegisterWithEmailAndPasswordMutationVariables>;
+export const RequestOAuthUrlDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"requestOAuthUrl"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"payload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestOAuthUrlDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"url"},"name":{"kind":"Name","value":"requestOAuthUrl"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"requestOAuthUrlDto"},"value":{"kind":"Variable","name":{"kind":"Name","value":"payload"}}}]}]}}]} as unknown as DocumentNode<RequestOAuthUrlMutation, RequestOAuthUrlMutationVariables>;
+export const GetCurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"user"},"name":{"kind":"Name","value":"getCurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"isVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const RequestTelegramVerificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<RequestTelegramVerificationMutation, RequestTelegramVerificationMutationVariables>;
 export const VerifyUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"verifyUserPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyUserDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"verifyUserPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"verifyUserPayload"}}}]}]}}]} as unknown as DocumentNode<VerifyUserMutation, VerifyUserMutationVariables>;
 export const RequestResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestResetPassword"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestResetPassword"}}]}}]} as unknown as DocumentNode<RequestResetPasswordMutation, RequestResetPasswordMutationVariables>;
 export const ResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResetPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConfirmPasswordResetDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resetPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"resetPasswordPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordPayload"}}}]}]}}]} as unknown as DocumentNode<ResetPasswordMutation, ResetPasswordMutationVariables>;

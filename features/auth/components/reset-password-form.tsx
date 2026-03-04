@@ -15,7 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { type ResetPasswordValues, resetPasswordSchema } from "../schemas/reset-password.schema"
+import { type ResetPasswordValues, resetPasswordSchema } from "../lib/schemas/reset-password.schema"
 import type { ResetPasswordData, ResetPasswordVariables } from "../types/auth.types"
 
 export function ResetPasswordForm() {

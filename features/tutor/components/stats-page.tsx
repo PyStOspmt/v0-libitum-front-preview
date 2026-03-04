@@ -7,13 +7,12 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { availableAchievements, levels, useGamificationStore } from "@/lib/gamification-store"
-import { useTheme } from "@/lib/theme-context"
 
 export function TutorStatsPage() {
-    const { user } = useAuth()
-    const { theme } = useTheme()
+    const { user } = useAuthContext()
     const { getProgress, getLevelInfo, getCategoryProgress } = useGamificationStore()
 
     const progress = getProgress(user?.id || "specialist-1")

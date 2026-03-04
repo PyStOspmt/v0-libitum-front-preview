@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { formatDistanceToNow } from "date-fns"
 import { uk } from "date-fns/locale"
 import { MessageSquare } from "lucide-react"
@@ -14,18 +15,19 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useChatStore } from "@/lib/chat-store"
 
 export function ClientChatsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
     const { getUserConversations } = useChatStore()
     const router = useRouter()
     const searchParams = useSearchParams()
 
     const children = [
-        user ? { id: user.id, label: user.name || "Я" } : null,
+        user ? { id: user.id, label: "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -37,7 +39,7 @@ export function ClientChatsPage() {
 
     if (activeConversationId && user) {
         return (
-            <ProtectedRoute allowedRoles={["client"]}>
+            <ProtectedRoute allowedRoles={[UserRoles.Guest]}>
                 <SidebarLayout userType="client">
                     <div className="container mx-auto max-w-7xl p-6">
                         <div className="mb-4 flex flex-wrap gap-2">
@@ -65,7 +67,7 @@ export function ClientChatsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div>

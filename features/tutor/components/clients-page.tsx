@@ -15,14 +15,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
 
 export function TutorClientsPage() {
     const router = useRouter()
     const { toast } = useToast()
     const { getRequestsBySpecialist, getStudentsByTutor, addOwnStudent } = useRequestStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [showAddStudent, setShowAddStudent] = useState(false)
     const [newStudent, setNewStudent] = useState({
         name: "",

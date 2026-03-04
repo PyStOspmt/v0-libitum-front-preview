@@ -1,16 +1,21 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { ArrowRight } from "lucide-react"
 
 import { LocaleLink } from "@/components/locale-link"
 
-import { useAuth } from "@/lib/hooks/use-auth"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useTranslation } from "@/lib/i18n"
 
 export function HeroClientActions() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { t } = useTranslation()
-    const specialistHref = user?.legacyRole === "client" ? "/client/specialists" : "/specialists"
+    const specialistHref =
+        user?.role === UserRoles.Parent || user?.role === UserRoles.Student || user?.role === UserRoles.Guest
+            ? "/client/specialists"
+            : "/specialists"
 
     return (
         <div className="flex flex-col sm:flex-row items-center gap-3 justify-center lg:justify-start">

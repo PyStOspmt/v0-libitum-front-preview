@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { BookOpen, Calendar, CheckCircle2, Clock, Download, FileText, Star, TrendingUp } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 
@@ -11,16 +12,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 export function ClientProgressPage() {
     const router = useRouter()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { getLessonsByClient } = useLessonStore()
     const searchParams = useSearchParams()
     const children = [
-        user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+        user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -52,7 +54,7 @@ export function ClientProgressPage() {
     }, {})
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-[1200px] space-y-6 sm:space-y-8 px-3 py-6 sm:p-6 font-sans">
                     <div className="space-y-2 px-1 sm:px-0">

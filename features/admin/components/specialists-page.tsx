@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 
 export function AdminSpecialistsPage() {
@@ -227,22 +226,9 @@ export function AdminSpecialistsPage() {
 }
 
 function SpecialistCard({ specialist }: { specialist: any }) {
-    const { impersonate } = useAuth()
     const [confirmAction, setConfirmAction] = useState<"block" | "unblock" | "approve" | "reject" | null>(null)
     const [rejectReason, setRejectReason] = useState("")
-    const handleImpersonate = () => {
-        if (specialist.status === "blocked") return
-        impersonate({
-            id: specialist.id,
-            name: specialist.name,
-            email: specialist.email,
-            role: "specialist",
-            isEmailVerified: true,
-            hasPassedQuiz: true,
-            status: "active",
-            language: "UA",
-        })
-    }
+
     return (
         <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
             <CardContent className="p-6">
@@ -405,7 +391,6 @@ function SpecialistCard({ specialist }: { specialist: any }) {
                                             variant="secondary"
                                             size="sm"
                                             className="w-full justify-start rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0"
-                                            onClick={handleImpersonate}
                                             disabled={specialist.status === "blocked"}
                                         >
                                             <LogIn className="mr-2 h-4 w-4" />
@@ -586,7 +571,6 @@ function SpecialistCard({ specialist }: { specialist: any }) {
                         <Button
                             size="sm"
                             variant="secondary"
-                            onClick={handleImpersonate}
                             disabled={specialist.status === "blocked"}
                             className="w-full sm:w-auto rounded-[8px] font-[600] bg-[#e8fffb] text-[#00a389] hover:bg-[#e8fffb]/80 border-0"
                         >

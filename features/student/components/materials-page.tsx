@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { BookOpen, CheckCircle, Clock, Download, FileText, Upload } from "lucide-react"
 import { useState } from "react"
@@ -14,11 +15,12 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 export function StudentMaterialsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { lessons, submitHomework } = useLessonStore()
     const { toast } = useToast()
     const [selectedHomework, setSelectedHomework] = useState<any>(null)
@@ -59,7 +61,7 @@ export function StudentMaterialsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Student, UserRoles.Parent, UserRoles.Guest]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div>

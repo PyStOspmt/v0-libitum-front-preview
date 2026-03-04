@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import { ArrowRight, Award, BookOpen, Calendar, Clock, FileText, Search, Star, TrendingUp } from "lucide-react"
@@ -14,7 +15,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useGamificationStore } from "@/lib/gamification-store"
 import { useRequestStore } from "@/lib/request-store"
 
@@ -32,7 +34,7 @@ export function ClientDashboardPage() {
     const { toast } = useToast()
     const { getRequestsByClient, cancelRequest } = useRequestStore()
     const { getProgress } = useGamificationStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const householdChildren = [
         { id: "child-1", name: "Марія Коваленко", label: "Марія, 12 років" },
@@ -40,7 +42,7 @@ export function ClientDashboardPage() {
     ]
 
     const selectableChildren = user
-        ? [{ id: user.id, name: user.name, label: user.name || "Я" }, ...householdChildren]
+        ? [{ id: user.id, name: user.email, label: user.email || "Я" }, ...householdChildren]
         : householdChildren
 
     const initialChild = searchParams.get("child") || selectableChildren[0]?.id
@@ -68,7 +70,7 @@ export function ClientDashboardPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
                     {/* Header */}

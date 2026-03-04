@@ -14,7 +14,8 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
 
 interface BookingModalProps {
@@ -30,7 +31,7 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ open, onOpenChange, specialist }: BookingModalProps) {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const clientId = user?.id || "client-1"
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [format, setFormat] = useState<"online" | "offline">("online")
@@ -61,7 +62,7 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
         addRequest({
             type: "private",
             clientId,
-            clientName: user?.name || "Гість",
+            clientName: "Гість",
             specialistId: specialist.id || "specialist-1",
             specialistName: specialist.name,
             subject: "Англійська мова",

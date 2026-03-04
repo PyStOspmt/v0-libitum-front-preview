@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { formatDistanceToNow } from "date-fns"
 import { uk } from "date-fns/locale"
 import { MessageSquare } from "lucide-react"
@@ -12,11 +13,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useChatStore } from "@/lib/chat-store"
 
 export function TutorChatsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [activeConversationId, setActiveConversationId] = useState<string | null>(null)
     const { getUserConversations } = useChatStore()
 
@@ -24,7 +26,7 @@ export function TutorChatsPage() {
 
     if (activeConversationId && user) {
         return (
-            <ProtectedRoute allowedRoles={["specialist"]}>
+            <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
                 <SidebarLayout userType="tutor">
                     <div className="container mx-auto max-w-7xl p-6">
                         <ChatInterface
@@ -40,7 +42,7 @@ export function TutorChatsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div>

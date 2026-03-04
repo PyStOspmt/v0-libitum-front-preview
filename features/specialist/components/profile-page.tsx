@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { ArrowLeft, BookOpen, Plus, Upload, X } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -15,10 +16,10 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function SpecialistProfilePage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [subjects, setSubjects] = useState(["Англійська мова", "Німецька мова"])
     const [newSubject, setNewSubject] = useState("")
 
@@ -34,7 +35,7 @@ export function SpecialistProfilePage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <div className="min-h-screen bg-muted/30">
                 <header className="border-b bg-card">
                     <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4">
@@ -67,7 +68,7 @@ export function SpecialistProfilePage() {
                             <CardContent>
                                 <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
                                     <Avatar className="h-20 w-20 sm:h-24 sm:w-24">
-                                        <AvatarFallback className="text-xl sm:text-2xl">{user?.name[0]}</AvatarFallback>
+                                        <AvatarFallback className="text-xl sm:text-2xl">{user?.email[0]}</AvatarFallback>
                                     </Avatar>
                                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center">
                                         <Button className="w-full sm:w-auto">

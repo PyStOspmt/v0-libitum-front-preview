@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { BookOpen, CheckCircle, Clock, Plus, Star, Tag, Upload } from "lucide-react"
 import { useState } from "react"
@@ -16,9 +17,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
-import { useTheme } from "@/lib/theme-context"
 import { cn } from "@/lib/utils"
 
 const lessonTags = [
@@ -37,8 +38,7 @@ const lessonTags = [
 ]
 
 export function TutorMaterialsPage() {
-    const { user } = useAuth()
-    const { theme } = useTheme()
+    const { user } = useAuthContext()
     const { lessons, checkHomework } = useLessonStore()
     const { toast } = useToast()
     const [selectedHomework, setSelectedHomework] = useState<any>(null)
@@ -155,7 +155,7 @@ export function TutorMaterialsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-[1200px] space-y-8 p-6 font-sans">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

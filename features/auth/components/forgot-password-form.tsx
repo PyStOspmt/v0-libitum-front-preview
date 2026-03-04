@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { type ForgotPasswordValues, forgotPasswordSchema } from "../schemas/forgot-password.schema"
+import { type ForgotPasswordValues, forgotPasswordSchema } from "../lib/schemas/forgot-password.schema"
 
 export function ForgotPasswordForm() {
     const { toast } = useToast()

@@ -11,10 +11,10 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import { useAuth } from "@/lib/auth-context"
-import { cn } from "@/lib/utils"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
+import { cn } from "@/lib/utils"
 
 interface TutorOnboardingPageProps {
     quizzes: any // Fallback to any since GetQuizzesQuery is cached as not exported
@@ -33,7 +33,7 @@ type LocalQuizQuestion = {
 
 export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     const router = useRouter()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState<Record<number, string>>({})
     const [showResults, setShowResults] = useState(false)

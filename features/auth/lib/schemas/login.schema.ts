@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { PASSWORD_RULES } from "@/features/auth/types/auth.types"
+import { PASSWORD_RULES } from "../constants/password-rules"
 
 export const loginSchema = z.object({
     email: z.string().email({ message: "Введіть коректну email-адресу" }),

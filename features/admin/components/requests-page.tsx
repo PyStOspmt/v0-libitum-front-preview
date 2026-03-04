@@ -23,29 +23,15 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
 import { type BookingRequest, useRequestStore } from "@/lib/request-store"
 import { cn } from "@/lib/utils"
 
 export function AdminRequestsPage() {
     const { requests, acceptRequest, rejectRequest, cancelRequest, markAsPaid } = useRequestStore()
-    const { impersonate } = useAuth()
 
     const pendingRequests = requests.filter((req) => req.status === "pending")
     const activeRequests = requests.filter((req) => ["accepted", "communicating", "trial_scheduled"].includes(req.status))
     const completedRequests = requests.filter((req) => ["trial_completed", "paid"].includes(req.status))
-
-    const buildImpersonate = (request: BookingRequest, role: "client" | "specialist") =>
-        impersonate({
-            id: role === "client" ? request.clientId : request.specialistId || "specialist-mock",
-            name: role === "client" ? request.clientName : request.specialistName || "Спеціаліст",
-            email: role === "client" ? `${request.clientId}@example.com` : `${request.specialistId || "spec"}@example.com`,
-            role: role === "client" ? "client" : "specialist",
-            isEmailVerified: true,
-            hasPassedQuiz: true,
-            status: "active",
-            language: "UA",
-        })
 
     return (
         <ProtectedRoute allowedRoles={["admin"]}>
@@ -129,7 +115,6 @@ export function AdminRequestsPage() {
                                                 onReject={(reason) => rejectRequest(request.id, reason)}
                                                 onCancel={() => cancelRequest(request.id)}
                                                 onMarkPaid={() => markAsPaid(request.id)}
-                                                onImpersonate={(role) => buildImpersonate(request, role)}
                                             />
                                         ))}
                                     </div>
@@ -152,7 +137,6 @@ export function AdminRequestsPage() {
                                                 onReject={(reason) => rejectRequest(request.id, reason)}
                                                 onCancel={() => cancelRequest(request.id)}
                                                 onMarkPaid={() => markAsPaid(request.id)}
-                                                onImpersonate={(role) => buildImpersonate(request, role)}
                                             />
                                         ))}
                                     </div>
@@ -175,7 +159,6 @@ export function AdminRequestsPage() {
                                                 onReject={(reason) => rejectRequest(request.id, reason)}
                                                 onCancel={() => cancelRequest(request.id)}
                                                 onMarkPaid={() => markAsPaid(request.id)}
-                                                onImpersonate={(role) => buildImpersonate(request, role)}
                                             />
                                         ))}
                                     </div>
@@ -198,7 +181,6 @@ export function AdminRequestsPage() {
                                                 onReject={(reason) => rejectRequest(request.id, reason)}
                                                 onCancel={() => cancelRequest(request.id)}
                                                 onMarkPaid={() => markAsPaid(request.id)}
-                                                onImpersonate={(role) => buildImpersonate(request, role)}
                                             />
                                         ))}
                                     </div>
@@ -218,7 +200,6 @@ type RequestRowProps = {
     onReject: (reason: string) => void
     onCancel: () => void
     onMarkPaid: () => void
-    onImpersonate: (role: "client" | "specialist") => void
 }
 
 function statusLabel(status: BookingRequest["status"]) {
@@ -248,7 +229,7 @@ function statusLabel(status: BookingRequest["status"]) {
     }
 }
 
-function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImpersonate }: RequestRowProps) {
+function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid }: RequestRowProps) {
     const [rejectReason, setRejectReason] = useState("")
     const [rejectOpen, setRejectOpen] = useState(false)
 
@@ -349,7 +330,6 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
                                             <Button
                                                 variant="ghost"
                                                 size="sm"
-                                                onClick={() => onImpersonate("client")}
                                                 className="rounded-[8px] font-[600] text-[#00a389] hover:bg-[#e8fffb]"
                                             >
                                                 <LogIn className="mr-1 h-4 w-4" /> Support Access
@@ -366,7 +346,6 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid, onImper
                                                 variant="ghost"
                                                 size="sm"
                                                 disabled={!request.specialistId}
-                                                onClick={() => onImpersonate("specialist")}
                                                 className="rounded-[8px] font-[600] text-[#00a389] hover:bg-[#e8fffb]"
                                             >
                                                 <LogIn className="mr-1 h-4 w-4" /> Support Access

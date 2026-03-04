@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { Calendar, Check, Copy, Share2, Trash2, UserPlus, Users } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -18,12 +19,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 
+import { useAuthContext } from "@/features/auth/context/auth-context"
 import { useTelegramVerification } from "@/features/dashboard/hooks/use-telegram-verification"
 
-import { useAuth } from "@/lib/auth-context"
-
 export function ClientSettingsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { toast } = useToast()
     const router = useRouter()
     const [isAddChildOpen, setIsAddChildOpen] = useState(false)
@@ -49,7 +49,7 @@ export function ClientSettingsPage() {
     ])
 
     const selectableChildren = user
-        ? [{ id: user.id, name: user.name, label: user.name || "Я", isParent: true }, ...householdChildren]
+        ? [{ id: user.id, name: user.email, label: user.email || "Я", isParent: true }, ...householdChildren]
         : householdChildren
 
     const referralLink = `https://libitum.education/ref/${user?.id || "client123"}`
@@ -107,7 +107,7 @@ export function ClientSettingsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-4xl space-y-6 sm:space-y-8 px-3 py-6 sm:p-6 font-sans">
                     <div className="px-1 sm:px-0">
@@ -123,9 +123,9 @@ export function ClientSettingsPage() {
                         <CardContent className="space-y-6">
                             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                                 <Avatar className="h-24 w-24 sm:h-20 sm:w-20 rounded-[20px] border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.05)] ring-1 ring-slate-100">
-                                    <AvatarImage src={user?.avatar} alt={user?.name} />
+                                    {/* <AvatarImage src={user?.avatar} alt={user?.name} /> */}
                                     <AvatarFallback className="bg-[#f0f3f3] text-[#69686f] text-2xl sm:text-xl font-[700]">
-                                        {user?.name?.[0] || "U"}
+                                        {user?.email?.[0] || "U"}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="flex items-center sm:mt-4">
@@ -145,7 +145,7 @@ export function ClientSettingsPage() {
                                     </Label>
                                     <Input
                                         id="name"
-                                        defaultValue={user?.name}
+                                        defaultValue={user?.email}
                                         className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
                                     />
                                 </div>

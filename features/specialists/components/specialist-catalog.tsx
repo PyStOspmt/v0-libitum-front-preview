@@ -27,7 +27,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-import { useAuth } from "@/lib/auth-context"
 import { useTranslation } from "@/lib/i18n"
 
 /* ═══════════════════════════════════════════════════
@@ -335,7 +334,6 @@ function PillDropdown({
    Main Page
    ═══════════════════════════════════════════════════ */
 export default function SpecialistsPage() {
-    const { user } = useAuth()
     const searchParams = useSearchParams()
     const { t } = useTranslation()
     const categoryParam = searchParams.get("category")

@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { ArrowLeft, Award, BookOpen, CheckCircle2, Clock, Star, Target, TrendingUp, Zap } from "lucide-react"
 import Link from "next/link"
 
@@ -9,11 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
 import { availableAchievements, levels, useGamificationStore } from "@/lib/gamification-store"
 
 export function SpecialistStatsPage() {
-    const { user } = useAuth()
     const { getProgress, getLevelInfo } = useGamificationStore()
 
     const progress = getProgress("specialist-1")
@@ -34,7 +33,7 @@ export function SpecialistStatsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <div className="min-h-screen bg-muted/30">
                 <header className="border-b bg-card">
                     <div className="container mx-auto px-4 py-4">

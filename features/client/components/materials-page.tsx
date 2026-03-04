@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { BookOpen, CheckCircle, Clock, Download, FileText, Upload } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -15,11 +16,12 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 export function ClientMaterialsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { lessons, submitHomework } = useLessonStore()
     const { toast } = useToast()
     const [selectedHomework, setSelectedHomework] = useState<any>(null)
@@ -28,7 +30,7 @@ export function ClientMaterialsPage() {
     const searchParams = useSearchParams()
 
     const children = [
-        user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+        user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -157,7 +159,7 @@ export function ClientMaterialsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div>

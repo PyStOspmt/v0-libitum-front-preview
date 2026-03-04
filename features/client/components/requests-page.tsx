@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import { ArrowRight, CheckCircle, Clock, Users } from "lucide-react"
@@ -14,7 +15,8 @@ import { SidebarLayout } from "@/components/sidebar-layout"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
 
 /* ── Brand palette ── */
@@ -28,12 +30,12 @@ const B = {
 export function ClientRequestsPage() {
     const { toast } = useToast()
     const { getRequestsByClient, cancelRequest } = useRequestStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const router = useRouter()
     const searchParams = useSearchParams()
     const children = [
-        user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+        user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
         { id: "client-1", label: "Марія, 12 років" },
         { id: "client-3", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -71,7 +73,7 @@ export function ClientRequestsPage() {
     )
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-8 p-6">
                     {/* Header */}

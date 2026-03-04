@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -12,16 +13,15 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema"
+import { type LoginFormValues, loginSchema } from "@/features/auth/lib/schemas/login.schema"
 
-import { useAuth } from "@/lib/hooks/use-auth"
+import { useAuthContext } from "../context/auth-context"
 
 export function LoginForm() {
-    const { login, loginWithGoogle } = useAuth()
+    const { handleLoginWithEmailAndPassword, handleOauth, requestOAuthUrlLoading } = useAuthContext()
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [serverError, setServerError] = useState<string | null>(null)
-    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -39,7 +39,7 @@ export function LoginForm() {
     async function onSubmit(values: LoginFormValues) {
         setServerError(null)
         try {
-            await login(values.email, values.password)
+            await handleLoginWithEmailAndPassword(values.email, values.password)
             router.push("/")
         } catch (error) {
             const message = error instanceof Error ? error.message : "Невірний email або пароль. Спробуйте ще раз."
@@ -48,12 +48,10 @@ export function LoginForm() {
     }
 
     async function handleGoogleLogin() {
-        setIsGoogleLoading(true)
         try {
-            await loginWithGoogle()
+            await handleOauth(UserRoles.Guest)
         } catch {
             setServerError("Не вдалося підключити Google. Спробуйте пізніше.")
-            setIsGoogleLoading(false)
         }
     }
 
@@ -174,11 +172,15 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isGoogleLoading}
+                    disabled={requestOAuthUrlLoading}
                     onClick={handleGoogleLogin}
                     className="h-[52px] w-full rounded-[12px] border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 text-[15px] cursor-pointer"
                 >
-                    {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Chrome className="mr-2 h-5 w-5" />}
+                    {requestOAuthUrlLoading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Chrome className="mr-2 h-5 w-5" />
+                    )}
                     Увійти через Google
                 </Button>
 

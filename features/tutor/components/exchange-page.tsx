@@ -1,6 +1,8 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
+import { useTheme } from "@/providers/theme-provider"
 import { ArrowDown, Clock, MapPin, MessageSquare, TrendingDown, User } from "lucide-react"
 import { useEffect, useMemo, useState } from "react"
 
@@ -11,18 +13,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
-import { useTheme } from "@/lib/theme-context"
 
 export function TutorExchangePage() {
     const { toast } = useToast()
     const { getPublicLeads, takePublicLead, autoReducePublicLeads } = useRequestStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { theme } = useTheme()
     const [selectedLead, setSelectedLead] = useState<string | null>(null)
 
-    const mySubjects = useMemo(() => user?.subjects ?? [], [user?.subjects])
+    const mySubjects = useMemo(() => [], [])
     const specialistId = user?.id || "specialist-1"
     const publicLeads = getPublicLeads().filter((lead) => mySubjects.length === 0 || mySubjects.includes(lead.subject))
 
@@ -55,7 +57,7 @@ export function TutorExchangePage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-[1200px] space-y-8 p-6 font-sans">
                     <div>

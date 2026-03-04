@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { Check, Copy, Share2, Upload, Video } from "lucide-react"
 import { useState } from "react"
@@ -12,13 +13,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 
-import { useAuth } from "@/lib/auth-context"
-import { useTheme } from "@/lib/theme-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function TutorSettingsPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { toast } = useToast()
-    const { theme } = useTheme()
     const [profileVideoUrl, setProfileVideoUrl] = useState("")
     const [referralCopied, setReferralCopied] = useState(false)
 
@@ -47,7 +46,7 @@ export function TutorSettingsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-4xl space-y-8 p-6 font-sans">
                     <div className="space-y-1">
@@ -67,7 +66,7 @@ export function TutorSettingsPage() {
                                 </Label>
                                 <Input
                                     id="name"
-                                    defaultValue={user?.name}
+                                    defaultValue={user?.email}
                                     className="rounded-[8px] border-slate-200/80 focus-visible:ring-[var(--theme-primary)]"
                                 />
                             </div>

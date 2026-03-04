@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { PASSWORD_RULES } from "@/features/auth/types/auth.types"
+import { PASSWORD_RULES } from "../constants/password-rules"
 
 export const resetPasswordSchema = z
     .object({
