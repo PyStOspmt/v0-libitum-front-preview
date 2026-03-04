@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AlertCircle, Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
@@ -36,7 +37,7 @@ export function RegisterForm() {
             email: "",
             password: "",
             confirmPassword: "",
-            role: "client",
+            role: UserRoles.Student,
         },
     })
 
@@ -67,7 +68,8 @@ export function RegisterForm() {
     async function handleGoogleRegister() {
         setIsGoogleLoading(true)
         try {
-            await loginWithGoogle()
+            const role = form.getValues("role")
+            await handleOauth(role)
         } catch {
             toast({
                 title: "Помилка",
@@ -190,7 +192,7 @@ export function RegisterForm() {
                                         className="grid grid-cols-2 gap-3"
                                     >
                                         <div>
-                                            <RadioGroupItem value="client" id="client" className="peer sr-only" />
+                                            <RadioGroupItem value={UserRoles.Student} id="client" className="peer sr-only" />
                                             <Label
                                                 htmlFor="client"
                                                 className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#009688] peer-data-[state=checked]:border-[#009688] peer-data-[state=checked]:bg-[#E0F2F1]"
@@ -199,7 +201,11 @@ export function RegisterForm() {
                                             </Label>
                                         </div>
                                         <div>
-                                            <RadioGroupItem value="specialist" id="specialist" className="peer sr-only" />
+                                            <RadioGroupItem
+                                                value={UserRoles.Specialist}
+                                                id="specialist"
+                                                className="peer sr-only"
+                                            />
                                             <Label
                                                 htmlFor="specialist"
                                                 className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#f57c00] peer-data-[state=checked]:border-[#f57c00] peer-data-[state=checked]:bg-[#FFF3E0]"

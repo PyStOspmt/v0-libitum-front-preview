@@ -1,21 +1,18 @@
-import { fetchGraphQL } from "@/lib/apollo/server-client"
+import { VERIFY_USER } from "@/graphql/auth"
 import { CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { VERIFY_USER } from "@/graphql/auth"
+
+import { fetchGraphQL } from "@/lib/apollo/server-client"
 
 export const metadata = {
     title: "Активація акаунту | Libitum",
     description: "Активація вашого акаунту Libitum.",
 }
 
-
-export default async function ActivationPage({
-    params,
-}: {
-    params: Promise<{ token: string; locale: string }>
-}) {
+export default async function ActivationPage({ params }: { params: Promise<{ token: string; locale: string }> }) {
     const { token, locale } = await params
 
     let isSuccess = false
@@ -23,7 +20,7 @@ export default async function ActivationPage({
 
     try {
         const response = await fetchGraphQL<{ verifyUser: boolean }>(VERIFY_USER, {
-            verifyUserPayload: { token }
+            verifyUserPayload: { token },
         })
 
         if (response.errors && response.errors.length > 0) {
@@ -54,13 +51,9 @@ export default async function ActivationPage({
                             <XCircle className="h-8 w-8 text-red-600" />
                         )}
                     </div>
-                    <CardTitle className="text-2xl">
-                        {isSuccess ? "Акаунт активовано!" : "Помилка активації"}
-                    </CardTitle>
+                    <CardTitle className="text-2xl">{isSuccess ? "Акаунт активовано!" : "Помилка активації"}</CardTitle>
                     <CardDescription>
-                        {isSuccess
-                            ? "Ваш акаунт успішно активовано. Тепер ви можете увійти до системи."
-                            : errorMessage}
+                        {isSuccess ? "Ваш акаунт успішно активовано. Тепер ви можете увійти до системи." : errorMessage}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

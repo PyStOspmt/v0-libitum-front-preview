@@ -1,3 +1,4 @@
+import { UserRoles } from "@/graphql/generated/graphql"
 import { z } from "zod"
 
 import { PASSWORD_RULES } from "../constants/password-rules"
@@ -16,7 +17,7 @@ export const registerSchema = z
             .regex(/[0-9]/, { message: "Пароль має містити хоча б одну цифру" })
             .regex(/[^A-Za-z0-9]/, { message: "Пароль має містити хоча б один спецсимвол" }),
         confirmPassword: z.string(),
-        role: z.enum(["client", "specialist"], {
+        role: z.enum([UserRoles.Student, UserRoles.Specialist], {
             required_error: "Оберіть роль",
         }),
         agreeToTerms: z.literal(true, {
