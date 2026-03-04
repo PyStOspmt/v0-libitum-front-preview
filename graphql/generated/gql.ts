@@ -24,6 +24,7 @@ type Documents = {
     "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": typeof types.VerifyUserDocument,
     "\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n": typeof types.RequestResetPasswordDocument,
     "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n": typeof types.ResetPasswordDocument,
+    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": typeof types.GetQuizzesDocument,
 };
 const documents: Documents = {
     "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": types.LoginWithEmailAndPasswordDocument,
@@ -36,6 +37,7 @@ const documents: Documents = {
     "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": types.VerifyUserDocument,
     "\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n": types.RequestResetPasswordDocument,
     "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n": types.ResetPasswordDocument,
+    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": types.GetQuizzesDocument,
 };
 
 /**
@@ -92,6 +94,10 @@ export function gql(source: "\n    mutation RequestResetPassword {\n        requ
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n"): (typeof documents)["\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
