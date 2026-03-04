@@ -1,6 +1,7 @@
 "use client"
 
 import { useToast } from "@/hooks/use-toast"
+import { useTheme } from "@/providers/theme-provider"
 import { MapPin, Plus, Save, Search, Upload, UserPlus, Users, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -17,12 +18,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { type SpecialistType, useSpecialistProfileStore } from "@/lib/specialist-profile-store"
-import { useTheme } from "@/lib/theme-context"
 
 export function TutorProfilePage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { theme, updateSpecialistTheme } = useTheme()
     const router = useRouter()
     const { getProfile, updateProfile } = useSpecialistProfileStore()
@@ -173,7 +174,7 @@ export function TutorProfilePage() {
                             <div className="flex items-center gap-6">
                                 <Avatar className="h-24 w-24 rounded-[16px]">
                                     <AvatarFallback className="text-[28px] font-bold rounded-[16px] bg-[#f0f3f3] text-[#121117]">
-                                        {user?.name?.[0] ?? firstName[0] ?? "U"}
+                                        {user?.email?.[0] ?? firstName[0] ?? "U"}
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-3">

@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 const QUIZ_QUESTIONS = [
     {
@@ -68,7 +68,7 @@ const QUIZ_QUESTIONS = [
 
 export function TutorOnboardingPage() {
     const router = useRouter()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState<Record<number, string>>({})
     const [showResults, setShowResults] = useState(false)

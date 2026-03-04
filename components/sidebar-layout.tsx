@@ -1,5 +1,6 @@
 "use client"
 
+import { useTheme } from "@/providers/theme-provider"
 import {
     BookOpen,
     Calendar,
@@ -9,6 +10,7 @@ import {
     Globe,
     Home,
     LayoutDashboard,
+    Loader2,
     LogOut,
     Menu,
     Settings,
@@ -27,11 +29,11 @@ import { LocaleLink } from "@/components/locale-link"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useTranslation } from "@/lib/i18n"
 import { locales } from "@/lib/i18n/config"
 import { useLocale } from "@/lib/locale-context"
-import { useTheme } from "@/lib/theme-context"
 import { cn } from "@/lib/utils"
 
 interface SidebarLayoutProps {
@@ -40,7 +42,7 @@ interface SidebarLayoutProps {
 }
 
 export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
-    const { user, logout, stopImpersonating } = useAuth()
+    const { user, handleLogout, logoutLoading } = useAuthContext()
     const { theme } = useTheme()
     const rawPathname = usePathname()
     const locale = useLocale()
@@ -81,7 +83,6 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     }, [])
 
     const handleStopImpersonating = () => {
-        stopImpersonating()
         setIsImpersonating(false)
     }
 
@@ -233,20 +234,20 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                                 className="font-bold text-white"
                                 style={!sidebarTheme.logoBg ? { background: theme.gradient } : {}}
                             >
-                                {user?.name?.[0] ?? "U"}
+                                U
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 overflow-hidden">
-                            <p className="truncate text-[14px] font-[600] text-[#121117]">{user?.name}</p>
-                            <p className="truncate text-[13px] text-[#69686f]">{user?.email}</p>
+                            <p className="truncate text-[14px] font-[600] text-[#121117]">USER_NAME</p>
+                            <p className="truncate text-[13px] text-[#69686f]">USER_EMAIL</p>
                         </div>
                     </div>
                     <Button
                         variant="ghost"
                         className="w-full justify-start gap-3 text-[#69686f] hover:text-rose-600 hover:bg-rose-50 rounded-[8px] h-[40px] px-3 transition-colors font-[600]"
-                        onClick={logout}
+                        onClick={handleLogout}
                     >
-                        <LogOut className="h-4 w-4" />
+                        {logoutLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
                         <span className="text-[14px]">{t("sidebar.logout")}</span>
                     </Button>
                 </div>

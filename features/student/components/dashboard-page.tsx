@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { Award, BookOpen, Calendar, CheckCircle2, Clock, Star, TrendingUp } from "lucide-react"
 
 import { ProtectedRoute } from "@/components/protected-route"
@@ -9,12 +10,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useGamificationStore } from "@/lib/gamification-store"
 import { useLessonStore } from "@/lib/lesson-store"
 
 export function StudentDashboardPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { getLessonsByClient } = useLessonStore()
     const { getProgress, getLevelInfo } = useGamificationStore()
 
@@ -30,12 +32,12 @@ export function StudentDashboardPage() {
     const nextLesson = scheduledLessons[0]
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Student, UserRoles.Parent, UserRoles.Guest]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold">Вітаємо, {user?.name.split(" ")[0]}! 👋</h1>
+                            <h1 className="text-3xl font-bold">Вітаємо, {user?.email.split(" ")[0]}! 👋</h1>
                             <p className="text-muted-foreground">Твій прогрес та розклад занять</p>
                         </div>
                         <div className="flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-primary">

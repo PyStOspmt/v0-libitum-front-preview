@@ -24,7 +24,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 
 type AdminClient = {
@@ -196,24 +195,9 @@ export function AdminClientsPage() {
 }
 
 function ClientCard({ client }: { client: AdminClient }) {
-    const { impersonate } = useAuth()
     const [supportConfirmOpen, setSupportConfirmOpen] = useState(false)
     const roleLabel = client.role === "parent" ? "Батько (керує)" : client.role === "student" ? "Учень" : "Клієнт (самостійний)"
 
-    const handleSupportAccess = () => {
-        if (client.status !== "active") return
-        impersonate({
-            id: client.id,
-            name: client.name,
-            email: client.email,
-            role: "client",
-            isEmailVerified: true,
-            hasPassedQuiz: true,
-            status: "active",
-            language: "UA",
-        })
-        setSupportConfirmOpen(false)
-    }
     return (
         <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans transition-shadow hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]">
             <CardContent className="p-6">
@@ -357,10 +341,7 @@ function ClientCard({ client }: { client: AdminClient }) {
                                                     <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">
                                                         Скасувати
                                                     </AlertDialogCancel>
-                                                    <AlertDialogAction
-                                                        onClick={handleSupportAccess}
-                                                        className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]"
-                                                    >
+                                                    <AlertDialogAction className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]">
                                                         Увійти
                                                     </AlertDialogAction>
                                                 </AlertDialogFooter>
@@ -414,10 +395,7 @@ function ClientCard({ client }: { client: AdminClient }) {
                                     <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">
                                         Скасувати
                                     </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={handleSupportAccess}
-                                        className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]"
-                                    >
+                                    <AlertDialogAction className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]">
                                         Увійти
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

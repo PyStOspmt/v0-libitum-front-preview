@@ -10,10 +10,10 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "../context/auth-context"
 
 export function VerifyEmailCard() {
-    const { user, logout } = useAuth()
+    const { user, handleLogout, logoutLoading } = useAuthContext()
     const { toast } = useToast()
     const searchParams = useSearchParams()
     const token = searchParams.get("token")
@@ -122,8 +122,12 @@ export function VerifyEmailCard() {
                             >
                                 {isResending ? "Відправка..." : "Відправити ще раз"}
                             </Button>
-                            <Button variant="ghost" onClick={logout} className="w-full">
-                                <LogOut className="mr-2 h-4 w-4" />
+                            <Button variant="ghost" onClick={handleLogout} className="w-full">
+                                {logoutLoading ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                )}
                                 Вийти з акаунта
                             </Button>
                         </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { motion } from "framer-motion"
 import { Calendar, ChevronRight, Clock, MapPin, Star, Users, Video } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -12,13 +13,14 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 import { LessonDetailsDialog } from "./lesson-details"
 
 export function ClientSchedulePage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const router = useRouter()
     const searchParams = useSearchParams()
     const calendarRef = useRef<HTMLDivElement>(null)
@@ -27,7 +29,7 @@ export function ClientSchedulePage() {
     const [isLessonDetailsOpen, setIsLessonDetailsOpen] = useState(false)
 
     const children = [
-        user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+        user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -56,7 +58,7 @@ export function ClientSchedulePage() {
     const activeSpecialists = [...new Set(lessons.map((lesson) => lesson.specialistId))].length
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-[1200px] space-y-4 sm:space-y-8 px-1 py-4 sm:p-6 font-sans">
                     {/* Header */}

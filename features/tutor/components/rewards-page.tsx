@@ -11,11 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
-import { useTheme } from "@/lib/theme-context"
-
 export function TutorRewardsPage() {
     const { toast } = useToast()
-    const { theme } = useTheme()
     const [lcBalance, setLcBalance] = useState(1250)
     const [selectedReward, setSelectedReward] = useState<any>(null)
     const [isConfirmOpen, setIsConfirmOpen] = useState(false)

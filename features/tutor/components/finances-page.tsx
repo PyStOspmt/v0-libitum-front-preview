@@ -24,13 +24,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useLessonStore } from "@/lib/lesson-store"
 
 import { WithdrawDialog } from "./withdraw-dialog"
 
 export function TutorFinancesPage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { lessons } = useLessonStore()
     const { toast } = useToast()
     const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)

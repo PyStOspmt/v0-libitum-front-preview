@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { ArrowRight, Award, BookOpen, ChevronDown, Clock, Filter, Heart, MapPin, Play, Search, Star, Users } from "lucide-react"
 import Image from "next/image"
@@ -11,7 +12,8 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useTranslation } from "@/lib/i18n"
 
 type CatalogPageClientProps = {
@@ -40,8 +42,8 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
     const [selectedLanguages, setSelectedLanguages] = useState<string[]>(["en"])
     const [selectedCountries, setSelectedCountries] = useState<string[]>([])
 
-    const { user } = useAuth()
-    const { t } = useTranslation(user?.language || "UA")
+    const { user } = useAuthContext()
+    const { t } = useTranslation()
     const { toast } = useToast()
 
     const [wishlist, setWishlist] = useState<number[]>([])
@@ -175,9 +177,9 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                             {user ? (
                                 <Link
                                     href={
-                                        user.legacyRole === "specialist"
+                                        user.role === UserRoles.Specialist
                                             ? "/tutor"
-                                            : user.legacyRole === "admin"
+                                            : user.role === UserRoles.SuperAdmin
                                               ? "/admin"
                                               : "/client"
                                     }

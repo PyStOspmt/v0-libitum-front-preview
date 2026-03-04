@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import { ArrowRight, Calendar, Clock } from "lucide-react"
@@ -18,7 +19,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { TimePicker } from "@/components/ui/time-picker"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useDictionaryStore } from "@/lib/dictionary-store"
 import { useRequestStore } from "@/lib/request-store"
 
@@ -36,10 +38,10 @@ export function ClientNewRequestPage() {
     const { toast } = useToast()
     const { addRequest, getActiveTrialCount } = useRequestStore()
     const { subjects: dictionarySubjects } = useDictionaryStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const children = [
-        user ? { id: user.id, label: user.name || "Я" } : null,
+        user ? { id: user.id, label: user.email || "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -110,7 +112,7 @@ export function ClientNewRequestPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-4xl space-y-8 p-6">
                     {/* Header */}

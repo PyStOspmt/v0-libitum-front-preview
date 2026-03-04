@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 
 import { ProtectedRoute } from "@/components/protected-route"
@@ -8,13 +9,14 @@ import { SidebarLayout } from "@/components/sidebar-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useRequestStore } from "@/lib/request-store"
 
 export function TutorRequestsPage() {
     const { toast } = useToast()
     const { getRequestsBySpecialist, acceptRequest, rejectRequest } = useRequestStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const specialistId = user?.id || "specialist-1"
 
@@ -45,7 +47,7 @@ export function TutorRequestsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-5xl space-y-8 p-6">
                     <div>

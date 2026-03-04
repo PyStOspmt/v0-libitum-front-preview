@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { ArrowRight, Check, CheckCircle2, ChevronDown, MessageCircle, Search, Star } from "lucide-react"
 import Image from "next/image"
 import { useCallback, useEffect, useState } from "react"
@@ -10,14 +11,15 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { LocaleLink } from "@/components/locale-link"
 import { Button } from "@/components/ui/button"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useTranslation } from "@/lib/i18n"
 
 export function HomePageClient() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { t } = useTranslation()
     const [openFaq, setOpenFaq] = useState<number | null>(0)
-    const specialistHref = user?.legacyRole === "client" ? "/client/specialists" : "/specialists"
+    const specialistHref = user?.role === UserRoles.Guest ? "/client/specialists" : "/specialists"
 
     const faqs = [
         { q: t("faq.q1.q"), a: t("faq.q1.a") },

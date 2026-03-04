@@ -1,16 +1,18 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
+
 import { FullCalendar } from "@/components/full-calendar"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function TutorSchedulePage() {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-7xl px-1 py-4 sm:p-6">
                     <div className="mb-4 sm:mb-6 px-3 sm:px-0">

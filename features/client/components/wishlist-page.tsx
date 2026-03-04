@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
 import { BookOpen, Heart, MapPin, Star, User } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -12,17 +13,17 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function ClientWishlistPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { toast } = useToast()
 
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const children = [
-        user ? { id: user.id, label: user.name || "Я" } : null,
+        user ? { id: user.id, label: user.email || "Я" } : null,
         { id: "child-1", label: "Марія, 12 років" },
         { id: "child-2", label: "Іван, 9 років" },
     ].filter(Boolean) as { id: string; label: string }[]
@@ -65,7 +66,7 @@ export function ClientWishlistPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["client"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
             <SidebarLayout userType="client">
                 <div className="container mx-auto max-w-7xl space-y-8 p-6">
                     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

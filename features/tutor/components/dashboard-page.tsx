@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useGamificationStore } from "@/lib/gamification-store"
 import { useRequestStore } from "@/lib/request-store"
 
@@ -20,7 +21,7 @@ export function TutorDashboardPage() {
     const { toast } = useToast()
     const { getRequestsBySpecialist, acceptRequest, rejectRequest } = useRequestStore()
     const { getProgress, getLevelInfo } = useGamificationStore()
-    const { user } = useAuth()
+    const { user } = useAuthContext()
 
     const specialistId = user?.id || "specialist-1"
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { Menu, X } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
@@ -8,16 +9,17 @@ import { LanguageSwitcher } from "@/components/language-switcher"
 import { LocaleLink } from "@/components/locale-link"
 import { Button } from "@/components/ui/button"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
 import { useTranslation } from "@/lib/i18n"
 
 export function Header({ theme = "education" }: { theme?: "education" | "health" }) {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const { t } = useTranslation()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-    const dashboardHref = user?.legacyRole === "client" ? "/client" : user?.legacyRole === "specialist" ? "/tutor" : "/admin"
-    const specialistHref = user?.legacyRole === "client" ? "/client/specialists" : "/specialists"
+    const dashboardHref = user?.role === UserRoles.Guest ? "/client" : user?.role === UserRoles.Specialist ? "/tutor" : "/admin"
+    const specialistHref = user?.role === UserRoles.Guest ? "/client/specialists" : "/specialists"
     const logoSrc = theme === "health" ? "/logo-health.jpg" : "/logo-education.jpg"
 
     return (
@@ -65,7 +67,7 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                         {user ? (
                             <LocaleLink href={dashboardHref}>
                                 <Button className="h-[44px] px-6 rounded-[12px] bg-primary text-white hover:bg-primary/90 shadow-sm transition-all active:scale-95">
-                                    {user.legacyRole === "admin" ? "Адмін" : "Кабінет"}
+                                    {user.role === UserRoles.SuperAdmin ? "Адмін" : "Кабінет"}
                                 </Button>
                             </LocaleLink>
                         ) : (
@@ -142,7 +144,9 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                             {user ? (
                                 <LocaleLink href={dashboardHref} onClick={() => setIsMobileMenuOpen(false)} className="w-full">
                                     <Button className="w-full h-[56px] rounded-[16px] bg-primary text-white text-lg font-bold shadow-md active:scale-[0.98] transition-transform">
-                                        {user.legacyRole === "admin" ? "Панель адміністратора" : "Перейти в особистий кабінет"}
+                                        {user.role === UserRoles.SuperAdmin
+                                            ? "Панель адміністратора"
+                                            : "Перейти в особистий кабінет"}
                                     </Button>
                                 </LocaleLink>
                             ) : (

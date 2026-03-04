@@ -16,12 +16,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas/register.schema"
+import { type RegisterFormValues, registerSchema } from "@/features/auth/lib/schemas/register.schema"
 
-import { useAuth } from "@/lib/hooks/use-auth"
+import { useAuthContext } from "../context/auth-context"
 
 export function RegisterForm() {
-    const { register, loginWithGoogle } = useAuth()
+    const { handleRegisterWithEmailAndPassword, handleOauth } = useAuthContext()
     const { toast } = useToast()
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
@@ -50,7 +50,7 @@ export function RegisterForm() {
 
         setIsLoading(true)
         try {
-            await register(values.name, values.email, values.password, values.role)
+            await handleRegisterWithEmailAndPassword(values.name, values.email, values.password, values.role)
             router.push("/verify-email")
         } catch (error) {
             const message = error instanceof Error ? error.message : "Не вдалося створити акаунт. Спробуйте інший email."

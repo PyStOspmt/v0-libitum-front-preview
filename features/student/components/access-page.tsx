@@ -1,37 +1,8 @@
-"use client"
-
 import { BookOpen, Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { useAuth } from "@/lib/auth-context"
-
 export function StudentAccessPage({ token }: { token?: string | string[] }) {
-    const router = useRouter()
-    const { impersonate } = useAuth()
-
-    useEffect(() => {
-        // Simulate token validation and auto-login for student
-        const timer = setTimeout(() => {
-            // In a real app, verify token via API first
-            impersonate({
-                id: "student-child-1",
-                name: "Марія Коваленко",
-                email: "maria_child@example.com",
-                role: "client", // Student uses simplified client interface
-                isEmailVerified: true,
-                hasPassedQuiz: true,
-                status: "active",
-                language: "UA",
-            })
-            router.push("/student")
-        }, 2000)
-
-        return () => clearTimeout(timer)
-    }, [token, impersonate, router])
-
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
             <Card className="max-w-md w-full text-center">

@@ -1,8 +1,9 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
 import { createContext, useContext, useEffect, useState } from "react"
 
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export type ThemeType = "tutor" | "psychologist" | "speech-therapist" | "client" | "admin"
 type SpecialistType = "tutor" | "psychologist" | "speech-therapist"
@@ -20,7 +21,7 @@ export interface ThemeColors {
     cardGradient: string
 }
 
-const colorThemes: Record<ThemeType, ThemeColors> = {
+export const colorThemes: Record<ThemeType, ThemeColors> = {
     tutor: {
         type: "tutor",
         primary: "#00c5a6",
@@ -94,13 +95,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const { user } = useAuth()
+    const { user } = useAuthContext()
     const [themeType, setTheme] = useState<ThemeType>("client")
     const [isClient, setIsClient] = useState(false)
 
     // Handle client-side hydration
     useEffect(() => {
-        setTimeout(() => setIsClient(true), 0)
+        const timer = setTimeout(() => setIsClient(true), 0)
+        return () => clearTimeout(timer)
     }, [])
 
     // Auto-detect theme based on user role and specialization
@@ -118,18 +120,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
         // Check localStorage first
         const savedTheme = localStorage.getItem("selectedTheme")
+
         if (savedTheme && ["tutor", "psychologist", "speech-therapist"].includes(savedTheme)) {
-            setTimeout(() => setTheme(savedTheme as ThemeType), 0)
+            setTimeout(() => setTimeout(() => setTheme(savedTheme as ThemeType), 0), 0)
         } else if (user) {
-            // Set initial theme based on user role — intentional setState in effect for initialization
-            /* eslint-disable react-hooks/set-state-in-effect */
-            if (user.legacyRole === "admin") {
-                setTheme("admin")
-            } else if (user.legacyRole === "client" || String(user.legacyRole) === "student") {
-                setTheme("client")
-            } else if (user.legacyRole === "specialist" || user.legacyRole === "tutor") {
+            // Set initial theme based on user
+            if (user.role === UserRoles.SuperAdmin) {
+                setTimeout(() => setTheme("admin"), 0)
+            } else if (user.role === UserRoles.Guest || user.role === UserRoles.Student || user.role === UserRoles.Parent) {
+                setTimeout(() => setTheme("client"), 0)
+            } else if (user.role === UserRoles.Specialist) {
                 // Check specialization
-                const subjects = user.subjects || []
+                const subjects: string[] = []
                 const isPsychologist = subjects.some(
                     (s: string) => s.toLowerCase().includes("психол") || s.toLowerCase().includes("psych"),
                 )
@@ -138,14 +140,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
                 )
 
                 if (isPsychologist) {
-                    setTheme("psychologist")
+                    setTimeout(() => setTheme("psychologist"), 0)
                 } else if (isSpeechTherapist) {
-                    setTheme("speech-therapist")
+                    setTimeout(() => setTheme("speech-therapist"), 0)
                 } else {
-                    setTheme("tutor")
+                    setTimeout(() => setTheme("tutor"), 0)
                 }
             }
-            /* eslint-enable react-hooks/set-state-in-effect */
         }
 
         return () => {
@@ -227,10 +228,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useTheme() {
     const context = useContext(ThemeContext)
+
     if (context === undefined) {
         throw new Error("useTheme must be used within a ThemeProvider")
     }
+
     return context
 }
-
-export { colorThemes }
