@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, CombinedGraphQLErrors, HttpLink, InMemoryCache } from "@apollo/client"
+import { ApolloClient, ApolloLink, CombinedGraphQLErrors, HttpLink, InMemoryCache, Observable } from "@apollo/client"
 import { SetContextLink } from "@apollo/client/link/context"
 import { ErrorLink } from "@apollo/client/link/error"
 import { cookies } from "next/headers"
@@ -23,9 +23,7 @@ const fingerprintLink = new SetContextLink(async ({ headers }) => {
 })
 
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
-    if (!CombinedGraphQLErrors.is(error)) {
-        return
-    }
+    if (!CombinedGraphQLErrors.is(error)) return
 
     const isUnauthenticated = error.errors.some(
         (err) => err.extensions?.code === "UNAUTHENTICATED" || err.message?.toLowerCase().includes("unauthorized"),
@@ -35,24 +33,33 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 
     const { operationName } = operation
 
-    if (operationName === "RefreshToken" || operationName === "Login" || operationName === "Register") return
+    if (operationName && ["RefreshToken", "Login", "Register"].includes(operationName)) return
 
-    fetch("/api/auth/refresh", {
-        method: "POST",
-        credentials: "include",
-    })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error("Failed to refresh token")
+    return new Observable((observer) => {
+        ;(async () => {
+            try {
+                const cookieStore = await cookies()
+                const allCookies = cookieStore.toString()
+
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
+                    method: "GET",
+                    headers: {
+                        Cookie: allCookies,
+                    },
+                })
+
+                if (!res.ok) throw new Error("Refresh failed")
+
+                forward(operation).subscribe({
+                    next: observer.next.bind(observer),
+                    error: observer.error.bind(observer),
+                    complete: observer.complete.bind(observer),
+                })
+            } catch (err) {
+                observer.error(err)
             }
-            return res.json()
-        })
-        .then(() => {
-            forward(operation)
-        })
-        .catch(() => {
-            forward(operation)
-        })
+        })()
+    })
 })
 
 const getHttpLink = async () => {

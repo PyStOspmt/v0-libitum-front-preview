@@ -7,8 +7,8 @@ import { getFingerprint } from "@/lib/utils/fingerprint"
 let isRefreshing = false
 let pendingRequests: (() => void)[] = []
 
-function resolvePending() {
-    pendingRequests.forEach((request) => request())
+const resolvePendingRequests = () => {
+    pendingRequests.map((callback) => callback())
     pendingRequests = []
 }
 
@@ -33,16 +33,17 @@ const httpLink = new HttpLink({
 })
 
 const errorLink = new ErrorLink(({ error, operation, forward }) => {
-    if (!CombinedGraphQLErrors.is(error)) return forward(operation)
+    if (!CombinedGraphQLErrors.is(error)) return
 
     const isUnauthenticated = error.errors.some(
         (err) => err.extensions?.code === "UNAUTHENTICATED" || err.message.toLowerCase().includes("unauthorized"),
     )
 
-    if (!isUnauthenticated || !operation.operationName) return forward(operation)
-
-    if (["RefreshToken", "Login", "Register"].includes(operation.operationName)) {
-        return forward(operation)
+    if (
+        !isUnauthenticated ||
+        (operation.operationName && ["RefreshToken", "Login", "Register"].includes(operation.operationName))
+    ) {
+        return
     }
 
     return new Observable((observer) => {
@@ -61,18 +62,17 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 
         isRefreshing = true
 
-        fetch("/api/auth/refresh", {
-            method: "POST",
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
+            method: "GET",
             credentials: "include",
         })
             .then(() => {
                 isRefreshing = false
-                resolvePending()
                 retry()
+                resolvePendingRequests()
             })
             .catch((err) => {
                 isRefreshing = false
-                pendingRequests.forEach((cb) => cb())
                 pendingRequests = []
                 observer.error(err)
             })
