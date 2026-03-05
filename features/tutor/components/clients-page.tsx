@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import { useRequestStore } from "@/lib/request-store"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorClientsPage() {
     const router = useRouter()
@@ -66,7 +67,7 @@ export function TutorClientsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-7xl space-y-6 sm:space-y-8 px-3 py-6 sm:p-6">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-1 sm:px-0">

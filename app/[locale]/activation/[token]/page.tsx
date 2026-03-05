@@ -76,8 +76,8 @@ export default async function ActivationPage({ params }: { params: Promise<{ tok
                         asChild
                         className="w-full bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110 text-white"
                     >
-                        <Link href={`/${locale === "uk" ? "" : locale}/login`.replace("//", "/") || "/"}>
-                            {isSuccess ? "Перейти до входу" : "Повернутися на головну"}
+                        <Link href={"/"}>
+                            {isSuccess ? "Перейти на головну" : "Повернутися на головну"}
                         </Link>
                     </Button>
                 </CardContent>

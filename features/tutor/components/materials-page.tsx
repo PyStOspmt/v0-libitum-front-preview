@@ -401,11 +401,11 @@ export function TutorMaterialsPage() {
                                     Здано:{" "}
                                     {selectedHomework?.submittedAt
                                         ? new Date(selectedHomework.submittedAt).toLocaleString("uk-UA", {
-                                              hour: "2-digit",
-                                              minute: "2-digit",
-                                              day: "2-digit",
-                                              month: "short",
-                                          })
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            day: "2-digit",
+                                            month: "short",
+                                        })
                                         : "-"}
                                 </div>
                             </div>
