@@ -1,8 +1,6 @@
 "use client"
 
-import { REQUEST_RESET_PASSWORD } from "@/graphql/auth"
 import { useToast } from "@/hooks/use-toast"
-import { useMutation } from "@apollo/client/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -14,6 +12,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
+import { useResetPassword } from "@/features/dashboard/hooks/use-reset-password"
+
 import { type ForgotPasswordValues, forgotPasswordSchema } from "../lib/schemas/forgot-password.schema"
 
 export function ForgotPasswordForm() {
@@ -21,7 +21,7 @@ export function ForgotPasswordForm() {
     const [isSent, setIsSent] = useState(false)
     const [sentEmail, setSentEmail] = useState("")
 
-    const [requestReset] = useMutation(REQUEST_RESET_PASSWORD)
+    const { requestResetPassword } = useResetPassword()
 
     const form = useForm<ForgotPasswordValues>({
         resolver: zodResolver(forgotPasswordSchema),
@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
 
     const onSubmit = async (data: ForgotPasswordValues) => {
         try {
-            await requestReset()
+            await requestResetPassword({ variables: { requestResetPasswordPayload: { email: data.email } } })
             setSentEmail(data.email)
             setIsSent(true)
             toast({

@@ -10,6 +10,7 @@ import { ReactNode, useCallback, useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { pagesConfig } from "@/lib/config/pages"
+import { useSocket, useSocketEvent } from "@/lib/hooks/use-socket"
 
 import { AuthContext } from "../context/auth-context"
 import { LOGIN_WITH_EMAIL_PASSWORD } from "../graphql/mutations/login-with-email-password"
@@ -22,23 +23,21 @@ type AuthProviderProps = {
     children: ReactNode
 }
 
-const getCurrentUserFromCookies = () => {
-    const cookieUser = Cookies.get("user")
-
-    if (!cookieUser) {
-        return null
-    }
-
-    const user = JSONCookie(decodeURIComponent(cookieUser))
-
-    console.log(user)
-
-    return (user as BaseAuthenticatedUser) || null
+type ServerToClient = {
+    "force-logout": (payload: { message: string; timestamp: string }) => void
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
-    const [user, setUser] = useState<BaseAuthenticatedUser | null>(getCurrentUserFromCookies)
+type ClientToServer = {}
 
+export function AuthProvider({ children }: AuthProviderProps) {
+    const [user, setUser] = useState<BaseAuthenticatedUser | null>(null)
+
+    const { socketRef } = useSocket<ServerToClient, ClientToServer>({
+        namespace: "auth",
+        options: {
+            autoConnect: false,
+        },
+    })
     const router = useRouter()
     const apolloClient = useApolloClient()
 
@@ -108,6 +107,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
         },
         [requestOAuthUrlMutation],
     )
+
+    useSocketEvent(socketRef, "force-logout", ({ message }) => {
+        setUser(null)
+        toast.warning(message)
+        router.push(pagesConfig.login)
+    })
+
+    useEffect(() => {
+        if (!socketRef.current) return
+
+        if (user && !socketRef.current.connected) {
+            console.log("conntected")
+            socketRef.current.connect()
+        }
+    }, [user, socketRef])
 
     useEffect(() => {
         const getCurrentUser = async () => {

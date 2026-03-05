@@ -178,7 +178,7 @@ export function CatalogPageClient({ subjectSlug, citySlug }: CatalogPageClientPr
                                 <Link
                                     href={
                                         user.role === UserRoles.Specialist
-                                            ? "/tutor"
+                                            ? "/tutor/profile"
                                             : user.role === UserRoles.SuperAdmin
                                               ? "/admin"
                                               : "/client"

@@ -10,7 +10,17 @@ export const metadata = {
     description: "Встановіть новий пароль для вашого акаунту Libitum.",
 }
 
-export default function ResetPasswordPage() {
+type ResetPasswordPageParams = {
+    token: string
+}
+
+type ResetPasswordPageProps = {
+    params: Promise<ResetPasswordPageParams>
+}
+
+export default async function ResetPasswordPage({ params }: ResetPasswordPageProps) {
+    const { token } = await params
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4">
             <div className="w-full max-w-md">
@@ -23,7 +33,7 @@ export default function ResetPasswordPage() {
                     </Link>
                 </div>
 
-                <ResetPasswordForm />
+                <ResetPasswordForm token={token} />
             </div>
         </div>
     )

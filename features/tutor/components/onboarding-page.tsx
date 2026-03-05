@@ -1,8 +1,9 @@
 "use client"
 
+import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
 import { AlertCircle, ArrowRight, BookOpen, CheckCircle, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState, useMemo } from "react"
+import { useMemo, useState } from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { useAuthContext } from "@/features/auth/context/auth-context"
 
-import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
 import { cn } from "@/lib/utils"
 
 interface TutorOnboardingPageProps {
@@ -44,16 +44,18 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     const QUIZ_QUESTIONS: LocalQuizQuestion[] = useMemo(() => {
         if (!quiz) return []
 
-        return [...quiz.questions].sort((a: any, b: any) => a.order - b.order).map((q: any) => ({
-            id: String(q.id),
-            question: q.text,
-            explanation: q.explanation,
-            options: q.options.map((opt: any) => ({
-                id: String(opt.id),
-                text: opt.text,
-                correct: opt.isCorrect
+        return [...quiz.questions]
+            .sort((a: any, b: any) => a.order - b.order)
+            .map((q: any) => ({
+                id: String(q.id),
+                question: q.text,
+                explanation: q.explanation,
+                options: q.options.map((opt: any) => ({
+                    id: String(opt.id),
+                    text: opt.text,
+                    correct: opt.isCorrect,
+                })),
             }))
-        }))
     }, [quiz])
 
     const handleAnswer = (optionId: string) => {
@@ -99,18 +101,17 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         return <div className="flex h-screen items-center justify-center p-8">Немає доступних квізів.</div>
     }
 
-
     const handleStartQuiz = () => setStep("quiz")
 
     const handleComplete = async () => {
         if (user) {
             const updatedUser = { ...user, hasPassedQuiz: true }
             localStorage.setItem("user", JSON.stringify(updatedUser))
-            window.location.href = "/tutor"
+            window.location.href = "/tutor/profile"
         }
     }
 
-    const progress = QUIZ_QUESTIONS.length > 0 ? ((currentQuestion) / QUIZ_QUESTIONS.length) * 100 : 0
+    const progress = QUIZ_QUESTIONS.length > 0 ? (currentQuestion / QUIZ_QUESTIONS.length) * 100 : 0
     const scorePercentage = QUIZ_QUESTIONS.length > 0 ? (score / QUIZ_QUESTIONS.length) * 100 : 0
     const passingScore = quiz?.passingScore ?? 100
     const isPerfectScore = scorePercentage >= passingScore
@@ -197,8 +198,8 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
                                     <p>
-                                        Для активації профілю необхідно правильно відповісти на {passingScore}% питань. Будь ласка, уважно
-                                        перечитайте{" "}
+                                        Для активації профілю необхідно правильно відповісти на {passingScore}% питань. Будь
+                                        ласка, уважно перечитайте{" "}
                                         <a href="/rules" className="text-teal-600 hover:underline">
                                             правила платформи
                                         </a>{" "}
@@ -218,8 +219,9 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                 return (
                                     <div
                                         key={question.id}
-                                        className={`rounded-lg border-2 p-4 ${isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
-                                            }`}
+                                        className={`rounded-lg border-2 p-4 ${
+                                            isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                        }`}
                                     >
                                         <div className="flex items-start justify-between">
                                             <p className="text-sm font-medium">
@@ -234,17 +236,31 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                         {!isCorrect && (
                                             <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
                                                 <div className="flex flex-col gap-1 mb-2">
-                                                    <p className="text-red-700 font-medium">Ваша відповідь: <span className="font-normal text-slate-800">{selectedOption?.text}</span></p>
-                                                    <p className="text-green-700 font-medium">Правильна відповідь: <span className="font-normal text-slate-800">{correctOption?.text}</span></p>
+                                                    <p className="text-red-700 font-medium">
+                                                        Ваша відповідь:{" "}
+                                                        <span className="font-normal text-slate-800">
+                                                            {selectedOption?.text}
+                                                        </span>
+                                                    </p>
+                                                    <p className="text-green-700 font-medium">
+                                                        Правильна відповідь:{" "}
+                                                        <span className="font-normal text-slate-800">
+                                                            {correctOption?.text}
+                                                        </span>
+                                                    </p>
                                                 </div>
                                                 {question.explanation && (
-                                                    <p className="text-sm mt-3 pt-3 border-t text-muted-foreground"><span className="font-medium">Пояснення:</span> {question.explanation}</p>
+                                                    <p className="text-sm mt-3 pt-3 border-t text-muted-foreground">
+                                                        <span className="font-medium">Пояснення:</span> {question.explanation}
+                                                    </p>
                                                 )}
                                             </div>
                                         )}
                                         {isCorrect && question.explanation && (
                                             <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
-                                                <p className="text-sm text-muted-foreground"><span className="font-medium">Пояснення:</span> {question.explanation}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    <span className="font-medium">Пояснення:</span> {question.explanation}
+                                                </p>
                                             </div>
                                         )}
                                     </div>
@@ -270,7 +286,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                         </div>
                     </CardContent>
                 </Card>
-            </div >
+            </div>
         )
     }
 
@@ -284,7 +300,8 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                 <CardHeader>
                     <CardTitle className="text-2xl">{quiz.title || "Тест на знання правил платформи"}</CardTitle>
                     <CardDescription>
-                        {quiz.description || "Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання."}
+                        {quiz.description ||
+                            "Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання."}
                     </CardDescription>
                     <Progress value={progress} className="mt-4" />
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -303,16 +320,16 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                         className={cn(
                                             "flex items-center space-x-3 cursor-pointer rounded-lg border-2 p-4 transition-colors",
                                             {
-                                                "border-teal-600 bg-teal-50": answers[currentQuestion] === option.id && option.correct,
-                                                "border-red-600 bg-red-50 text-red-900": answers[currentQuestion] === option.id && !option.correct,
+                                                "border-teal-600 bg-teal-50":
+                                                    answers[currentQuestion] === option.id && option.correct,
+                                                "border-red-600 bg-red-50 text-red-900":
+                                                    answers[currentQuestion] === option.id && !option.correct,
                                                 "border-gray-200 hover:border-gray-300": answers[currentQuestion] !== option.id,
-                                            }
+                                            },
                                         )}
                                     >
                                         <RadioGroupItem value={option.id} id={`${question.id}-${option.id}`} />
-                                        <p className="flex-1 font-normal">
-                                            {option.text}
-                                        </p>
+                                        <p className="flex-1 font-normal">{option.text}</p>
                                     </Label>
                                 ))}
                             </div>

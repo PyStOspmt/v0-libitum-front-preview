@@ -1,8 +1,6 @@
 "use client"
 
-import { RESET_PASSWORD } from "@/graphql/auth"
 import { useToast } from "@/hooks/use-toast"
-import { useMutation } from "@apollo/client/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
@@ -15,17 +13,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { type ResetPasswordValues, resetPasswordSchema } from "../lib/schemas/reset-password.schema"
-import type { ResetPasswordData, ResetPasswordVariables } from "../types/auth.types"
+import { useResetPassword } from "@/features/dashboard/hooks/use-reset-password"
 
-export function ResetPasswordForm() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
+import { type ResetPasswordValues, resetPasswordSchema } from "../lib/schemas/reset-password.schema"
+
+type ResetPasswordFormProps = {
+    token: string
+}
+
+export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     const { toast } = useToast()
-    const token = searchParams.get("token")
     const [showPassword, setShowPassword] = useState(false)
 
-    const [resetPassword] = useMutation<ResetPasswordData, ResetPasswordVariables>(RESET_PASSWORD)
+    const { confirmResetPassword } = useResetPassword()
 
     const form = useForm<ResetPasswordValues>({
         resolver: zodResolver(resetPasswordSchema),
@@ -43,23 +43,21 @@ export function ResetPasswordForm() {
         }
 
         try {
-            const { data: result } = await resetPassword({
+            await confirmResetPassword({
                 variables: {
                     resetPasswordPayload: { token, password: data.password },
                 },
             })
-
-            if (result?.resetPassword) {
-                toast({ title: "Пароль оновлено", description: "Ваш пароль успішно змінено" })
-                router.push("/login")
-            } else {
+        } catch (error) {
+            if (error instanceof Error) {
                 toast({
                     title: "Помилка",
-                    description: "Не вдалося змінити пароль. Токен може бути недійсним.",
+                    description: error.message,
                     variant: "destructive",
                 })
+                return
             }
-        } catch {
+
             toast({
                 title: "Помилка",
                 description: "Не вдалося змінити пароль. Спробуйте запросити скидання ще раз.",

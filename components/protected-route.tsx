@@ -24,7 +24,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
         }
         if (!user.isVerified && pathname !== "/verify-email") return "/verify-email"
         if (allowedRoles && !allowedRoles.includes(user.role)) {
-            return user.role === UserRoles.Specialist ? "/tutor" : "/client"
+            return user.role === UserRoles.Specialist ? "/tutor/profile" : "/client"
         }
         return null
     }, [user, pathname, allowedRoles])

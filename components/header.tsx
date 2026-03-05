@@ -18,7 +18,8 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
     const { t } = useTranslation()
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-    const dashboardHref = user?.role === UserRoles.Guest ? "/client" : user?.role === UserRoles.Specialist ? "/tutor" : "/admin"
+    const dashboardHref =
+        user?.role === UserRoles.Guest ? "/client" : user?.role === UserRoles.Specialist ? "/tutor/profile" : "/admin"
     const specialistHref = user?.role === UserRoles.Guest ? "/client/specialists" : "/specialists"
     const logoSrc = theme === "health" ? "/logo-health.jpg" : "/logo-education.jpg"
 
