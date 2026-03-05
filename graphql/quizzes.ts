@@ -23,3 +23,20 @@ export const GET_QUIZZES = gql(`
     }
   }
 `);
+
+export const HANDLE_COMPLETE_QUIZ = gql(`
+  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {
+    handleCompleteQuiz(completeQuizPayload: $payload) {
+      correctCount
+      isPassed
+      questionResults {
+        correctOptionIds
+        isCorrect
+        questionId
+        selectedOptionIds
+      }
+      scorePercent
+      totalQuestions
+    }
+  }
+`);

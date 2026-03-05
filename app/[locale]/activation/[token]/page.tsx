@@ -30,13 +30,7 @@ export default async function ActivationPage({ params }: { params: Promise<{ tok
 
         console.log("response", response)
 
-        // if (response.errors && response.errors.length > 0) {
-        //     errorMessage = response.errors[0]?.message || "Не вдалося активувати акаунт."
-        // } else if (response.data?.verifyUser) {
-        //     isSuccess = true
-        // } else {
-        //     errorMessage = "Токен недійсний або акаунт вже активовано."
-        // }
+        isSuccess = response.data?.verifyUser || false
     } catch (error) {
         console.error("Activation mutation failed with error:", error);
         if (error instanceof Error) {
@@ -44,7 +38,6 @@ export default async function ActivationPage({ params }: { params: Promise<{ tok
             console.error("Error Stack:", error.stack);
         }
 
-        // checking for Apollo errors specifically
         if ((error as any).networkError) {
             console.error("Network Error Details:", (error as any).networkError);
         }
