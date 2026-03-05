@@ -49,7 +49,7 @@ export function LoginForm() {
 
     async function handleGoogleLogin() {
         try {
-            await handleOauth(UserRoles.Guest)
+            await handleOauth(UserRoles.Student)
         } catch {
             setServerError("Не вдалося підключити Google. Спробуйте пізніше.")
         }
