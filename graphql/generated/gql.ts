@@ -1,7 +1,6 @@
 /* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core"
-
-import * as types from "./graphql"
+import * as types from './graphql';
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 
 /**
  * Map of all GraphQL operations in the project.
@@ -15,48 +14,35 @@ import * as types from "./graphql"
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
-    "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": typeof types.LoginWithEmailAndPasswordDocument
-    "\n    mutation Logout {\n        logout\n    }\n": typeof types.LogoutDocument
-    "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": typeof types.RegisterWithEmailAndPasswordDocument
-    "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n": typeof types.RequestOAuthUrlDocument
-    "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    ": typeof types.GetCurrentUserDocument
-    "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n": typeof types.RequestResetPasswordDocument
-    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n": typeof types.RequestTelegramVerificationDocument
-    "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n": typeof types.ConfirmResetPasswordDocument
-    "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": typeof types.VerifyUserDocument
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": typeof types.GetQuizzesDocument
-    "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n": typeof types.ResendVerificationEmailDocument
-    "\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n": typeof types.RequestResetPasswordDocument
-    "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n": typeof types.ResetPasswordDocument
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": typeof types.GetQuizzesDocument
-}
+    "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": typeof types.LoginWithEmailAndPasswordDocument,
+    "\n    mutation Logout {\n        logout\n    }\n": typeof types.LogoutDocument,
+    "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": typeof types.RegisterWithEmailAndPasswordDocument,
+    "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n": typeof types.RequestOAuthUrlDocument,
+    "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    ": typeof types.GetCurrentUserDocument,
+    "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n": typeof types.RequestResetPasswordDocument,
+    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n": typeof types.RequestTelegramVerificationDocument,
+    "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n": typeof types.ConfirmResetPasswordDocument,
+    "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": typeof types.VerifyUserDocument,
+    "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n": typeof types.ResendVerificationEmailDocument,
+    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": typeof types.GetQuizzesDocument,
+    "\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n": typeof types.HandleCompleteQuizDocument,
+    "\n    query IsTutorVerified {\n        tutorVerified\n    }\n": typeof types.IsTutorVerifiedDocument,
+};
 const documents: Documents = {
-    "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n":
-        types.LoginWithEmailAndPasswordDocument,
+    "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": types.LoginWithEmailAndPasswordDocument,
     "\n    mutation Logout {\n        logout\n    }\n": types.LogoutDocument,
-    "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n":
-        types.RegisterWithEmailAndPasswordDocument,
-    "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n":
-        types.RequestOAuthUrlDocument,
-    "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    ":
-        types.GetCurrentUserDocument,
-    "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n":
-        types.RequestResetPasswordDocument,
-    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n":
-        types.RequestTelegramVerificationDocument,
-    "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n":
-        types.ConfirmResetPasswordDocument,
-    "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n":
-        types.VerifyUserDocument,
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          isCorrect\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n":
-        types.GetQuizzesDocument,
+    "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n": types.RegisterWithEmailAndPasswordDocument,
+    "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n": types.RequestOAuthUrlDocument,
+    "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    ": types.GetCurrentUserDocument,
+    "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n": types.RequestResetPasswordDocument,
+    "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n": types.RequestTelegramVerificationDocument,
+    "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n": types.ConfirmResetPasswordDocument,
+    "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": types.VerifyUserDocument,
     "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n": types.ResendVerificationEmailDocument,
-    "\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n": types.RequestResetPasswordDocument,
-    "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n":
-        types.ResetPasswordDocument,
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n":
-        types.GetQuizzesDocument,
-}
+    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": types.GetQuizzesDocument,
+    "\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n": types.HandleCompleteQuizDocument,
+    "\n    query IsTutorVerified {\n        tutorVerified\n    }\n": types.IsTutorVerifiedDocument,
+};
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -70,90 +56,63 @@ const documents: Documents = {
  * The query argument is unknown!
  * Please regenerate the types.
  */
-export function gql(source: string): unknown
+export function gql(source: string): unknown;
 
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n",
-): (typeof documents)["\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"]
+export function gql(source: "\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"): (typeof documents)["\n    mutation LoginWithEmailAndPassword($userPayload: LoginWithEmailAndPasswordDto!) {\n        user: loginWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation Logout {\n        logout\n    }\n",
-): (typeof documents)["\n    mutation Logout {\n        logout\n    }\n"]
+export function gql(source: "\n    mutation Logout {\n        logout\n    }\n"): (typeof documents)["\n    mutation Logout {\n        logout\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n",
-): (typeof documents)["\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"]
+export function gql(source: "\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"): (typeof documents)["\n    mutation RegisterWithEmailAndPassword($userPayload: RegisterWithEmailAndPasswordDto!) {\n        user: registerUserWithEmailAndPassword(userPayload: $userPayload) {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n",
-): (typeof documents)["\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n"]
+export function gql(source: "\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n"): (typeof documents)["\n    mutation requestOAuthUrl($payload: RequestOAuthUrlDto!) {\n        url: requestOAuthUrl(requestOAuthUrlDto: $payload)\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    ",
-): (typeof documents)["\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    "]
+export function gql(source: "\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    "): (typeof documents)["\n    query GetCurrentUser {\n        user: getCurrentUser {\n            id\n            email\n            role\n            isVerified\n            createdAt\n            updatedAt\n        }\n    }\n    "];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n",
-): (typeof documents)["\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n"]
+export function gql(source: "\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n"): (typeof documents)["\n    mutation RequestResetPassword ($requestResetPasswordPayload: RequestResetPasswordDto!){\n        requestResetPassword (requestResetPasswordPayload: $requestResetPasswordPayload)\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n",
-): (typeof documents)["\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n"]
+export function gql(source: "\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n"): (typeof documents)["\n    mutation RequestTelegramVerification {\n        requestTelegramVerification {\n            token\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n",
-): (typeof documents)["\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n"]
+export function gql(source: "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n"): (typeof documents)["\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n",
-): (typeof documents)["\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n"]
+export function gql(source: "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n"): (typeof documents)["\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n",
-): (typeof documents)["\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n"]
+export function gql(source: "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n"): (typeof documents)["\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n",
-): (typeof documents)["\n    mutation RequestResetPassword {\n        requestResetPassword\n    }\n"]
+export function gql(source: "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n",
-): (typeof documents)["\n    mutation ResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload)\n    }\n"]
+export function gql(source: "\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n"): (typeof documents)["\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(
-    source: "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n",
-): (typeof documents)["\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"]
+export function gql(source: "\n    query IsTutorVerified {\n        tutorVerified\n    }\n"): (typeof documents)["\n    query IsTutorVerified {\n        tutorVerified\n    }\n"];
 
 export function gql(source: string) {
-    return (documents as any)[source] ?? {}
+  return (documents as any)[source] ?? {};
 }
 
-export type DocumentType<TDocumentNode extends DocumentNode<any, any>> =
-    TDocumentNode extends DocumentNode<infer TType, any> ? TType : never
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

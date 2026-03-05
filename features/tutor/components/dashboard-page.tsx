@@ -16,6 +16,7 @@ import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import { useGamificationStore } from "@/lib/gamification-store"
 import { useRequestStore } from "@/lib/request-store"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorDashboardPage() {
     const { toast } = useToast()
@@ -33,9 +34,9 @@ export function TutorDashboardPage() {
         currentLevel.maxXP === Number.POSITIVE_INFINITY
             ? 100
             : Math.max(
-                  0,
-                  Math.min(100, ((progress.totalXP - currentLevel.minXP) / (currentLevel.maxXP - currentLevel.minXP)) * 100),
-              )
+                0,
+                Math.min(100, ((progress.totalXP - currentLevel.minXP) / (currentLevel.maxXP - currentLevel.minXP)) * 100),
+            )
 
     const stats = {
         activeClients: 12,
@@ -76,7 +77,7 @@ export function TutorDashboardPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
                     {/* Header */}
@@ -243,25 +244,22 @@ export function TutorDashboardPage() {
                                 <div
                                     key={goal.id}
                                     onClick={() => handleToggleGoal(goal.id)}
-                                    className={`flex items-center gap-4 p-4 rounded-[12px] border cursor-pointer transition-colors ${
-                                        goal.completed
+                                    className={`flex items-center gap-4 p-4 rounded-[12px] border cursor-pointer transition-colors ${goal.completed
                                             ? "bg-[#f8f9fb] border-transparent"
                                             : "bg-white border-slate-200/80 hover:border-[var(--theme-primary)]"
-                                    }`}
+                                        }`}
                                 >
                                     <div
-                                        className={`flex items-center justify-center h-6 w-6 rounded-full border-2 shrink-0 transition-colors ${
-                                            goal.completed
+                                        className={`flex items-center justify-center h-6 w-6 rounded-full border-2 shrink-0 transition-colors ${goal.completed
                                                 ? "bg-[var(--theme-primary)] border-[var(--theme-primary)]"
                                                 : "border-slate-300"
-                                        }`}
+                                            }`}
                                     >
                                         {goal.completed && <CheckCircle2 className="h-4 w-4 text-white" />}
                                     </div>
                                     <span
-                                        className={`text-[15px] font-[500] ${
-                                            goal.completed ? "text-[#69686f] line-through" : "text-[#121117]"
-                                        }`}
+                                        className={`text-[15px] font-[500] ${goal.completed ? "text-[#69686f] line-through" : "text-[#121117]"
+                                            }`}
                                     >
                                         {goal.title}
                                     </span>

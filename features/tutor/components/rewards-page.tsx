@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorRewardsPage() {
     const { toast } = useToast()
@@ -78,7 +79,7 @@ export function TutorRewardsPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
                     {/* Header */}

@@ -29,6 +29,7 @@ import { useAuthContext } from "@/features/auth/context/auth-context"
 import { useLessonStore } from "@/lib/lesson-store"
 
 import { WithdrawDialog } from "./withdraw-dialog"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorFinancesPage() {
     const { user } = useAuthContext()
@@ -128,7 +129,7 @@ export function TutorFinancesPage() {
     }
 
     return (
-        <ProtectedRoute allowedRoles={["specialist"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
             <SidebarLayout userType="tutor">
                 <div className="container mx-auto max-w-7xl space-y-8 p-6">
                     <div className="flex flex-wrap items-center justify-between gap-4">
@@ -216,9 +217,8 @@ export function TutorFinancesPage() {
                                                 >
                                                     <div className="flex items-center gap-4">
                                                         <div
-                                                            className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                                                                transaction.type === "income" ? "bg-emerald-100" : "bg-rose-100"
-                                                            }`}
+                                                            className={`flex h-10 w-10 items-center justify-center rounded-full ${transaction.type === "income" ? "bg-emerald-100" : "bg-rose-100"
+                                                                }`}
                                                         >
                                                             {transaction.type === "income" ? (
                                                                 <ArrowDownRight className="h-5 w-5 text-emerald-600" />
@@ -241,11 +241,10 @@ export function TutorFinancesPage() {
                                                     </div>
                                                     <div className="flex flex-col items-end gap-2">
                                                         <p
-                                                            className={`text-lg font-bold ${
-                                                                transaction.type === "income"
-                                                                    ? "text-emerald-600"
-                                                                    : "text-rose-600"
-                                                            }`}
+                                                            className={`text-lg font-bold ${transaction.type === "income"
+                                                                ? "text-emerald-600"
+                                                                : "text-rose-600"
+                                                                }`}
                                                         >
                                                             {transaction.type === "income" ? "+" : "-"}
                                                             {transaction.amount} грн
@@ -353,11 +352,10 @@ export function TutorFinancesPage() {
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium">Баланс</span>
                                         <span
-                                            className={`text-xl font-bold ${
-                                                monthlyStats.income - monthlyStats.expenses >= 0
-                                                    ? "text-emerald-600"
-                                                    : "text-rose-600"
-                                            }`}
+                                            className={`text-xl font-bold ${monthlyStats.income - monthlyStats.expenses >= 0
+                                                ? "text-emerald-600"
+                                                : "text-rose-600"
+                                                }`}
                                         >
                                             {monthlyStats.income - monthlyStats.expenses >= 0 ? "+" : ""}
                                             {monthlyStats.income - monthlyStats.expenses} грн

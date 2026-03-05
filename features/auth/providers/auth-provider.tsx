@@ -96,7 +96,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const handleRegisterWithEmailAndPassword = useCallback(
         async (name: string, email: string, password: string, role: UserRoles) => {
-            await registerWithEmailAndPasswordMutation({ variables: { userPayload: { email, password, role } } })
+            await registerWithEmailAndPasswordMutation({ variables: { userPayload: { name, email, password, role } } })
         },
         [registerWithEmailAndPasswordMutation],
     )

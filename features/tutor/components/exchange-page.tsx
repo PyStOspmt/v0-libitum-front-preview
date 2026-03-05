@@ -24,7 +24,7 @@ export function TutorExchangePage() {
     const { theme } = useTheme()
     const [selectedLead, setSelectedLead] = useState<string | null>(null)
 
-    const mySubjects = useMemo(() => [], [])
+    const mySubjects = useMemo<string[]>(() => [], [])
     const specialistId = user?.id || "specialist-1"
     const publicLeads = getPublicLeads().filter((lead) => mySubjects.length === 0 || mySubjects.includes(lead.subject))
 
@@ -156,9 +156,8 @@ export function TutorExchangePage() {
                                             )}
 
                                             <div
-                                                className={`rounded-[12px] p-4 mt-4 ${
-                                                    timeToDrop.hours < 1 ? "bg-red-50" : "bg-[#fff8e1]"
-                                                }`}
+                                                className={`rounded-[12px] p-4 mt-4 ${timeToDrop.hours < 1 ? "bg-red-50" : "bg-[#fff8e1]"
+                                                    }`}
                                             >
                                                 <div className="flex items-center gap-2 text-[14px] font-[600]">
                                                     <Clock

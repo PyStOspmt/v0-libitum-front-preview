@@ -53,9 +53,8 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     const [showResults, setShowResults] = useState(false)
     const [quizResult, setQuizResult] = useState<QuizResult | null>(null)
 
-    // TODO: Remove `as any` after running `pnpm codegen` with backend online
     const [completeQuizMutation, { loading: isSubmitting }] = useMutation<{ handleCompleteQuiz: QuizResult }>(
-        HANDLE_COMPLETE_QUIZ as any,
+        HANDLE_COMPLETE_QUIZ,
     )
 
     const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null
@@ -150,7 +149,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         if (user) {
             const updatedUser = { ...user, hasPassedQuiz: true }
             localStorage.setItem("user", JSON.stringify(updatedUser))
-            window.location.href = "/tutor/profile"
+            router.push("/tutor/profile")
         }
     }
 
@@ -267,9 +266,8 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                 return (
                                     <div
                                         key={result.questionId}
-                                        className={`rounded-lg border-2 p-4 ${
-                                            result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
-                                        }`}
+                                        className={`rounded-lg border-2 p-4 ${result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                            }`}
                                     >
                                         <div className="flex items-start justify-between">
                                             <p className="text-sm font-medium">
