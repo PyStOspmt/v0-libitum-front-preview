@@ -152,9 +152,10 @@ export function AdminDictionariesPage() {
           </div>
 
           <Tabs defaultValue="subjects" className="w-full">
-            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 grid w-full max-w-md grid-cols-2 mb-6">
-              <TabsTrigger value="subjects" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Предмети та Ціни</TabsTrigger>
-              <TabsTrigger value="cities" className="rounded-[8px] data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Міста</TabsTrigger>
+            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 grid w-full max-w-2xl grid-cols-3 mb-6 h-[48px]">
+              <TabsTrigger value="subjects" className="rounded-[8px] h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Предмети та Ціни</TabsTrigger>
+              <TabsTrigger value="cities" className="rounded-[8px] h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Міста</TabsTrigger>
+              <TabsTrigger value="efficiency" className="rounded-[8px] h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f]">Efficiency Score</TabsTrigger>
             </TabsList>
 
             <TabsContent value="subjects" className="space-y-4 pt-4">
@@ -316,6 +317,47 @@ export function AdminDictionariesPage() {
                     />
                     <Button onClick={handleAddCity} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
                       Додати місто
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="efficiency" className="space-y-4 pt-4">
+              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+                <CardHeader>
+                  <CardTitle className="text-xl font-[700] text-[#121117]">Ваги Efficiency Score</CardTitle>
+                  <CardDescription className="text-[#69686f] font-[500]">Налаштування коефіцієнтів впливу різних метрик на загальний рейтинг репетитора.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {[
+                    { label: "Конверсія з пробних у постійні", weight: 30, desc: "Найважливіший показник, який демонструє здатність утримати учня." },
+                    { label: "Середній рейтинг (відгуки)", weight: 25, desc: "Оцінки від учнів та батьків після завершення занять." },
+                    { label: "Швидкість відповіді на заявки", weight: 15, desc: "Час, за який репетитор реагує на нові призначення." },
+                    { label: "Кількість активних учнів", weight: 10, desc: "Загальне навантаження фахівця на платформі." },
+                    { label: "Відсоток перевірених ДЗ", weight: 10, desc: "Дисципліна ведення журналу та перевірки завдань." },
+                    { label: "Заповненість профілю", weight: 10, desc: "Наявність відео, сертифікатів та детального опису." },
+                  ].map((metric, idx) => (
+                    <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-slate-200/80 rounded-[16px] hover:bg-slate-50/50 transition-colors">
+                      <div className="flex-1">
+                        <div className="font-[600] text-[#121117] text-[16px]">{metric.label}</div>
+                        <div className="text-[13px] text-[#69686f] font-[500] mt-1">{metric.desc}</div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Input type="number" defaultValue={metric.weight} className="w-20 text-center font-[600] text-[#121117]" />
+                        <span className="text-[#69686f] font-[500]">%</span>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="bg-amber-50 border border-amber-200 p-4 rounded-[12px] flex items-center justify-between">
+                    <span className="text-[14px] font-[600] text-amber-800">Загальна сума ваг:</span>
+                    <span className="text-[16px] font-[700] text-amber-800">100%</span>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+                      Зберегти зміни
                     </Button>
                   </div>
                 </CardContent>
