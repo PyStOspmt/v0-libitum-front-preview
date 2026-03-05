@@ -12,7 +12,7 @@ export async function getFingerprint() {
         const fp = await FingerprintJS.load()
         const result = await fp.get()
 
-        Cookies.set("device-fingerprint", result.visitorId, { expires: 365, sameSite: "Lax", secure: true })
+        Cookies.set("device-fingerprint", result.visitorId, { expires: 365, sameSite: "none", secure: true })
 
         return result.visitorId
     } catch (error) {
