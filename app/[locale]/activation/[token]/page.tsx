@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { fetchGraphQL } from "@/lib/apollo/server-client"
+import { getApolloServerClient } from "@/lib/clients/apollo-server"
 
 export const metadata = {
     title: "Активація акаунту | Libitum",
@@ -18,19 +18,34 @@ export default async function ActivationPage({ params }: { params: Promise<{ tok
     let isSuccess = false
     let errorMessage = ""
 
+    const apolloClient = await getApolloServerClient()
+
     try {
-        const response = await fetchGraphQL<{ verifyUser: boolean }>(VERIFY_USER, {
-            verifyUserPayload: { token },
+        const response = await apolloClient.mutate<{ verifyUser: boolean }>({
+            mutation: VERIFY_USER,
+            variables: {
+                verifyUserPayload: { token },
+            },
         })
 
-        if (response.errors && response.errors.length > 0) {
-            errorMessage = response.errors[0]?.message || "Не вдалося активувати акаунт."
-        } else if (response.data?.verifyUser) {
-            isSuccess = true
-        } else {
-            errorMessage = "Токен недійсний або акаунт вже активовано."
-        }
+        console.log("response", response)
+
+        isSuccess = response.data?.verifyUser || false
     } catch (error) {
+        console.error("Activation mutation failed with error:", error);
+        if (error instanceof Error) {
+            console.error("Error Message:", error.message);
+            console.error("Error Stack:", error.stack);
+        }
+
+        if ((error as any).networkError) {
+            console.error("Network Error Details:", (error as any).networkError);
+        }
+
+        if ((error as any).graphQLErrors) {
+            console.error("GraphQL Errors Details:", JSON.stringify((error as any).graphQLErrors, null, 2));
+        }
+
         errorMessage = "Сталася помилка під час активації акаунту. Спробуйте пізніше."
     }
 

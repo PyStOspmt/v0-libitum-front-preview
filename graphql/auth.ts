@@ -5,3 +5,9 @@ export const VERIFY_USER = gql(`
         verifyUser(verifyUserPayload: $verifyUserPayload)
     }
 `)
+
+export const RESEND_VERIFICATION_EMAIL = gql(`
+    mutation ResendVerificationEmail {
+        resendVerificationEmail
+    }
+`)

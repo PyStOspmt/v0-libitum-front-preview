@@ -14,13 +14,29 @@ export const GET_QUIZZES = gql(`
         mediaId
         options {
           id
-          isCorrect
           text
         }
         order
         text
       }
       createdAt
+    }
+  }
+`);
+
+export const HANDLE_COMPLETE_QUIZ = gql(`
+  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {
+    handleCompleteQuiz(completeQuizPayload: $payload) {
+      correctCount
+      isPassed
+      questionResults {
+        correctOptionIds
+        isCorrect
+        questionId
+        selectedOptionIds
+      }
+      scorePercent
+      totalQuestions
     }
   }
 `);

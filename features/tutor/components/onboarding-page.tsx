@@ -1,9 +1,11 @@
 "use client"
 
-import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
-import { AlertCircle, ArrowRight, BookOpen, CheckCircle, XCircle } from "lucide-react"
+import { HANDLE_COMPLETE_QUIZ } from "@/graphql/quizzes"
+import { useMutation } from "@apollo/client/react"
+import { AlertCircle, ArrowRight, BookOpen, CheckCircle, Loader2, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useMemo, useState } from "react"
+import { toast } from "sonner"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -17,7 +19,7 @@ import { useAuthContext } from "@/features/auth/context/auth-context"
 import { cn } from "@/lib/utils"
 
 interface TutorOnboardingPageProps {
-    quizzes: any // Fallback to any since GetQuizzesQuery is cached as not exported
+    quizzes: any
 }
 
 type LocalQuizQuestion = {
@@ -27,8 +29,20 @@ type LocalQuizQuestion = {
     options: {
         id: string
         text: string
-        correct: boolean
     }[]
+}
+
+type QuizResult = {
+    correctCount: number
+    isPassed: boolean
+    questionResults: {
+        correctOptionIds: string[]
+        isCorrect: boolean
+        questionId: string
+        selectedOptionIds: string[]
+    }[]
+    scorePercent: number
+    totalQuestions: number
 }
 
 export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
@@ -37,7 +51,12 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     const [currentQuestion, setCurrentQuestion] = useState(0)
     const [answers, setAnswers] = useState<Record<number, string>>({})
     const [showResults, setShowResults] = useState(false)
-    const [score, setScore] = useState(0)
+    const [quizResult, setQuizResult] = useState<QuizResult | null>(null)
+
+    // TODO: Remove `as any` after running `pnpm codegen` with backend online
+    const [completeQuizMutation, { loading: isSubmitting }] = useMutation<{ handleCompleteQuiz: QuizResult }>(
+        HANDLE_COMPLETE_QUIZ as any,
+    )
 
     const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null
 
@@ -53,7 +72,6 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                 options: q.options.map((opt: any) => ({
                     id: String(opt.id),
                     text: opt.text,
-                    correct: opt.isCorrect,
                 })),
             }))
     }, [quiz])
@@ -62,31 +80,56 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         setAnswers({ ...answers, [currentQuestion]: optionId })
     }
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
             setCurrentQuestion(currentQuestion + 1)
         } else {
-            checkAnswers()
+            await submitQuiz()
         }
     }
 
-    const checkAnswers = () => {
-        let correct = 0
-        QUIZ_QUESTIONS.forEach((question, index) => {
-            const selectedOption = question.options.find((opt) => opt.id === answers[index])
-            if (selectedOption?.correct) {
-                correct++
+    const submitQuiz = async () => {
+        console.log("[submitQuiz] Started")
+        try {
+            const payload = {
+                quizId: quiz.id,
+                answers: QUIZ_QUESTIONS.map((q, index) => ({
+                    questionId: q.id,
+                    selectedOptionsId: [answers[index]],
+                })),
             }
-        })
-        setScore(correct)
-        setShowResults(true)
+            console.log("[submitQuiz] Payload:", JSON.stringify(payload, null, 2))
+
+            console.log("[submitQuiz] Calling completeQuizMutation...")
+            const result = await completeQuizMutation({
+                variables: { payload },
+            })
+            console.log("[submitQuiz] Mutation result:", JSON.stringify(result, null, 2))
+
+            const { data } = result
+
+            if (data?.handleCompleteQuiz) {
+                console.log("[submitQuiz] Quiz completed successfully:", data.handleCompleteQuiz)
+                setQuizResult(data.handleCompleteQuiz)
+                setShowResults(true)
+            } else {
+                console.warn("[submitQuiz] No handleCompleteQuiz in response data:", data)
+            }
+        } catch (error: any) {
+            console.error("[submitQuiz] Error caught:", error)
+            console.error("[submitQuiz] Error message:", error?.message)
+            console.error("[submitQuiz] GraphQL errors:", error?.graphQLErrors)
+            console.error("[submitQuiz] Network error:", error?.networkError)
+            toast.error(error?.message || "Не вдалося відправити результати тесту. Спробуйте ще раз.")
+        }
+        console.log("[submitQuiz] Finished")
     }
 
     const handleRetry = () => {
         setCurrentQuestion(0)
         setAnswers({})
         setShowResults(false)
-        setScore(0)
+        setQuizResult(null)
     }
 
     const [step, setStep] = useState<"instructions" | "quiz">("instructions")
@@ -112,9 +155,8 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     }
 
     const progress = QUIZ_QUESTIONS.length > 0 ? (currentQuestion / QUIZ_QUESTIONS.length) * 100 : 0
-    const scorePercentage = QUIZ_QUESTIONS.length > 0 ? (score / QUIZ_QUESTIONS.length) * 100 : 0
     const passingScore = quiz?.passingScore ?? 100
-    const isPerfectScore = scorePercentage >= passingScore
+    const isPassed = quizResult?.isPassed ?? false
 
     if (step === "instructions") {
         return (
@@ -172,28 +214,29 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         )
     }
 
-    if (showResults) {
+    if (showResults && quizResult) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
                 <Card className="w-full max-w-2xl">
                     <CardHeader className="text-center">
                         <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                            {isPerfectScore ? (
+                            {isPassed ? (
                                 <CheckCircle className="h-12 w-12 text-green-600" />
                             ) : (
                                 <XCircle className="h-12 w-12 text-red-600" />
                             )}
                         </div>
                         <CardTitle className="text-2xl">
-                            {isPerfectScore ? "Вітаємо! Ви пройшли тест" : "Потрібно спробувати ще раз"}
+                            {isPassed ? "Вітаємо! Ви пройшли тест" : "Потрібно спробувати ще раз"}
                         </CardTitle>
                         <CardDescription>
-                            Ви відповіли правильно на {score} з {QUIZ_QUESTIONS.length} питань ({Math.round(scorePercentage)}%)
+                            Ви відповіли правильно на {quizResult.correctCount} з {quizResult.totalQuestions} питань (
+                            {quizResult.scorePercent}%)
                             {passingScore < 100 && <span className="block mt-1 text-xs">Прохідний бал: {passingScore}%</span>}
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-                        {!isPerfectScore && (
+                        {!isPassed && (
                             <Alert>
                                 <AlertCircle className="h-4 w-4" />
                                 <AlertDescription>
@@ -210,56 +253,62 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                         )}
 
                         <div className="space-y-3">
-                            {QUIZ_QUESTIONS.map((question, index) => {
-                                const userAnswer = answers[index]
-                                const selectedOption = question.options.find((opt: any) => opt.id === String(userAnswer))
-                                const correctOption = question.options.find((opt: any) => opt.correct)
-                                const isCorrect = selectedOption?.correct
+                            {quizResult.questionResults.map((result, index) => {
+                                const questionData = QUIZ_QUESTIONS[index]
+                                if (!questionData) return null
+
+                                const selectedOptions = questionData.options.filter((opt) =>
+                                    result.selectedOptionIds.includes(opt.id),
+                                )
+                                const correctOptions = questionData.options.filter((opt) =>
+                                    result.correctOptionIds.includes(opt.id),
+                                )
 
                                 return (
                                     <div
-                                        key={question.id}
+                                        key={result.questionId}
                                         className={`rounded-lg border-2 p-4 ${
-                                            isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                            result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
                                         }`}
                                     >
                                         <div className="flex items-start justify-between">
                                             <p className="text-sm font-medium">
-                                                {index + 1}. {question.question}
+                                                {index + 1}. {questionData.question}
                                             </p>
-                                            {isCorrect ? (
+                                            {result.isCorrect ? (
                                                 <CheckCircle className="h-5 w-5 flex-shrink-0 text-green-600" />
                                             ) : (
                                                 <XCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
                                             )}
                                         </div>
-                                        {!isCorrect && (
+                                        {!result.isCorrect && (
                                             <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
                                                 <div className="flex flex-col gap-1 mb-2">
                                                     <p className="text-red-700 font-medium">
                                                         Ваша відповідь:{" "}
                                                         <span className="font-normal text-slate-800">
-                                                            {selectedOption?.text}
+                                                            {selectedOptions.map((o) => o.text).join(", ")}
                                                         </span>
                                                     </p>
                                                     <p className="text-green-700 font-medium">
                                                         Правильна відповідь:{" "}
                                                         <span className="font-normal text-slate-800">
-                                                            {correctOption?.text}
+                                                            {correctOptions.map((o) => o.text).join(", ")}
                                                         </span>
                                                     </p>
                                                 </div>
-                                                {question.explanation && (
+                                                {questionData.explanation && (
                                                     <p className="text-sm mt-3 pt-3 border-t text-muted-foreground">
-                                                        <span className="font-medium">Пояснення:</span> {question.explanation}
+                                                        <span className="font-medium">Пояснення:</span>{" "}
+                                                        {questionData.explanation}
                                                     </p>
                                                 )}
                                             </div>
                                         )}
-                                        {isCorrect && question.explanation && (
+                                        {result.isCorrect && questionData.explanation && (
                                             <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
                                                 <p className="text-sm text-muted-foreground">
-                                                    <span className="font-medium">Пояснення:</span> {question.explanation}
+                                                    <span className="font-medium">Пояснення:</span> {questionData.explanation}
                                                 </p>
                                             </div>
                                         )}
@@ -269,7 +318,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                         </div>
 
                         <div className="flex flex-col gap-3">
-                            {isPerfectScore ? (
+                            {isPassed ? (
                                 <Button onClick={handleComplete} className="w-full">
                                     Продовжити
                                 </Button>
@@ -291,8 +340,6 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
     }
 
     const hasAnswer = answers[currentQuestion] !== undefined
-    const selectedOption = question.options.find((opt: any) => String(opt.id) === String(answers[currentQuestion]))
-    const isAnswerIncorrect = selectedOption ? !selectedOption.correct : false
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
@@ -320,10 +367,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                         className={cn(
                                             "flex items-center space-x-3 cursor-pointer rounded-lg border-2 p-4 transition-colors",
                                             {
-                                                "border-teal-600 bg-teal-50":
-                                                    answers[currentQuestion] === option.id && option.correct,
-                                                "border-red-600 bg-red-50 text-red-900":
-                                                    answers[currentQuestion] === option.id && !option.correct,
+                                                "border-teal-600 bg-teal-50": answers[currentQuestion] === option.id,
                                                 "border-gray-200 hover:border-gray-300": answers[currentQuestion] !== option.id,
                                             },
                                         )}
@@ -346,8 +390,17 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                 Назад
                             </Button>
                         )}
-                        <Button onClick={handleNext} disabled={!hasAnswer} className="w-full">
-                            {currentQuestion < QUIZ_QUESTIONS.length - 1 ? "Далі" : "Завершити тест"}
+                        <Button onClick={handleNext} disabled={!hasAnswer || isSubmitting} className="w-full">
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Відправка...
+                                </>
+                            ) : currentQuestion < QUIZ_QUESTIONS.length - 1 ? (
+                                "Далі"
+                            ) : (
+                                "Завершити тест"
+                            )}
                         </Button>
                     </div>
                 </CardContent>
