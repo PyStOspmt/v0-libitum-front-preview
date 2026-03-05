@@ -12,7 +12,7 @@ const resolvePendingRequests = () => {
     pendingRequests = []
 }
 
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
+const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://localhost:3001/graphql"
 
 const fingerprintLink = new SetContextLink(async ({ headers }) => {
     const fingerprint = await getFingerprint()

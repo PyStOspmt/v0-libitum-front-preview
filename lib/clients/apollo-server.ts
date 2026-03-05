@@ -3,7 +3,7 @@ import { SetContextLink } from "@apollo/client/link/context"
 import { ErrorLink } from "@apollo/client/link/error"
 import { cookies } from "next/headers"
 
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
+const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://localhost:3001/graphql"
 
 const fingerprintLink = new SetContextLink(async ({ headers }) => {
     const cookiesStore = await cookies()

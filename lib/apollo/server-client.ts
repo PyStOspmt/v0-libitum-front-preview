@@ -1,7 +1,7 @@
+import { type DocumentNode, print } from "graphql"
 import { cookies } from "next/headers"
-import { print, type DocumentNode } from "graphql"
 
-const GRAPHQL_URL = process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:3001/graphql"
+const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://localhost:3001/graphql"
 
 interface GraphQLResponse<T = Record<string, unknown>> {
     data?: T
