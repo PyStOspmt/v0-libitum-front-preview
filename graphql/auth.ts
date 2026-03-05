@@ -6,6 +6,12 @@ export const VERIFY_USER = gql(`
     }
 `)
 
+export const RESEND_VERIFICATION_EMAIL = gql(`
+    mutation ResendVerificationEmail {
+        resendVerificationEmail
+    }
+`)
+
 export const REQUEST_RESET_PASSWORD = gql(`
     mutation RequestResetPassword {
         requestResetPassword

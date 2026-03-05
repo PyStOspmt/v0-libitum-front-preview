@@ -194,7 +194,7 @@ export type Mutation = {
   deleteSubject: Scalars['String']['output'];
   deleteUser: Scalars['Boolean']['output'];
   deleteUserRelations: Scalars['Boolean']['output'];
-  handleCompleteQuiz: Scalars['Boolean']['output'];
+  handleCompleteQuiz: QuizCompletionResultType;
   handleCreateQuiz: QuizType;
   inviteChildren: Referral;
   loginWithEmailAndPassword: UserType;
@@ -205,6 +205,7 @@ export type Mutation = {
   requestOAuthUrl: Scalars['String']['output'];
   requestResetPassword: Scalars['Boolean']['output'];
   requestTelegramVerification: TelegramRedirectType;
+  resendVerificationEmail: Scalars['Boolean']['output'];
   resetPassword: Scalars['Boolean']['output'];
   seedCities: Scalars['Boolean']['output'];
   seedLevels: Scalars['Boolean']['output'];
@@ -334,6 +335,14 @@ export type QueryGetQuizByIdArgs = {
   getQuizByIdPayload: GetQuizByIdDto;
 };
 
+export type QuestionResultType = {
+  __typename?: 'QuestionResultType';
+  correctOptionIds: Array<Scalars['ID']['output']>;
+  isCorrect: Scalars['Boolean']['output'];
+  questionId: Scalars['ID']['output'];
+  selectedOptionIds: Array<Scalars['ID']['output']>;
+};
+
 export type QuizAnswerDto = {
   questionId: Scalars['String']['input'];
   selectedOptionsId: Array<Scalars['String']['input']>;
@@ -349,6 +358,15 @@ export type QuizAttemptType = {
   respondentId: Scalars['ID']['output'];
   respondentType: UserRoles;
   score: Scalars['Int']['output'];
+};
+
+export type QuizCompletionResultType = {
+  __typename?: 'QuizCompletionResultType';
+  correctCount: Scalars['Int']['output'];
+  isPassed: Scalars['Boolean']['output'];
+  questionResults: Array<QuestionResultType>;
+  scorePercent: Scalars['Int']['output'];
+  totalQuestions: Scalars['Int']['output'];
 };
 
 export type QuizOptionInputDto = {
@@ -692,6 +710,11 @@ export type VerifyUserMutationVariables = Exact<{
 
 export type VerifyUserMutation = { __typename?: 'Mutation', verifyUser: boolean };
 
+export type ResendVerificationEmailMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ResendVerificationEmailMutation = { __typename?: 'Mutation', resendVerificationEmail: boolean };
+
 export type RequestResetPasswordMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -707,7 +730,7 @@ export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword: bo
 export type GetQuizzesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetQuizzesQuery = { __typename?: 'Query', getQuizzes: Array<{ __typename?: 'QuizType', id: string, title: string, description?: string | null, type: QuizTarget, passingScore: number, createdAt: any, questions: Array<{ __typename?: 'QuizQuestionType', explanation?: string | null, id: string, mediaId?: string | null, order: number, text: string, options: Array<{ __typename?: 'QuizOptionType', id: string, isCorrect: boolean, text: string }> }> }> };
+export type GetQuizzesQuery = { __typename?: 'Query', getQuizzes: Array<{ __typename?: 'QuizType', id: string, title: string, description?: string | null, type: QuizTarget, passingScore: number, createdAt: any, questions: Array<{ __typename?: 'QuizQuestionType', explanation?: string | null, id: string, mediaId?: string | null, order: number, text: string, options: Array<{ __typename?: 'QuizOptionType', id: string, text: string }> }> }> };
 
 
 export const LoginWithEmailAndPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"LoginWithEmailAndPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginWithEmailAndPasswordDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"user"},"name":{"kind":"Name","value":"loginWithEmailAndPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"userPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userPayload"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"isVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<LoginWithEmailAndPasswordMutation, LoginWithEmailAndPasswordMutationVariables>;
@@ -718,6 +741,7 @@ export const RequestOAuthUrlDocument = {"kind":"Document","definitions":[{"kind"
 export const GetCurrentUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"user"},"name":{"kind":"Name","value":"getCurrentUser"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"role"}},{"kind":"Field","name":{"kind":"Name","value":"isVerified"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]} as unknown as DocumentNode<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
 export const RequestTelegramVerificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestTelegramVerification"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"token"}}]}}]}}]} as unknown as DocumentNode<RequestTelegramVerificationMutation, RequestTelegramVerificationMutationVariables>;
 export const VerifyUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"VerifyUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"verifyUserPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"VerifyUserDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"verifyUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"verifyUserPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"verifyUserPayload"}}}]}]}}]} as unknown as DocumentNode<VerifyUserMutation, VerifyUserMutationVariables>;
+export const ResendVerificationEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResendVerificationEmail"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resendVerificationEmail"}}]}}]} as unknown as DocumentNode<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>;
 export const RequestResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RequestResetPassword"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestResetPassword"}}]}}]} as unknown as DocumentNode<RequestResetPasswordMutation, RequestResetPasswordMutationVariables>;
 export const ResetPasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ResetPassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordPayload"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ConfirmPasswordResetDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"resetPassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"resetPasswordPayload"},"value":{"kind":"Variable","name":{"kind":"Name","value":"resetPasswordPayload"}}}]}]}}]} as unknown as DocumentNode<ResetPasswordMutation, ResetPasswordMutationVariables>;
-export const GetQuizzesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetQuizzes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getQuizzes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"passingScore"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"explanation"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"options"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isCorrect"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<GetQuizzesQuery, GetQuizzesQueryVariables>;
+export const GetQuizzesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetQuizzes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getQuizzes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"passingScore"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"explanation"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"mediaId"}},{"kind":"Field","name":{"kind":"Name","value":"options"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"order"}},{"kind":"Field","name":{"kind":"Name","value":"text"}}]}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<GetQuizzesQuery, GetQuizzesQueryVariables>;

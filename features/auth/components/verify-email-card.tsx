@@ -1,6 +1,6 @@
 "use client"
 
-import { VERIFY_USER } from "@/graphql/auth"
+import { RESEND_VERIFICATION_EMAIL, VERIFY_USER } from "@/graphql/auth"
 import { useToast } from "@/hooks/use-toast"
 import { useMutation } from "@apollo/client/react"
 import { CheckCircle, Loader2, LogOut, Mail } from "lucide-react"
@@ -19,6 +19,7 @@ export function VerifyEmailCard() {
     const token = searchParams.get("token")
 
     const [verifyUser, { loading: isVerifying }] = useMutation<{ verifyUser: boolean }>(VERIFY_USER)
+    const [resendConfirmation] = useMutation<boolean>(RESEND_VERIFICATION_EMAIL)
     const [isVerified, setIsVerified] = useState(false)
     const [isResending, setIsResending] = useState(false)
     const [verifyError, setVerifyError] = useState<string | null>(null)
@@ -48,8 +49,8 @@ export function VerifyEmailCard() {
 
     const handleResend = async () => {
         setIsResending(true)
-        // TODO: Add resend verification email mutation when backend supports it
-        await new Promise((resolve) => setTimeout(resolve, 1500))
+        const res = await resendConfirmation()
+        console.log("resendConfirmation result", res)
         toast({
             title: "Посилання відправлено",
             description: `Ми відправили нове посилання на ${user?.email}`,

@@ -14,7 +14,6 @@ export const GET_QUIZZES = gql(`
         mediaId
         options {
           id
-          isCorrect
           text
         }
         order
