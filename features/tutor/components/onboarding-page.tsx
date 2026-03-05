@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import { cn } from "@/lib/utils"
+import { revalidateAppPath } from "@/lib/utils/revalidate"
 
 interface TutorOnboardingPageProps {
     quizzes: any
@@ -149,6 +150,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         if (user) {
             const updatedUser = { ...user, hasPassedQuiz: true }
             localStorage.setItem("user", JSON.stringify(updatedUser))
+            revalidateAppPath("/tutor/profile")
             router.push("/tutor/profile")
         }
     }
@@ -266,8 +268,9 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
                                 return (
                                     <div
                                         key={result.questionId}
-                                        className={`rounded-lg border-2 p-4 ${result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
-                                            }`}
+                                        className={`rounded-lg border-2 p-4 ${
+                                            result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                        }`}
                                     >
                                         <div className="flex items-start justify-between">
                                             <p className="text-sm font-medium">

@@ -81,10 +81,5 @@ export async function getApolloServerClient() {
     return new ApolloClient({
         link: ApolloLink.from([fingerprintLink, errorLink, httpLink]),
         cache: new InMemoryCache(),
-        defaultOptions: {
-            query: { fetchPolicy: "cache-first" },
-            watchQuery: { fetchPolicy: "cache-and-network" },
-            mutate: { fetchPolicy: "no-cache" },
-        },
     })
 }
