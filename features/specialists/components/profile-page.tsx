@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import { useToast } from "@/hooks/use-toast"
 import { useRequestStore } from "@/lib/request-store"
@@ -18,7 +17,6 @@ import {
 import { Header } from "@/components/header"
 
 export function SpecialistProfilePage({ id }: { id: string }) {
-  const router = useRouter()
   const { user } = useAuth()
   const { toast } = useToast()
   const { getActiveTrialCount } = useRequestStore()
@@ -26,6 +24,8 @@ export function SpecialistProfilePage({ id }: { id: string }) {
   const [wishlisted, setWishlisted] = useState(false)
   const [showAllReviews, setShowAllReviews] = useState(false)
   const [activeSection, setActiveSection] = useState('about')
+  const [selectedBookingDate, setSelectedBookingDate] = useState<Date | undefined>(undefined)
+  const [selectedBookingTime, setSelectedBookingTime] = useState("")
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -199,16 +199,27 @@ export function SpecialistProfilePage({ id }: { id: string }) {
   const activeTrialCount = getActiveTrialCount(user?.id || "")
   const hasReachedLimit = activeTrialCount >= 3
 
-  const handleBookingClick = () => {
-    if (!user) {
-      toast({
-        title: "Потрібна авторизація",
-        description: "Увійдіть в акаунт, щоб залишити заявку",
-        variant: "destructive",
-      })
-      router.push("/login")
-      return
+  const getNextWeekdayDate = (weekdayLabel: string) => {
+    const weekdayMap: Record<string, number> = {
+      "Неділя": 0,
+      "Понеділок": 1,
+      "Вівторок": 2,
+      "Середа": 3,
+      "Четвер": 4,
+      "П'ятниця": 5,
+      "Субота": 6,
     }
+
+    const targetDay = weekdayMap[weekdayLabel]
+    const nextDate = new Date()
+    const currentDay = nextDate.getDay()
+    const daysToAdd = ((targetDay - currentDay + 7) % 7) || 7
+    nextDate.setDate(nextDate.getDate() + daysToAdd)
+    nextDate.setHours(12, 0, 0, 0)
+    return nextDate
+  }
+
+  const handleBookingClick = () => {
     if (hasReachedLimit) {
       toast({
         title: "Досягнуто ліміт заявок",
@@ -217,6 +228,14 @@ export function SpecialistProfilePage({ id }: { id: string }) {
       })
       return
     }
+    setSelectedBookingDate(undefined)
+    setSelectedBookingTime("")
+    setBookingOpen(true)
+  }
+
+  const handleSlotBookingClick = (day: string, time: string) => {
+    setSelectedBookingDate(getNextWeekdayDate(day))
+    setSelectedBookingTime(time)
     setBookingOpen(true)
   }
 
@@ -603,7 +622,12 @@ export function SpecialistProfilePage({ id }: { id: string }) {
                         </div>
                         <div className="flex flex-wrap gap-2">
                           {day.slots.map((slot) => (
-                            <button key={slot} className="inline-flex items-center rounded-[8px] border border-slate-200/80 bg-white px-3 py-1.5 text-[13px] font-[600] text-[#121117] hover:border-[#121117] transition-colors cursor-pointer shadow-sm">
+                            <button
+                              key={slot}
+                              type="button"
+                              onClick={() => handleSlotBookingClick(day.day, slot)}
+                              className="inline-flex items-center rounded-[8px] border border-slate-200/80 bg-white px-3 py-1.5 text-[13px] font-[600] text-[#121117] hover:border-[#121117] transition-colors cursor-pointer shadow-sm"
+                            >
                               {slot}
                             </button>
                           ))}
@@ -731,7 +755,13 @@ export function SpecialistProfilePage({ id }: { id: string }) {
         </div>
       </div>
 
-      <BookingModal open={bookingOpen} onOpenChange={setBookingOpen} specialist={{ ...specialist, id: String(specialist.id) }} />
+      <BookingModal
+        open={bookingOpen}
+        onOpenChange={setBookingOpen}
+        specialist={{ ...specialist, id: String(specialist.id), subject: specialist.subjects?.[0] }}
+        initialDate={selectedBookingDate}
+        initialTime={selectedBookingTime}
+      />
     </div>
   )
 }

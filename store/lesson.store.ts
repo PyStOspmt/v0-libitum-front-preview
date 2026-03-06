@@ -6,7 +6,8 @@ export interface Homework {
   id: string
   title: string
   description: string
-  attachments?: string[]
+  attachments?: { name: string; type: "file" | "link" }[]
+  submittedFiles?: string[]
   dueDate: string
   status: "pending" | "submitted" | "checked"
   grade?: number
@@ -26,7 +27,7 @@ export interface Lesson {
   time: string
   duration: number // minutes
   format: "online" | "offline"
-  status: "scheduled" | "completed" | "cancelled" | "missed"
+  status: "scheduled" | "completed" | "trial_completed" | "cancelled" | "missed"
   topic?: string
   description?: string
   photoUrl?: string
@@ -100,6 +101,8 @@ const mockLessons: Lesson[] = [
       id: "hw-1",
       title: "Вправи на Present Perfect",
       description: "Виконати вправи 1-5 на сторінці 45",
+      attachments: [{ name: "Present_Perfect_Guide.pdf", type: "file" }, { name: "https://docs.google.com/document/d/lesson-1", type: "link" }],
+      submittedFiles: ["Марія_вправи_45.pdf", "https://drive.google.com/file/d/maria-hw-1/view"],
       dueDate: "2025-01-17",
       status: "checked",
       grade: 5,
@@ -142,6 +145,8 @@ const mockLessons: Lesson[] = [
       id: "hw-2",
       title: "Тест на Past Simple та Present Perfect",
       description: "Пройти онлайн-тест та написати 5 речень",
+      attachments: [{ name: "Tense_Comparison_Checklist.pdf", type: "file" }],
+      submittedFiles: ["Відповіді_Марія.docx", "https://docs.google.com/document/d/hw-2-answers"],
       dueDate: "2025-01-20",
       status: "submitted",
       submittedAt: "2025-01-19T20:00:00Z",
@@ -406,6 +411,7 @@ export const useLessonStore = create<LessonStore>((set, get) => ({
               ...lesson.homework,
               status: "submitted",
               submittedAt: new Date().toISOString(),
+              submittedFiles: submissionData.attachments || lesson.homework.submittedFiles || [],
             },
           }
         }

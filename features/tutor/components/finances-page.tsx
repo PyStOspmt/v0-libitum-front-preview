@@ -138,7 +138,7 @@ export function TutorFinancesPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Загальний дохід</CardTitle>
@@ -158,6 +158,33 @@ export function TutorFinancesPage() {
               <CardContent>
                 <div className="text-2xl font-bold text-amber-600">{totalPending} грн</div>
                 <p className="text-xs text-muted-foreground">За {completedUnpaidLessons.length} занять</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Заборгованість</CardTitle>
+                <AlertCircle className="h-4 w-4 text-orange-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">600 грн</div>
+                <p className="text-xs text-muted-foreground">Комісія за 2 ліди</p>
+                <Button 
+                  size="sm" 
+                  className="w-full mt-3 bg-orange-600 hover:bg-orange-700"
+                  onClick={() => {
+                    toast({
+                      title: "Оплата через Monobank",
+                      description: "Редирект на сторінку оплати Monobank",
+                    })
+                    setTimeout(() => {
+                      window.open(`https://api.monobank.ua/payment?amount=60000&ccy=UAH&merchantId=libitum&order_id=leads_payment_1`, '_blank')
+                    }, 1000)
+                  }}
+                >
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Сплатити комісію
+                </Button>
               </CardContent>
             </Card>
 

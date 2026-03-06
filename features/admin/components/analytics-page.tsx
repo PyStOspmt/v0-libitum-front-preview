@@ -9,6 +9,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Users, UserCheck, UserPlus, Target, DollarSign, Star, TrendingUp, BarChart3, Activity } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
+
+const chartData = [
+  { name: "Пн", leads: 400, paid: 240 },
+  { name: "Вв", leads: 300, paid: 139 },
+  { name: "Ср", leads: 200, paid: 980 },
+  { name: "Чт", leads: 278, paid: 390 },
+  { name: "Пт", leads: 189, paid: 480 },
+  { name: "Сб", leads: 239, paid: 380 },
+  { name: "Нд", leads: 349, paid: 430 },
+]
+
 export function AdminAnalyticsPage() {
   const [period, setPeriod] = useState<"day" | "week" | "month" | "year">("month")
 
@@ -151,8 +163,31 @@ export function AdminAnalyticsPage() {
                 <CardDescription>Загальна тенденція за обраний період</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[300px] bg-slate-50/50 rounded-[16px] border border-dashed border-slate-200 flex items-center justify-center text-slate-400">
-                  Графік динаміки (Chart.js / Recharts)
+                <div className="h-[300px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#00c5a6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#00c5a6" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorPaid" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#69686f' }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#69686f' }} />
+                      <CartesianGrid vertical={false} stroke="#f0f3f3" />
+                      <Tooltip 
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}
+                        itemStyle={{ fontSize: '14px', fontWeight: 600 }}
+                        labelStyle={{ color: '#69686f', marginBottom: '4px' }}
+                      />
+                      <Area type="monotone" dataKey="leads" name="Створено лідів" stroke="#00c5a6" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                      <Area type="monotone" dataKey="paid" name="Оплачено лідів" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorPaid)" />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
               </CardContent>
             </Card>

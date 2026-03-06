@@ -10,6 +10,7 @@ import { Search, Ban, CheckCircle2, Eye, LogIn, Trash2, SlidersHorizontal } from
 import { useState } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
   DialogContent,
@@ -230,6 +231,7 @@ export function AdminClientsPage() {
 
 function ClientTableRow({ client }: { client: AdminClient }) {
   const { impersonate } = useAuth()
+  const { toast } = useToast()
   const [supportConfirmOpen, setSupportConfirmOpen] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const roleLabel = client.role === "parent" ? "Батько" : client.role === "student" ? "Учень" : "Клієнт"
@@ -267,15 +269,16 @@ function ClientTableRow({ client }: { client: AdminClient }) {
       </td>
       <td className="px-6 py-4">
         <div className="flex flex-col gap-1.5 items-start">
-          <Badge variant={client.status === "active" ? "default" : "destructive"} className={cn(
-            "font-semibold border-0",
-            client.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white" : "bg-red-500 text-white"
-          )}>
+          <Badge
+            variant={client.status === "active" ? "default" : "destructive"}
+            className={cn(
+              "font-semibold border-0",
+              client.status === "active" ? "bg-emerald-500 hover:bg-emerald-600 text-white" : "bg-red-500 text-white"
+            )}
+          >
             {client.status === "active" ? "Активний" : "Заблокований"}
           </Badge>
-          {client.unpaidLeads >= 3 && (
-            <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Боржник</Badge>
-          )}
+          {client.unpaidLeads >= 3 && <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Боржник</Badge>}
         </div>
       </td>
       <td className="px-6 py-4">
@@ -339,6 +342,23 @@ function ClientTableRow({ client }: { client: AdminClient }) {
             </AlertDialogContent>
           </AlertDialog>
 
+          {client.status === "blocked" && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50" 
+              title="Розблокувати"
+              onClick={() => {
+                toast({
+                  title: "Акаунт розблоковано",
+                  description: `Користувач ${client.name} знову має доступ до платформи.`
+                })
+              }}
+            >
+              <CheckCircle2 className="h-4 w-4" />
+            </Button>
+          )}
+
           <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
              <AlertDialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" title="Видалити">
@@ -355,13 +375,11 @@ function ClientTableRow({ client }: { client: AdminClient }) {
                 <AlertDialogFooter>
                    <AlertDialogCancel>Скасувати</AlertDialogCancel>
                    <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">Видалити</AlertDialogAction>
-                  <AlertDialogAction onClick={handleSupportAccess} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600]">Увійти</AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </td>
+      </tr>
   )
 }

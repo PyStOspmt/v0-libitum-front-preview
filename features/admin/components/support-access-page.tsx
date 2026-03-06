@@ -38,17 +38,17 @@ export function AdminSupportAccessPage() {
               <CardDescription className="text-[#69686f] font-[500]">Історія створених доступів для аудиту.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117]">
+              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117] cursor-pointer hover:bg-slate-100/80 hover:shadow-sm transition-all">
                 <span>Марія Петренко</span>
                 <span className="text-[#69686f]">2 години тому</span>
                 <span className="text-[#00a389] bg-[#e8fffb] px-2 py-0.5 rounded-[6px] font-[600] text-[13px]">завершено</span>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117]">
+              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117] cursor-pointer hover:bg-slate-100/80 hover:shadow-sm transition-all">
                 <span>Іван Сидоренко</span>
                 <span className="text-[#69686f]">1 день тому</span>
                 <span className="text-[#00a389] bg-[#e8fffb] px-2 py-0.5 rounded-[6px] font-[600] text-[13px]">завершено</span>
               </div>
-              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117]">
+              <div className="flex items-center justify-between p-3 rounded-[12px] bg-[#f0f3f3]/50 border border-slate-200/80 text-[14px] font-[500] text-[#121117] cursor-pointer hover:bg-slate-100/80 hover:shadow-sm transition-all">
                 <span>Олена Коваль</span>
                 <span className="text-[#69686f]">3 дні тому</span>
                 <span className="text-slate-600 bg-slate-100 px-2 py-0.5 rounded-[6px] font-[600] text-[13px]">скасовано</span>

@@ -27,7 +27,7 @@ import {
 import { useLessonStore } from "@/lib/lesson-store"
 import { useAuth } from "@/lib/auth-context"
 import { useTheme } from "@/lib/theme-context"
-import { BookOpen, Plus, Upload, CheckCircle, Clock, Star, Tag } from "lucide-react"
+import { BookOpen, Plus, Upload, CheckCircle, Clock, Star, Tag, X, Link as LinkIcon, FileText, FileText as FileIcon } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
@@ -39,20 +39,28 @@ const lessonTags = [
   { id: "tag-4", text: "Сьогодні ти перевершив(ла) себе!", color: "bg-amber-100 text-amber-800 border-amber-200" },
 ]
 
+const isExternalUrl = (value: string) => /^https?:\/\//i.test(value)
+
 export function TutorJournalPage() {
   const { user } = useAuth()
   const { theme } = useTheme()
   const { lessons, checkHomework } = useLessonStore()
   const { toast } = useToast()
   const [selectedHomework, setSelectedHomework] = useState<any>(null)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [grade, setGrade] = useState("5")
   const [feedback, setFeedback] = useState("")
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  
+  // Create / Edit modal state
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [editingHomeworkId, setEditingHomeworkId] = useState<string | null>(null)
   const [newHwTitle, setNewHwTitle] = useState("")
   const [newHwDesc, setNewHwDesc] = useState("")
   const [newHwDueDate, setNewHwDueDate] = useState("")
   const [newHwClient, setNewHwClient] = useState("")
+  const [attachments, setAttachments] = useState<{name: string, type: "file" | "link"}[]>([])
+  const [newLink, setNewLink] = useState("")
+  const [showLinkInput, setShowLinkInput] = useState(false)
 
   const tutorId = user?.id || "specialist-1"
   const tutorLessons = lessons.filter((l) => l.specialistId === tutorId)
@@ -73,7 +81,35 @@ export function TutorJournalPage() {
 
   const submittedHomeworks = homeworks.filter((h) => h.status === "submitted")
   const checkedHomeworks = homeworks.filter((h) => h.status === "checked")
-  const pendingHomeworks = homeworks.filter((h) => h.status === "pending")
+  const actualPendingHomeworks = homeworks.filter((h) => h.status === "pending")
+
+  // Demo data for empty states
+  const demoPendingHomeworks = [
+    {
+      id: "demo-pend-1",
+      lessonId: "demo-lesson-1",
+      title: "Презентація 'Моє хобі'",
+      description: "Підготувати коротку презентацію на 5 слайдів про своє захоплення англійською.",
+      subject: "Англійська мова",
+      clientName: "Марія Коваленко",
+      status: "pending",
+      dueDate: "2026-03-12T12:00:00.000Z",
+      attachments: [] as {name: string, type: "file" | "link"}[],
+    },
+    {
+      id: "demo-pend-2",
+      lessonId: "demo-lesson-2",
+      title: "Рівняння з дробами",
+      description: "Розв'язати 10 рівнянь з робочого зошита (стор. 45).",
+      subject: "Математика",
+      clientName: "Іван Петренко",
+      status: "pending",
+      dueDate: "2026-03-01T12:00:00.000Z",
+      attachments: [{ name: "Основи_дробів.pdf", type: "file" }] as {name: string, type: "file" | "link"}[],
+    }
+  ]
+
+  const pendingHomeworks = actualPendingHomeworks.length > 0 ? actualPendingHomeworks : demoPendingHomeworks
 
   const handleCheckHomework = () => {
     if (!selectedHomework) return
@@ -116,17 +152,72 @@ export function TutorJournalPage() {
       return
     }
 
-    // In a real app, this would add a homework object to a specific lesson
-    toast({
-      title: "Завдання створено",
-      description: `Завдання "${newHwTitle}" відправлено учню`,
-    })
+    if (editingHomeworkId) {
+      toast({
+        title: "Завдання оновлено",
+        description: `Завдання "${newHwTitle}" успішно оновлено`,
+      })
+    } else {
+      toast({
+        title: "Завдання створено",
+        description: `Завдання "${newHwTitle}" відправлено учню`,
+      })
+    }
 
     setIsCreateModalOpen(false)
+    setEditingHomeworkId(null)
     setNewHwTitle("")
     setNewHwDesc("")
     setNewHwDueDate("")
     setNewHwClient("")
+    setAttachments([])
+    setNewLink("")
+    setShowLinkInput(false)
+  }
+
+  const handleEditHomework = (hw: any) => {
+    setEditingHomeworkId(hw.id)
+    setNewHwTitle(hw.title)
+    setNewHwDesc(hw.description)
+    
+    // Format date properly if it exists
+    if (hw.dueDate) {
+      try {
+        const dateObj = new Date(hw.dueDate)
+        setNewHwDueDate(dateObj.toISOString().split('T')[0])
+      } catch {
+        setNewHwDueDate("")
+      }
+    } else {
+      setNewHwDueDate("")
+    }
+    
+    // Find client ID by name for the select dropdown (fallback to first client if not found)
+    const client = activeClients.find(c => c.name === hw.clientName)
+    setNewHwClient(client ? client.id : (activeClients[0]?.id || ""))
+    
+    setAttachments(hw.attachments || [])
+    setIsCreateModalOpen(true)
+  }
+
+  const handleAddLink = () => {
+    if (newLink.trim()) {
+      setAttachments([...attachments, { name: newLink, type: "link" }])
+      setNewLink("")
+      setShowLinkInput(false)
+    }
+  }
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files && files.length > 0) {
+      const newFiles = Array.from(files).map(file => ({ name: file.name, type: "file" as const }))
+      setAttachments([...attachments, ...newFiles])
+    }
+  }
+
+  const removeAttachment = (index: number) => {
+    setAttachments(attachments.filter((_, i) => i !== index))
   }
 
   const getStatusBadge = (status: string) => {
@@ -200,6 +291,32 @@ export function TutorJournalPage() {
                       <CardContent className="space-y-5">
                         <div className="bg-[#f8f9fb] p-4 rounded-[12px]">
                           <p className="text-[14px] text-[#121117] leading-relaxed">{hw.description}</p>
+                          {hw.attachments && hw.attachments.length > 0 && (
+                            <div className="mt-3 space-y-2 pt-3 border-t border-slate-200/60">
+                              <p className="text-[12px] font-[700] uppercase tracking-[0.08em] text-[#69686f]">Матеріали до ДЗ</p>
+                              <div className="flex flex-wrap gap-2">
+                                {hw.attachments.map((file: any, idx: number) => {
+                                  const isLink = file.type === "link" && isExternalUrl(file.name)
+                                  const content = (
+                                    <>
+                                      {file.type === "link" ? <LinkIcon className="h-3 w-3 text-blue-500" /> : <FileText className="h-3 w-3 text-[#00c5a6]" />}
+                                      <span className="max-w-[220px] truncate">{file.name}</span>
+                                    </>
+                                  )
+
+                                  return isLink ? (
+                                    <a key={idx} href={file.name} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117] hover:border-[#00c5a6] hover:text-[#00c5a6] transition-colors">
+                                      {content}
+                                    </a>
+                                  ) : (
+                                    <div key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117]">
+                                      {content}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div className="flex items-center text-[13px] font-[500] text-[#69686f]">
                           <Clock className="mr-1.5 h-4 w-4" />
@@ -247,6 +364,32 @@ export function TutorJournalPage() {
                       </CardHeader>
                       <CardContent className="space-y-5">
                         <p className="text-[14px] text-[#69686f] leading-relaxed line-clamp-2">{hw.description}</p>
+                        {hw.attachments && hw.attachments.length > 0 && (
+                          <div className="rounded-[12px] bg-[#f8f9fb] p-4 border border-slate-200/50">
+                            <p className="text-[13px] font-[600] text-[#121117] mb-2">Матеріали до завдання:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {hw.attachments.map((file: any, idx: number) => {
+                                const isLink = file.type === "link" && isExternalUrl(file.name)
+                                const content = (
+                                  <>
+                                    {file.type === "link" ? <LinkIcon className="h-3.5 w-3.5 text-blue-500" /> : <FileText className="h-3.5 w-3.5 text-[#00c5a6]" />}
+                                    <span className="max-w-[220px] truncate">{file.name}</span>
+                                  </>
+                                )
+
+                                return isLink ? (
+                                  <a key={idx} href={file.name} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117] hover:border-[#00c5a6] hover:text-[#00c5a6] transition-colors">
+                                    {content}
+                                  </a>
+                                ) : (
+                                  <div key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117]">
+                                    {content}
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          </div>
+                        )}
                         {hw.feedback && (
                           <div className="rounded-[12px] bg-[#f0f3f3] p-4 border border-slate-200/50">
                             <p className="text-[13px] font-[600] text-[#121117] mb-1.5">Ваш відгук та звіт:</p>
@@ -277,25 +420,61 @@ export function TutorJournalPage() {
               {pendingHomeworks.length > 0 ? (
                 <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                   {pendingHomeworks.map((hw) => (
-                    <Card key={hw.id} className="border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[20px]">
+                    <Card key={hw.id} className="border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[20px] transition-all hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] group">
                       <CardHeader className="pb-4">
                         <div className="flex items-start justify-between gap-4">
-                          <div className="space-y-1.5">
-                            <CardTitle className="text-[18px] text-[#121117]">{hw.title}</CardTitle>
-                            <CardDescription className="text-[14px] text-[#69686f] font-[500]">
+                          <div className="space-y-1.5 flex-1 min-w-0">
+                            <CardTitle className="text-[18px] text-[#121117] truncate" title={hw.title}>{hw.title}</CardTitle>
+                            <CardDescription className="text-[14px] text-[#69686f] font-[500] truncate">
                               {hw.clientName} • <span className="text-[var(--theme-primary)]">{hw.subject}</span>
                             </CardDescription>
                           </div>
-                          <Badge className="bg-[#fff3e0] text-[#f57c00] border-0 px-2.5 py-1 rounded-[6px] shrink-0 font-[600]">
-                            Очікує виконання
-                          </Badge>
+                          <div className="flex flex-col items-end gap-2 shrink-0">
+                            <Badge className="bg-[#fff3e0] text-[#f57c00] border-0 px-2.5 py-1 rounded-[6px] font-[600]">
+                              Очікує виконання
+                            </Badge>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => handleEditHomework(hw)}
+                              className="h-7 text-xs text-slate-400 hover:text-blue-600 hover:bg-blue-50 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              Редагувати
+                            </Button>
+                          </div>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="bg-[#f8f9fb] p-4 rounded-[12px]">
-                          <p className="text-[14px] text-[#121117] leading-relaxed">{hw.description}</p>
+                          <p className="text-[14px] text-[#121117] leading-relaxed line-clamp-3" title={hw.description}>{hw.description}</p>
+                          {hw.attachments && hw.attachments.length > 0 && (
+                            <div className="mt-3 space-y-2 pt-3 border-t border-slate-200/60">
+                              <p className="text-[12px] font-[700] uppercase tracking-[0.08em] text-[#69686f]">Матеріали до ДЗ</p>
+                              <div className="flex flex-wrap gap-2">
+                                {hw.attachments.map((file: any, idx: number) => {
+                                  const isLink = file.type === "link" && isExternalUrl(file.name)
+                                  const content = (
+                                    <>
+                                      {file.type === "link" ? <LinkIcon className="h-3 w-3 text-blue-500" /> : <FileText className="h-3 w-3 text-[#00c5a6]" />}
+                                      <span className="max-w-[220px] truncate">{file.name}</span>
+                                    </>
+                                  )
+
+                                  return isLink ? (
+                                    <a key={idx} href={file.name} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117] hover:border-[#00c5a6] hover:text-[#00c5a6] transition-colors">
+                                      {content}
+                                    </a>
+                                  ) : (
+                                    <div key={idx} className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-200 rounded-[6px] text-[12px] font-[500] text-[#121117]">
+                                      {content}
+                                    </div>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex items-center gap-2 text-[14px] font-[600] text-[#69686f] bg-white border border-slate-200 px-3 py-2 rounded-[8px] inline-flex">
+                        <div className="flex items-center gap-2 text-[13px] font-[600] text-[#69686f] bg-white border border-slate-200 px-3 py-2 rounded-[8px] inline-flex">
                           <Clock className="h-4 w-4 text-[var(--theme-primary)]" />
                           <span>Здати до: {hw.dueDate ? new Date(hw.dueDate).toLocaleDateString("uk-UA") : "-"}</span>
                         </div>
@@ -323,103 +502,157 @@ export function TutorJournalPage() {
           setSelectedHomework(null)
           setSelectedTag(null)
         }}>
-          <DialogContent className="max-w-2xl rounded-[24px] p-8 font-sans">
-            <DialogHeader className="mb-4">
-              <DialogTitle className="text-[24px] font-bold text-[#121117]">Звіт про заняття та ДЗ</DialogTitle>
-              <DialogDescription className="text-[15px] text-[#69686f] mt-1">
+          <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-[24px] font-sans border-slate-200/80 max-h-[90vh] flex flex-col">
+            <DialogHeader className="px-6 py-5 border-b border-slate-100 flex-shrink-0">
+              <DialogTitle className="text-[20px] font-bold text-[#121117]">Звіт про заняття та ДЗ</DialogTitle>
+              <DialogDescription className="text-[14px] text-[#69686f] mt-1">
                 {selectedHomework?.clientName} • {selectedHomework?.title}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6 py-2">
-              <div className="bg-[#f0f3f3] p-5 rounded-[16px] space-y-4">
-                <div className="space-y-1.5">
-                  <Label className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider">Завдання</Label>
-                  <p className="text-[15px] text-[#121117] leading-relaxed">{selectedHomework?.description}</p>
-                </div>
-                <div className="flex items-center gap-2 text-[14px] text-[#69686f] font-[500]">
-                  <Clock className="h-4 w-4" />
-                  Здано: {selectedHomework?.submittedAt ? new Date(selectedHomework.submittedAt).toLocaleString("uk-UA", { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' }) : "-"}
-                </div>
-              </div>
+            <div className="flex-1 overflow-y-auto px-6 py-5">
+              <div className="space-y-6">
+                <div className="bg-[#f0f3f3] p-5 rounded-[16px] space-y-4 border border-slate-200/50">
+                  <div className="space-y-1.5">
+                    <Label className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider">Завдання</Label>
+                    <p className="text-[15px] text-[#121117] leading-relaxed">{selectedHomework?.description}</p>
+                  </div>
 
-              <div className="space-y-3">
-                <Label htmlFor="grade" className="text-[15px] font-[600] text-[#121117]">Оцінка *</Label>
-                <div className="flex gap-3">
-                  {[1, 2, 3, 4, 5].map((g) => (
-                    <button
-                      key={g}
-                      type="button"
-                      className={cn(
-                        "flex-1 h-[48px] rounded-[12px] border-2 font-[600] text-[16px] flex items-center justify-center gap-1.5 transition-all",
-                        grade === g.toString()
-                          ? "border-[#ffb74d] bg-[#fff8e1] text-[#f57c00]"
-                          : "border-slate-200 bg-white text-[#69686f] hover:border-slate-300"
-                      )}
-                      onClick={() => setGrade(g.toString())}
-                    >
-                      {grade === g.toString() ? (
-                        <Star className="h-5 w-5 fill-current" />
-                      ) : (
-                        <Star className="h-5 w-5" />
-                      )}
-                      {g}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                  {selectedHomework?.attachments && selectedHomework.attachments.length > 0 && (
+                    <div className="pt-3 border-t border-slate-200">
+                      <Label className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-2 block">Матеріали від викладача</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedHomework.attachments.map((file: any, idx: number) => {
+                          const isLink = file.type === "link" && isExternalUrl(file.name)
+                          const content = (
+                            <>
+                              {file.type === "link" ? <LinkIcon className="h-4 w-4 text-blue-500" /> : <FileText className="h-4 w-4 text-[#00c5a6]" />}
+                              <span className="max-w-[240px] truncate">{file.name}</span>
+                            </>
+                          )
 
-              <div className="space-y-3">
-                <Label className="text-[15px] font-[600] text-[#121117]">Оцінка заняття одним тегом</Label>
-                <div className="flex flex-wrap gap-2">
-                  {lessonTags.map((tag) => (
-                    <button
-                      key={tag.id}
-                      onClick={() => setSelectedTag(tag.id === selectedTag ? null : tag.id)}
-                      className={cn(
-                        "px-4 py-2 rounded-[12px] text-[14px] font-[500] transition-all border",
-                        tag.id === selectedTag
-                          ? tag.color
-                          : "bg-white border-slate-200 text-[#69686f] hover:bg-slate-50"
-                      )}
-                    >
-                      {tag.text}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-[13px] text-[#69686f]">Цей тег буде видно учню та батькам у їхньому кабінеті</p>
-              </div>
+                          return isLink ? (
+                            <a key={idx} href={file.name} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-[8px] text-[13px] font-[500] text-[#121117] hover:border-[#00c5a6] hover:text-[#00c5a6] transition-colors shadow-sm">
+                              {content}
+                            </a>
+                          ) : (
+                            <div key={idx} className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-[8px] text-[13px] font-[500] text-[#121117] shadow-sm">
+                              {content}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {selectedHomework?.submittedFiles && selectedHomework.submittedFiles.length > 0 && (
+                    <div className="pt-3 border-t border-slate-200">
+                      <Label className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-2 block">Здані матеріали</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedHomework.submittedFiles.map((file: string, idx: number) => {
+                          const isLink = isExternalUrl(file)
 
-              <div className="space-y-3">
-                <Label htmlFor="feedback" className="text-[15px] font-[600] text-[#121117]">Коментар до ДЗ та звіт для батьків *</Label>
-                <Textarea
-                  id="feedback"
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                  placeholder="Опишіть як пройшло заняття, що вдалося добре, над чим треба попрацювати. Цей звіт буде автоматично відправлено батькам в Telegram..."
-                  rows={5}
-                  className="rounded-[12px] border-slate-200 focus-visible:ring-[var(--theme-primary)] resize-none text-[15px] p-4"
-                />
+                          return isLink ? (
+                            <a key={idx} href={file} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-[8px] text-[13px] font-[500] text-[#121117] hover:border-[#00c5a6] hover:text-[#00c5a6] transition-colors shadow-sm">
+                              <LinkIcon className="h-4 w-4 text-blue-500" />
+                              <span className="max-w-[240px] truncate">{file}</span>
+                            </a>
+                          ) : (
+                            <div key={idx} className="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-[8px] text-[13px] font-[500] text-[#121117] shadow-sm">
+                              <FileText className="h-4 w-4 text-[#00c5a6]" />
+                              <span className="max-w-[240px] truncate">{file}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-4 text-[14px] text-[#69686f] font-[500] pt-2">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4" />
+                      Здано: {selectedHomework?.submittedAt ? new Date(selectedHomework.submittedAt).toLocaleString("uk-UA", { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' }) : "-"}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="grade" className="text-[15px] font-[600] text-[#121117]">Оцінка *</Label>
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
+                    {[1, 2, 3, 4, 5].map((g) => (
+                      <button
+                        key={g}
+                        type="button"
+                        className={cn(
+                          "flex-1 min-w-[50px] h-[48px] rounded-[12px] border-2 font-[600] text-[16px] flex items-center justify-center gap-1.5 transition-all",
+                          grade === g.toString()
+                            ? "border-[#ffb74d] bg-[#fff8e1] text-[#f57c00]"
+                            : "border-slate-200 bg-white text-[#69686f] hover:border-slate-300 hover:bg-slate-50"
+                        )}
+                        onClick={() => setGrade(g.toString())}
+                      >
+                        {grade === g.toString() ? (
+                          <Star className="h-5 w-5 fill-current" />
+                        ) : (
+                          <Star className="h-5 w-5" />
+                        )}
+                        {g}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <Label className="text-[15px] font-[600] text-[#121117]">Оцінка заняття одним тегом</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {lessonTags.map((tag) => (
+                      <button
+                        key={tag.id}
+                        onClick={() => setSelectedTag(tag.id === selectedTag ? null : tag.id)}
+                        className={cn(
+                          "px-4 py-2 rounded-[12px] text-[13px] font-[500] transition-all border",
+                          tag.id === selectedTag
+                            ? tag.color
+                            : "bg-white border-slate-200 text-[#69686f] hover:bg-slate-50"
+                        )}
+                      >
+                        {tag.text}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[13px] text-[#69686f]">Цей тег буде видно учню та батькам у їхньому кабінеті</p>
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="feedback" className="text-[15px] font-[600] text-[#121117]">Коментар до ДЗ та звіт для батьків *</Label>
+                  <Textarea
+                    id="feedback"
+                    value={feedback}
+                    onChange={(e) => setFeedback(e.target.value)}
+                    placeholder="Опишіть як пройшло заняття, що вдалося добре, над чим треба попрацювати. Цей звіт буде автоматично відправлено батькам в Telegram..."
+                    rows={5}
+                    className="rounded-[12px] border-slate-200 focus-visible:ring-[#00c5a6] resize-none text-[15px] p-4"
+                  />
+                </div>
               </div>
             </div>
 
-            <DialogFooter className="mt-6 gap-3 sm:gap-0">
+            <DialogFooter className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 mt-auto flex-col sm:flex-row gap-2">
               <Button
                 variant="outline"
                 onClick={() => {
                   setSelectedHomework(null)
                   setSelectedTag(null)
                 }}
-                className="h-[48px] px-8 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[16px] hover:bg-gray-50"
+                className="h-[44px] w-full sm:w-auto px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600]"
               >
                 Скасувати
               </Button>
               <Button
                 onClick={handleCheckHomework}
-                disabled={!feedback}
-                className="h-[48px] px-8 rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white font-[600] text-[16px]"
+                disabled={!grade || !feedback}
+                className="h-[44px] w-full sm:w-auto px-6 rounded-[8px] bg-[#121117] hover:bg-[#121117]/90 text-white font-[600]"
               >
-                <CheckCircle className="mr-2 h-5 w-5" />
                 Зберегти звіт
               </Button>
             </DialogFooter>
@@ -486,16 +719,76 @@ export function TutorJournalPage() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[14px] font-[600] text-[#121117]">Додати матеріали (PDF, Audio, Image)</Label>
-                <div className="flex items-center justify-center rounded-[12px] border-2 border-dashed border-slate-200 bg-[#f8f9fb] p-6 hover:bg-slate-50 cursor-pointer transition-colors">
-                  <div className="text-center">
-                    <div className="mx-auto h-12 w-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm">
-                      <Upload className="h-5 w-5 text-[var(--theme-primary)]" />
-                    </div>
-                    <p className="text-[14px] font-[500] text-[#121117]">Натисніть для завантаження</p>
-                    <p className="text-[12px] text-[#69686f] mt-1">До 25MB на файл</p>
+                <Label className="text-[14px] font-[600] text-[#121117]">Додати матеріали (PDF, Audio, Image, Посилання)</Label>
+                
+                {attachments.length > 0 && (
+                  <div className="flex flex-col gap-2 mb-3">
+                    {attachments.map((attachment, index) => (
+                      <div key={index} className="flex items-center justify-between p-2.5 rounded-[8px] bg-slate-50 border border-slate-200/60">
+                        <div className="flex items-center gap-2 overflow-hidden">
+                          {attachment.type === 'link' ? <LinkIcon className="h-4 w-4 text-blue-500 shrink-0" /> : <FileIcon className="h-4 w-4 text-emerald-500 shrink-0" />}
+                          <span className="text-[13px] font-[500] text-slate-700 truncate">{attachment.name}</span>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-6 w-6 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full"
+                          onClick={() => removeAttachment(index)}
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    ))}
                   </div>
+                )}
+
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input 
+                      type="file" 
+                      id="file-upload" 
+                      className="hidden" 
+                      multiple 
+                      onChange={handleFileUpload}
+                      accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.webp,.mp3,.wav"
+                    />
+                    <label 
+                      htmlFor="file-upload"
+                      className="flex items-center justify-center gap-2 h-[48px] rounded-[8px] border-2 border-dashed border-slate-200 bg-[#f8f9fb] hover:bg-slate-50 cursor-pointer transition-colors w-full text-[14px] font-[500] text-[#69686f]"
+                    >
+                      <Upload className="h-4 w-4 text-[var(--theme-primary)]" />
+                      Завантажити файл
+                    </label>
+                  </div>
+                  
+                  <Button 
+                    variant="outline" 
+                    className="h-[48px] px-4 rounded-[8px] border-slate-200"
+                    onClick={() => setShowLinkInput(!showLinkInput)}
+                  >
+                    <LinkIcon className="h-4 w-4 text-[#69686f]" />
+                  </Button>
                 </div>
+                
+                {showLinkInput && (
+                  <div className="flex gap-2 mt-2 animate-in fade-in slide-in-from-top-2">
+                    <Input 
+                      value={newLink}
+                      onChange={(e) => setNewLink(e.target.value)}
+                      placeholder="Вставте посилання..."
+                      className="h-[40px] rounded-[8px] border-slate-200"
+                      onKeyDown={(e) => e.key === 'Enter' && handleAddLink()}
+                    />
+                    <Button 
+                      onClick={handleAddLink}
+                      disabled={!newLink.trim()}
+                      className="h-[40px] rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white"
+                    >
+                      Додати
+                    </Button>
+                  </div>
+                )}
+                <p className="text-[12px] text-[#69686f] mt-1">Файли до 25MB. Підтримуються: pdf, doc, jpg, png</p>
               </div>
             </div>
 

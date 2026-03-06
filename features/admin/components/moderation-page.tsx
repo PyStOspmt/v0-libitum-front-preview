@@ -1,5 +1,6 @@
 "use client"
 
+import { LocaleLink } from "@/components/locale-link"
 import { useState } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
@@ -10,7 +11,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PlayCircle, FileText, CheckCircle2, XCircle, TrendingUp, TrendingDown, Eye, AlertCircle, Edit2, Save, X } from "lucide-react"
+import { PlayCircle, FileText, CheckCircle2, XCircle, TrendingUp, TrendingDown, Eye, AlertCircle, Edit2, Save, X, Plus, Trash2, MapPin, Layers3, Briefcase, UserRoundSearch, ExternalLink } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useToast } from "@/hooks/use-toast"
+
+type ModerationPrice = {
+  level: string
+  price: number
+}
+
+type ModerationItem = {
+  id: string
+  name: string
+  subject: string
+  status: "pending"
+  specialization: string
+  experience: string
+  email: string
+  phone: string
+  videoUrl: string
+  education: string
+  about: string
+  diplomaUrl: string
+  location: string
+  formats: string[]
+  isSearching: boolean
+  pairLessons: boolean
+  foreignProgram: boolean
+  foreignCountry: string
+  prices: ModerationPrice[]
+}
 
 const moderationQueue = [
   {
@@ -18,13 +48,20 @@ const moderationQueue = [
     name: "Олена Іваненко",
     subject: "Англійська мова",
     status: "pending",
+    specialization: "Репетитор",
     experience: "8 років",
     email: "olena@example.com",
     phone: "+380501234567",
     videoUrl: "https://youtube.com/watch?v=123",
     education: "КНУ ім. Шевченка, Філологія",
-    about: "Досвідчений викладач, готую до IELTS та ЗНО. Жила 2 роки в Лондоні.",
+    about: "Досвідчений викладач, готую до IELTS та ЗНО. Жила 2 роки в Лондоні. Працюю з підлітками та дорослими, складаю індивідуальні плани, адаптую матеріали під запит клієнта та даю регулярний фідбек після занять.",
     diplomaUrl: "/dummy-diploma.pdf",
+    location: "Київ",
+    formats: ["Онлайн", "Офлайн"],
+    isSearching: true,
+    pairLessons: true,
+    foreignProgram: true,
+    foreignCountry: "Велика Британія",
     prices: [
       { level: "B1", price: 400 },
       { level: "IELTS", price: 600 }
@@ -35,6 +72,7 @@ const moderationQueue = [
     name: "Петро Коваль",
     subject: "Математика",
     status: "pending",
+    specialization: "Репетитор",
     experience: "5 років",
     email: "petro@example.com",
     phone: "+380671234567",
@@ -42,12 +80,18 @@ const moderationQueue = [
     education: "КПІ, Механіко-математичний",
     about: "Студент магістратури, легко знаходжу спільну мову з дітьми. Готую до ДПА та ЗНО.",
     diplomaUrl: "/dummy-diploma.pdf",
+    location: "Львів",
+    formats: ["Онлайн"],
+    isSearching: true,
+    pairLessons: false,
+    foreignProgram: false,
+    foreignCountry: "",
     prices: [
       { level: "5-9 класи", price: 300 },
       { level: "ЗНО", price: 450 }
     ]
   },
-]
+] satisfies ModerationItem[]
 
 const leaderboard = [
   { id: "1", name: "Анна Мельник", score: 98, trend: "up", change: "+2" },
@@ -59,9 +103,14 @@ const leaderboard = [
 
 export function AdminModerationPage() {
   const [comments, setComments] = useState<Record<string, string>>({})
-  const [queue, setQueue] = useState(moderationQueue)
+  const [queue, setQueue] = useState<ModerationItem[]>(moderationQueue)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<any>(null)
+  const [editForm, setEditForm] = useState<ModerationItem | null>(null)
+  const { toast } = useToast()
+
+  const updateEditForm = (patch: Partial<ModerationItem>) => {
+    setEditForm((current) => (current ? { ...current, ...patch } : current))
+  }
 
   const handleAction = (id: string, action: "approve" | "reject") => {
     if (action === "reject" && !comments[id]) {
@@ -71,14 +120,16 @@ export function AdminModerationPage() {
     setQueue(queue.filter(q => q.id !== id))
   }
 
-  const startEditing = (item: any) => {
+  const startEditing = (item: ModerationItem) => {
     setEditingId(item.id)
     setEditForm({ ...item })
   }
 
   const saveEdits = () => {
+    if (!editingId || !editForm) return
     setQueue(queue.map(q => q.id === editingId ? editForm : q))
     setEditingId(null)
+    setEditForm(null)
   }
 
   const cancelEditing = () => {
@@ -87,9 +138,26 @@ export function AdminModerationPage() {
   }
 
   const updatePrice = (index: number, field: string, value: string | number) => {
+    if (!editForm) return
     const newPrices = [...editForm.prices]
     newPrices[index] = { ...newPrices[index], [field]: value }
     setEditForm({ ...editForm, prices: newPrices })
+  }
+
+  const addPrice = () => {
+    if (!editForm) return
+    setEditForm({
+      ...editForm,
+      prices: [...editForm.prices, { level: "Новий рівень", price: 0 }],
+    })
+  }
+
+  const removePrice = (index: number) => {
+    if (!editForm) return
+    setEditForm({
+      ...editForm,
+      prices: editForm.prices.filter((_, currentIndex) => currentIndex !== index),
+    })
   }
 
   return (
@@ -114,8 +182,8 @@ export function AdminModerationPage() {
             <TabsContent value="queue" className="mt-6 space-y-6">
               {queue.length > 0 ? (
                 queue.map((item) => {
-                  const isEditing = editingId === item.id;
-                  const data = isEditing ? editForm : item;
+                  const isEditing = editingId === item.id
+                  const data = isEditing ? editForm ?? item : item
 
                   return (
                     <Card key={item.id} className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -128,23 +196,31 @@ export function AdminModerationPage() {
                                 <div className="space-y-3">
                                   <div>
                                     <Label>ПІБ</Label>
-                                    <Input value={data.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
+                                    <Input value={data.name} onChange={(e) => updateEditForm({ name: e.target.value })} />
                                   </div>
-                                  <div className="grid grid-cols-2 gap-3">
+                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <div>
                                       <Label>Предмет</Label>
-                                      <Input value={data.subject} onChange={(e) => setEditForm({ ...editForm, subject: e.target.value })} />
+                                      <Input value={data.subject} onChange={(e) => updateEditForm({ subject: e.target.value })} />
+                                    </div>
+                                    <div>
+                                      <Label>Тип спеціаліста</Label>
+                                      <Input value={data.specialization} onChange={(e) => updateEditForm({ specialization: e.target.value })} />
                                     </div>
                                     <div>
                                       <Label>Досвід</Label>
-                                      <Input value={data.experience} onChange={(e) => setEditForm({ ...editForm, experience: e.target.value })} />
+                                      <Input value={data.experience} onChange={(e) => updateEditForm({ experience: e.target.value })} />
+                                    </div>
+                                    <div>
+                                      <Label>Місто</Label>
+                                      <Input value={data.location} onChange={(e) => updateEditForm({ location: e.target.value })} />
                                     </div>
                                   </div>
                                 </div>
                               ) : (
                                 <>
                                   <h3 className="text-2xl font-[700] text-[#121117]">{item.name}</h3>
-                                  <p className="text-[15px] text-[#69686f] font-[500]">{item.subject} • {item.experience}</p>
+                                  <p className="text-[15px] text-[#69686f] font-[500]">{item.specialization} • {item.subject} • {item.experience}</p>
                                 </>
                               )}
                             </div>
@@ -175,8 +251,8 @@ export function AdminModerationPage() {
                                 <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-1">Контакти</div>
                                 {isEditing ? (
                                   <div className="space-y-2">
-                                    <Input value={data.email} onChange={(e) => setEditForm({ ...editForm, email: e.target.value })} placeholder="Email" />
-                                    <Input value={data.phone} onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })} placeholder="Телефон" />
+                                    <Input value={data.email} onChange={(e) => updateEditForm({ email: e.target.value })} placeholder="Email" />
+                                    <Input value={data.phone} onChange={(e) => updateEditForm({ phone: e.target.value })} placeholder="Телефон" />
                                   </div>
                                 ) : (
                                   <>
@@ -188,17 +264,37 @@ export function AdminModerationPage() {
                               <div>
                                 <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-1">Освіта</div>
                                 {isEditing ? (
-                                  <Input value={data.education} onChange={(e) => setEditForm({ ...editForm, education: e.target.value })} />
+                                  <Input value={data.education} onChange={(e) => updateEditForm({ education: e.target.value })} />
                                 ) : (
                                   <div className="text-[15px] font-[500]">{item.education}</div>
                                 )}
                               </div>
                               <div>
+                                <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-1">Параметри профілю</div>
+                                {isEditing ? (
+                                  <div className="space-y-2">
+                                    <Input value={data.formats.join(", ")} onChange={(e) => updateEditForm({ formats: e.target.value.split(",").map((value) => value.trim()).filter(Boolean) })} placeholder="Онлайн, Офлайн" />
+                                    <Input value={data.foreignCountry} onChange={(e) => updateEditForm({ foreignCountry: e.target.value })} placeholder="Країна міжнародної програми" />
+                                    <Input value={data.isSearching ? "Так" : "Ні"} onChange={(e) => updateEditForm({ isSearching: e.target.value.trim().toLowerCase() === "так" })} placeholder="Шукає учнів: Так/Ні" />
+                                    <Input value={data.pairLessons ? "Так" : "Ні"} onChange={(e) => updateEditForm({ pairLessons: e.target.value.trim().toLowerCase() === "так" })} placeholder="Парні заняття: Так/Ні" />
+                                  </div>
+                                ) : (
+                                  <div className="space-y-2 rounded-[12px] border border-slate-200/80 bg-[#f8f9fa] p-3 text-[14px] font-[500] text-[#121117]">
+                                    <div className="flex items-center gap-2"><MapPin className="h-4 w-4 text-[#69686f]" /> {item.location}</div>
+                                    <div className="flex items-center gap-2"><Layers3 className="h-4 w-4 text-[#69686f]" /> {item.formats.join(", ")}</div>
+                                    <div className="flex items-center gap-2"><Briefcase className="h-4 w-4 text-[#69686f]" /> {item.specialization}</div>
+                                    <div className="flex items-center gap-2"><UserRoundSearch className="h-4 w-4 text-[#69686f]" /> {item.isSearching ? "Шукає учнів" : "Пауза в наборі"}</div>
+                                    <div>{item.pairLessons ? "Парні заняття доступні" : "Лише індивідуальні заняття"}</div>
+                                    <div>{item.foreignProgram ? `Працює з міжнародними програмами${item.foreignCountry ? ` (${item.foreignCountry})` : ""}` : "Без міжнародних програм"}</div>
+                                  </div>
+                                )}
+                              </div>
+                              <div>
                                 <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-1">Про себе</div>
                                 {isEditing ? (
-                                  <Textarea rows={4} value={data.about} onChange={(e) => setEditForm({ ...editForm, about: e.target.value })} className="resize-none" />
+                                  <Textarea rows={4} value={data.about} onChange={(e) => updateEditForm({ about: e.target.value })} className="resize-none" />
                                 ) : (
-                                  <div className="text-[15px] font-[500]">{item.about}</div>
+                                  <p className="line-clamp-3 text-[15px] font-[500] text-[#121117]">{item.about}</p>
                                 )}
                               </div>
                             </div>
@@ -208,7 +304,7 @@ export function AdminModerationPage() {
                                 <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-2">Медіа та Документи</div>
                                 <div className="flex flex-col gap-2">
                                   {isEditing ? (
-                                    <Input value={data.videoUrl} onChange={(e) => setEditForm({ ...editForm, videoUrl: e.target.value })} placeholder="URL відеовізитки" />
+                                    <Input value={data.videoUrl} onChange={(e) => updateEditForm({ videoUrl: e.target.value })} placeholder="URL відеовізитки" />
                                   ) : (
                                     data.videoUrl ? (
                                       <a href={data.videoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-blue-600 hover:underline font-[500] bg-blue-50 p-2.5 rounded-[8px]">
@@ -229,7 +325,7 @@ export function AdminModerationPage() {
                               <div>
                                 <div className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-2">Ціни</div>
                                 <div className="space-y-2">
-                                  {data.prices.map((p: any, i: number) => (
+                                  {data.prices.map((p, i) => (
                                     <div key={i} className="flex justify-between items-center bg-[#f0f3f3] p-2.5 rounded-[8px] text-[14px] font-[500]">
                                       {isEditing ? (
                                         <>
@@ -238,6 +334,9 @@ export function AdminModerationPage() {
                                             <Input className="h-8" type="number" value={p.price} onChange={(e) => updatePrice(i, 'price', Number(e.target.value))} />
                                             <span>₴</span>
                                           </div>
+                                          <Button type="button" variant="ghost" size="sm" className="h-8 w-8 px-0 text-red-500 hover:bg-red-50 hover:text-red-600" onClick={() => removePrice(i)}>
+                                            <Trash2 className="h-4 w-4" />
+                                          </Button>
                                         </>
                                       ) : (
                                         <>
@@ -248,6 +347,12 @@ export function AdminModerationPage() {
                                     </div>
                                   ))}
                                 </div>
+                                {isEditing && (
+                                  <Button type="button" variant="outline" size="sm" className="mt-3 rounded-[8px] border-slate-200/80" onClick={addPrice}>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Додати рядок ціни
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -256,6 +361,12 @@ export function AdminModerationPage() {
                         {/* Right: Actions */}
                         <div className="w-full lg:w-[350px] p-6 bg-slate-50 flex flex-col gap-4">
                           <h4 className="font-[600] text-[#121117]">Рішення</h4>
+                          <LocaleLink href="/specialist/profile" className="w-full">
+                            <Button variant="outline" className="w-full justify-start rounded-[10px] border-slate-200/80 bg-white font-[600] text-[#121117] hover:bg-slate-50">
+                              <ExternalLink className="mr-2 h-4 w-4" />
+                              Відкрити повний профіль
+                            </Button>
+                          </LocaleLink>
                           
                           <div className="flex-1">
                             <Textarea
@@ -307,7 +418,15 @@ export function AdminModerationPage() {
                 <CardContent>
                   <div className="space-y-2">
                     {leaderboard.map((tutor, idx) => (
-                      <div key={tutor.id} className="flex items-center justify-between p-4 rounded-[12px] border border-slate-100 hover:bg-slate-50 transition-colors">
+                      <div key={tutor.id} 
+                      className="flex items-center justify-between p-4 rounded-[12px] border border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
+                      onClick={() => {
+                        toast({
+                          title: "Деталі спеціаліста",
+                          description: `Відкриття профілю ${tutor.name} (Імітація)`
+                        })
+                      }}
+                    >
                         <div className="flex items-center gap-4">
                           <div className="font-[700] text-slate-400 w-6">#{idx + 1}</div>
                           <div className="font-[600]">{tutor.name}</div>

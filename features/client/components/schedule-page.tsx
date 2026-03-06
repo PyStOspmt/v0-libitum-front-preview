@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
-import { Calendar, Clock, Users, ChevronRight, Video, MapPin, Star } from "lucide-react"
+import { Calendar, Clock, Users, ChevronRight, Video, MapPin, Star, DollarSign } from "lucide-react"
 import { useRef, useState } from "react"
 import { useLessonStore } from "@/lib/lesson-store"
 import { LessonDetailsDialog } from "./lesson-details"
@@ -237,6 +237,35 @@ export function ClientSchedulePage() {
                                 <><MapPin className="h-4 w-4 mr-1.5 inline" /> Офлайн</>
                               )}
                             </Badge>
+                            {lesson.isPaid === false && lesson.status === "completed" && (
+                              <Button
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  // Simply open details where user can see payment info
+                                  setSelectedLesson(lesson)
+                                  setIsLessonDetailsOpen(true)
+                                }}
+                                className="rounded-[12px] bg-emerald-600 text-white hover:bg-emerald-700 font-[600]"
+                              >
+                                <DollarSign className="h-4 w-4 mr-1.5" />
+                                Оплатити
+                              </Button>
+                            )}
+                            
+                            {lesson.format === "online" && lesson.status === "scheduled" && (
+                              <Button
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  if (lesson.meetingUrl) window.open(lesson.meetingUrl, '_blank')
+                                }}
+                                className="rounded-[12px] bg-primary text-[#121117] hover:bg-primary/90 font-[600]"
+                              >
+                                <Video className="h-4 w-4 mr-1.5" />
+                                Приєднатися
+                              </Button>
+                            )}
                             <ChevronRight className="h-5 w-5 text-[#69686f] flex-shrink-0 hidden sm:block" />
                           </div>
                         </div>

@@ -26,6 +26,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { q: t("faq.q3.q"), a: t("faq.q3.a") },
     { q: t("faq.q4.q"), a: t("faq.q4.a") },
   ]
+  const reviews = [
+    { text: t("reviews.item1.text"), name: t("reviews.item1.name") },
+    { text: t("reviews.item2.text"), name: t("reviews.item2.name") },
+    { text: t("reviews.item3.text"), name: t("reviews.item3.name") },
+  ]
 
   return (
     <div className="min-h-screen bg-white text-[#111827] font-sans">
@@ -171,6 +176,64 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </section>
 
+        <section id="reviews" className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f8fbfb_100%)] py-16 lg:py-20">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute left-[-8%] top-10 h-40 w-40 rounded-full bg-[#00c5a6]/8 blur-3xl animate-orb" />
+            <div className="absolute right-[-6%] top-1/3 h-44 w-44 rounded-full bg-[#ffc800]/10 blur-3xl animate-orb-slow" />
+          </div>
+          <div className="relative max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-10 lg:mb-12">
+              <h2 className="text-[32px] sm:text-[40px] font-bold tracking-tight text-[#121117] mb-4">
+                {t("nav.reviews")}
+              </h2>
+              <p className="text-[16px] sm:text-[18px] text-[#69686f] leading-relaxed">
+                {t("reviews.subtitle")}
+              </p>
+            </div>
+
+            <div className="reviews-showcase sm:px-1">
+              {reviews.map((review, index) => {
+                const isFeatured = index === 1
+
+                return (
+                  <article
+                    key={review.name}
+                    className={`reviews-card group relative overflow-hidden rounded-[20px] border border-slate-200/80 bg-white/95 p-5 sm:p-6 backdrop-blur-sm transition-all duration-300 ${isFeatured ? "lg:-translate-y-2 lg:border-[#00c5a6]/25 shadow-[0_18px_44px_rgba(0,0,0,0.08)]" : "shadow-[0_10px_28px_rgba(0,0,0,0.05)]"}`}
+                    style={{ animationDelay: `${index * 140}ms` }}
+                  >
+                    <div className={`absolute inset-x-0 top-0 h-1 ${isFeatured ? "bg-[linear-gradient(90deg,#00c5a6_0%,#ffc800_100%)]" : "bg-[linear-gradient(90deg,rgba(0,197,166,0.4)_0%,rgba(255,200,0,0.35)_100%)]"}`} />
+
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-1 text-[#ffc800]">
+                        {Array.from({ length: 5 }).map((_, idx) => (
+                          <Star key={idx} className={`h-4 w-4 fill-current transition-transform duration-300 ${isFeatured ? "review-star-float" : "group-hover:scale-105"}`} style={{ animationDelay: `${idx * 120}ms` }} />
+                        ))}
+                      </div>
+                      <span className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-[700] uppercase tracking-[0.14em] text-[#69686f]">
+                        5.0
+                      </span>
+                    </div>
+
+                    <p className="text-[15px] leading-[1.7] text-[#3e3d45] font-medium line-clamp-4">
+                      “{review.text}”
+                    </p>
+
+                    <div className="mt-5 flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                      <div className="min-w-0">
+                        <p className="text-[14px] font-[700] text-[#121117]">{review.name}</p>
+                        <p className="text-[13px] text-[#69686f]">{index === 0 ? "Учень" : index === 1 ? "Мама учениці" : "Клієнт платформи"}</p>
+                      </div>
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#e8fffb_0%,#fff8e1_100%)] text-[#121117] shadow-inner transition-transform duration-300 group-hover:rotate-6 group-hover:scale-105">
+                        <Star className="h-4 w-4 fill-[#ffc800] text-[#ffc800]" />
+                      </div>
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* FAQ — Client Component */}
         <section id="faq" className="py-20 lg:py-28 bg-[#f8f9fa]">
           <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -212,7 +275,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="space-y-4">
               <Link href="/specialists" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.specialists")}</Link>
               <Link href="#how" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.how_it_works")}</Link>
-              <Link href="#faq" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.reviews")}</Link>
+              <Link href="#reviews" className="block text-[#69686f] hover:text-[#121117] transition-colors">{t("nav.reviews")}</Link>
             </div>
           </div>
         </div>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Users, Plus, Link as LinkIcon, Copy, Check } from "lucide-react"
+import { Calendar, User, Users, Plus, Copy, Check, MessageSquare, BookOpen, UserMinus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -236,15 +236,59 @@ export function TutorClientsPage() {
                         </div>
                       )}
 
-                      <div className="flex flex-col gap-2">
+                      <div className="mt-4 grid gap-2 pt-4 border-t border-slate-100 sm:grid-cols-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full bg-transparent rounded-full"
-                          onClick={() => router.push("/tutor/schedule")}
+                          className="w-full justify-center bg-transparent rounded-[12px] border-slate-200 h-10"
+                          onClick={() => router.push(`/tutor/journal?student=${student.id}`)}
+                        >
+                          <BookOpen className="mr-2 h-4 w-4" />
+                          Журнал та ДЗ
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full justify-center bg-transparent rounded-[12px] border-slate-200 h-10"
+                          onClick={() => router.push(`/tutor/schedule?student=${student.id}`)}
                         >
                           <Calendar className="mr-2 h-4 w-4" />
-                          Переглянути розклад
+                          Розклад
+                        </Button>
+                        {student.telegram ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full min-w-0 justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-[12px] border-blue-200 h-10 px-3"
+                            onClick={() => window.open(`https://t.me/${student.telegram.replace('@', '')}`, '_blank')}
+                          >
+                            <MessageSquare className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">Telegram</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full min-w-0 justify-center bg-slate-50 text-slate-500 rounded-[12px] border-slate-200 h-10 px-3"
+                            disabled
+                          >
+                            <MessageSquare className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">Немає Telegram</span>
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full justify-center text-red-500 hover:text-red-600 hover:bg-red-50 rounded-[12px] border-slate-200 h-10"
+                          onClick={() => {
+                            toast({
+                              title: "Учня переміщено в архів",
+                              description: "Ця дія може бути скасована в налаштуваннях",
+                            })
+                          }}
+                        >
+                          <UserMinus className="h-4 w-4" />
+                          <span className="ml-2">В архів</span>
                         </Button>
                       </div>
                     </CardContent>

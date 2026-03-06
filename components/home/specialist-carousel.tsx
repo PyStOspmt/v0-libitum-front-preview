@@ -261,6 +261,7 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
     })
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [isTouchMode, setIsTouchMode] = useState(false)
+    const [hoveredCardId, setHoveredCardId] = useState<string | null>(null)
 
     const scrollPrev = useCallback(() => {
         if (emblaApi) emblaApi.scrollPrev()
@@ -360,13 +361,28 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                     {specialists.map((specialist, idx) => {
                         const isActiveSlide = selectedIndex === idx
                         const isMobileActive = isTouchMode && isActiveSlide
+                        const isDesktopHovered = !isTouchMode && hoveredCardId === specialist.id
+                        const shouldAnimateTags = isMobileActive || isDesktopHovered
 
                         return (
                             <div
                                 key={specialist.id}
                                 className="flex-none w-[65vw] sm:w-[270px] md:w-[290px] min-w-0"
                             >
-                                <LocaleLink href={`/specialists/${specialist.id}`} className="block h-full group">
+                                <LocaleLink
+                                    href={`/specialists/${specialist.id}`}
+                                    className="block h-full group"
+                                    onMouseEnter={() => {
+                                        if (!isTouchMode) {
+                                            setHoveredCardId(specialist.id)
+                                        }
+                                    }}
+                                    onMouseLeave={() => {
+                                        if (!isTouchMode) {
+                                            setHoveredCardId((current) => (current === specialist.id ? null : current))
+                                        }
+                                    }}
+                                >
                                     <div className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isMobileActive ? activeThemeClasses.card : ""}`}>
 
                                         <div className={`absolute -right-12 -top-12 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-[1.8] group-hover:opacity-[0.06] ${theme === 'teal' ? 'bg-[#00c5a6]' : 'bg-[#ffc800]'} ${isMobileActive ? activeThemeClasses.deco : ''}`} />
@@ -395,25 +411,13 @@ export function SpecialistCarousel({ title, specialists, theme }: { title: strin
                                             </div>
                                         </div>
 
-                                        <div className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee"
-                                            onMouseEnter={(e) => {
-                                                if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector('.animate-tags-marquee') as HTMLElement;
-                                                    if (marquee) marquee.style.animationPlayState = 'running';
-                                                }
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector('.animate-tags-marquee') as HTMLElement;
-                                                    if (marquee) marquee.style.animationPlayState = 'paused';
-                                                }
-                                            }}
-                                        >
+                                        <div className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee">
                                             <div className="flex items-center w-full relative overflow-hidden rounded-r-lg" style={{ maskImage: 'linear-gradient(to right, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 100%)' }}>
                                                 <div
-                                                    className={`flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5 ${isMobileActive ? '![animation-play-state:running]' : '![animation-play-state:paused]'}`}
+                                                    className="flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5"
                                                     style={{
-                                                        animationDuration: '15s'
+                                                        animationDuration: '15s',
+                                                        animationPlayState: shouldAnimateTags ? 'running' : 'paused'
                                                     }}
                                                 >
                                                     {[...specialist.subjects, ...specialist.subjects, ...specialist.subjects].map((subject: string, idx: number) => (

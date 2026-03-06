@@ -5,18 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { BookOpen, Users, Award, Shield, Star, ArrowRight } from "lucide-react"
 import { Header } from "@/components/header"
-import { translations } from "@/lib/i18n"
+import { getTranslation } from "@/lib/i18n"
+import { isValidLocale } from "@/lib/i18n/config"
 
 export const metadata = {
   title: "Про нас | Libitum",
   description: "Сучасна платформа, що поєднує найкращих репетиторів, психологів та логопедів з учнями по всій Україні.",
 }
 
-const t = (key: string) => {
-  return (translations as Record<string, Record<string, string>>)["UA"]?.[key] || key
-}
-
-export default function AboutPage() {
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale: rawLocale } = await params
+  const locale = isValidLocale(rawLocale) ? rawLocale : "uk"
+  const t = getTranslation(locale)
 
   const features = [
     {

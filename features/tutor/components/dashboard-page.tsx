@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight, Flame, Target, Coins, CheckCircle2 } from "lucide-react"
+import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight, Flame, Target, Coins, CheckCircle2, MessageSquareQuote } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { format } from "date-fns"
@@ -42,6 +42,33 @@ export function TutorDashboardPage() {
     streak: 5,
     lcBalance: 1250,
   }
+
+  const recentReviews = [
+    {
+      id: "1",
+      author: "Ірина, мама Марка",
+      lesson: "Англійська мова",
+      rating: 5,
+      text: "Дитина із задоволенням чекає кожного уроку. Є чіткий зворотний зв'язок після занять і зрозумілі домашні завдання.",
+      date: "2026-02-14",
+    },
+    {
+      id: "2",
+      author: "Олександр",
+      lesson: "Математика",
+      rating: 5,
+      text: "Дуже структуровано пояснює теми, видно прогрес вже після кількох занять. Окремо подобається акуратний звіт по роботі.",
+      date: "2026-02-09",
+    },
+    {
+      id: "3",
+      author: "Наталія, мама Софії",
+      lesson: "Підготовка до НМТ",
+      rating: 4,
+      text: "Комфортна комунікація, завжди можна швидко уточнити деталі по домашньому завданню та матеріалах.",
+      date: "2026-01-30",
+    },
+  ]
 
   const [goals, setGoals] = useState([
     { id: 1, title: "Заповнити звіт по уроку", completed: false, xp: 10, lc: 0 },
@@ -113,7 +140,7 @@ export function TutorDashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-[600] text-[#69686f]">Активні клієнти</span>
                 <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center shrink-0">
@@ -122,9 +149,12 @@ export function TutorDashboardPage() {
               </div>
               <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.activeClients}</div>
               <p className="text-[13px] text-[#69686f] mt-2">+2 цього місяця</p>
+              <Link href="/tutor/clients" className="mt-4 inline-flex text-[13px] font-[600] text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)]">
+                Переглянути учнів
+              </Link>
             </div>
 
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-[600] text-[#69686f]">Нові запити</span>
                 <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center shrink-0">
@@ -133,9 +163,12 @@ export function TutorDashboardPage() {
               </div>
               <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingRequests}</div>
               <p className="text-[13px] text-[#69686f] mt-2">Потребують відповіді</p>
+              <Link href="/tutor/requests" className="mt-4 inline-flex text-[13px] font-[600] text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)]">
+                Перейти до запитів
+              </Link>
             </div>
 
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-[600] text-[#69686f]">Рейтинг</span>
                 <div className="h-10 w-10 rounded-full bg-[#fff8e1] flex items-center justify-center shrink-0">
@@ -144,9 +177,12 @@ export function TutorDashboardPage() {
               </div>
               <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.rating}</div>
               <p className="text-[13px] text-[#69686f] mt-2">З 48 відгуків</p>
+              <a href="#reviews" className="mt-4 inline-flex text-[13px] font-[600] text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)]">
+                Переглянути відгуки
+              </a>
             </div>
 
-            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[14px] font-[600] text-[#69686f]">Заробіток</span>
                 <div className="h-10 w-10 rounded-full bg-[var(--theme-primary-light)] flex items-center justify-center shrink-0">
@@ -155,6 +191,9 @@ export function TutorDashboardPage() {
               </div>
               <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.earnings} ₴</div>
               <p className="text-[13px] text-[#69686f] mt-2">За цей місяць</p>
+              <Link href="/tutor/stats" className="mt-4 inline-flex text-[13px] font-[600] text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)]">
+                Детальніше про дохід
+              </Link>
             </div>
           </div>
 
@@ -276,6 +315,46 @@ export function TutorDashboardPage() {
                       +10 XP
                     </Badge>
                   )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div id="reviews" className="bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+              <div>
+                <h2 className="text-[24px] font-bold text-[#121117]">Відгуки та фідбек</h2>
+                <p className="text-[#69686f] text-[15px] mt-1">Останні відгуки клієнтів, які найбільше впливають на ваш профіль</p>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#fff8e1] px-4 py-2 text-[14px] font-[600] text-[#8a5a00]">
+                <Star className="h-4 w-4 fill-[#ffc107] text-[#ffc107]" />
+                {stats.rating} з 5
+              </div>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3">
+              {recentReviews.map((review) => (
+                <div key={review.id} className="rounded-[18px] border border-slate-200/80 bg-[#fcfcfd] p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[15px] font-[700] text-[#121117]">{review.author}</p>
+                      <p className="mt-1 text-[13px] font-[500] text-[#69686f]">{review.lesson}</p>
+                    </div>
+                    <div className="inline-flex items-center gap-1 rounded-full bg-[#fff8e1] px-2.5 py-1 text-[12px] font-[700] text-[#8a5a00]">
+                      <Star className="h-3.5 w-3.5 fill-[#ffc107] text-[#ffc107]" />
+                      {review.rating}.0
+                    </div>
+                  </div>
+                  <div className="mt-4 rounded-[14px] bg-white p-4 border border-slate-100">
+                    <div className="mb-2 flex items-center gap-2 text-[#69686f]">
+                      <MessageSquareQuote className="h-4 w-4" />
+                      <span className="text-[12px] font-[600] uppercase tracking-[0.08em]">Коментар</span>
+                    </div>
+                    <p className="text-[14px] leading-relaxed text-[#121117]">{review.text}</p>
+                  </div>
+                  <p className="mt-3 text-[12px] font-[500] text-[#69686f]">
+                    {format(new Date(review.date), "d MMMM yyyy", { locale: uk })}
+                  </p>
                 </div>
               ))}
             </div>

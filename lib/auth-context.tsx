@@ -37,6 +37,8 @@ export interface AppUser extends User {
   legacyRole: LegacyRole
   /** Display name (placeholder until `me` query provides it) */
   name: string
+  /** Profile avatar URL */
+  avatar?: string
 }
 
 interface AuthContextType {

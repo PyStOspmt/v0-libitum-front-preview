@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
@@ -23,22 +23,48 @@ interface BookingModalProps {
     name: string
     priceOnline: number
     priceOffline: number
+    subject?: string
   }
   clientId?: string
+  initialDate?: Date
+  initialTime?: string
 }
 
-export function BookingModal({ open, onOpenChange, specialist }: BookingModalProps) {
+export function BookingModal({ open, onOpenChange, specialist, clientId, initialDate, initialTime }: BookingModalProps) {
   const { user } = useAuth()
-  const clientId = user?.id || "client-1"
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [guestClientId, setGuestClientId] = useState("guest-client")
+  const [date, setDate] = useState<Date | undefined>(initialDate ?? new Date())
   const [format, setFormat] = useState<"online" | "offline">("online")
-  const [selectedTime, setSelectedTime] = useState<string>("")
+  const [selectedTime, setSelectedTime] = useState<string>(initialTime ?? "")
   const [phone, setPhone] = useState("")
+  const [clientName, setClientName] = useState(user?.name || "")
   const [message, setMessage] = useState("")
   const { addRequest, getActiveTrialCount } = useRequestStore()
   const { toast } = useToast()
 
-  const activeTrialCount = getActiveTrialCount(clientId)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const storedGuestId = window.localStorage.getItem("guest-client-id")
+    if (storedGuestId) {
+      setGuestClientId(storedGuestId)
+      return
+    }
+    const nextGuestId = `guest-${Math.random().toString(36).slice(2, 10)}`
+    window.localStorage.setItem("guest-client-id", nextGuestId)
+    setGuestClientId(nextGuestId)
+  }, [])
+
+  useEffect(() => {
+    if (!open) return
+    setDate(initialDate ?? new Date())
+    setSelectedTime(initialTime ?? "")
+    setClientName(user?.name || "")
+    setPhone("")
+  }, [initialDate, initialTime, open, user?.name])
+
+  const requestClientId = user?.id || clientId || guestClientId
+
+  const activeTrialCount = getActiveTrialCount(requestClientId)
   const hasReachedLimit = activeTrialCount >= 3
 
   // Mock available time slots
@@ -54,20 +80,20 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
       return
     }
 
-    if (!date || !selectedTime) return
+    if (!date || !selectedTime || !phone.trim() || !clientName.trim()) return
 
     addRequest({
       type: "private",
-      clientId,
-      clientName: user?.name || "Гість",
+      clientId: requestClientId,
+      clientName: clientName.trim(),
       specialistId: specialist.id || "specialist-1",
       specialistName: specialist.name,
-      subject: "Англійська мова",
+      subject: specialist.subject || "Консультація",
       date: date.toISOString().split("T")[0],
       time: selectedTime,
       format,
-      clientPhone: phone,
-      message,
+      clientPhone: phone.trim(),
+      message: message.trim(),
     })
 
     toast({
@@ -107,6 +133,26 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
               <AlertDescription>Ви можете мати максимум 3 активні пробні заняття одночасно.</AlertDescription>
             </Alert>
           )}
+
+          {!user && !hasReachedLimit && (
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Можна без реєстрації</AlertTitle>
+              <AlertDescription>Ви можете подати до 3 пробних заявок як гість, а акаунт створити пізніше.</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-3">
+            <Label htmlFor="client-name">Ваше ім'я</Label>
+            <Input
+              id="client-name"
+              placeholder="Як до вас звертатись?"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              disabled={hasReachedLimit}
+              required
+            />
+          </div>
 
           {/* Format Selection */}
           <div className="space-y-3">
@@ -232,7 +278,7 @@ export function BookingModal({ open, onOpenChange, specialist }: BookingModalPro
             <Button variant="outline" className="flex-1 bg-transparent" onClick={() => onOpenChange(false)}>
               {hasReachedLimit ? "Закрити" : "Скасувати"}
             </Button>
-            <Button className="flex-1 bg-[#00c5a6] hover:bg-[#00a389] text-white" onClick={handleSubmit} disabled={!date || !selectedTime || !phone || hasReachedLimit}>
+            <Button className="flex-1 bg-[#00c5a6] hover:bg-[#00a389] text-white" onClick={handleSubmit} disabled={!date || !selectedTime || !phone.trim() || !clientName.trim() || hasReachedLimit}>
               Відправити заявку
             </Button>
           </div>

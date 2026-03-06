@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { GoogleIcon } from "@/components/icons/google-icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -16,7 +17,7 @@ import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas
 import { useToast } from "@/hooks/use-toast"
 import { useAuth } from "@/lib/hooks/use-auth"
 
-import { AlertCircle, Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 export function RegisterForm() {
@@ -234,23 +235,25 @@ export function RegisterForm() {
                         name="agreeToTerms"
                         render={({ field }) => (
                             <FormItem>
-                                <div className="flex items-start gap-2.5">
+                                <div className="flex items-start gap-3">
                                     <FormControl>
                                         <Checkbox
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
-                                            className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
+                                            className="mt-0.5 shrink-0 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
                                         />
                                     </FormControl>
-                                    <FormLabel className="text-sm font-normal text-slate-600 leading-tight cursor-pointer">
-                                        Я погоджуюсь з{" "}
+                                    <FormLabel className="block min-w-0 text-sm font-normal text-slate-600 leading-6 cursor-pointer whitespace-normal break-words">
+                                        Я погоджуюсь з
+                                        {" "}
                                         <button
                                             type="button"
                                             onClick={() => setShowRules(true)}
-                                            className="font-semibold text-[#009688] hover:underline"
+                                            className="inline h-auto p-0 align-baseline font-semibold text-[#009688] hover:underline"
                                         >
                                             правилами платформи
-                                        </button>{" "}
+                                        </button>
+                                        {" "}
                                         та політикою конфіденційності
                                     </FormLabel>
                                 </div>
@@ -293,7 +296,7 @@ export function RegisterForm() {
                         {isGoogleLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
-                            <Chrome className="mr-2 h-4 w-4" />
+                            <GoogleIcon className="mr-2 h-4 w-4" />
                         )}
                         Зареєструватись через Google
                     </Button>

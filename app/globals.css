@@ -476,6 +476,64 @@
     animation: tags-marquee 15s linear infinite;
   }
 
+  @keyframes review-card-float {
+    0% {
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes review-star-float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .reviews-showcase {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .reviews-card {
+    animation: review-card-float 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .review-star-float {
+    animation: review-star-float 2.8s ease-in-out infinite;
+  }
+
+  @media (max-width: 1023px) {
+    .reviews-showcase {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 0 0.125rem 0.5rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .reviews-showcase::-webkit-scrollbar {
+      display: none;
+    }
+
+    .reviews-showcase > * {
+      flex: 0 0 min(86vw, 320px);
+      min-width: min(86vw, 320px);
+      scroll-snap-align: start;
+    }
+  }
+
   /* ── Gradient text shimmer ── */
   @keyframes gradient-shift {
     0% { background-position: 0% 50%; }

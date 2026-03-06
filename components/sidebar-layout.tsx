@@ -30,6 +30,7 @@ import {
   ShieldCheck,
   Globe,
   Home,
+  FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -90,6 +91,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     { href: "/client", label: t("sidebar.dashboard"), icon: LayoutDashboard },
     { href: "/client/schedule", label: t("sidebar.schedule"), icon: Calendar },
     { href: "/client/requests", label: t("sidebar.requests"), icon: ClipboardList },
+    { href: "/client/materials", label: "Матеріали та ДЗ", icon: FileText },
     { href: "/client/progress", label: t("sidebar.progress"), icon: TrendingUp },
     { href: "/client/settings", label: t("sidebar.settings"), icon: Settings },
   ]
@@ -110,7 +112,6 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     { href: "/admin/clients", label: t("sidebar.clients"), icon: Users },
     { href: "/admin/specialists", label: t("sidebar.specialists"), icon: UserCog },
     { href: "/admin/moderation", label: t("sidebar.moderation"), icon: CheckCircle2 },
-    { href: "/admin/verifications", label: t("sidebar.verifications"), icon: ShieldCheck },
     { href: "/admin/payments", label: t("sidebar.finances"), icon: DollarSign },
     { href: "/admin/analytics", label: t("sidebar.analytics"), icon: TrendingUp },
     { href: "/admin/dictionaries", label: t("sidebar.dictionaries"), icon: ClipboardList },

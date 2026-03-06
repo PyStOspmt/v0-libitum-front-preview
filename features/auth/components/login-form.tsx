@@ -15,11 +15,12 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
+import { GoogleIcon } from "@/components/icons/google-icon"
 import { Input } from "@/components/ui/input"
 import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema"
 import { useAuth } from "@/lib/hooks/use-auth"
 
-import { Eye, EyeOff, Loader2, Chrome } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 
 export function LoginForm() {
@@ -197,7 +198,7 @@ export function LoginForm() {
                     {isGoogleLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                        <Chrome className="mr-2 h-5 w-5" />
+                        <GoogleIcon className="mr-2 h-5 w-5" />
                     )}
                     Увійти через Google
                 </Button>

@@ -22,18 +22,14 @@ export default async function LocaleLayout({
     const locale: Locale = isValidLocale(rawLocale) ? rawLocale : "uk"
 
     return (
-        <html lang={locale}>
-            <body className="antialiased">
-                <ApolloWrapper>
-                    <LocaleProvider locale={locale}>
-                    <AuthProvider>
-                        <ThemeProvider>{children}</ThemeProvider>
-                    </AuthProvider>
-                </LocaleProvider>
-                </ApolloWrapper>
-                <Toaster />
-                <Analytics />
-            </body>
-        </html>
+        <ApolloWrapper>
+            <LocaleProvider locale={locale}>
+                <AuthProvider>
+                    <ThemeProvider>{children}</ThemeProvider>
+                </AuthProvider>
+            </LocaleProvider>
+            <Toaster />
+            <Analytics />
+        </ApolloWrapper>
     )
 }
