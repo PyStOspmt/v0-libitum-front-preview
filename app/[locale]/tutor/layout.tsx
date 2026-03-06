@@ -30,7 +30,7 @@ async function getTutorVerificationStatus(): Promise<boolean> {
     }
 }
 
-export default async function RootLayout({
+export default async function TutorRootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode

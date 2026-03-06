@@ -1,8 +1,8 @@
-import { gql } from "./generated";
+import { gql } from "./generated"
 
 export const GET_QUIZZES = gql(`
   query GetQuizzes {
-    getQuizzes {
+    quizes: getQuizzes {
       id
       title
       description
@@ -20,9 +20,10 @@ export const GET_QUIZZES = gql(`
         text
       }
       createdAt
+      updatedAt
     }
   }
-`);
+`)
 
 export const HANDLE_COMPLETE_QUIZ = gql(`
   mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {
@@ -39,4 +40,4 @@ export const HANDLE_COMPLETE_QUIZ = gql(`
       totalQuestions
     }
   }
-`);
+`)

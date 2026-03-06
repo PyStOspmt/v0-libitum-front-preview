@@ -42,7 +42,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
                 const allCookies = cookieStore.toString()
 
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
-                    method: "GET",
+                    method: "POST",
                     headers: {
                         Cookie: allCookies,
                     },

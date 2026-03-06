@@ -63,7 +63,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
         isRefreshing = true
 
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
-            method: "GET",
+            method: "POST",
             credentials: "include",
         })
             .then(() => {

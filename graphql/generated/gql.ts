@@ -24,7 +24,7 @@ type Documents = {
     "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n": typeof types.ConfirmResetPasswordDocument,
     "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": typeof types.VerifyUserDocument,
     "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n": typeof types.ResendVerificationEmailDocument,
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": typeof types.GetQuizzesDocument,
+    "\n  query GetQuizzes {\n    quizes: getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n      updatedAt\n    }\n  }\n": typeof types.GetQuizzesDocument,
     "\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n": typeof types.HandleCompleteQuizDocument,
     "\n    query IsTutorVerified {\n        tutorVerified\n    }\n": typeof types.IsTutorVerifiedDocument,
 };
@@ -39,7 +39,7 @@ const documents: Documents = {
     "\n    mutation ConfirmResetPassword($resetPasswordPayload: ConfirmPasswordResetDto!) {\n        resetPassword(resetPasswordPayload: $resetPasswordPayload) \n    }\n": types.ConfirmResetPasswordDocument,
     "\n    mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {\n        verifyUser(verifyUserPayload: $verifyUserPayload)\n    }\n": types.VerifyUserDocument,
     "\n    mutation ResendVerificationEmail {\n        resendVerificationEmail\n    }\n": types.ResendVerificationEmailDocument,
-    "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n": types.GetQuizzesDocument,
+    "\n  query GetQuizzes {\n    quizes: getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n      updatedAt\n    }\n  }\n": types.GetQuizzesDocument,
     "\n  mutation HandleCompleteQuiz($payload: ApproveQuizDto!) {\n    handleCompleteQuiz(completeQuizPayload: $payload) {\n      correctCount\n      isPassed\n      questionResults {\n        correctOptionIds\n        isCorrect\n        questionId\n        selectedOptionIds\n      }\n      scorePercent\n      totalQuestions\n    }\n  }\n": types.HandleCompleteQuizDocument,
     "\n    query IsTutorVerified {\n        tutorVerified\n    }\n": types.IsTutorVerifiedDocument,
 };
@@ -101,7 +101,7 @@ export function gql(source: "\n    mutation ResendVerificationEmail {\n        r
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"): (typeof documents)["\n  query GetQuizzes {\n    getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n    }\n  }\n"];
+export function gql(source: "\n  query GetQuizzes {\n    quizes: getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n      updatedAt\n    }\n  }\n"): (typeof documents)["\n  query GetQuizzes {\n    quizes: getQuizzes {\n      id\n      title\n      description\n      type\n      passingScore\n      questions {\n        explanation\n        id\n        mediaId\n        options {\n          id\n          text\n        }\n        order\n        text\n      }\n      createdAt\n      updatedAt\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

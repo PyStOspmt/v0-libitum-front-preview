@@ -1,5 +1,6 @@
 "use client"
 
+import { QuizType } from "@/graphql/generated/graphql"
 import { HANDLE_COMPLETE_QUIZ } from "@/graphql/quizzes"
 import { useMutation } from "@apollo/client/react"
 import { AlertCircle, ArrowRight, BookOpen, CheckCircle, Loader2, XCircle } from "lucide-react"
@@ -20,7 +21,7 @@ import { cn } from "@/lib/utils"
 import { revalidateAppPath } from "@/lib/utils/revalidate"
 
 interface TutorOnboardingPageProps {
-    quizzes: any
+    quizzes: QuizType[]
 }
 
 type LocalQuizQuestion = {
@@ -92,7 +93,7 @@ export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
         console.log("[submitQuiz] Started")
         try {
             const payload = {
-                quizId: quiz.id,
+                quizId: quiz?.id,
                 answers: QUIZ_QUESTIONS.map((q, index) => ({
                     questionId: q.id,
                     selectedOptionsId: [answers[index]],
