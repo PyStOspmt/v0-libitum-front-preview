@@ -7,6 +7,7 @@ const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://loca
 
 const fingerprintLink = new SetContextLink(async ({ headers }) => {
     const cookiesStore = await cookies()
+    const allCookies = cookiesStore.toString()
 
     const fingerprint = cookiesStore.get("device-fingerprint")
 
@@ -17,6 +18,7 @@ const fingerprintLink = new SetContextLink(async ({ headers }) => {
     return {
         headers: {
             ...headers,
+            cookies: allCookies,
             "x-device-fingerprint": value,
         },
     }
@@ -44,7 +46,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
                     method: "POST",
                     headers: {
-                        Cookie: allCookies,
+                        cookies: allCookies,
                     },
                 })
 
