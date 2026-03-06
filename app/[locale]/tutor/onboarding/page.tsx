@@ -1,10 +1,8 @@
 import type { GetQuizzesQuery } from "@/graphql/generated/graphql"
 import { GET_QUIZZES } from "@/graphql/quizzes"
-import { print } from "graphql"
 
 import { TutorOnboardingPage } from "@/features/tutor/components/onboarding-page"
 
-import { fetchGraphQL } from "@/lib/apollo/server-client"
 import { getApolloServerClient } from "@/lib/clients/apollo-server"
 
 export const metadata = {
@@ -26,8 +24,9 @@ async function getQuizzes() {
             return []
         }
 
-        return data.quizes
-    } catch {
+        return data.quizzes
+    } catch (error) {
+        console.log(error)
         return []
     }
 }

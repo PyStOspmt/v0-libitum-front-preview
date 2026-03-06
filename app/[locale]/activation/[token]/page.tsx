@@ -1,53 +1,42 @@
+"use client"
+
 import { VERIFY_USER } from "@/graphql/auth"
-import { CheckCircle, XCircle } from "lucide-react"
+import { useMutation } from "@apollo/client/react"
+import { CheckCircle, Loader2, XCircle } from "lucide-react"
 import Link from "next/link"
+import { use, useEffect, useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { getApolloServerClient } from "@/lib/clients/apollo-server"
+export default function ActivationPage({ params }: { params: Promise<{ token: string; locale: string }> }) {
+    const { token } = use(params)
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [errorMessage, setErrorMessage] = useState("")
 
-export const metadata = {
-    title: "Активація акаунту | Libitum",
-    description: "Активація вашого акаунту Libitum.",
-}
+    const [verifyUser, { loading }] = useMutation(VERIFY_USER, {
+        onCompleted: (data) => {
+            if (data?.verifyUser) {
+                setIsSuccess(true)
+            } else {
+                setErrorMessage("Не вдалося підтвердити акаунт.")
+            }
+        },
+        onError: (error) => {
+            console.error("Activation failed:", error)
+            setErrorMessage("Сталася помилка під час активації акаунту. Спробуйте пізніше.")
+        },
+    })
 
-export default async function ActivationPage({ params }: { params: Promise<{ token: string; locale: string }> }) {
-    const { token, locale } = await params
-
-    let isSuccess = false
-    let errorMessage = ""
-
-    const apolloClient = await getApolloServerClient()
-
-    try {
-        const response = await apolloClient.mutate<{ verifyUser: boolean }>({
-            mutation: VERIFY_USER,
-            variables: {
-                verifyUserPayload: { token },
-            },
-        })
-
-        console.log("response", response)
-
-        isSuccess = response.data?.verifyUser || false
-    } catch (error) {
-        console.error("Activation mutation failed with error:", error);
-        if (error instanceof Error) {
-            console.error("Error Message:", error.message);
-            console.error("Error Stack:", error.stack);
+    useEffect(() => {
+        if (token) {
+            verifyUser({
+                variables: {
+                    verifyUserPayload: { token },
+                },
+            })
         }
-
-        if ((error as any).networkError) {
-            console.error("Network Error Details:", (error as any).networkError);
-        }
-
-        if ((error as any).graphQLErrors) {
-            console.error("GraphQL Errors Details:", JSON.stringify((error as any).graphQLErrors, null, 2));
-        }
-
-        errorMessage = "Сталася помилка під час активації акаунту. Спробуйте пізніше."
-    }
+    }, [token, verifyUser])
 
     return (
         <div className="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-white to-white p-4 overflow-hidden">
@@ -60,26 +49,37 @@ export default async function ActivationPage({ params }: { params: Promise<{ tok
             <Card className="max-w-md w-full text-center bg-white/90 backdrop-blur-sm border-slate-200 shadow-lg z-10">
                 <CardHeader>
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-50">
-                        {isSuccess ? (
+                        {loading ? (
+                            <Loader2 className="h-8 w-8 text-slate-400 animate-spin" />
+                        ) : isSuccess ? (
                             <CheckCircle className="h-8 w-8 text-green-600" />
                         ) : (
                             <XCircle className="h-8 w-8 text-red-600" />
                         )}
                     </div>
-                    <CardTitle className="text-2xl">{isSuccess ? "Акаунт активовано!" : "Помилка активації"}</CardTitle>
+
+                    <CardTitle className="text-2xl">
+                        {loading ? "Активація..." : isSuccess ? "Акаунт активовано!" : "Помилка активації"}
+                    </CardTitle>
+
                     <CardDescription>
-                        {isSuccess ? "Ваш акаунт успішно активовано. Тепер ви можете увійти до системи." : errorMessage}
+                        {loading
+                            ? "Будь ласка, зачекайте, ми перевіряємо ваші дані."
+                            : isSuccess
+                              ? "Ваш акаунт успішно активовано. Тепер ви можете увійти до системи."
+                              : errorMessage}
                     </CardDescription>
                 </CardHeader>
+
                 <CardContent>
-                    <Button
-                        asChild
-                        className="w-full bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110 text-white"
-                    >
-                        <Link href={"/"}>
-                            {isSuccess ? "Перейти на головну" : "Повернутися на головну"}
-                        </Link>
-                    </Button>
+                    {!loading && (
+                        <Button
+                            asChild
+                            className="w-full bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110 text-white"
+                        >
+                            <Link href={"/"}>{isSuccess ? "Перейти на головну" : "Повернутися на головну"}</Link>
+                        </Button>
+                    )}
                 </CardContent>
             </Card>
         </div>
