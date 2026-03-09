@@ -1,4 +1,5 @@
-import { ApolloClient, ApolloLink, CombinedGraphQLErrors, HttpLink, InMemoryCache, Observable } from "@apollo/client"
+import { ApolloLink, CombinedGraphQLErrors, HttpLink, Observable } from "@apollo/client"
+import { ApolloClient, InMemoryCache, SSRMultipartLink } from "@apollo/client-integration-nextjs"
 import { SetContextLink } from "@apollo/client/link/context"
 import { ErrorLink } from "@apollo/client/link/error"
 
@@ -80,8 +81,12 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 })
 
 export function getApolloClient() {
+    const IS_SERVER = typeof window === "undefined"
+
     return new ApolloClient({
-        link: ApolloLink.from([fingerprintLink, errorLink, httpLink]),
         cache: new InMemoryCache(),
+        link: IS_SERVER
+            ? ApolloLink.from([new SSRMultipartLink({ stripDefer: true }), fingerprintLink, httpLink])
+            : ApolloLink.from([fingerprintLink, errorLink, httpLink]),
     })
 }

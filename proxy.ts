@@ -7,25 +7,30 @@ const PUBLIC_FILE = /\.(.*)$/
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
 
-    if (pathname.startsWith("/_next") || pathname.startsWith("/api") || PUBLIC_FILE.test(pathname)) {
-        return NextResponse.next()
-    }
+    console.log("Middleware request for:", pathname)
 
-    const pathnameLocale = locales.find((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
+    const pathnameHasLocale = locales.some((locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`)
 
-    if (pathnameLocale) {
+    if (pathnameHasLocale) {
+        const localeInPath = locales.find((l) => pathname.startsWith(`/${l}`)) || defaultLocale
         const response = NextResponse.next()
-        response.headers.set("x-locale", pathnameLocale)
+        response.headers.set("x-locale", localeInPath)
         return response
     }
 
     const url = request.nextUrl.clone()
     url.pathname = `/${defaultLocale}${pathname}`
+
+    if (pathname === `/${defaultLocale}${pathname}`) {
+        return NextResponse.next()
+    }
+
     const response = NextResponse.rewrite(url)
     response.headers.set("x-locale", defaultLocale)
+
     return response
 }
 
 export const config = {
-    matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)"],
+    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 }

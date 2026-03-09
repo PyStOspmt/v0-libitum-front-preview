@@ -2,7 +2,7 @@ import { gql } from "./generated"
 
 export const GET_QUIZZES = gql(`
   query GetQuizzes {
-    quizes: getQuizzes {
+    quizzes: getQuizzes {
       id
       title
       description
