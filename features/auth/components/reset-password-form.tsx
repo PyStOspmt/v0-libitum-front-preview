@@ -1,41 +1,31 @@
 "use client"
 
+import { useToast } from "@/hooks/use-toast"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@apollo/client/react"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
-import { RESET_PASSWORD } from "@/lib/graphql/auth"
 
-import {
-    resetPasswordSchema,
-    type ResetPasswordValues,
-} from "../schemas/reset-password.schema"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { useState } from "react"
-import type { ResetPasswordData, ResetPasswordVariables } from "../types/auth.types"
+import { useResetPassword } from "@/features/dashboard/hooks/use-reset-password"
 
-export function ResetPasswordForm() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
+import { type ResetPasswordValues, resetPasswordSchema } from "../lib/schemas/reset-password.schema"
+
+type ResetPasswordFormProps = {
+    token: string
+}
+
+export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     const { toast } = useToast()
-    const token = searchParams.get("token")
     const [showPassword, setShowPassword] = useState(false)
 
-    const [resetPassword] = useMutation<ResetPasswordData, ResetPasswordVariables>(RESET_PASSWORD)
+    const { confirmResetPassword } = useResetPassword()
 
     const form = useForm<ResetPasswordValues>({
         resolver: zodResolver(resetPasswordSchema),
@@ -53,23 +43,21 @@ export function ResetPasswordForm() {
         }
 
         try {
-            const { data: result } = await resetPassword({
+            await confirmResetPassword({
                 variables: {
                     resetPasswordPayload: { token, password: data.password },
                 },
             })
-
-            if (result?.resetPassword) {
-                toast({ title: "Пароль оновлено", description: "Ваш пароль успішно змінено" })
-                router.push("/login")
-            } else {
+        } catch (error) {
+            if (error instanceof Error) {
                 toast({
                     title: "Помилка",
-                    description: "Не вдалося змінити пароль. Токен може бути недійсним.",
+                    description: error.message,
                     variant: "destructive",
                 })
+                return
             }
-        } catch {
+
             toast({
                 title: "Помилка",
                 description: "Не вдалося змінити пароль. Спробуйте запросити скидання ще раз.",
@@ -132,11 +120,7 @@ export function ResetPasswordForm() {
                                 </FormItem>
                             )}
                         />
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={form.formState.isSubmitting || !token}
-                        >
+                        <Button type="submit" className="w-full" disabled={form.formState.isSubmitting || !token}>
                             {form.formState.isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

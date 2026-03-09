@@ -1,12 +1,12 @@
 import { SpecialistStatsPage } from "@/features/specialist/components/stats-page"
 
 export const metadata = {
-  title: "Статистика | Libitum",
-  description: "Кабінет спеціаліста Libitum",
+    title: "Статистика | Libitum",
+    description: "Кабінет спеціаліста Libitum",
 }
 
 export const dynamic = "force-dynamic"
 
 export default function Page() {
-  return <SpecialistStatsPage />
+    return <SpecialistStatsPage />
 }

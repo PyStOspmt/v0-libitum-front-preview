@@ -53,32 +53,32 @@ export interface Lesson {
 }
 
 export interface CalendarEvent {
-  id: string
-  userId: string
-  title: string
-  description?: string
-  date: string
-  time: string
-  duration: number // minutes
-  type: "personal" | "meeting" | "reminder" | "break"
-  color?: string
+    id: string
+    userId: string
+    title: string
+    description?: string
+    date: string
+    time: string
+    duration: number // minutes
+    type: "personal" | "meeting" | "reminder" | "break"
+    color?: string
 }
 
 interface LessonStore {
-  lessons: Lesson[]
-  events: CalendarEvent[]
-  addLesson: (lesson: Omit<Lesson, "id">) => void
-  updateLesson: (lessonId: string, updates: Partial<Lesson>) => void
-  deleteLesson: (lessonId: string) => void
-  getLessonsByClient: (clientId: string) => Lesson[]
-  getLessonsBySpecialist: (specialistId: string) => Lesson[]
-  getLessonsByClientAndSpecialist: (clientId: string, specialistId: string) => Lesson[]
-  submitHomework: (lessonId: string, submissionData: { description?: string; attachments?: string[] }) => void
-  checkHomework: (lessonId: string, grade: number, feedback: string) => void
-  addEvent: (event: Omit<CalendarEvent, "id">) => void
-  updateEvent: (eventId: string, updates: Partial<CalendarEvent>) => void
-  deleteEvent: (eventId: string) => void
-  getEventsByUser: (userId: string) => CalendarEvent[]
+    lessons: Lesson[]
+    events: CalendarEvent[]
+    addLesson: (lesson: Omit<Lesson, "id">) => void
+    updateLesson: (lessonId: string, updates: Partial<Lesson>) => void
+    deleteLesson: (lessonId: string) => void
+    getLessonsByClient: (clientId: string) => Lesson[]
+    getLessonsBySpecialist: (specialistId: string) => Lesson[]
+    getLessonsByClientAndSpecialist: (clientId: string, specialistId: string) => Lesson[]
+    submitHomework: (lessonId: string, submissionData: { description?: string; attachments?: string[] }) => void
+    checkHomework: (lessonId: string, grade: number, feedback: string) => void
+    addEvent: (event: Omit<CalendarEvent, "id">) => void
+    updateEvent: (eventId: string, updates: Partial<CalendarEvent>) => void
+    deleteEvent: (eventId: string) => void
+    getEventsByUser: (userId: string) => CalendarEvent[]
 }
 
 // Mock data
@@ -364,42 +364,42 @@ const mockLessons: Lesson[] = [
 ]
 
 export const useLessonStore = create<LessonStore>((set, get) => ({
-  lessons: mockLessons,
-  events: [],
+    lessons: mockLessons,
+    events: [],
 
-  addLesson: (lesson) => {
-    const newLesson: Lesson = {
-      ...lesson,
-      id: Math.random().toString(36).substr(2, 9),
-    }
-    set((state) => ({ lessons: [...state.lessons, newLesson] }))
-  },
+    addLesson: (lesson) => {
+        const newLesson: Lesson = {
+            ...lesson,
+            id: Math.random().toString(36).substr(2, 9),
+        }
+        set((state) => ({ lessons: [...state.lessons, newLesson] }))
+    },
 
-  updateLesson: (lessonId, updates) => {
-    set((state) => ({
-      lessons: state.lessons.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
-    }))
-  },
+    updateLesson: (lessonId, updates) => {
+        set((state) => ({
+            lessons: state.lessons.map((lesson) => (lesson.id === lessonId ? { ...lesson, ...updates } : lesson)),
+        }))
+    },
 
-  deleteLesson: (lessonId) => {
-    set((state) => ({
-      lessons: state.lessons.filter((lesson) => lesson.id !== lessonId),
-    }))
-  },
+    deleteLesson: (lessonId) => {
+        set((state) => ({
+            lessons: state.lessons.filter((lesson) => lesson.id !== lessonId),
+        }))
+    },
 
-  getLessonsByClient: (clientId) => {
-    return get().lessons.filter((lesson) => lesson.clientId === clientId)
-  },
+    getLessonsByClient: (clientId) => {
+        return get().lessons.filter((lesson) => lesson.clientId === clientId)
+    },
 
-  getLessonsBySpecialist: (specialistId) => {
-    return get().lessons.filter((lesson) => lesson.specialistId === specialistId)
-  },
+    getLessonsBySpecialist: (specialistId) => {
+        return get().lessons.filter((lesson) => lesson.specialistId === specialistId)
+    },
 
-  getLessonsByClientAndSpecialist: (clientId, specialistId) => {
-    return get()
-      .lessons.filter((lesson) => lesson.clientId === clientId && lesson.specialistId === specialistId)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  },
+    getLessonsByClientAndSpecialist: (clientId, specialistId) => {
+        return get()
+            .lessons.filter((lesson) => lesson.clientId === clientId && lesson.specialistId === specialistId)
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    },
 
   submitHomework: (lessonId, submissionData) => {
     set((state) => ({
@@ -420,47 +420,47 @@ export const useLessonStore = create<LessonStore>((set, get) => ({
     }))
   },
 
-  checkHomework: (lessonId, grade, feedback) => {
-    set((state) => ({
-      lessons: state.lessons.map((lesson) => {
-        if (lesson.id === lessonId && lesson.homework) {
-          return {
-            ...lesson,
-            homework: {
-              ...lesson.homework,
-              status: "checked",
-              grade,
-              feedback,
-              checkedAt: new Date().toISOString(),
-            },
-          }
+    checkHomework: (lessonId, grade, feedback) => {
+        set((state) => ({
+            lessons: state.lessons.map((lesson) => {
+                if (lesson.id === lessonId && lesson.homework) {
+                    return {
+                        ...lesson,
+                        homework: {
+                            ...lesson.homework,
+                            status: "checked",
+                            grade,
+                            feedback,
+                            checkedAt: new Date().toISOString(),
+                        },
+                    }
+                }
+                return lesson
+            }),
+        }))
+    },
+
+    addEvent: (event) => {
+        const newEvent: CalendarEvent = {
+            ...event,
+            id: Math.random().toString(36).substr(2, 9),
         }
-        return lesson
-      }),
-    }))
-  },
+        set((state) => ({ events: [...state.events, newEvent] }))
+    },
 
-  addEvent: (event) => {
-    const newEvent: CalendarEvent = {
-      ...event,
-      id: Math.random().toString(36).substr(2, 9),
-    }
-    set((state) => ({ events: [...state.events, newEvent] }))
-  },
+    updateEvent: (eventId, updates) => {
+        set((state) => ({
+            events: state.events.map((event) => (event.id === eventId ? { ...event, ...updates } : event)),
+        }))
+    },
 
-  updateEvent: (eventId, updates) => {
-    set((state) => ({
-      events: state.events.map((event) => (event.id === eventId ? { ...event, ...updates } : event)),
-    }))
-  },
+    deleteEvent: (eventId) => {
+        set((state) => ({
+            events: state.events.filter((event) => event.id !== eventId),
+        }))
+    },
 
-  deleteEvent: (eventId) => {
-    set((state) => ({
-      events: state.events.filter((event) => event.id !== eventId),
-    }))
-  },
-
-  getEventsByUser: (userId) => {
-    return get().events.filter((event) => event.userId === userId)
-  },
+    getEventsByUser: (userId) => {
+        return get().events.filter((event) => event.userId === userId)
+    },
 }))

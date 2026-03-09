@@ -25,12 +25,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useLessonStore } from "@/lib/lesson-store"
-import { useAuth } from "@/lib/auth-context"
-import { useTheme } from "@/lib/theme-context"
 import { BookOpen, Plus, Upload, CheckCircle, Clock, Star, Tag, X, Link as LinkIcon, FileText, FileText as FileIcon } from "lucide-react"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { cn } from "@/lib/utils"
+import { UserRoles } from "@/graphql/generated/graphql"
+import { useTheme } from "@/providers/theme-provider"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 const lessonTags = [
   { id: "tag-1", text: "Мені пора на пенсію - ти краще вчителя!", color: "bg-emerald-100 text-emerald-800 border-emerald-200" },
@@ -42,7 +43,7 @@ const lessonTags = [
 const isExternalUrl = (value: string) => /^https?:\/\//i.test(value)
 
 export function TutorJournalPage() {
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { theme } = useTheme()
   const { lessons, checkHomework } = useLessonStore()
   const { toast } = useToast()
@@ -50,7 +51,7 @@ export function TutorJournalPage() {
   const [grade, setGrade] = useState("5")
   const [feedback, setFeedback] = useState("")
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
-  
+
   // Create / Edit modal state
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingHomeworkId, setEditingHomeworkId] = useState<string | null>(null)
@@ -58,7 +59,7 @@ export function TutorJournalPage() {
   const [newHwDesc, setNewHwDesc] = useState("")
   const [newHwDueDate, setNewHwDueDate] = useState("")
   const [newHwClient, setNewHwClient] = useState("")
-  const [attachments, setAttachments] = useState<{name: string, type: "file" | "link"}[]>([])
+  const [attachments, setAttachments] = useState<{ name: string, type: "file" | "link" }[]>([])
   const [newLink, setNewLink] = useState("")
   const [showLinkInput, setShowLinkInput] = useState(false)
 
@@ -94,7 +95,7 @@ export function TutorJournalPage() {
       clientName: "Марія Коваленко",
       status: "pending",
       dueDate: "2026-03-12T12:00:00.000Z",
-      attachments: [] as {name: string, type: "file" | "link"}[],
+      attachments: [] as { name: string, type: "file" | "link" }[],
     },
     {
       id: "demo-pend-2",
@@ -105,7 +106,7 @@ export function TutorJournalPage() {
       clientName: "Іван Петренко",
       status: "pending",
       dueDate: "2026-03-01T12:00:00.000Z",
-      attachments: [{ name: "Основи_дробів.pdf", type: "file" }] as {name: string, type: "file" | "link"}[],
+      attachments: [{ name: "Основи_дробів.pdf", type: "file" }] as { name: string, type: "file" | "link" }[],
     }
   ]
 
@@ -179,7 +180,7 @@ export function TutorJournalPage() {
     setEditingHomeworkId(hw.id)
     setNewHwTitle(hw.title)
     setNewHwDesc(hw.description)
-    
+
     // Format date properly if it exists
     if (hw.dueDate) {
       try {
@@ -191,11 +192,11 @@ export function TutorJournalPage() {
     } else {
       setNewHwDueDate("")
     }
-    
+
     // Find client ID by name for the select dropdown (fallback to first client if not found)
     const client = activeClients.find(c => c.name === hw.clientName)
     setNewHwClient(client ? client.id : (activeClients[0]?.id || ""))
-    
+
     setAttachments(hw.attachments || [])
     setIsCreateModalOpen(true)
   }
@@ -249,7 +250,7 @@ export function TutorJournalPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["specialist"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-[1200px] space-y-8 p-6 font-sans">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -433,9 +434,9 @@ export function TutorJournalPage() {
                             <Badge className="bg-[#fff3e0] text-[#f57c00] border-0 px-2.5 py-1 rounded-[6px] font-[600]">
                               Очікує виконання
                             </Badge>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
+                            <Button
+                              variant="ghost"
+                              size="sm"
                               onClick={() => handleEditHomework(hw)}
                               className="h-7 text-xs text-slate-400 hover:text-blue-600 hover:bg-blue-50 px-2 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
@@ -544,7 +545,7 @@ export function TutorJournalPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   {selectedHomework?.submittedFiles && selectedHomework.submittedFiles.length > 0 && (
                     <div className="pt-3 border-t border-slate-200">
                       <Label className="text-[13px] font-[600] text-[#69686f] uppercase tracking-wider mb-2 block">Здані матеріали</Label>
@@ -720,7 +721,7 @@ export function TutorJournalPage() {
 
               <div className="space-y-2">
                 <Label className="text-[14px] font-[600] text-[#121117]">Додати матеріали (PDF, Audio, Image, Посилання)</Label>
-                
+
                 {attachments.length > 0 && (
                   <div className="flex flex-col gap-2 mb-3">
                     {attachments.map((attachment, index) => (
@@ -729,9 +730,9 @@ export function TutorJournalPage() {
                           {attachment.type === 'link' ? <LinkIcon className="h-4 w-4 text-blue-500 shrink-0" /> : <FileIcon className="h-4 w-4 text-emerald-500 shrink-0" />}
                           <span className="text-[13px] font-[500] text-slate-700 truncate">{attachment.name}</span>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="h-6 w-6 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full"
                           onClick={() => removeAttachment(index)}
                         >
@@ -744,15 +745,15 @@ export function TutorJournalPage() {
 
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <input 
-                      type="file" 
-                      id="file-upload" 
-                      className="hidden" 
-                      multiple 
+                    <input
+                      type="file"
+                      id="file-upload"
+                      className="hidden"
+                      multiple
                       onChange={handleFileUpload}
                       accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.webp,.mp3,.wav"
                     />
-                    <label 
+                    <label
                       htmlFor="file-upload"
                       className="flex items-center justify-center gap-2 h-[48px] rounded-[8px] border-2 border-dashed border-slate-200 bg-[#f8f9fb] hover:bg-slate-50 cursor-pointer transition-colors w-full text-[14px] font-[500] text-[#69686f]"
                     >
@@ -760,26 +761,26 @@ export function TutorJournalPage() {
                       Завантажити файл
                     </label>
                   </div>
-                  
-                  <Button 
-                    variant="outline" 
+
+                  <Button
+                    variant="outline"
                     className="h-[48px] px-4 rounded-[8px] border-slate-200"
                     onClick={() => setShowLinkInput(!showLinkInput)}
                   >
                     <LinkIcon className="h-4 w-4 text-[#69686f]" />
                   </Button>
                 </div>
-                
+
                 {showLinkInput && (
                   <div className="flex gap-2 mt-2 animate-in fade-in slide-in-from-top-2">
-                    <Input 
+                    <Input
                       value={newLink}
                       onChange={(e) => setNewLink(e.target.value)}
                       placeholder="Вставте посилання..."
                       className="h-[40px] rounded-[8px] border-slate-200"
                       onKeyDown={(e) => e.key === 'Enter' && handleAddLink()}
                     />
-                    <Button 
+                    <Button
                       onClick={handleAddLink}
                       disabled={!newLink.trim()}
                       className="h-[40px] rounded-[8px] bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white"

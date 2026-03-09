@@ -1,17 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/lib/auth-context"
-import { useTheme } from "@/lib/theme-context"
 import { useSpecialistProfileStore, type SpecialistType, type SubjectDetails } from "@/lib/specialist-profile-store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -19,9 +15,13 @@ import { Upload, Search, MapPin, Users, Plus, X, Video, Save, UserPlus } from "l
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useToast } from "@/hooks/use-toast"
 import { useDictionaryStore } from "@/store/dictionary.store"
+import { useEffect, useState } from "react"
+import { Textarea } from "@/components/ui/textarea"
+import { useTheme } from "@/providers/theme-provider"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function TutorProfilePage() {
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { updateSpecialistTheme } = useTheme()
   const router = useRouter()
   const { getProfile, updateProfile } = useSpecialistProfileStore()
@@ -74,12 +74,12 @@ export function TutorProfilePage() {
           setFormatOnline(profile.formats?.online ?? true)
           setFormatOffline(profile.formats?.offline ?? true)
           setFormatHomeVisit(profile.formats?.homeVisit ?? false)
-          
+
           setIsSearching(profile.isSearching ?? true)
           setPairLessons(profile.pairLessons ?? false)
           setForeignProgram(profile.foreignProgram ?? false)
           setForeignCountry(profile.foreignCountry ?? "")
-          
+
           if (profile.subjectsDetails?.length) {
             setSubjectsDetails(profile.subjectsDetails)
           } else {
@@ -105,17 +105,17 @@ export function TutorProfilePage() {
   const addSubject = () => {
     if (newSubject && !subjects.includes(newSubject)) {
       setSubjects([...subjects, newSubject])
-      
+
       const dictionarySubject = useDictionaryStore.getState().subjects.find(s => s.name === newSubject)
       const defaultLevels = dictionarySubject?.levels.map(l => ({
         label: l.label,
         priceOnline: l.basePrice,
         priceOffline: l.basePrice + 100
       })) || [
-        { label: "1-4 клас", priceOnline: Number(priceOnline), priceOffline: Number(priceOffline) },
-        { label: "5-9 клас", priceOnline: Number(priceOnline) + 50, priceOffline: Number(priceOffline) + 50 },
-        { label: "10-11 клас, ЗНО", priceOnline: Number(priceOnline) + 100, priceOffline: Number(priceOffline) + 100 }
-      ]
+          { label: "1-4 клас", priceOnline: Number(priceOnline), priceOffline: Number(priceOffline) },
+          { label: "5-9 клас", priceOnline: Number(priceOnline) + 50, priceOffline: Number(priceOffline) + 50 },
+          { label: "10-11 клас, ЗНО", priceOnline: Number(priceOnline) + 100, priceOffline: Number(priceOffline) + 100 }
+        ]
 
       setSubjectsDetails([...subjectsDetails, {
         subject: newSubject,
@@ -150,13 +150,13 @@ export function TutorProfilePage() {
 
     setSubjectsDetails(prev => prev.map(s => {
       if (s.subject !== subjectName) return s;
-      
+
       // Check if level already exists
       if (s.levels.some(l => l.label === levelName)) {
         toast({ title: "Помилка", description: "Такий рівень вже існує", variant: "destructive" })
         return s;
       }
-      
+
       return {
         ...s,
         levels: [...s.levels, { label: levelName, priceOnline: Number(priceOnline), priceOffline: Number(priceOffline) }]
@@ -193,9 +193,12 @@ export function TutorProfilePage() {
 
   const getDefaultSubjects = (spec: SpecialistType) => {
     switch (spec) {
-      case "psychologist": return ["Підліткова психологія", "Сімейні консультації"]
-      case "speech-therapist": return ["Логопедія", "Корекція мовлення"]
-      default: return ["Англійська мова", "Німецька мова"]
+      case "psychologist":
+        return ["Підліткова психологія", "Сімейні консультації"]
+      case "speech-therapist":
+        return ["Логопедія", "Корекція мовлення"]
+      default:
+        return ["Англійська мова", "Німецька мова"]
     }
   }
 
@@ -250,13 +253,15 @@ export function TutorProfilePage() {
           <Card className="border-slate-200/80 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[24px]">
             <CardHeader>
               <CardTitle className="text-[20px] font-bold text-[#121117]">Фото профілю</CardTitle>
-              <CardDescription className="text-[#69686f] text-[14px]">Додайте професійне фото для вашого профілю</CardDescription>
+              <CardDescription className="text-[#69686f] text-[14px]">
+                Додайте професійне фото для вашого профілю
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-6">
                 <Avatar className="h-24 w-24 rounded-[16px]">
                   <AvatarFallback className="text-[28px] font-bold rounded-[16px] bg-[#f0f3f3] text-[#121117]">
-                    {user?.name?.[0] ?? firstName[0] ?? "U"}
+                    {user?.email?.[0] ?? firstName[0] ?? "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="space-y-3">
@@ -275,7 +280,9 @@ export function TutorProfilePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-[20px] font-bold text-[#121117]">Налаштування пошуку</CardTitle>
-                  <CardDescription className="text-[#69686f] text-[14px]">Керуйте видимістю анкети та форматами</CardDescription>
+                  <CardDescription className="text-[#69686f] text-[14px]">
+                    Керуйте видимістю анкети та форматами
+                  </CardDescription>
                 </div>
                 <Search className="h-6 w-6 text-[var(--theme-primary)]" />
               </div>
@@ -284,7 +291,9 @@ export function TutorProfilePage() {
               <div className="flex items-center justify-between p-4 bg-[#f0f3f3] rounded-[12px]">
                 <div className="space-y-1">
                   <Label className="text-[16px] font-[600] text-[#121117]">Активний пошук клієнтів</Label>
-                  <p className="text-[13px] text-[#69686f]">Якщо вимкнено, ваша анкета не відображатиметься в каталозі</p>
+                  <p className="text-[13px] text-[#69686f]">
+                    Якщо вимкнено, ваша анкета не відображатиметься в каталозі
+                  </p>
                 </div>
                 <Switch checked={isSearching} onCheckedChange={setIsSearching} />
               </div>
@@ -294,7 +303,9 @@ export function TutorProfilePage() {
                   <div className="flex items-center justify-between p-4 border border-slate-200 rounded-[12px]">
                     <div className="space-y-1">
                       <Label className="text-[15px] font-[600] text-[#121117]">Парні заняття</Label>
-                      <p className="text-[13px] text-[#69686f]">Готові проводити заняття для 2 учнів одночасно</p>
+                      <p className="text-[13px] text-[#69686f]">
+                        Готові проводити заняття для 2 учнів одночасно
+                      </p>
                     </div>
                     <Switch checked={pairLessons} onCheckedChange={setPairLessons} />
                   </div>
@@ -302,8 +313,12 @@ export function TutorProfilePage() {
                   <div className="space-y-4 p-4 border border-slate-200 rounded-[12px]">
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
-                        <Label className="text-[15px] font-[600] text-[#121117]">Програми інших країн</Label>
-                        <p className="text-[13px] text-[#69686f]">Готові викладати за програмою інших країн</p>
+                        <Label className="text-[15px] font-[600] text-[#121117]">
+                          Програми інших країн
+                        </Label>
+                        <p className="text-[13px] text-[#69686f]">
+                          Готові викладати за програмою інших країн
+                        </p>
                       </div>
                       <Switch checked={foreignProgram} onCheckedChange={setForeignProgram} />
                     </div>
@@ -340,21 +355,52 @@ export function TutorProfilePage() {
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-[14px] font-[600]">Ім'я</Label>
-                  <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-[44px] rounded-[8px]" />
+                  <Label htmlFor="firstName" className="text-[14px] font-[600]">
+                    Ім'я
+                  </Label>
+                  <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="h-[44px] rounded-[8px]"
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-[14px] font-[600]">Прізвище</Label>
-                  <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-[44px] rounded-[8px]" />
+                  <Label htmlFor="lastName" className="text-[14px] font-[600]">
+                    Прізвище
+                  </Label>
+                  <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="h-[44px] rounded-[8px]"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-[14px] font-[600]">Email</Label>
-                <Input id="email" type="email" defaultValue={user?.email} disabled className="h-[44px] rounded-[8px] bg-slate-50" />
+                <Label htmlFor="email" className="text-[14px] font-[600]">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  defaultValue={user?.email}
+                  disabled
+                  className="h-[44px] rounded-[8px] bg-slate-50"
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-[14px] font-[600]">Телефон</Label>
-                <Input id="phone" type="tel" placeholder="+380 XX XXX XX XX" value={phone} onChange={(e) => setPhone(e.target.value)} className="h-[44px] rounded-[8px]" />
+                <Label htmlFor="phone" className="text-[14px] font-[600]">
+                  Телефон
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+380 XX XXX XX XX"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="h-[44px] rounded-[8px]"
+                />
               </div>
             </CardContent>
           </Card>
@@ -362,12 +408,19 @@ export function TutorProfilePage() {
           <Card className="border-slate-200/80 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[24px]">
             <CardHeader>
               <CardTitle className="text-[20px] font-bold text-[#121117]">Професійна інформація</CardTitle>
-              <CardDescription className="text-[#69686f] text-[14px]">Розкажіть про свій досвід та кваліфікацію</CardDescription>
+              <CardDescription className="text-[#69686f] text-[14px]">
+                Розкажіть про свій досвід та кваліфікацію
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="specialization" className="text-[14px] font-[600]">Спеціалізація</Label>
-                <Select value={specialization} onValueChange={(v) => handleSpecializationChange(v as SpecialistType)}>
+                <Label htmlFor="specialization" className="text-[14px] font-[600]">
+                  Спеціалізація
+                </Label>
+                <Select
+                  value={specialization}
+                  onValueChange={(v) => handleSpecializationChange(v as SpecialistType)}
+                >
                   <SelectTrigger id="specialization" className="h-[44px] rounded-[8px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -418,20 +471,37 @@ export function TutorProfilePage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="experience" className="text-[14px] font-[600]">Досвід роботи (років)</Label>
-                <Input id="experience" type="number" value={experience} onChange={(e) => setExperience(e.target.value)} className="h-[44px] rounded-[8px]" />
+                <Label htmlFor="experience" className="text-[14px] font-[600]">
+                  Досвід роботи (років)
+                </Label>
+                <Input
+                  id="experience"
+                  type="number"
+                  value={experience}
+                  onChange={(e) => setExperience(e.target.value)}
+                  className="h-[44px] rounded-[8px]"
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="education" className="text-[14px] font-[600]">Освіта</Label>
-                <Textarea id="education" placeholder="Вкажіть вашу освіту, сертифікати, курси..." value={education} onChange={(e) => setEducation(e.target.value)} rows={3} className="rounded-[8px] resize-none" />
+                <Label htmlFor="education" className="text-[14px] font-[600]">
+                  Освіта
+                </Label>
+                <Textarea
+                  id="education"
+                  placeholder="Вкажіть вашу освіту, сертифікати, курси..."
+                  value={education}
+                  onChange={(e) => setEducation(e.target.value)}
+                  rows={3}
+                  className="rounded-[8px] resize-none"
+                />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio" className="text-[14px] font-[600]">Про себе</Label>
                 <Textarea id="bio" placeholder="Розкажіть про себе, свій підхід до навчання..." value={bio} onChange={(e) => setBio(e.target.value)} rows={5} className="rounded-[8px] resize-none" />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="methods" className="text-[14px] font-[600]">Методики викладання</Label>
                 <Textarea id="methods" placeholder="Опишіть методики, які ви використовуєте..." value={methods} onChange={(e) => setMethods(e.target.value)} rows={3} className="rounded-[8px] resize-none" />
@@ -518,7 +588,7 @@ export function TutorProfilePage() {
                           {subject.levels.map((level) => (
                             <div key={level.label} className="grid grid-cols-4 gap-2 items-center px-3 sm:px-4 py-3 text-[13px] sm:text-[14px] group">
                               <div className="flex items-center gap-1">
-                                <button 
+                                <button
                                   onClick={() => handleRemoveLevel(subject.subject, level.label)}
                                   className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-red-500 transition-all rounded-md hover:bg-red-50 -ml-2"
                                   title="Видалити рівень"
@@ -528,9 +598,9 @@ export function TutorProfilePage() {
                                 <span className="font-medium text-slate-800 pr-2 leading-tight">{level.label}</span>
                               </div>
                               <div className="flex items-center gap-1">
-                                <Input 
-                                  type="number" 
-                                  value={level.priceOnline || ""} 
+                                <Input
+                                  type="number"
+                                  value={level.priceOnline || ""}
                                   onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "priceOnline", e.target.value)}
                                   className="h-8 w-16 px-2 py-1 text-sm"
                                   placeholder="---"
@@ -538,9 +608,9 @@ export function TutorProfilePage() {
                                 <span className="text-xs text-slate-400">₴</span>
                               </div>
                               <div className="flex items-center gap-1">
-                                <Input 
-                                  type="number" 
-                                  value={level.priceOffline || ""} 
+                                <Input
+                                  type="number"
+                                  value={level.priceOffline || ""}
                                   onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "priceOffline", e.target.value)}
                                   className="h-8 w-16 px-2 py-1 text-sm"
                                   placeholder="---"
@@ -548,9 +618,9 @@ export function TutorProfilePage() {
                                 <span className="text-xs text-slate-400">₴</span>
                               </div>
                               <div className="flex items-center gap-1">
-                                <Input 
-                                  type="number" 
-                                  value={level.groupPrice || ""} 
+                                <Input
+                                  type="number"
+                                  value={level.groupPrice || ""}
                                   onChange={(e) => handleLevelPriceChange(subject.subject, level.label, "groupPrice", e.target.value)}
                                   className="h-8 w-16 px-2 py-1 text-sm"
                                   disabled={!subject.groupAvailable}
@@ -588,19 +658,27 @@ export function TutorProfilePage() {
           <Card className="border-slate-200/80 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[24px]">
             <CardHeader>
               <CardTitle className="text-[20px] font-bold text-[#121117]">Документи</CardTitle>
-              <CardDescription className="text-[#69686f] text-[14px]">Завантажте документи для верифікації</CardDescription>
+              <CardDescription className="text-[#69686f] text-[14px]">
+                Завантажте документи для верифікації
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label className="text-[14px] font-[600]">Диплом про освіту</Label>
-                <Button variant="outline" className="w-full h-[48px] rounded-[8px] border-2 border-slate-200 text-[#121117] font-[600] hover:bg-slate-50">
+                <Button
+                  variant="outline"
+                  className="w-full h-[48px] rounded-[8px] border-2 border-slate-200 text-[#121117] font-[600] hover:bg-slate-50"
+                >
                   <Upload className="mr-2 h-4 w-4" />
                   Завантажити диплом
                 </Button>
               </div>
               <div className="space-y-2">
                 <Label className="text-[14px] font-[600]">Сертифікати</Label>
-                <Button variant="outline" className="w-full h-[48px] rounded-[8px] border-2 border-slate-200 text-[#121117] font-[600] hover:bg-slate-50">
+                <Button
+                  variant="outline"
+                  className="w-full h-[48px] rounded-[8px] border-2 border-slate-200 text-[#121117] font-[600] hover:bg-slate-50"
+                >
                   <Upload className="mr-2 h-4 w-4" />
                   Завантажити сертифікати
                 </Button>
@@ -614,7 +692,9 @@ export function TutorProfilePage() {
                 <Users className="h-5 w-5" />
                 Реферальна програма
               </CardTitle>
-              <CardDescription className="text-[var(--theme-primary-dark)]/80 text-[14px]">Запрошуйте колег та отримуйте бонуси</CardDescription>
+              <CardDescription className="text-[var(--theme-primary-dark)]/80 text-[14px]">
+                Запрошуйте колег та отримуйте бонуси
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
               {/* Referral Link */}
@@ -629,7 +709,9 @@ export function TutorProfilePage() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      navigator.clipboard.writeText(`https://libitum.education/ref/tutor/${user?.id || "specialist-1"}`)
+                      navigator.clipboard.writeText(
+                        `https://libitum.education/ref/tutor/${user?.id || "specialist-1"}`,
+                      )
                       toast({ title: "Посилання скопійовано", description: "Поділіться ним з колегами" })
                     }}
                     className="h-[44px] rounded-[8px] border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary-light)] font-[600]"
@@ -638,7 +720,8 @@ export function TutorProfilePage() {
                   </Button>
                 </div>
                 <p className="text-[13px] text-[#69686f]">
-                  Поділіться цим посиланням з колегами-репетиторами. Ви отримаєте XP бонус після їх реєстрації та першого заняття.
+                  Поділіться цим посиланням з колегами-репетиторами. Ви отримаєте XP бонус після їх реєстрації
+                  та першого заняття.
                 </p>
               </div>
 

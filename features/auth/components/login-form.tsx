@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { UserRoles } from "@/graphql/generated/graphql"
+import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -17,18 +18,18 @@ import {
 } from "@/components/ui/form"
 import { GoogleIcon } from "@/components/icons/google-icon"
 import { Input } from "@/components/ui/input"
-import { type LoginFormValues, loginSchema } from "@/features/auth/schemas/login.schema"
-import { useAuth } from "@/lib/hooks/use-auth"
 
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { type LoginFormValues, loginSchema } from "@/features/auth/lib/schemas/login.schema"
+
+import { useAuthContext } from "../context/auth-context"
 import { useForm } from "react-hook-form"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 export function LoginForm() {
-    const { login, loginWithGoogle } = useAuth()
+    const { handleLoginWithEmailAndPassword, handleOauth, requestOAuthUrlLoading } = useAuthContext()
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
     const [serverError, setServerError] = useState<string | null>(null)
-    const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
@@ -46,24 +47,19 @@ export function LoginForm() {
     async function onSubmit(values: LoginFormValues) {
         setServerError(null)
         try {
-            await login(values.email, values.password)
+            await handleLoginWithEmailAndPassword(values.email, values.password)
             router.push("/")
         } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Невірний email або пароль. Спробуйте ще раз."
+            const message = error instanceof Error ? error.message : "Невірний email або пароль. Спробуйте ще раз."
             setServerError(message)
         }
     }
 
     async function handleGoogleLogin() {
-        setIsGoogleLoading(true)
         try {
-            await loginWithGoogle()
+            await handleOauth(UserRoles.Student)
         } catch {
             setServerError("Не вдалося підключити Google. Спробуйте пізніше.")
-            setIsGoogleLoading(false)
         }
     }
 
@@ -106,10 +102,7 @@ export function LoginForm() {
                         <FormItem>
                             <div className="flex items-center justify-between">
                                 <FormLabel className="text-[14px] font-[600] text-[#121117]">Пароль</FormLabel>
-                                <Link
-                                    href="/forgot-password"
-                                    className="text-[13px] font-[600] text-[#009688] hover:underline"
-                                >
+                                <Link href="/forgot-password" className="text-[13px] font-[600] text-[#009688] hover:underline">
                                     Забули пароль?
                                 </Link>
                             </div>
@@ -128,11 +121,7 @@ export function LoginForm() {
                                         className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
                                         aria-label={showPassword ? "Приховати пароль" : "Показати пароль"}
                                     >
-                                        {showPassword ? (
-                                            <EyeOff className="h-4 w-4" />
-                                        ) : (
-                                            <Eye className="h-4 w-4" />
-                                        )}
+                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                     </button>
                                 </div>
                             </FormControl>
@@ -191,11 +180,11 @@ export function LoginForm() {
                 <Button
                     type="button"
                     variant="outline"
-                    disabled={isGoogleLoading}
+                    disabled={requestOAuthUrlLoading}
                     onClick={handleGoogleLogin}
                     className="h-[52px] w-full rounded-[12px] border-slate-200 bg-white font-medium text-slate-700 hover:bg-slate-50 text-[15px] cursor-pointer"
                 >
-                    {isGoogleLoading ? (
+                    {requestOAuthUrlLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                         <GoogleIcon className="mr-2 h-5 w-5" />

@@ -1,544 +1,637 @@
 "use client"
 
+import { useToast } from "@/hooks/use-toast"
+import { Pencil, Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Plus, Pencil, Trash2 } from "lucide-react"
-import { useDictionaryStore, type Subject, type Level } from "@/lib/dictionary-store"
-import { useToast } from "@/hooks/use-toast"
+
+import { type Level, type Subject, useDictionaryStore } from "@/lib/dictionary-store"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function AdminDictionariesPage() {
-  const {
-    subjects,
-    cities,
-    addSubject,
-    updateSubject,
-    toggleSubjectStatus,
-    addLevel,
-    updateLevel,
-    removeLevel,
-    addCity,
-    toggleCityStatus,
-  } = useDictionaryStore()
-  const { toast } = useToast()
+    const {
+        subjects,
+        cities,
+        addSubject,
+        updateSubject,
+        toggleSubjectStatus,
+        addLevel,
+        updateLevel,
+        removeLevel,
+        addCity,
+        toggleCityStatus,
+    } = useDictionaryStore()
+    const { toast } = useToast()
 
-  const [isSubjectDialogOpen, setIsSubjectDialogOpen] = useState(false)
-  const [editingSubject, setEditingSubject] = useState<Subject | null>(null)
-  const [subjectForm, setSubjectForm] = useState({
-    name: "",
-    slug: "",
-    defaultBasePrice: 250,
-    defaultMinPrice: 150,
-    defaultStepValue: 10,
-  })
-
-  const [isLevelDialogOpen, setIsLevelDialogOpen] = useState(false)
-  const [editingLevel, setEditingLevel] = useState<{ subjectId: string; level: Level | null } | null>(null)
-  const [levelForm, setLevelForm] = useState({
-    label: "",
-    basePrice: 0,
-    minPrice: 0,
-    stepValue: 0,
-  })
-
-  const [newCityName, setNewCityName] = useState("")
-  const [newCitySlug, setNewCitySlug] = useState("")
-
-  const handleOpenSubjectDialog = (subject?: Subject) => {
-    if (subject) {
-      setEditingSubject(subject)
-      setSubjectForm({
-        name: subject.name,
-        slug: subject.slug,
-        defaultBasePrice: subject.defaultBasePrice,
-        defaultMinPrice: subject.defaultMinPrice,
-        defaultStepValue: subject.defaultStepValue,
-      })
-    } else {
-      setEditingSubject(null)
-      setSubjectForm({
+    const [isSubjectDialogOpen, setIsSubjectDialogOpen] = useState(false)
+    const [editingSubject, setEditingSubject] = useState<Subject | null>(null)
+    const [subjectForm, setSubjectForm] = useState({
         name: "",
         slug: "",
         defaultBasePrice: 250,
         defaultMinPrice: 150,
         defaultStepValue: 10,
-      })
-    }
-    setIsSubjectDialogOpen(true)
-  }
+    })
 
-  const handleSaveSubject = () => {
-    if (!subjectForm.name || !subjectForm.slug) return
-
-    if (editingSubject) {
-      updateSubject(editingSubject.id, subjectForm)
-      toast({ title: "Предмет оновлено" })
-    } else {
-      addSubject({ ...subjectForm, status: "active" })
-      toast({ title: "Предмет створено" })
-    }
-    setIsSubjectDialogOpen(false)
-  }
-
-  const handleOpenLevelDialog = (subjectId: string, level?: Level) => {
-    const subject = subjects.find((item) => item.id === subjectId)
-    if (!subject) return
-
-    if (level) {
-      setEditingLevel({ subjectId, level })
-      setLevelForm({
-        label: level.label,
-        basePrice: level.basePrice,
-        minPrice: level.minPrice,
-        stepValue: level.stepValue,
-      })
-    } else {
-      setEditingLevel({ subjectId, level: null })
-      setLevelForm({
+    const [isLevelDialogOpen, setIsLevelDialogOpen] = useState(false)
+    const [editingLevel, setEditingLevel] = useState<{ subjectId: string; level: Level | null } | null>(null)
+    const [levelForm, setLevelForm] = useState({
         label: "",
-        basePrice: subject.defaultBasePrice,
-        minPrice: subject.defaultMinPrice,
-        stepValue: subject.defaultStepValue,
-      })
+        basePrice: 0,
+        minPrice: 0,
+        stepValue: 0,
+    })
+
+    const [newCityName, setNewCityName] = useState("")
+    const [newCitySlug, setNewCitySlug] = useState("")
+
+    const handleOpenSubjectDialog = (subject?: Subject) => {
+        if (subject) {
+            setEditingSubject(subject)
+            setSubjectForm({
+                name: subject.name,
+                slug: subject.slug,
+                defaultBasePrice: subject.defaultBasePrice,
+                defaultMinPrice: subject.defaultMinPrice,
+                defaultStepValue: subject.defaultStepValue,
+            })
+        } else {
+            setEditingSubject(null)
+            setSubjectForm({
+                name: "",
+                slug: "",
+                defaultBasePrice: 250,
+                defaultMinPrice: 150,
+                defaultStepValue: 10,
+            })
+        }
+        setIsSubjectDialogOpen(true)
     }
-    setIsLevelDialogOpen(true)
-  }
 
-  const handleSaveLevel = () => {
-    if (!editingLevel || !levelForm.label) return
+    const handleSaveSubject = () => {
+        if (!subjectForm.name || !subjectForm.slug) return
 
-    if (editingLevel.level) {
-      updateLevel(editingLevel.subjectId, editingLevel.level.id, levelForm)
-      toast({ title: "Рівень оновлено" })
-    } else {
-      addLevel(editingLevel.subjectId, levelForm)
-      toast({ title: "Рівень додано" })
+        if (editingSubject) {
+            updateSubject(editingSubject.id, subjectForm)
+            toast({ title: "Предмет оновлено" })
+        } else {
+            addSubject({ ...subjectForm, status: "active" })
+            toast({ title: "Предмет створено" })
+        }
+        setIsSubjectDialogOpen(false)
     }
-    setIsLevelDialogOpen(false)
-  }
 
-  const handleDeleteLevel = (subjectId: string, levelId: string) => {
-    if (confirm("Ви впевнені, що хочете видалити цей рівень?")) {
-      removeLevel(subjectId, levelId)
-      toast({ title: "Рівень видалено" })
+    const handleOpenLevelDialog = (subjectId: string, level?: Level) => {
+        const subject = subjects.find((item) => item.id === subjectId)
+        if (!subject) return
+
+        if (level) {
+            setEditingLevel({ subjectId, level })
+            setLevelForm({
+                label: level.label,
+                basePrice: level.basePrice,
+                minPrice: level.minPrice,
+                stepValue: level.stepValue,
+            })
+        } else {
+            setEditingLevel({ subjectId, level: null })
+            setLevelForm({
+                label: "",
+                basePrice: subject.defaultBasePrice,
+                minPrice: subject.defaultMinPrice,
+                stepValue: subject.defaultStepValue,
+            })
+        }
+        setIsLevelDialogOpen(true)
     }
-  }
 
-  const handleAddCity = () => {
-    if (!newCityName || !newCitySlug) return
-    addCity({ name: newCityName, slug: newCitySlug, status: "active" })
-    setNewCityName("")
-    setNewCitySlug("")
-    toast({ title: "Місто додано" })
-  }
+    const handleSaveLevel = () => {
+        if (!editingLevel || !levelForm.label) return
 
-  return (
-    <ProtectedRoute allowedRoles={["admin"]}>
-      <SidebarLayout userType="admin">
-        <div className="container mx-auto max-w-5xl space-y-8 p-8 font-sans">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-[700] text-[#121117]">Довідники та Тарифи</h1>
-            <p className="text-[15px] font-[500] text-[#69686f]">
-              Налаштування предметів, рівнів підготовки та базових тарифів для аукціону лідів.
-            </p>
-          </div>
+        if (editingLevel.level) {
+            updateLevel(editingLevel.subjectId, editingLevel.level.id, levelForm)
+            toast({ title: "Рівень оновлено" })
+        } else {
+            addLevel(editingLevel.subjectId, levelForm)
+            toast({ title: "Рівень додано" })
+        }
+        setIsLevelDialogOpen(false)
+    }
 
-          <Tabs defaultValue="subjects" className="w-full">
-            <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 grid w-full grid-cols-2 md:grid-cols-5 mb-6 h-auto md:h-[48px] gap-1">
-              <TabsTrigger value="subjects" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Предмети / Ціни</TabsTrigger>
-              <TabsTrigger value="cities" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Міста</TabsTrigger>
-              <TabsTrigger value="efficiency" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Efficiency Score</TabsTrigger>
-              <TabsTrigger value="seo" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">SEO</TabsTrigger>
-              <TabsTrigger value="config" className="col-span-2 md:col-span-1 rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Конфіг</TabsTrigger>
-            </TabsList>
+    const handleDeleteLevel = (subjectId: string, levelId: string) => {
+        if (confirm("Ви впевнені, що хочете видалити цей рівень?")) {
+            removeLevel(subjectId, levelId)
+            toast({ title: "Рівень видалено" })
+        }
+    }
 
-            <TabsContent value="subjects" className="space-y-4 pt-4">
-              <div className="flex justify-end">
-                <Button
-                  onClick={() => handleOpenSubjectDialog()}
-                  className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]"
-                >
-                  <Plus className="mr-2 h-4 w-4" /> Додати предмет
-                </Button>
-              </div>
+    const handleAddCity = () => {
+        if (!newCityName || !newCitySlug) return
+        addCity({ name: newCityName, slug: newCitySlug, status: "active" })
+        setNewCityName("")
+        setNewCitySlug("")
+        toast({ title: "Місто додано" })
+    }
 
-              <div className="grid gap-4">
-                {subjects.map((subject) => (
-                  <Card
-                    key={subject.id}
-                    className="overflow-hidden rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 bg-[#f0f3f3]/50 p-4">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 font-[700] text-[#121117] text-lg">
-                          {subject.name[0]}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="font-[700] text-[18px] text-[#121117] break-words">{subject.name}</h3>
-                          <div className="flex flex-wrap items-center gap-2 text-[13px] font-[500] text-[#69686f] mt-1">
-                            <span className="font-mono bg-white border border-slate-200/80 px-2 py-0.5 rounded-[6px] text-[#121117] font-[600]">
-                              {subject.slug}
-                            </span>
-                            <span className="hidden sm:inline">•</span>
-                            <span>Базова: {subject.defaultBasePrice} грн</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0">
-                        <Switch
-                          checked={subject.status === "active"}
-                          onCheckedChange={() => toggleSubjectStatus(subject.id)}
-                          className="data-[state=checked]:bg-[#00c5a6]"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleOpenSubjectDialog(subject)}
-                          className="h-9 w-9 text-[#69686f] hover:text-[#00c5a6] hover:bg-[#e8fffb] rounded-[8px] shrink-0"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </div>
+    return (
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
+            <SidebarLayout userType="admin">
+                <div className="container mx-auto max-w-5xl space-y-8 p-8 font-sans">
+                    <div className="space-y-1">
+                        <h1 className="text-3xl font-[700] text-[#121117]">Довідники та Тарифи</h1>
+                        <p className="text-[15px] font-[500] text-[#69686f]">
+                            Налаштування предметів, рівнів підготовки та базових тарифів для аукціону лідів.
+                        </p>
                     </div>
 
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="levels" className="border-0">
-                        <AccordionTrigger className="px-5 py-4 text-[14px] font-[600] text-[#69686f] hover:text-[#00c5a6] hover:bg-slate-50 hover:no-underline transition-colors">
-                          <span>Рівні підготовки ({subject.levels.length})</span>
-                        </AccordionTrigger>
-                        <AccordionContent className="px-5 pb-5 pt-0">
-                          <div className="rounded-[16px] border border-slate-200/80 bg-white overflow-hidden shadow-sm">
-                            <div className="grid grid-cols-12 gap-2 border-b border-slate-200/80 bg-[#f0f3f3]/50 px-4 py-3 text-[12px] font-[600] text-[#69686f] uppercase tracking-wide">
-                              <div className="col-span-5">Назва рівня</div>
-                              <div className="col-span-2 text-center">Старт (грн)</div>
-                              <div className="col-span-2 text-center">Мін (грн)</div>
-                              <div className="col-span-2 text-center">Крок (грн)</div>
-                              <div className="col-span-1 text-right">Дії</div>
+                    <Tabs defaultValue="subjects" className="w-full">
+                        <TabsList className="bg-[#f0f3f3] rounded-[12px] p-1 border-0 grid w-full grid-cols-2 md:grid-cols-5 mb-6 h-auto md:h-[48px] gap-1">
+                            <TabsTrigger value="subjects" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Предмети / Ціни</TabsTrigger>
+                            <TabsTrigger value="cities" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Міста</TabsTrigger>
+                            <TabsTrigger value="efficiency" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Efficiency Score</TabsTrigger>
+                            <TabsTrigger value="seo" className="rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">SEO</TabsTrigger>
+                            <TabsTrigger value="config" className="col-span-2 md:col-span-1 rounded-[8px] md:h-full data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm font-[600] text-[#69686f] text-[13px] md:text-[14px] py-2 md:py-0">Конфіг</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="subjects" className="space-y-4 pt-4">
+                            <div className="flex justify-end">
+                                <Button
+                                    onClick={() => handleOpenSubjectDialog()}
+                                    className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]"
+                                >
+                                    <Plus className="mr-2 h-4 w-4" /> Додати предмет
+                                </Button>
                             </div>
-                            {subject.levels.length === 0 ? (
-                              <div className="p-6 text-center text-[14px] font-[500] text-[#69686f]">Рівні ще не додано</div>
-                            ) : (
-                              <div className="divide-y divide-slate-100">
-                                {subject.levels.map((level) => (
-                                  <div
-                                    key={level.id}
-                                    className="grid grid-cols-12 items-center gap-2 px-4 py-3 text-[14px] hover:bg-slate-50 transition-colors"
-                                  >
-                                    <div className="col-span-5 font-[600] text-[#121117]">{level.label}</div>
-                                    <div className="col-span-2 flex justify-center">
-                                      <span className="bg-[#e8fffb] text-[#00a389] px-2 py-0.5 rounded-[6px] font-[600] text-[13px] border border-[#00c5a6]/20">
-                                        {level.basePrice}
-                                      </span>
-                                    </div>
-                                    <div className="col-span-2 text-center font-[500] text-[#69686f]">{level.minPrice}</div>
-                                    <div className="col-span-2 text-center font-[500] text-[#69686f]">{level.stepValue}</div>
-                                    <div className="col-span-1 flex justify-end gap-1">
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 rounded-[8px] text-[#69686f] hover:text-[#00c5a6] hover:bg-[#e8fffb]"
-                                        onClick={() => handleOpenLevelDialog(subject.id, level)}
-                                      >
-                                        <Pencil className="h-4 w-4" />
-                                      </Button>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8 rounded-[8px] text-[#69686f] hover:text-red-600 hover:bg-red-50"
-                                        onClick={() => handleDeleteLevel(subject.id, level.id)}
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                  </div>
+
+                            <div className="grid gap-4">
+                                {subjects.map((subject) => (
+                                    <Card
+                                        key={subject.id}
+                                        className="overflow-hidden rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition-all hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
+                                    >
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 bg-[#f0f3f3]/50 p-4">
+                                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[12px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] border border-slate-200/80 font-[700] text-[#121117] text-lg">
+                                                    {subject.name[0]}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <h3 className="font-[700] text-[18px] text-[#121117] break-words">{subject.name}</h3>
+                                                    <div className="flex flex-wrap items-center gap-2 text-[13px] font-[500] text-[#69686f] mt-1">
+                                                        <span className="font-mono bg-white border border-slate-200/80 px-2 py-0.5 rounded-[6px] text-[#121117] font-[600]">
+                                                            {subject.slug}
+                                                        </span>
+                                                        <span className="hidden sm:inline">•</span>
+                                                        <span>Базова: {subject.defaultBasePrice} грн</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-3 shrink-0">
+                                                <Switch
+                                                    checked={subject.status === "active"}
+                                                    onCheckedChange={() => toggleSubjectStatus(subject.id)}
+                                                    className="data-[state=checked]:bg-[#00c5a6]"
+                                                />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleOpenSubjectDialog(subject)}
+                                                    className="h-9 w-9 text-[#69686f] hover:text-[#00c5a6] hover:bg-[#e8fffb] rounded-[8px] shrink-0"
+                                                >
+                                                    <Pencil className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
+
+                                        <Accordion type="single" collapsible className="w-full">
+                                            <AccordionItem value="levels" className="border-0">
+                                                <AccordionTrigger className="px-5 py-4 text-[14px] font-[600] text-[#69686f] hover:text-[#00c5a6] hover:bg-slate-50 hover:no-underline transition-colors">
+                                                    <span>Рівні підготовки ({subject.levels.length})</span>
+                                                </AccordionTrigger>
+                                                <AccordionContent className="px-5 pb-5 pt-0">
+                                                    <div className="rounded-[16px] border border-slate-200/80 bg-white overflow-hidden shadow-sm">
+                                                        <div className="grid grid-cols-12 gap-2 border-b border-slate-200/80 bg-[#f0f3f3]/50 px-4 py-3 text-[12px] font-[600] text-[#69686f] uppercase tracking-wide">
+                                                            <div className="col-span-5">Назва рівня</div>
+                                                            <div className="col-span-2 text-center">Старт (грн)</div>
+                                                            <div className="col-span-2 text-center">Мін (грн)</div>
+                                                            <div className="col-span-2 text-center">Крок (грн)</div>
+                                                            <div className="col-span-1 text-right">Дії</div>
+                                                        </div>
+                                                        {subject.levels.length === 0 ? (
+                                                            <div className="p-6 text-center text-[14px] font-[500] text-[#69686f]">
+                                                                Рівні ще не додано
+                                                            </div>
+                                                        ) : (
+                                                            <div className="divide-y divide-slate-100">
+                                                                {subject.levels.map((level) => (
+                                                                    <div
+                                                                        key={level.id}
+                                                                        className="grid grid-cols-12 items-center gap-2 px-4 py-3 text-[14px] hover:bg-slate-50 transition-colors"
+                                                                    >
+                                                                        <div className="col-span-5 font-[600] text-[#121117]">
+                                                                            {level.label}
+                                                                        </div>
+                                                                        <div className="col-span-2 flex justify-center">
+                                                                            <span className="bg-[#e8fffb] text-[#00a389] px-2 py-0.5 rounded-[6px] font-[600] text-[13px] border border-[#00c5a6]/20">
+                                                                                {level.basePrice}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div className="col-span-2 text-center font-[500] text-[#69686f]">
+                                                                            {level.minPrice}
+                                                                        </div>
+                                                                        <div className="col-span-2 text-center font-[500] text-[#69686f]">
+                                                                            {level.stepValue}
+                                                                        </div>
+                                                                        <div className="col-span-1 flex justify-end gap-1">
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 rounded-[8px] text-[#69686f] hover:text-[#00c5a6] hover:bg-[#e8fffb]"
+                                                                                onClick={() =>
+                                                                                    handleOpenLevelDialog(subject.id, level)
+                                                                                }
+                                                                            >
+                                                                                <Pencil className="h-4 w-4" />
+                                                                            </Button>
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 rounded-[8px] text-[#69686f] hover:text-red-600 hover:bg-red-50"
+                                                                                onClick={() =>
+                                                                                    handleDeleteLevel(subject.id, level.id)
+                                                                                }
+                                                                            >
+                                                                                <Trash2 className="h-4 w-4" />
+                                                                            </Button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                        <div className="border-t border-slate-200/80 p-3 bg-[#f0f3f3]/30">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="w-full justify-center text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] rounded-[8px]"
+                                                                onClick={() => handleOpenLevelDialog(subject.id)}
+                                                            >
+                                                                <Plus className="mr-2 h-4 w-4" /> Додати рівень
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        </Accordion>
+                                    </Card>
                                 ))}
-                              </div>
-                            )}
-                            <div className="border-t border-slate-200/80 p-3 bg-[#f0f3f3]/30">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="w-full justify-center text-[#121117] font-[600] hover:text-[#00c5a6] hover:bg-[#e8fffb] rounded-[8px]"
-                                onClick={() => handleOpenLevelDialog(subject.id)}
-                              >
-                                <Plus className="mr-2 h-4 w-4" /> Додати рівень
-                              </Button>
                             </div>
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
+                        </TabsContent>
 
-            <TabsContent value="cities" className="space-y-4 pt-4">
-              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                <CardHeader>
-                  <CardTitle className="text-xl font-[700] text-[#121117]">Список міст</CardTitle>
-                  <CardDescription className="text-[#69686f] font-[500]">Керуйте доступністю міст у каталозі.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {cities.map((city) => (
-                    <div
-                      key={city.slug}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow"
-                    >
-                      <div>
-                        <div className="text-[16px] font-[700] text-[#121117]">{city.name}</div>
-                        <div className="text-[13px] font-[500] text-[#69686f] font-mono mt-1 bg-[#f0f3f3] px-2 py-0.5 rounded-[6px] inline-block border border-slate-200">slug: {city.slug}</div>
-                      </div>
-                      <Switch
-                        checked={city.status === "active"}
-                        onCheckedChange={() => toggleCityStatus(city.id)}
-                        className="data-[state=checked]:bg-[#00c5a6]"
-                      />
-                    </div>
-                  ))}
-                  <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] mt-6 bg-[#f0f3f3]/50 p-4 rounded-[16px] border border-slate-200/80">
-                    <Input
-                      placeholder="Назва міста"
-                      value={newCityName}
-                      onChange={(event) => setNewCityName(event.target.value)}
-                      className="rounded-[8px] border-slate-200/80 bg-white focus-visible:ring-[#00c5a6]"
-                    />
-                    <Input
-                      placeholder="Slug (ukr-lat)"
-                      value={newCitySlug}
-                      onChange={(event) => setNewCitySlug(event.target.value)}
-                      className="rounded-[8px] border-slate-200/80 bg-white focus-visible:ring-[#00c5a6]"
-                    />
-                    <Button onClick={handleAddCity} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
-                      Додати місто
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                        <TabsContent value="cities" className="space-y-4 pt-4">
+                            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-[700] text-[#121117]">Список міст</CardTitle>
+                                    <CardDescription className="text-[#69686f] font-[500]">Керуйте доступністю міст у каталозі.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-3">
+                                    {cities.map((city) => (
+                                        <div
+                                            key={city.slug}
+                                            className="flex flex-wrap items-center justify-between gap-2 rounded-[16px] border border-slate-200/80 bg-white p-4 shadow-sm hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] transition-shadow"
+                                        >
+                                            <div>
+                                                <div className="text-[16px] font-[700] text-[#121117]">{city.name}</div>
+                                                <div className="text-[13px] font-[500] text-[#69686f] font-mono mt-1 bg-[#f0f3f3] px-2 py-0.5 rounded-[6px] inline-block border border-slate-200">slug: {city.slug}</div>
+                                            </div>
+                                            <Switch
+                                                checked={city.status === "active"}
+                                                onCheckedChange={() => toggleCityStatus(city.id)}
+                                                className="data-[state=checked]:bg-[#00c5a6]"
+                                            />
+                                        </div>
+                                    ))}
+                                    <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] mt-6 bg-[#f0f3f3]/50 p-4 rounded-[16px] border border-slate-200/80">
+                                        <Input
+                                            placeholder="Назва міста"
+                                            value={newCityName}
+                                            onChange={(event) => setNewCityName(event.target.value)}
+                                            className="rounded-[8px] border-slate-200/80 bg-white focus-visible:ring-[#00c5a6]"
+                                        />
+                                        <Input
+                                            placeholder="Slug (ukr-lat)"
+                                            value={newCitySlug}
+                                            onChange={(event) => setNewCitySlug(event.target.value)}
+                                            className="rounded-[8px] border-slate-200/80 bg-white focus-visible:ring-[#00c5a6]"
+                                        />
+                                        <Button onClick={handleAddCity} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
+                                            Додати місто
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
-            <TabsContent value="efficiency" className="space-y-4 pt-4">
-              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                <CardHeader>
-                  <CardTitle className="text-xl font-[700] text-[#121117]">Ваги Efficiency Score</CardTitle>
-                  <CardDescription className="text-[#69686f] font-[500]">Налаштування коефіцієнтів впливу різних метрик на загальний рейтинг репетитора.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[
-                    { label: "Конверсія з пробних у постійні", weight: 30, desc: "Найважливіший показник, який демонструє здатність утримати учня." },
-                    { label: "Середній рейтинг (відгуки)", weight: 25, desc: "Оцінки від учнів та батьків після завершення занять." },
-                    { label: "Швидкість відповіді на заявки", weight: 15, desc: "Час, за який репетитор реагує на нові призначення." },
-                    { label: "Кількість активних учнів", weight: 10, desc: "Загальне навантаження фахівця на платформі." },
-                    { label: "Відсоток перевірених ДЗ", weight: 10, desc: "Дисципліна ведення журналу та перевірки завдань." },
-                    { label: "Заповненість профілю", weight: 10, desc: "Наявність відео, сертифікатів та детального опису." },
-                  ].map((metric, idx) => (
-                    <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-slate-200/80 rounded-[16px] hover:bg-slate-50/50 transition-colors">
-                      <div className="flex-1">
-                        <div className="font-[600] text-[#121117] text-[16px]">{metric.label}</div>
-                        <div className="text-[13px] text-[#69686f] font-[500] mt-1">{metric.desc}</div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Input type="number" defaultValue={metric.weight} className="w-20 text-center font-[600] text-[#121117]" />
-                        <span className="text-[#69686f] font-[500]">%</span>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  <div className="bg-amber-50 border border-amber-200 p-4 rounded-[12px] flex items-center justify-between">
-                    <span className="text-[14px] font-[600] text-amber-800">Загальна сума ваг:</span>
-                    <span className="text-[16px] font-[700] text-amber-800">100%</span>
-                  </div>
+                        <TabsContent value="efficiency" className="space-y-4 pt-4">
+                            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-[700] text-[#121117]">Ваги Efficiency Score</CardTitle>
+                                    <CardDescription className="text-[#69686f] font-[500]">Налаштування коефіцієнтів впливу різних метрик на загальний рейтинг репетитора.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    {[
+                                        { label: "Конверсія з пробних у постійні", weight: 30, desc: "Найважливіший показник, який демонструє здатність утримати учня." },
+                                        { label: "Середній рейтинг (відгуки)", weight: 25, desc: "Оцінки від учнів та батьків після завершення занять." },
+                                        { label: "Швидкість відповіді на заявки", weight: 15, desc: "Час, за який репетитор реагує на нові призначення." },
+                                        { label: "Кількість активних учнів", weight: 10, desc: "Загальне навантаження фахівця на платформі." },
+                                        { label: "Відсоток перевірених ДЗ", weight: 10, desc: "Дисципліна ведення журналу та перевірки завдань." },
+                                        { label: "Заповненість профілю", weight: 10, desc: "Наявність відео, сертифікатів та детального опису." },
+                                    ].map((metric, idx) => (
+                                        <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 border border-slate-200/80 rounded-[16px] hover:bg-slate-50/50 transition-colors">
+                                            <div className="flex-1">
+                                                <div className="font-[600] text-[#121117] text-[16px]">{metric.label}</div>
+                                                <div className="text-[13px] text-[#69686f] font-[500] mt-1">{metric.desc}</div>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <Input type="number" defaultValue={metric.weight} className="w-20 text-center font-[600] text-[#121117]" />
+                                                <span className="text-[#69686f] font-[500]">%</span>
+                                            </div>
+                                        </div>
+                                    ))}
 
-                  <div className="flex justify-end">
-                    <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
-                      Зберегти зміни
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="seo" className="space-y-4 pt-4">
-              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                <CardHeader>
-                  <CardTitle className="text-xl font-[700] text-[#121117]">SEO Налаштування публічних сторінок</CardTitle>
-                  <CardDescription className="text-[#69686f] font-[500]">Керування Meta Title, Description та H1 без залучення розробників.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {[
-                    { page: "Головна", url: "/", title: "Libitum - Платформа для пошуку репетиторів", desc: "Знайдіть найкращого викладача для себе." },
-                    { page: "Каталог", url: "/specialists", title: "Знайти репетитора онлайн | Каталог Libitum", desc: "Сотні перевірених фахівців з різних предметів." },
-                    { page: "Для репетиторів", url: "/for-tutors", title: "Робота репетитором онлайн | Libitum", desc: "Шукаємо викладачів. Чесні умови, гнучкий графік." },
-                  ].map((page, idx) => (
-                    <div key={idx} className="space-y-3 p-4 border border-slate-200/80 rounded-[16px] bg-slate-50/30">
-                      <div className="flex items-center justify-between">
-                        <div className="font-[700] text-[#121117]">{page.page} <span className="text-[#69686f] font-normal ml-2">{page.url}</span></div>
-                      </div>
-                      <div className="grid gap-3">
-                        <div>
-                          <Label className="text-[12px] text-[#69686f] mb-1 block">Meta Title</Label>
-                          <Input defaultValue={page.title} className="bg-white" />
+                                    <div className="bg-amber-50 border border-amber-200 p-4 rounded-[12px] flex items-center justify-between">
+                                        <span className="text-[14px] font-[600] text-amber-800">Загальна сума ваг:</span>
+                                        <span className="text-[16px] font-[700] text-amber-800">100%</span>
+                                    </div>
+
+                                    <div className="flex justify-end">
+                                        <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+                                            Зберегти зміни
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                        <TabsContent value="seo" className="space-y-4 pt-4">
+                            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-[700] text-[#121117]">SEO Налаштування публічних сторінок</CardTitle>
+                                    <CardDescription className="text-[#69686f] font-[500]">Керування Meta Title, Description та H1 без залучення розробників.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    {[
+                                        { page: "Головна", url: "/", title: "Libitum - Платформа для пошуку репетиторів", desc: "Знайдіть найкращого викладача для себе." },
+                                        { page: "Каталог", url: "/specialists", title: "Знайти репетитора онлайн | Каталог Libitum", desc: "Сотні перевірених фахівців з різних предметів." },
+                                        { page: "Для репетиторів", url: "/for-tutors", title: "Робота репетитором онлайн | Libitum", desc: "Шукаємо викладачів. Чесні умови, гнучкий графік." },
+                                    ].map((page, idx) => (
+                                        <div key={idx} className="space-y-3 p-4 border border-slate-200/80 rounded-[16px] bg-slate-50/30">
+                                            <div className="flex items-center justify-between">
+                                                <div className="font-[700] text-[#121117]">{page.page} <span className="text-[#69686f] font-normal ml-2">{page.url}</span></div>
+                                            </div>
+                                            <div className="grid gap-3">
+                                                <div>
+                                                    <Label className="text-[12px] text-[#69686f] mb-1 block">Meta Title</Label>
+                                                    <Input defaultValue={page.title} className="bg-white" />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-[12px] text-[#69686f] mb-1 block">Meta Description</Label>
+                                                    <Textarea defaultValue={page.desc} className="bg-white resize-none" rows={2} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <Button className="w-full sm:w-auto rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+                                        Зберегти SEO-дані
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="config" className="space-y-4 pt-4">
+                            <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-[700] text-[#121117]">Бізнес-логіка (JSON Конфіг)</CardTitle>
+                                    <CardDescription className="text-[#69686f] font-[500]">Гнучкі налаштування аукціону, комісій та нарахування XP.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-4">
+                                        <h3 className="font-[600] text-[#121117] text-[16px]">Параметри Зворотного Аукціону</h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                            <div>
+                                                <Label className="text-[12px] text-[#69686f] mb-1 block">Стартова ціна ліда (множник)</Label>
+                                                <Input type="number" defaultValue="2.5" className="bg-white" />
+                                            </div>
+                                            <div>
+                                                <Label className="text-[12px] text-[#69686f] mb-1 block">Крок зниження (%)</Label>
+                                                <Input type="number" defaultValue="10" className="bg-white" />
+                                            </div>
+                                            <div>
+                                                <Label className="text-[12px] text-[#69686f] mb-1 block">Інтервал зниження (год)</Label>
+                                                <Input type="number" defaultValue="1" className="bg-white" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <h3 className="font-[600] text-[#121117] text-[16px]">Нарахування XP та LC</h3>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
+                                                <span className="text-[14px] font-[500]">Перевірка ДЗ (XP)</span>
+                                                <Input type="number" defaultValue="15" className="w-20 bg-white" />
+                                            </div>
+                                            <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
+                                                <span className="text-[14px] font-[500]">Відгук клієнта 5★ (XP)</span>
+                                                <Input type="number" defaultValue="50" className="w-20 bg-white" />
+                                            </div>
+                                            <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
+                                                <span className="text-[14px] font-[500]">Утримання учня 1 міс (LC)</span>
+                                                <Input type="number" defaultValue="100" className="w-20 bg-white" />
+                                            </div>
+                                            <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
+                                                <span className="text-[14px] font-[500]">Підключення Telegram (XP)</span>
+                                                <Input type="number" defaultValue="200" className="w-20 bg-white" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-end">
+                                        <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
+                                            Оновити конфігурацію
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+
+                <Dialog open={isSubjectDialogOpen} onOpenChange={setIsSubjectDialogOpen}>
+                    <DialogContent className="sm:max-w-[500px] rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
+                        <DialogHeader className="pb-4 border-b border-slate-200/80">
+                            <DialogTitle className="text-[24px] font-[700] text-[#121117]">
+                                {editingSubject ? "Редагувати предмет" : "Додати предмет"}
+                            </DialogTitle>
+                            <DialogDescription className="text-[#69686f] font-[500] text-[15px]">
+                                Налаштуйте основні параметри предмету та дефолтні ціни.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Назва</Label>
+                                    <Input
+                                        value={subjectForm.name}
+                                        onChange={(event) => setSubjectForm({ ...subjectForm, name: event.target.value })}
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Slug</Label>
+                                    <Input
+                                        value={subjectForm.slug}
+                                        onChange={(event) => setSubjectForm({ ...subjectForm, slug: event.target.value })}
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Базова ціна</Label>
+                                    <Input
+                                        type="number"
+                                        value={subjectForm.defaultBasePrice}
+                                        onChange={(event) =>
+                                            setSubjectForm({ ...subjectForm, defaultBasePrice: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Мін. ціна</Label>
+                                    <Input
+                                        type="number"
+                                        value={subjectForm.defaultMinPrice}
+                                        onChange={(event) =>
+                                            setSubjectForm({ ...subjectForm, defaultMinPrice: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Крок</Label>
+                                    <Input
+                                        type="number"
+                                        value={subjectForm.defaultStepValue}
+                                        onChange={(event) =>
+                                            setSubjectForm({ ...subjectForm, defaultStepValue: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                          <Label className="text-[12px] text-[#69686f] mb-1 block">Meta Description</Label>
-                          <Textarea defaultValue={page.desc} className="bg-white resize-none" rows={2} />
+                        <DialogFooter className="pt-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsSubjectDialogOpen(false)}
+                                className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]"
+                            >
+                                Скасувати
+                            </Button>
+                            <Button
+                                onClick={handleSaveSubject}
+                                className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]"
+                            >
+                                Зберегти
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog open={isLevelDialogOpen} onOpenChange={setIsLevelDialogOpen}>
+                    <DialogContent className="sm:max-w-[500px] rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
+                        <DialogHeader className="pb-4 border-b border-slate-200/80">
+                            <DialogTitle className="text-[24px] font-[700] text-[#121117]">
+                                {editingLevel?.level ? "Редагувати рівень" : "Додати рівень"}
+                            </DialogTitle>
+                            <DialogDescription className="text-[#69686f] font-[500] text-[15px]">
+                                Вкажіть специфічні ціни для цього рівня підготовки.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                            <div className="space-y-2">
+                                <Label className="text-[#121117] font-[600]">
+                                    Назва рівня (напр. "B2", "Підготовка до ЗНО")
+                                </Label>
+                                <Input
+                                    value={levelForm.label}
+                                    onChange={(event) => setLevelForm({ ...levelForm, label: event.target.value })}
+                                    className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                />
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Стартова ціна</Label>
+                                    <Input
+                                        type="number"
+                                        value={levelForm.basePrice}
+                                        onChange={(event) =>
+                                            setLevelForm({ ...levelForm, basePrice: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Мін. ціна</Label>
+                                    <Input
+                                        type="number"
+                                        value={levelForm.minPrice}
+                                        onChange={(event) =>
+                                            setLevelForm({ ...levelForm, minPrice: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-[#121117] font-[600]">Крок зниження</Label>
+                                    <Input
+                                        type="number"
+                                        value={levelForm.stepValue}
+                                        onChange={(event) =>
+                                            setLevelForm({ ...levelForm, stepValue: Number(event.target.value) })
+                                        }
+                                        className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]"
+                                    />
+                                </div>
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-                  <Button className="w-full sm:w-auto rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
-                    Зберегти SEO-дані
-                  </Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="config" className="space-y-4 pt-4">
-              <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
-                <CardHeader>
-                  <CardTitle className="text-xl font-[700] text-[#121117]">Бізнес-логіка (JSON Конфіг)</CardTitle>
-                  <CardDescription className="text-[#69686f] font-[500]">Гнучкі налаштування аукціону, комісій та нарахування XP.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="space-y-4">
-                    <h3 className="font-[600] text-[#121117] text-[16px]">Параметри Зворотного Аукціону</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div>
-                        <Label className="text-[12px] text-[#69686f] mb-1 block">Стартова ціна ліда (множник)</Label>
-                        <Input type="number" defaultValue="2.5" className="bg-white" />
-                      </div>
-                      <div>
-                        <Label className="text-[12px] text-[#69686f] mb-1 block">Крок зниження (%)</Label>
-                        <Input type="number" defaultValue="10" className="bg-white" />
-                      </div>
-                      <div>
-                        <Label className="text-[12px] text-[#69686f] mb-1 block">Інтервал зниження (год)</Label>
-                        <Input type="number" defaultValue="1" className="bg-white" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <h3 className="font-[600] text-[#121117] text-[16px]">Нарахування XP та LC</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
-                        <span className="text-[14px] font-[500]">Перевірка ДЗ (XP)</span>
-                        <Input type="number" defaultValue="15" className="w-20 bg-white" />
-                      </div>
-                      <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
-                        <span className="text-[14px] font-[500]">Відгук клієнта 5★ (XP)</span>
-                        <Input type="number" defaultValue="50" className="w-20 bg-white" />
-                      </div>
-                      <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
-                        <span className="text-[14px] font-[500]">Утримання учня 1 міс (LC)</span>
-                        <Input type="number" defaultValue="100" className="w-20 bg-white" />
-                      </div>
-                      <div className="flex justify-between items-center p-3 border border-slate-200 rounded-[12px]">
-                        <span className="text-[14px] font-[500]">Підключення Telegram (XP)</span>
-                        <Input type="number" defaultValue="200" className="w-20 bg-white" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">
-                      Оновити конфігурацію
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
-
-        <Dialog open={isSubjectDialogOpen} onOpenChange={setIsSubjectDialogOpen}>
-          <DialogContent className="sm:max-w-[500px] rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
-            <DialogHeader className="pb-4 border-b border-slate-200/80">
-              <DialogTitle className="text-[24px] font-[700] text-[#121117]">{editingSubject ? "Редагувати предмет" : "Додати предмет"}</DialogTitle>
-              <DialogDescription className="text-[#69686f] font-[500] text-[15px]">Налаштуйте основні параметри предмету та дефолтні ціни.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Назва</Label>
-                  <Input value={subjectForm.name} onChange={(event) => setSubjectForm({ ...subjectForm, name: event.target.value })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Slug</Label>
-                  <Input value={subjectForm.slug} onChange={(event) => setSubjectForm({ ...subjectForm, slug: event.target.value })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Базова ціна</Label>
-                  <Input type="number" value={subjectForm.defaultBasePrice} onChange={(event) => setSubjectForm({ ...subjectForm, defaultBasePrice: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Мін. ціна</Label>
-                  <Input type="number" value={subjectForm.defaultMinPrice} onChange={(event) => setSubjectForm({ ...subjectForm, defaultMinPrice: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Крок</Label>
-                  <Input type="number" value={subjectForm.defaultStepValue} onChange={(event) => setSubjectForm({ ...subjectForm, defaultStepValue: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-              </div>
-            </div>
-            <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => setIsSubjectDialogOpen(false)} className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">
-                Скасувати
-              </Button>
-              <Button onClick={handleSaveSubject} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
-                Зберегти
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isLevelDialogOpen} onOpenChange={setIsLevelDialogOpen}>
-          <DialogContent className="sm:max-w-[500px] rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
-            <DialogHeader className="pb-4 border-b border-slate-200/80">
-              <DialogTitle className="text-[24px] font-[700] text-[#121117]">{editingLevel?.level ? "Редагувати рівень" : "Додати рівень"}</DialogTitle>
-              <DialogDescription className="text-[#69686f] font-[500] text-[15px]">Вкажіть специфічні ціни для цього рівня підготовки.</DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="space-y-2">
-                <Label className="text-[#121117] font-[600]">Назва рівня (напр. "B2", "Підготовка до ЗНО")</Label>
-                <Input value={levelForm.label} onChange={(event) => setLevelForm({ ...levelForm, label: event.target.value })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Стартова ціна</Label>
-                  <Input type="number" value={levelForm.basePrice} onChange={(event) => setLevelForm({ ...levelForm, basePrice: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Мін. ціна</Label>
-                  <Input type="number" value={levelForm.minPrice} onChange={(event) => setLevelForm({ ...levelForm, minPrice: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[#121117] font-[600]">Крок зниження</Label>
-                  <Input type="number" value={levelForm.stepValue} onChange={(event) => setLevelForm({ ...levelForm, stepValue: Number(event.target.value) })} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#00c5a6]" />
-                </div>
-              </div>
-            </div>
-            <DialogFooter className="pt-2">
-              <Button variant="outline" onClick={() => setIsLevelDialogOpen(false)} className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">
-                Скасувати
-              </Button>
-              <Button onClick={handleSaveLevel} className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]">
-                Зберегти
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </SidebarLayout>
-    </ProtectedRoute>
-  )
+                        <DialogFooter className="pt-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsLevelDialogOpen(false)}
+                                className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]"
+                            >
+                                Скасувати
+                            </Button>
+                            <Button
+                                onClick={handleSaveLevel}
+                                className="rounded-[8px] bg-[#00c5a6] text-white hover:bg-[#00a389] font-[600] shadow-[0_2px_8px_rgba(0,197,166,0.2)]"
+                            >
+                                Зберегти
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+            </SidebarLayout>
+        </ProtectedRoute>
+    )
 }

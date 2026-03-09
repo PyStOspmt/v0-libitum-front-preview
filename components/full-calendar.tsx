@@ -1,17 +1,20 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { useLessonStore, type Lesson, type CalendarEvent } from "@/lib/lesson-store"
 import { useToast } from "@/hooks/use-toast"
+import { useEffect, useRef, useState } from "react"
+
+import { Card, CardContent } from "@/components/ui/card"
+
+import { useLessonStore, type CalendarEvent, type Lesson } from "@/lib/lesson-store"
+
 import { CalendarHeader } from "./calendar/calendar-header"
-import { MonthView } from "./calendar/month-view"
-import { WeekView } from "./calendar/week-view"
 import { DayView } from "./calendar/day-view"
+import { EventDialogs, type EventFormData } from "./calendar/event-dialogs"
+import { LessonDialogs, type LessonFormData } from "./calendar/lesson-dialogs"
 import { MobileDayView } from "./calendar/mobile-day-view"
 import { MobileWeekView } from "./calendar/mobile-week-view"
-import { LessonDialogs, type LessonFormData } from "./calendar/lesson-dialogs"
-import { EventDialogs, type EventFormData } from "./calendar/event-dialogs"
+import { MonthView } from "./calendar/month-view"
+import { WeekView } from "./calendar/week-view"
 
 interface FullCalendarProps {
   userType: "client" | "tutor"
@@ -21,8 +24,7 @@ interface FullCalendarProps {
 type ViewMode = "month" | "week" | "day"
 
 export function FullCalendar({ userType, userId }: FullCalendarProps) {
-  const { lessons, addLesson, updateLesson, deleteLesson, events, addEvent, updateEvent, deleteEvent } =
-    useLessonStore()
+  const { lessons, addLesson, updateLesson, deleteLesson, events, addEvent, updateEvent, deleteEvent } = useLessonStore()
   const { toast } = useToast()
   const calendarRef = useRef<HTMLDivElement>(null)
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -52,18 +54,18 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
 
   // Center view on the nearest lesson for this user (client or tutor)
   useEffect(() => {
-    const userLessons = lessons.filter((lesson) =>
-      userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+    const userLessons = lessons.filter((lesson: any) =>
+      userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId,
     )
 
     if (userLessons.length > 0) {
       const sortedLessons = userLessons
-        .map((lesson) => new Date(`${lesson.date}T${lesson.time}`))
-        .filter((date) => !isNaN(date.getTime()))
-        .sort((a, b) => a.getTime() - b.getTime())
+        .map((lesson: any) => new Date(`${lesson.date}T${lesson.time}`))
+        .filter((date: any) => !isNaN(date.getTime()))
+        .sort((a: any, b: any) => a.getTime() - b.getTime())
 
       const now = new Date()
-      const upcomingLesson = sortedLessons.find((lesson) => lesson.getTime() > now.getTime())
+      const upcomingLesson = sortedLessons.find((lesson: any) => lesson.getTime() > now.getTime())
       const targetDate = upcomingLesson || sortedLessons[sortedLessons.length - 1]
 
       if (targetDate) {
@@ -179,8 +181,8 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
       if (lesson.date !== dateStr) return false
       const lessonHour = lesson.time.split(":")[0]
       const slotHour = timeSlot.split(":")[0]
-      return lessonHour === slotHour && (
-        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+      return (
+        lessonHour === slotHour && (userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId)
       )
     })
   }
@@ -296,7 +298,7 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
     }
 
     addLesson({
-      clientId: `client-${crypto.randomUUID().split('-')[0]}`,
+      clientId: `client-${crypto.randomUUID().split("-")[0]}`,
       clientName: formData.clientName,
       specialistId: userId,
       specialistName: "Поточний спеціаліст",
@@ -576,8 +578,8 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
           onAddClick={() => openAddDialog(currentDate)}
         />
         <CardContent className="p-0 pt-4 lg:pt-6">
-              <div className="w-full overflow-x-auto scrollbar-hide">
-                <div className="min-h-[400px] lg:min-h-[600px] min-w-[320px] sm:min-w-[400px] md:min-w-[600px] lg:min-w-[800px]">
+          <div className="w-full overflow-x-auto scrollbar-hide">
+            <div className="min-h-[400px] lg:min-h-[600px] min-w-[320px] sm:min-w-[400px] md:min-w-[600px] lg:min-w-[800px]">
               {viewMode === "month" && (
                 <MonthView
                   dates={getMonthDates()}
@@ -603,7 +605,9 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
                       weekDays={weekDays}
                       monthNames={monthNames}
                       lessons={lessons.filter((lesson) =>
-                        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+                        userType === "client"
+                          ? lesson.clientId === userId
+                          : lesson.specialistId === userId,
                       )}
                       events={events.filter((event) => event.userId === userId)}
                       isToday={isToday}
@@ -643,7 +647,9 @@ export function FullCalendar({ userType, userId }: FullCalendarProps) {
                       weekDays={weekDays}
                       monthNames={monthNames}
                       lessons={lessons.filter((lesson) =>
-                        userType === "client" ? lesson.clientId === userId : lesson.specialistId === userId
+                        userType === "client"
+                          ? lesson.clientId === userId
+                          : lesson.specialistId === userId,
                       )}
                       events={events.filter((event) => event.userId === userId)}
                       isToday={isToday}

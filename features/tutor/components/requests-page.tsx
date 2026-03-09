@@ -1,5 +1,7 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
+
 import { useState, useMemo, useEffect } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
@@ -7,23 +9,23 @@ import { useRequestStore } from "@/lib/request-store"
 import { RequestCard } from "@/components/request-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "@/lib/auth-context"
-import { useTheme } from "@/lib/theme-context"
 import { TrendingDown, Clock, User, MapPin, MessageSquare, ArrowDown, CheckCircle2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { useTheme } from "@/providers/theme-provider"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function TutorRequestsPage() {
   const { toast } = useToast()
-  const { 
-    getRequestsBySpecialist, 
-    acceptRequest, 
+  const {
+    getRequestsBySpecialist,
+    acceptRequest,
     rejectRequest,
     getPublicLeads,
     takePublicLead,
     autoReducePublicLeads
   } = useRequestStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { theme } = useTheme()
 
   const specialistId = user?.id || "specialist-1"
@@ -102,7 +104,7 @@ export function TutorRequestsPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["specialist"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-[1240px] space-y-4 sm:space-y-6 p-3 sm:p-4 md:p-6 font-sans">
           <div
@@ -171,26 +173,26 @@ export function TutorRequestsPage() {
           <Tabs defaultValue={defaultTab} className="w-full">
             <div className="overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:overflow-visible sm:pb-0 hide-scrollbar">
               <TabsList className="inline-flex sm:grid h-auto min-w-max sm:min-w-full sm:w-full grid-cols-4 gap-1.5 sm:gap-2 bg-slate-100/50 p-1 rounded-xl">
-                <TabsTrigger 
-                  value="pending" 
+                <TabsTrigger
+                  value="pending"
                   className="h-10 px-3 sm:px-4 whitespace-nowrap rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 text-[13px] sm:text-[14px] font-medium transition-all"
                 >
                   Вхідні ({pendingRequests.length})
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="exchange" 
+                <TabsTrigger
+                  value="exchange"
                   className="h-10 px-3 sm:px-4 whitespace-nowrap rounded-lg data-[state=active]:bg-white data-[state=active]:text-[var(--theme-primary-dark)] data-[state=active]:shadow-sm text-slate-500 text-[13px] sm:text-[14px] font-medium transition-all"
                 >
                   Біржа ({publicLeads.length})
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="active" 
+                <TabsTrigger
+                  value="active"
                   className="h-10 px-3 sm:px-4 whitespace-nowrap rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 text-[13px] sm:text-[14px] font-medium transition-all"
                 >
                   В роботі ({activeRequests.length})
                 </TabsTrigger>
-                <TabsTrigger 
-                  value="completed" 
+                <TabsTrigger
+                  value="completed"
                   className="h-10 px-3 sm:px-4 whitespace-nowrap rounded-lg data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm text-slate-500 text-[13px] sm:text-[14px] font-medium transition-all"
                 >
                   Архів ({completedRequests.length})
@@ -208,7 +210,7 @@ export function TutorRequestsPage() {
                   Термінових відповідей: {urgentPendingCount}
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 {pendingRequests.length > 0 ? (
                   pendingRequests.map((request) => (
@@ -313,9 +315,8 @@ export function TutorRequestsPage() {
                           )}
 
                           <div
-                            className={`rounded-[10px] sm:rounded-[12px] p-3 sm:p-4 mt-3 sm:mt-4 ${
-                              timeToDrop.hours < 1 ? "bg-red-50" : "bg-[#fff8e1]"
-                            }`}
+                            className={`rounded-[10px] sm:rounded-[12px] p-3 sm:p-4 mt-3 sm:mt-4 ${timeToDrop.hours < 1 ? "bg-red-50" : "bg-[#fff8e1]"
+                              }`}
                           >
                             <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2 text-[13px] sm:text-[14px] font-[600]">
                               <div className="flex items-center gap-1.5">
@@ -329,8 +330,8 @@ export function TutorRequestsPage() {
                             </div>
                           </div>
 
-                          <button 
-                            onClick={() => setSelectedLead(lead.id)} 
+                          <button
+                            onClick={() => setSelectedLead(lead.id)}
                             className="w-full mt-4 sm:mt-6 h-[44px] sm:h-[48px] rounded-[10px] sm:rounded-[12px] border-2 border-transparent text-white font-[600] text-[15px] sm:text-[16px] transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-90 flex items-center justify-center shadow-sm"
                             style={{ backgroundColor: theme.primary }}
                           >
@@ -357,7 +358,7 @@ export function TutorRequestsPage() {
                 <h2 className="text-[18px] sm:text-xl font-bold text-slate-900">Запити в роботі</h2>
                 <p className="text-[13px] sm:text-sm text-slate-500 mt-1 sm:mt-0">Заявки, які ви вже прийняли й ведете до пробного або оплати</p>
               </div>
-              
+
               <div className="space-y-4">
                 {activeRequests.length > 0 ? (
                   activeRequests.map((request) => (
@@ -386,7 +387,7 @@ export function TutorRequestsPage() {
                 <h2 className="text-[18px] sm:text-xl font-bold text-slate-900">Архів запитів</h2>
                 <p className="text-[13px] sm:text-sm text-slate-500 mt-1 sm:mt-0">Історія ваших завершених заявок та оплат</p>
               </div>
-              
+
               <div className="space-y-4">
                 {completedRequests.length > 0 ? (
                   completedRequests.map((request) => (
@@ -429,14 +430,14 @@ export function TutorRequestsPage() {
                   </>
                 )}
                 <div className="flex gap-4">
-                  <button 
-                    onClick={() => setSelectedLead(null)} 
+                  <button
+                    onClick={() => setSelectedLead(null)}
                     className="flex-1 h-[48px] rounded-[8px] border-2 border-[#121117] text-[#121117] bg-white hover:bg-gray-50 font-[600] text-[16px] transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
                   >
                     Скасувати
                   </button>
-                  <button 
-                    onClick={() => selectedLead && handleTakeLead(selectedLead)} 
+                  <button
+                    onClick={() => selectedLead && handleTakeLead(selectedLead)}
                     className="flex-1 h-[48px] rounded-[8px] border-2 border-transparent text-white font-[600] text-[16px] transition-all duration-[220ms] ease-[cubic-bezier(0.22,1,0.36,1)] hover:opacity-90"
                     style={{ backgroundColor: theme.primary }}
                   >

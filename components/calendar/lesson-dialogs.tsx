@@ -1,27 +1,22 @@
 import { useState, useMemo } from "react"
 import { cn } from "@/lib/utils"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MapPin, Video, Clock, Calendar, DollarSign, Target, Plus, Trash2, CheckCircle2, Circle, Calendar as CalendarIcon, RepeatIcon, Edit2, FileText, Paperclip, UploadCloud } from "lucide-react"
 import { useGoalStore } from "@/lib/goal-store"
 import { Progress } from "@/components/ui/progress"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+
 import type { Lesson } from "@/lib/lesson-store"
 import { useRequestStore } from "@/lib/request-store"
-import { useAuth } from "@/lib/auth-context"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 const isExternalUrl = (value: string) => /^https?:\/\//i.test(value)
 
@@ -78,7 +73,7 @@ export function LessonDialogs({
   onOpenEdit,
 }: LessonDialogsProps) {
   const { getStudentsByTutor } = useRequestStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const tutorId = user?.id || "specialist-1"
   const tutorStudents = useMemo(() => getStudentsByTutor(tutorId).filter(s => s.status === "active"), [getStudentsByTutor, tutorId])
   const lessonHomeworks = selectedLesson?.homework?.attachments || []
@@ -146,25 +141,24 @@ export function LessonDialogs({
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Status Badge Top Right */}
                   <div className="hidden sm:block shrink-0">
-                    <Badge variant="outline" className={`border-0 rounded-[10px] px-3 py-1.5 text-[13px] font-[600] shadow-sm ${
-                      selectedLesson.status === "completed" || selectedLesson.status === "trial_completed"
-                        ? "bg-white text-emerald-600 border-emerald-100"
-                        : selectedLesson.status === "scheduled"
+                    <Badge variant="outline" className={`border-0 rounded-[10px] px-3 py-1.5 text-[13px] font-[600] shadow-sm ${selectedLesson.status === "completed" || selectedLesson.status === "trial_completed"
+                      ? "bg-white text-emerald-600 border-emerald-100"
+                      : selectedLesson.status === "scheduled"
                         ? "bg-white text-blue-600 border-blue-100"
                         : selectedLesson.status === "cancelled"
-                        ? "bg-white text-red-600 border-red-100"
-                        : "bg-white text-slate-600 border-slate-200"
-                    }`}>
+                          ? "bg-white text-red-600 border-red-100"
+                          : "bg-white text-slate-600 border-slate-200"
+                      }`}>
                       {selectedLesson.status === "completed" || selectedLesson.status === "trial_completed"
                         ? "Завершено"
                         : selectedLesson.status === "scheduled"
-                        ? "Заплановано"
-                        : selectedLesson.status === "cancelled"
-                        ? "Скасовано"
-                        : "Невідомо"}
+                          ? "Заплановано"
+                          : selectedLesson.status === "cancelled"
+                            ? "Скасовано"
+                            : "Невідомо"}
                     </Badge>
                   </div>
                 </div>
@@ -172,7 +166,7 @@ export function LessonDialogs({
 
               {/* Main Content Area */}
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5">
-                
+
                 {/* Details Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
                   <div className="bg-white p-3 sm:p-4 rounded-[16px] border border-slate-200/60 shadow-sm flex flex-col items-center justify-center text-center gap-2">
@@ -184,7 +178,7 @@ export function LessonDialogs({
                       <p className="text-[14px] font-[700] text-[#121117] whitespace-nowrap">{new Date(selectedLesson.date).toLocaleDateString("uk-UA", { day: "2-digit", month: "short" })}</p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white p-3 sm:p-4 rounded-[16px] border border-slate-200/60 shadow-sm flex flex-col items-center justify-center text-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center">
                       <Clock className="h-4 w-4 text-slate-500" />
@@ -448,7 +442,7 @@ export function LessonDialogs({
             <DialogTitle className="text-[20px] font-bold text-[#121117]">Додати нове заняття</DialogTitle>
             <DialogDescription className="text-[14px] text-[#69686f] mt-1">Заповніть інформацію про нове заняття в розкладі</DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto px-6 py-4">
             <div className="grid gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -536,9 +530,9 @@ export function LessonDialogs({
 
               {userType === "tutor" && (
                 <div className="flex items-center gap-3 p-3 bg-[#f0f3f3]/50 rounded-[12px] border border-slate-200/50">
-                  <Checkbox 
-                    id="isRecurring" 
-                    checked={formData.isRecurring} 
+                  <Checkbox
+                    id="isRecurring"
+                    checked={formData.isRecurring}
                     onCheckedChange={(c) => setFormData({ ...formData, isRecurring: c as boolean })}
                     className="data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6]"
                   />
@@ -646,7 +640,7 @@ export function LessonDialogs({
               </div>
             </div>
           </div>
-          
+
           <DialogFooter className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 mt-auto flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setIsAddOpen(false)} className="h-[44px] w-full sm:w-auto px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600]">
               Скасувати
@@ -665,7 +659,7 @@ export function LessonDialogs({
             <DialogTitle className="text-[20px] font-bold text-[#121117]">Редагувати заняття</DialogTitle>
             <DialogDescription className="text-[14px] text-[#69686f] mt-1">Оновіть інформацію про заняття</DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex-1 overflow-y-auto px-6 py-4">
             <div className="grid gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -775,7 +769,7 @@ export function LessonDialogs({
               </div>
             </div>
           </div>
-          
+
           <DialogFooter className="px-6 py-4 border-t border-slate-100 bg-slate-50/50 mt-auto flex-col sm:flex-row gap-2">
             <Button variant="outline" onClick={() => setIsEditOpen(false)} className="h-[44px] w-full sm:w-auto px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600]">
               Скасувати
@@ -838,8 +832,8 @@ function LessonGoalsSection({ lessonId }: { lessonId: string }) {
             <Target className="h-5 w-5 text-[#121117]" />
             <span className="text-[15px] font-[600] text-[#121117]">Цілі заняття</span>
           </div>
-          <button 
-            onClick={handleCreateGoal} 
+          <button
+            onClick={handleCreateGoal}
             className="inline-flex items-center gap-1.5 h-[36px] px-4 rounded-[6px] border-2 border-[#121117] text-[#121117] bg-white hover:bg-gray-50 font-[600] text-[14px] transition-colors"
           >
             <Plus className="h-4 w-4" />
@@ -860,8 +854,8 @@ function LessonGoalsSection({ lessonId }: { lessonId: string }) {
             <span className="text-[16px] font-bold text-[#121117]">Ціль заняття</span>
           </div>
           <div className="flex items-center gap-1">
-            <button 
-              onClick={handleClearGoal} 
+            <button
+              onClick={handleClearGoal}
               className="inline-flex items-center justify-center h-8 w-8 rounded-[6px] text-[#69686f] hover:text-[#e53935] hover:bg-[#ffebee] transition-colors"
             >
               <Trash2 className="h-4 w-4" />
@@ -873,7 +867,9 @@ function LessonGoalsSection({ lessonId }: { lessonId: string }) {
         <div className="space-y-2">
           <div className="flex justify-between text-[13px] font-[600] text-[#69686f]">
             <span>Прогрес</span>
-            <span className={progress.percentage === 100 ? "text-[#00a389]" : ""}>{progress.completed}/{progress.total}</span>
+            <span className={progress.percentage === 100 ? "text-[#00a389]" : ""}>
+              {progress.completed}/{progress.total}
+            </span>
           </div>
           <Progress value={progress.percentage} className="h-2 bg-gray-100 [&>div]:bg-[#00c5a6]" />
         </div>
@@ -884,16 +880,17 @@ function LessonGoalsSection({ lessonId }: { lessonId: string }) {
         {goal.subGoals.map((subGoal) => (
           <div
             key={subGoal.id}
-            className={`flex items-center gap-3 p-3 rounded-[8px] transition-all border border-transparent hover:border-slate-200/50 ${
-              subGoal.completed ? "bg-[#e8fffb] border-[#00c5a6]/20" : "bg-[#f0f3f3]"
-            }`}
+            className={`flex items-center gap-3 p-3 rounded-[8px] transition-all border border-transparent hover:border-slate-200/50 ${subGoal.completed ? "bg-[#e8fffb] border-[#00c5a6]/20" : "bg-[#f0f3f3]"
+              }`}
           >
             <Checkbox
               checked={subGoal.completed}
               onCheckedChange={() => toggleSubGoal(lessonId, subGoal.id)}
               className="h-5 w-5 rounded-[4px] data-[state=checked]:bg-[#00c5a6] data-[state=checked]:border-[#00c5a6] data-[state=checked]:text-white"
             />
-            <span className={`flex-1 text-[14px] font-[500] leading-snug ${subGoal.completed ? "line-through text-[#69686f]" : "text-[#121117]"}`}>
+            <span
+              className={`flex-1 text-[14px] font-[500] leading-snug ${subGoal.completed ? "line-through text-[#69686f]" : "text-[#121117]"}`}
+            >
               {subGoal.title}
             </span>
             <button
@@ -915,10 +912,10 @@ function LessonGoalsSection({ lessonId }: { lessonId: string }) {
               onKeyPress={(e) => e.key === "Enter" && handleAddSubGoal()}
               className="h-[40px] text-[14px] rounded-[8px] border-slate-200 focus-visible:ring-0 focus-visible:border-[#00c5a6]"
             />
-            <Button 
-              size="sm" 
-              onClick={handleAddSubGoal} 
-              disabled={!newSubGoalTitle.trim()} 
+            <Button
+              size="sm"
+              onClick={handleAddSubGoal}
+              disabled={!newSubGoalTitle.trim()}
               className="h-[40px] px-4 rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 transition-colors"
             >
               <Plus className="h-4 w-4" />

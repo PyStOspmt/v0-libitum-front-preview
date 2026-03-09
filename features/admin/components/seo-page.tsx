@@ -1,21 +1,16 @@
 "use client"
 
 import { useState } from "react"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 const pages = [
   { path: "/", title: "Головна" },
@@ -45,7 +40,7 @@ export function AdminSeoPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["admin"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
       <SidebarLayout userType="admin">
         <div className="container mx-auto max-w-6xl space-y-6 p-6 font-sans">
           <div className="space-y-1">
@@ -120,7 +115,7 @@ export function AdminSeoPage() {
                   <CardDescription className="text-[#69686f] font-[500]">Налаштування правил індексації для пошукових систем.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <Textarea 
+                  <Textarea
                     className="font-mono text-[13px] min-h-[200px] rounded-[12px] border-slate-200/80 focus-visible:ring-[#00c5a6] bg-[#f0f3f3]/30"
                     defaultValue={`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\nDisallow: /_next/\n\nSitemap: https://libitum.com/sitemap.xml`}
                   />

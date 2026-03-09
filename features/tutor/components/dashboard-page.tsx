@@ -1,18 +1,22 @@
 "use client"
 
-import { ProtectedRoute } from "@/components/protected-route"
-import { SidebarLayout } from "@/components/sidebar-layout"
-import { useRequestStore } from "@/lib/request-store"
-import { useGamificationStore } from "@/lib/gamification-store"
-import { useAuth } from "@/lib/auth-context"
-import { RequestCard } from "@/components/request-card"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
-import { Users, Clock, Star, DollarSign, Award, BarChart3, ArrowRight, Flame, Target, Coins, CheckCircle2, MessageSquareQuote } from "lucide-react"
+import { ArrowRight, Award, BarChart3, CheckCircle2, Clock, Coins, DollarSign, Flame, MessageSquareQuote, Star, Target, Users } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+
+import { ProtectedRoute } from "@/components/protected-route"
+import { RequestCard } from "@/components/request-card"
+import { SidebarLayout } from "@/components/sidebar-layout"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
+import { useGamificationStore } from "@/lib/gamification-store"
+import { useRequestStore } from "@/lib/request-store"
+import { UserRoles } from "@/graphql/generated/graphql"
 import { format } from "date-fns"
 import { uk } from "date-fns/locale"
 
@@ -20,7 +24,7 @@ export function TutorDashboardPage() {
   const { toast } = useToast()
   const { getRequestsBySpecialist, acceptRequest, rejectRequest } = useRequestStore()
   const { getProgress, getLevelInfo } = useGamificationStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
 
   const specialistId = user?.id || "specialist-1"
 
@@ -28,9 +32,13 @@ export function TutorDashboardPage() {
   const pendingRequests = specialistRequests.filter((req) => req.status === "pending")
   const progress = getProgress(specialistId)
   const currentLevel = getLevelInfo(progress.totalXP)
-  const levelProgress = currentLevel.maxXP === Number.POSITIVE_INFINITY
-    ? 100
-    : Math.max(0, Math.min(100, ((progress.totalXP - currentLevel.minXP) / (currentLevel.maxXP - currentLevel.minXP)) * 100))
+  const levelProgress =
+    currentLevel.maxXP === Number.POSITIVE_INFINITY
+      ? 100
+      : Math.max(
+        0,
+        Math.min(100, ((progress.totalXP - currentLevel.minXP) / (currentLevel.maxXP - currentLevel.minXP)) * 100),
+      )
 
   const stats = {
     activeClients: 12,
@@ -84,7 +92,7 @@ export function TutorDashboardPage() {
   ]
 
   const handleToggleGoal = (id: number) => {
-    setGoals(goals.map(g => g.id === id ? { ...g, completed: !g.completed } : g))
+    setGoals(goals.map((g) => (g.id === id ? { ...g, completed: !g.completed } : g)))
   }
 
   const handleAcceptRequest = (requestId: string) => {
@@ -105,7 +113,7 @@ export function TutorDashboardPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["specialist"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
       <SidebarLayout userType="tutor">
         <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
           {/* Header */}
@@ -214,7 +222,9 @@ export function TutorDashboardPage() {
                           <h3 className="text-[24px] font-bold text-[#121117]">
                             Рівень {stats.level} - {currentLevel.title}
                           </h3>
-                          <p className="text-[#69686f] mt-1 text-[15px]">Натисніть для детальної статистики</p>
+                          <p className="text-[#69686f] mt-1 text-[15px]">
+                            Натисніть для детальної статистики
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -224,15 +234,26 @@ export function TutorDashboardPage() {
                         <BarChart3 className="h-5 w-5 text-[var(--theme-primary)] group-hover:translate-x-1 transition-transform" />
                       </div>
                     </div>
-                    <Progress value={levelProgress} className="h-3 mt-8 bg-gray-100 [&>div]:bg-[var(--theme-primary)] rounded-full overflow-hidden" />
+                    <Progress
+                      value={levelProgress}
+                      className="h-3 mt-8 bg-gray-100 [&>div]:bg-[var(--theme-primary)] rounded-full overflow-hidden"
+                    />
                     <div className="mt-6 flex gap-2 flex-wrap">
                       {progress.achievements.slice(0, 3).map((achievement) => (
-                        <Badge key={achievement.id} variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
-                          <span className="mr-1 text-[16px]">{achievement.icon}</span> {achievement.title}
+                        <Badge
+                          key={achievement.id}
+                          variant="outline"
+                          className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]"
+                        >
+                          <span className="mr-1 text-[16px]">{achievement.icon}</span>{" "}
+                          {achievement.title}
                         </Badge>
                       ))}
                       {progress.achievements.length > 3 && (
-                        <Badge variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
+                        <Badge
+                          variant="outline"
+                          className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]"
+                        >
                           +{progress.achievements.length - 3} ще
                         </Badge>
                       )}
@@ -365,10 +386,15 @@ export function TutorDashboardPage() {
             <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
               <div>
                 <h2 className="text-[24px] font-bold text-[#121117]">Нові запити на заняття</h2>
-                <p className="text-[#69686f] text-[16px] mt-1">Відповідайте протягом 3 годин для збереження рейтингу</p>
+                <p className="text-[#69686f] text-[16px] mt-1">
+                  Відповідайте протягом 3 годин для збереження рейтингу
+                </p>
               </div>
               <Link href="/tutor/requests">
-                <Button variant="ghost" className="text-[16px] font-[600] text-[#121117] hover:text-[var(--theme-primary)] hover:bg-transparent h-auto p-0">
+                <Button
+                  variant="ghost"
+                  className="text-[16px] font-[600] text-[#121117] hover:text-[var(--theme-primary)] hover:bg-transparent h-auto p-0"
+                >
                   Всі запити
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

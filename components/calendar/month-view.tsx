@@ -1,8 +1,9 @@
+import { CalendarIcon, Clock, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Clock, Plus } from "lucide-react"
+
+import type { CalendarEvent, Lesson } from "@/lib/lesson-store"
 import { cn } from "@/lib/utils"
-import type { Lesson, CalendarEvent } from "@/lib/lesson-store"
 
 interface MonthViewProps {
   dates: Date[]
@@ -38,7 +39,10 @@ export function MonthView({
       <div className="hidden sm:block sm:col-span-7">
         <div className="grid grid-cols-7">
           {weekDaysShort.map((day, index) => (
-            <div key={index} className="bg-[#f0f3f3] p-2 lg:p-3 text-center text-xs sm:text-[14px] font-[600] text-[#69686f]">
+            <div
+              key={index}
+              className="bg-[#f0f3f3] p-2 lg:p-3 text-center text-xs sm:text-[14px] font-[600] text-[#69686f]"
+            >
               {day}
             </div>
           ))}
@@ -121,66 +125,23 @@ export function MonthView({
                 return (
                   <div
                     key={session.id}
-                    className={`cursor-pointer rounded-[8px] ${bgColor} px-2 sm:px-3 py-2 text-xs ${textColor} border ${borderColor} ${hoverBg} transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)]`}
+                    className={`cursor-pointer rounded-[6px] ${bgColor} px-2 sm:px-2 py-1 text-xs ${textColor} border ${borderColor} ${hoverBg} transition-colors shadow-[0_2px_8px_rgba(0,0,0,0.02)]`}
                     onClick={(e) => {
                       e.stopPropagation()
                       onViewLesson(session)
                     }}
                   >
-                    <div className="flex items-center justify-between mb-1 gap-1">
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <Clock className="h-3 w-3" />
-                        <span className="font-[600] text-[11px]">{session.time}</span>
-                        <span className="text-[10px] opacity-75">{session.duration}хв</span>
-                      </div>
-                      <div className={`px-1 py-0.5 rounded-[4px] text-[9px] font-[500] truncate max-w-[50px] text-center ${
-                        session.format === "online" 
-                          ? "bg-blue-100 text-blue-700" 
-                          : "bg-purple-100 text-purple-700"
-                      }`}>
-                        {session.format === "online" ? "Онлайн" : "Офлайн"}
-                      </div>
+                    <div className="flex items-center gap-1 sm:gap-1.5 mb-0.5">
+                      <Clock className="h-3 w-3 sm:h-3 sm:w-3" />
+                      <span className="font-[600] text-[11px] sm:text-[12px]">{session.time}</span>
                     </div>
-                    <div className="truncate font-[600] text-[11px] mb-1">
+                    <div className="truncate font-[500] text-[11px] sm:text-[12px]">
                       {userType === "client" ? session.specialistName : session.clientName}
                     </div>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="truncate text-[10px] opacity-75 flex-1 min-w-0">
-                        {session.subject}
-                      </div>
-                      <div className={`px-1 py-0.5 rounded-[4px] text-[9px] font-[500] shrink-0 ${
-                        session.status === "completed" 
-                          ? "bg-green-100 text-green-700"
-                          : session.status === "scheduled"
-                          ? "bg-blue-100 text-blue-700"
-                          : session.status === "cancelled"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-gray-100 text-gray-700"
-                      }`}>
-                        {session.status === "completed" 
-                          ? "Завершено"
-                          : session.status === "scheduled"
-                          ? "Заплановано"
-                          : session.status === "cancelled"
-                          ? "Скасовано"
-                          : "Пропущено"
-                        }
-                      </div>
-                    </div>
-                    {session.isPaid !== undefined && (
-                      <div className="mt-1 flex items-center gap-1">
-                        <div className={`w-1.5 h-1.5 rounded-full ${
-                          session.isPaid ? "bg-green-500" : "bg-orange-500"
-                        }`} />
-                        <span className="text-[9px] opacity-75">
-                          {session.isPaid ? "Оплачено" : "Очікує оплати"}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 )
               })}
-              {dayEvents.slice(0, 2 - daySessions.slice(0, 1).length).map((event) => (
+              {dayEvents.slice(0, 3 - daySessions.slice(0, 2).length).map((event) => (
                 <div
                   key={event.id}
                   className={cn(
@@ -199,9 +160,9 @@ export function MonthView({
                   <div className="truncate">{event.title}</div>
                 </div>
               ))}
-              {daySessions.length + dayEvents.length > 2 && (
+              {daySessions.length + dayEvents.length > 3 && (
                 <div className="text-[12px] font-[600] text-[#69686f] pl-1 pt-0.5">
-                  +{daySessions.length + dayEvents.length - 2} ще
+                  +{daySessions.length + dayEvents.length - 3} ще
                 </div>
               )}
             </div>

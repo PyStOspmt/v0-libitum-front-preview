@@ -2,11 +2,12 @@
 
 import { LocaleLink } from "@/components/locale-link"
 import { useState } from "react"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PlayCircle, FileText, CheckCircle2, XCircle, TrendingUp, TrendingDown, Eye, AlertCircle, Edit2, Save, X, Plus, Trash2, MapPin, Layers3, Briefcase, UserRoundSearch, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 type ModerationPrice = {
   level: string
@@ -161,7 +163,7 @@ export function AdminModerationPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["admin"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
       <SidebarLayout userType="admin">
         <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
           <div className="space-y-1">
@@ -367,7 +369,7 @@ export function AdminModerationPage() {
                               Відкрити повний профіль
                             </Button>
                           </LocaleLink>
-                          
+
                           <div className="flex-1">
                             <Textarea
                               value={comments[item.id] || ""}
@@ -378,15 +380,15 @@ export function AdminModerationPage() {
                           </div>
 
                           <div className="flex flex-col gap-3 mt-auto">
-                            <Button 
+                            <Button
                               className="w-full h-[48px] rounded-[10px] bg-[#00c5a6] hover:bg-[#00a389] text-white font-[600] text-[16px]"
                               onClick={() => handleAction(item.id, "approve")}
                               disabled={isEditing}
                             >
                               <CheckCircle2 className="mr-2 h-5 w-5" /> Затвердити
                             </Button>
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               className="w-full h-[48px] rounded-[10px] border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-[600] text-[16px]"
                               onClick={() => handleAction(item.id, "reject")}
                               disabled={isEditing}
@@ -418,15 +420,15 @@ export function AdminModerationPage() {
                 <CardContent>
                   <div className="space-y-2">
                     {leaderboard.map((tutor, idx) => (
-                      <div key={tutor.id} 
-                      className="flex items-center justify-between p-4 rounded-[12px] border border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
-                      onClick={() => {
-                        toast({
-                          title: "Деталі спеціаліста",
-                          description: `Відкриття профілю ${tutor.name} (Імітація)`
-                        })
-                      }}
-                    >
+                      <div key={tutor.id}
+                        className="flex items-center justify-between p-4 rounded-[12px] border border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
+                        onClick={() => {
+                          toast({
+                            title: "Деталі спеціаліста",
+                            description: `Відкриття профілю ${tutor.name} (Імітація)`
+                          })
+                        }}
+                      >
                         <div className="flex items-center gap-4">
                           <div className="font-[700] text-slate-400 w-6">#{idx + 1}</div>
                           <div className="font-[600]">{tutor.name}</div>

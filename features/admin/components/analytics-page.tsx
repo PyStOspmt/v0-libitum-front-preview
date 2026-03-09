@@ -3,13 +3,14 @@
 import { useState } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Users, UserCheck, UserPlus, Target, DollarSign, Star, TrendingUp, BarChart3, Activity } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 const chartData = [
   { name: "Пн", leads: 400, paid: 240 },
@@ -38,7 +39,7 @@ export function AdminAnalyticsPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["admin"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
       <SidebarLayout userType="admin">
         <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -46,7 +47,7 @@ export function AdminAnalyticsPage() {
               <h1 className="text-3xl font-[700] text-[#121117]">Аналітика</h1>
               <p className="text-[15px] font-[500] text-[#69686f]">Ключові показники платформи та динаміка за період</p>
             </div>
-            
+
             <div className="bg-[#f0f3f3] p-1 rounded-[12px] inline-flex">
               {periods.map((p) => (
                 <button
@@ -54,8 +55,8 @@ export function AdminAnalyticsPage() {
                   onClick={() => setPeriod(p.id)}
                   className={cn(
                     "px-4 py-2 rounded-[8px] text-[14px] font-[600] transition-all",
-                    period === p.id 
-                      ? "bg-white text-[#121117] shadow-sm" 
+                    period === p.id
+                      ? "bg-white text-[#121117] shadow-sm"
                       : "text-[#69686f] hover:text-[#121117]"
                   )}
                 >
@@ -79,7 +80,7 @@ export function AdminAnalyticsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-[13px] font-[500]">
-                  <span className="text-emerald-600 flex items-center"><TrendingUp className="h-3 w-3 mr-1"/>{metrics.users.growth}</span>
+                  <span className="text-emerald-600 flex items-center"><TrendingUp className="h-3 w-3 mr-1" />{metrics.users.growth}</span>
                   <span className="text-[#69686f]">до минулого періоду</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between text-[13px] font-[500] text-[#69686f]">
@@ -101,7 +102,7 @@ export function AdminAnalyticsPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-[13px] font-[500]">
-                  <span className="text-emerald-600 flex items-center"><TrendingUp className="h-3 w-3 mr-1"/>{metrics.leads.growth}</span>
+                  <span className="text-emerald-600 flex items-center"><TrendingUp className="h-3 w-3 mr-1" />{metrics.leads.growth}</span>
                   <span className="text-[#69686f]">до минулого періоду</span>
                 </div>
                 <div className="mt-4 pt-4 border-t border-slate-100 flex justify-between text-[13px] font-[500] text-[#69686f]">
@@ -168,18 +169,18 @@ export function AdminAnalyticsPage() {
                     <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <defs>
                         <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#00c5a6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#00c5a6" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#00c5a6" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#00c5a6" stopOpacity={0} />
                         </linearGradient>
                         <linearGradient id="colorPaid" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                         </linearGradient>
                       </defs>
                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#69686f' }} dy={10} />
                       <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#69686f' }} />
                       <CartesianGrid vertical={false} stroke="#f0f3f3" />
-                      <Tooltip 
+                      <Tooltip
                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.08)' }}
                         itemStyle={{ fontSize: '14px', fontWeight: 600 }}
                         labelStyle={{ color: '#69686f', marginBottom: '4px' }}
@@ -191,7 +192,7 @@ export function AdminAnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[18px] font-[700]">

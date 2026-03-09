@@ -1,20 +1,23 @@
 "use client"
 
-import { ProtectedRoute } from "@/components/protected-route"
-import { SidebarLayout } from "@/components/sidebar-layout"
-import { useRequestStore } from "@/lib/request-store"
-import { useGamificationStore } from "@/lib/gamification-store"
-import { useAuth } from "@/lib/auth-context"
-import { RequestCard } from "@/components/request-card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
-import { BookOpen, Clock, TrendingUp, Award, Search, FileText, Calendar, Star, ArrowRight } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
+import { ArrowRight, BookOpen, Calendar, Clock, FileText, Search, Star, TrendingUp } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+
 import { TiltCard } from "@/components/home/tilt-card"
-import { SquishyButton } from "@/components/home/squishy-button"
+import { ProtectedRoute } from "@/components/protected-route"
+import { RequestCard } from "@/components/request-card"
+import { SidebarLayout } from "@/components/sidebar-layout"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
+import { useGamificationStore } from "@/lib/gamification-store"
+import { useRequestStore } from "@/lib/request-store"
 
 /* ── Brand palette ── */
 const B = {
@@ -30,7 +33,7 @@ export function ClientDashboardPage() {
   const { toast } = useToast()
   const { getRequestsByClient, cancelRequest } = useRequestStore()
   const { getProgress } = useGamificationStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
 
   const householdChildren = [
     { id: "child-1", name: "Марія Коваленко", label: "Марія, 12 років" },
@@ -38,7 +41,7 @@ export function ClientDashboardPage() {
   ]
 
   const selectableChildren = user
-    ? [{ id: user.id, name: user.name, label: user.name || "Я" }, ...householdChildren]
+    ? [{ id: user.id, name: user.email, label: user.email || "Я" }, ...householdChildren]
     : householdChildren
 
   const initialChild = searchParams.get("child") || selectableChildren[0]?.id
@@ -66,15 +69,11 @@ export function ClientDashboardPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["client"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
       <SidebarLayout userType="client">
         <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
           {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Головна</h1>
             <p className="text-[#69686f] mt-1 text-[16px]">Ваш особистий кабінет</p>
 
@@ -206,16 +205,16 @@ export function ClientDashboardPage() {
                 <h2 className="text-[24px] font-bold text-[#121117]">Розклад на сьогодні</h2>
                 <p className="text-[#69686f] text-[16px] mt-1">Ваші найближчі заняття</p>
               </div>
-              <button 
+              <button
                 onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
                 className="text-primary font-[600] text-[15px] hover:underline"
               >
                 Весь розклад
               </button>
             </div>
-            
+
             <div className="space-y-4">
-              <div 
+              <div
                 className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-[16px] border border-slate-200/80 hover:border-primary/50 hover:bg-gray-50 transition-all gap-4 sm:gap-0 cursor-pointer"
                 onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
               >
@@ -230,8 +229,8 @@ export function ClientDashboardPage() {
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-0">
                   <Badge variant="outline" className="bg-blue-50 text-blue-700 border-0">Заплановано</Badge>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     className="rounded-[12px] bg-primary text-[#121117] hover:bg-primary/90 font-[600]"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -242,8 +241,8 @@ export function ClientDashboardPage() {
                   </Button>
                 </div>
               </div>
-              
-              <div 
+
+              <div
                 className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-[16px] border border-slate-200/80 hover:border-primary/50 hover:bg-gray-50 transition-all gap-4 sm:gap-0 cursor-pointer"
                 onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
               >
@@ -258,9 +257,9 @@ export function ClientDashboardPage() {
                 </div>
                 <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-0">
                   <Badge variant="outline" className="bg-orange-50 text-orange-700 border-0">Заплановано</Badge>
-                  <Button 
-                    size="sm" 
-                    variant="outline" 
+                  <Button
+                    size="sm"
+                    variant="outline"
                     className="rounded-[12px] font-[600] border-slate-200/80 hover:bg-slate-50 hover:text-[#121117]"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -300,7 +299,11 @@ export function ClientDashboardPage() {
                   </div>
                   <div className="text-left sm:text-right mt-2 sm:mt-0">
                     <span className="text-[32px] font-bold text-[#121117]">
-                      {Math.round(((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) * 100)}%
+                      {Math.round(
+                        ((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) *
+                        100,
+                      )}
+                      %
                     </span>
                     <span className="text-[#69686f] text-sm ml-1">виконано</span>
                   </div>
@@ -319,7 +322,11 @@ export function ClientDashboardPage() {
                     </div>
                     <div className="flex gap-2 flex-wrap">
                       {progress.achievements.slice(-3).map((achievement) => (
-                        <Badge key={achievement.id} variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
+                        <Badge
+                          key={achievement.id}
+                          variant="outline"
+                          className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]"
+                        >
                           <span className="mr-1 text-[16px]">{achievement.icon}</span>
                           {achievement.title}
                         </Badge>
@@ -411,7 +418,12 @@ export function ClientDashboardPage() {
               <div className="space-y-6">
                 {pendingRequests.length > 0 ? (
                   pendingRequests.map((request) => (
-                    <RequestCard key={request.id} request={request} userType="client" onCancel={handleCancelRequest} />
+                    <RequestCard
+                      key={request.id}
+                      request={request}
+                      userType="client"
+                      onCancel={handleCancelRequest}
+                    />
                   ))
                 ) : (
                   <div className="py-12 text-center border-2 border-dashed border-gray-200 rounded-[16px]">

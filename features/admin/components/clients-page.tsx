@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Ban, CheckCircle2, Eye, LogIn, Trash2, SlidersHorizontal } from "lucide-react"
 import { useState } from "react"
-import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import {
@@ -33,6 +32,8 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { UserRoles } from "@/graphql/generated/graphql"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 type AdminClient = {
   id: string
@@ -141,7 +142,7 @@ export function AdminClientsPage() {
   })
 
   return (
-    <ProtectedRoute allowedRoles={["admin"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
       <SidebarLayout userType="admin">
         <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
           <div className="space-y-1">
@@ -162,8 +163,8 @@ export function AdminClientsPage() {
 
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
               <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-[8px] border border-slate-200">
-                <Checkbox 
-                  id="debtors" 
+                <Checkbox
+                  id="debtors"
                   checked={showDebtorsOnly}
                   onCheckedChange={(c) => setShowDebtorsOnly(c as boolean)}
                 />
@@ -230,7 +231,7 @@ export function AdminClientsPage() {
 }
 
 function ClientTableRow({ client }: { client: AdminClient }) {
-  const { impersonate } = useAuth()
+  // const { impersonate } = useAuthContext()
   const { toast } = useToast()
   const [supportConfirmOpen, setSupportConfirmOpen] = useState(false)
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
@@ -238,16 +239,16 @@ function ClientTableRow({ client }: { client: AdminClient }) {
 
   const handleSupportAccess = () => {
     if (client.status !== "active") return
-    impersonate({
-      id: client.id,
-      name: client.name,
-      email: client.email,
-      role: "client" as any,
-      isVerified: true,
-      hasPassedQuiz: true,
-      status: "active",
-      language: "UA"
-    } as any)
+    // impersonate({
+    //   id: client.id,
+    //   name: client.name,
+    //   email: client.email,
+    //   role: "client" as any,
+    //   isVerified: true,
+    //   hasPassedQuiz: true,
+    //   status: "active",
+    //   language: "UA"
+    // } as any)
     setSupportConfirmOpen(false)
   }
 
@@ -343,10 +344,10 @@ function ClientTableRow({ client }: { client: AdminClient }) {
           </AlertDialog>
 
           {client.status === "blocked" && (
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50" 
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50"
               title="Розблокувати"
               onClick={() => {
                 toast({
@@ -360,26 +361,26 @@ function ClientTableRow({ client }: { client: AdminClient }) {
           )}
 
           <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-             <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" title="Видалити">
-                   <Trash2 className="h-4 w-4" />
-                </Button>
-             </AlertDialogTrigger>
-             <AlertDialogContent className="rounded-[24px]">
-                <AlertDialogHeader>
-                   <AlertDialogTitle>Видалити акаунт?</AlertDialogTitle>
-                   <AlertDialogDescription>
-                      Незворотня дія. Акаунт {client.name} буде видалено з бази.
-                   </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                   <AlertDialogCancel>Скасувати</AlertDialogCancel>
-                   <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">Видалити</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </td>
-      </tr>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" title="Видалити">
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="rounded-[24px]">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Видалити акаунт?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Незворотня дія. Акаунт {client.name} буде видалено з бази.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Скасувати</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDeleteAccount} className="bg-red-600 hover:bg-red-700">Видалити</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </td>
+    </tr>
   )
 }

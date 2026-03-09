@@ -1,13 +1,15 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { useAuth } from "@/lib/auth-context"
 import { UserPlus, Copy, Share2, Users, Check, Trash2, Calendar, ShieldAlert, MessageCircle, Mail, AlertTriangle, Key } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import {
@@ -21,12 +23,14 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+import { useTelegramVerification } from "@/features/dashboard/hooks/use-telegram-verification"
 
 export function ClientSettingsPage() {
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { toast } = useToast()
   const router = useRouter()
   const [isAddChildOpen, setIsAddChildOpen] = useState(false)
@@ -36,6 +40,7 @@ export function ClientSettingsPage() {
   const [childCity, setChildCity] = useState("")
   const [childNotes, setChildNotes] = useState("")
   const [referralCopied, setReferralCopied] = useState(false)
+  const { handleRequestVerification, loading } = useTelegramVerification()
 
   const [householdChildren, setHouseholdChildren] = useState([
     {
@@ -52,7 +57,7 @@ export function ClientSettingsPage() {
   ])
 
   const selectableChildren = user
-    ? [{ id: user.id, name: user.name, label: user.name || "Я", isParent: true }, ...householdChildren]
+    ? [{ id: user.id, name: user.email, label: user.email || "Я", isParent: true }, ...householdChildren]
     : householdChildren
 
   const referralLink = `https://libitum.education/ref/${user?.id || "client123"}`
@@ -111,7 +116,7 @@ export function ClientSettingsPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["client"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Student]}>
       <SidebarLayout userType="client">
         <div className="container mx-auto max-w-4xl space-y-6 sm:space-y-8 p-6 font-sans">
           <div>
@@ -127,8 +132,8 @@ export function ClientSettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
                 <Avatar className="h-24 w-24 sm:h-20 sm:w-20 rounded-[20px] border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.05)] ring-1 ring-slate-100">
-                  <AvatarImage src={user?.avatar} alt={user?.name} />
-                  <AvatarFallback className="bg-[#f0f3f3] text-[#69686f] text-2xl sm:text-xl font-[700]">{user?.name?.[0] || "U"}</AvatarFallback>
+                  <AvatarImage src={user?.email} alt={user?.email} />
+                  <AvatarFallback className="bg-[#f0f3f3] text-[#69686f] text-2xl sm:text-xl font-[700]">{user?.email?.[0] || "U"}</AvatarFallback>
                 </Avatar>
                 <div className="flex items-center sm:mt-4">
                   <Button variant="outline" size="sm" className="rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 transition-colors">
@@ -139,7 +144,7 @@ export function ClientSettingsPage() {
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-[#121117] font-[600]">Ім'я</Label>
-                  <Input id="name" defaultValue={user?.name} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#121117]" />
+                  <Input id="name" defaultValue={user?.email} className="rounded-[8px] border-slate-200/80 focus-visible:ring-[#121117]" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-[#121117] font-[600]">Email</Label>
@@ -293,16 +298,16 @@ export function ClientSettingsPage() {
                   <div>
                     <p className="text-[12px] font-[500] text-[#69686f] uppercase tracking-wider mb-2">Небезпечна зона</p>
                     <div className="space-y-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="w-full justify-start text-left font-[600] text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 h-[44px]"
                         onClick={() => toast({ title: "Запит на видалення", description: "Ми надіслали підтвердження на email" })}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Видалити спейс (усі дані сім'ї)
                       </Button>
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         className="w-full justify-start text-left font-[500] text-slate-500 hover:text-red-600 hover:bg-red-50 h-[44px]"
                         onClick={() => toast({ title: "Запит на видалення", description: "Інструкції надіслано на email" })}
                       >

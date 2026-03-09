@@ -1,25 +1,27 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { FileText, Download, Upload, Clock, CheckCircle, AlertCircle, DollarSign, Calendar, Star, ExternalLink, BookOpen, Link as LinkIcon, X } from "lucide-react"
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useAuth } from "@/lib/auth-context"
 import { useLessonStore } from "@/lib/lesson-store"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 const isExternalUrl = (value: string) => /^https?:\/\//i.test(value)
 
 export function ClientMaterialsPage() {
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { lessons, submitHomework } = useLessonStore()
   const { toast } = useToast()
   const [selectedHomework, setSelectedHomework] = useState<any>(null)
@@ -29,7 +31,7 @@ export function ClientMaterialsPage() {
   const searchParams = useSearchParams()
 
   const children = [
-    user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+    user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
   ].filter(Boolean) as { id: string; label: string }[]
@@ -176,7 +178,7 @@ export function ClientMaterialsPage() {
 
   const getStatusBadge = (hw: any) => {
     const isOverdue = hw.status === "pending" && new Date(hw.dueDate).getTime() < Date.now();
-    
+
     if (isOverdue) {
       return (
         <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
@@ -214,7 +216,7 @@ export function ClientMaterialsPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["client"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Student]}>
       <SidebarLayout userType="client">
         <div className="container mx-auto max-w-5xl space-y-6 p-6 font-sans">
           <div>
@@ -227,11 +229,10 @@ export function ClientMaterialsPage() {
                   variant={child.id === selectedChildId ? "default" : "outline"}
                   size="sm"
                   onClick={() => router.push(`/client/materials?child=${child.id}`)}
-                  className={`rounded-full transition-all ${
-                    child.id === selectedChildId
+                  className={`rounded-full transition-all ${child.id === selectedChildId
                       ? "bg-[#00c5a6] hover:bg-[#00a389] text-white shadow-md border-0"
                       : "border-slate-200 text-[#69686f] hover:bg-slate-50"
-                  }`}
+                    }`}
                 >
                   {child.label}
                 </Button>
@@ -295,10 +296,10 @@ export function ClientMaterialsPage() {
                               </div>
                             </div>
                           </div>
-                          
+
                           <div className="bg-[#f8f9fb] p-4 rounded-[12px] mb-5">
                             <p className="text-[15px] text-[#121117] leading-relaxed">{hw.description}</p>
-                            
+
                             {hw.attachments && hw.attachments.length > 0 && (
                               <div className="mt-4 pt-4 border-t border-slate-200/60 flex flex-wrap gap-2">
                                 {hw.attachments.map((file, idx) => {
@@ -349,7 +350,7 @@ export function ClientMaterialsPage() {
 
                           <div className="flex justify-end">
                             {hw.status === "pending" ? (
-                              <Button 
+                              <Button
                                 onClick={() => setSelectedHomework(hw)}
                                 className="h-[44px] px-6 rounded-[8px] bg-[#121117] hover:bg-[#121117]/90 text-white font-[600] w-full sm:w-auto"
                               >
@@ -402,7 +403,7 @@ export function ClientMaterialsPage() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="bg-[#f8f9fb] p-4 rounded-[12px] mb-4">
                           <p className="text-[14px] text-[#69686f] line-clamp-2">{hw.description}</p>
                         </div>
@@ -573,7 +574,7 @@ export function ClientMaterialsPage() {
 
               <div className="space-y-3">
                 <Label className="text-[15px] font-[600] text-[#121117]">Прикріпити файли (фото зошита, PDF)</Label>
-                
+
                 {submissionFiles.length > 0 && (
                   <div className="flex flex-col gap-2 mb-3">
                     {submissionFiles.map((file, index) => (
@@ -582,9 +583,9 @@ export function ClientMaterialsPage() {
                           <FileText className="h-5 w-5 text-[#00c5a6] shrink-0" />
                           <span className="text-[14px] font-[500] text-slate-700 truncate">{file}</span>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full h-8 w-8 p-0"
                           onClick={() => removeSubmissionFile(index)}
                         >
@@ -596,14 +597,14 @@ export function ClientMaterialsPage() {
                 )}
 
                 <div className="relative">
-                  <input 
-                    type="file" 
-                    id="hw-upload" 
-                    className="hidden" 
-                    multiple 
+                  <input
+                    type="file"
+                    id="hw-upload"
+                    className="hidden"
+                    multiple
                     onChange={handleFileUpload}
                   />
-                  <label 
+                  <label
                     htmlFor="hw-upload"
                     className="flex flex-col items-center justify-center gap-3 py-8 rounded-[16px] border-2 border-dashed border-slate-300 bg-[#f8f9fb] hover:bg-slate-50 hover:border-[#00c5a6] cursor-pointer transition-colors w-full"
                   >
@@ -620,8 +621,8 @@ export function ClientMaterialsPage() {
             </div>
 
             <DialogFooter className="mt-6 sm:gap-3 flex-col sm:flex-row gap-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setSelectedHomework(null)
                   setSubmissionText("")
@@ -631,7 +632,7 @@ export function ClientMaterialsPage() {
               >
                 Скасувати
               </Button>
-              <Button 
+              <Button
                 onClick={handleSubmitHomework}
                 disabled={!submissionText.trim() && submissionFiles.length === 0}
                 className="w-full sm:w-auto h-[48px] px-8 rounded-[12px] bg-[#121117] hover:bg-[#121117]/90 text-white font-[600] text-[16px]"

@@ -1,25 +1,25 @@
 "use client"
 
+import { UserRoles } from "@/graphql/generated/graphql"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { useLessonStore } from "@/lib/lesson-store"
-import { useAuth } from "@/lib/auth-context"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BookOpen, Calendar, CheckCircle2, Clock, FileText, Star, TrendingUp, Download, ChevronDown, ChevronUp } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { useAuthContext } from "@/features/auth/context/auth-context"
+import { useLessonStore } from "@/store/lesson.store"
 
 export function ClientProgressPage() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { getLessonsByClient } = useLessonStore()
   const searchParams = useSearchParams()
   const children = [
-    user ? { id: user.id, label: user.name ? `${user.name} (я)` : "Я" } : null,
+    user ? { id: user.id, label: user.email ? `${user.email} (я)` : "Я" } : null,
     { id: "child-1", label: "Марія, 12 років" },
     { id: "child-2", label: "Іван, 9 років" },
   ].filter(Boolean) as { id: string; label: string }[]
@@ -37,12 +37,12 @@ export function ClientProgressPage() {
   const totalHours = completedLessons.reduce((acc, l) => acc + l.duration, 0) / 60
   const averageGrade =
     completedLessons.filter((l) => l.homework?.grade).reduce((acc, l) => acc + (l.homework?.grade || 0), 0) /
-      completedLessons.filter((l) => l.homework?.grade).length || 0
+    completedLessons.filter((l) => l.homework?.grade).length || 0
   const completedHomework = completedLessons.filter((l) => l.homework?.status === "checked").length
   const totalHomework = completedLessons.filter((l) => l.homework).length
 
   // Group by subject
-  const lessonsBySubject = completedLessons.reduce<Record<string, typeof completedLessons[number][]>>((acc, lesson) => {
+  const lessonsBySubject = completedLessons.reduce<Record<string, (typeof completedLessons)[number][]>>((acc, lesson) => {
     if (!acc[lesson.subject]) {
       acc[lesson.subject] = []
     }
@@ -51,7 +51,7 @@ export function ClientProgressPage() {
   }, {})
 
   return (
-    <ProtectedRoute allowedRoles={["client"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
       <SidebarLayout userType="client">
         <div className="container mx-auto max-w-[1200px] space-y-6 sm:space-y-8 px-3 py-6 sm:p-6 font-sans">
           <div className="space-y-2 px-1 sm:px-0">
@@ -62,11 +62,10 @@ export function ClientProgressPage() {
                 <button
                   key={child.id}
                   onClick={() => router.push(`/client/progress?child=${child.id}`)}
-                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${
-                    child.id === selectedChildId
+                  className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${child.id === selectedChildId
                       ? "bg-[#121117] text-white border-transparent"
                       : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
-                  }`}
+                    }`}
                 >
                   {child.label}
                 </button>
@@ -133,8 +132,10 @@ export function ClientProgressPage() {
               {Object.entries(lessonsBySubject).map(([subject, lessons]) => {
                 const subjectHours = lessons.reduce((acc, l) => acc + l.duration, 0) / 60
                 const subjectGrade =
-                  lessons.filter((l) => l.homework?.grade).reduce((acc, l) => acc + (l.homework?.grade || 0), 0) /
-                    lessons.filter((l) => l.homework?.grade).length || 0
+                  lessons
+                    .filter((l) => l.homework?.grade)
+                    .reduce((acc, l) => acc + (l.homework?.grade || 0), 0) /
+                  lessons.filter((l) => l.homework?.grade).length || 0
 
                 return (
                   <div key={subject} className="space-y-3">
@@ -148,7 +149,9 @@ export function ClientProgressPage() {
                       <div className="text-right">
                         <div className="flex items-center gap-1 justify-end">
                           <Star className="h-4 w-4 fill-[#ffc800] text-[#ffc800]" />
-                          <span className="font-bold text-[18px] text-[#121117]">{subjectGrade.toFixed(1)}</span>
+                          <span className="font-bold text-[18px] text-[#121117]">
+                            {subjectGrade.toFixed(1)}
+                          </span>
                         </div>
                         <p className="text-[13px] text-[#69686f]">Середня оцінка</p>
                       </div>
@@ -171,13 +174,22 @@ export function ClientProgressPage() {
             </div>
             <Tabs defaultValue="all">
               <TabsList className="grid w-full max-w-[500px] grid-cols-1 sm:grid-cols-3 rounded-[8px] sm:bg-[#f0f3f3] bg-transparent p-0 sm:p-1 h-auto sm:h-[48px] mb-8 gap-2 sm:gap-0">
-                <TabsTrigger value="all" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                <TabsTrigger
+                  value="all"
+                  className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]"
+                >
                   Всі ({allLessons.length})
                 </TabsTrigger>
-                <TabsTrigger value="completed" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                <TabsTrigger
+                  value="completed"
+                  className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]"
+                >
                   Завершені ({completedLessons.length})
                 </TabsTrigger>
-                <TabsTrigger value="scheduled" className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]">
+                <TabsTrigger
+                  value="scheduled"
+                  className="rounded-[6px] data-[state=active]:bg-white sm:data-[state=active]:bg-white data-[state=active]:text-[#121117] data-[state=active]:shadow-sm bg-[#f0f3f3] sm:bg-transparent py-2.5 sm:py-1.5 text-[15px] font-[600]"
+                >
                   Заплановані ({scheduledLessons.length})
                 </TabsTrigger>
               </TabsList>
@@ -218,14 +230,14 @@ export function ClientProgressPage() {
 function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "scheduled" }) {
   const samples: Record<string, any[]> = {
     all: [
-      { 
+      {
         id: "demo-all-1",
-        subject: "Англійська мова", 
+        subject: "Англійська мова",
         topic: "Підготовка до ЗНО",
-        date: "2026-02-10", 
-        time: "17:00", 
-        status: "scheduled", 
-        duration: 60, 
+        date: "2026-02-10",
+        time: "17:00",
+        status: "scheduled",
+        duration: 60,
         format: "online",
         description: "Розглядаємо граматичні конструкції для підготовки до ЗНО з англійської мови. Фокус на умовних реченнях та модальних дієсловах.",
         homework: {
@@ -238,14 +250,14 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
         },
         materials: ["Grammar_Exercises.pdf", "Conditionals_Cheatsheet.pdf"]
       },
-      { 
+      {
         id: "demo-all-2",
-        subject: "Математика", 
+        subject: "Математика",
         topic: "Тригонометричні рівняння",
-        date: "2026-02-05", 
-        time: "15:00", 
-        status: "completed", 
-        duration: 60, 
+        date: "2026-02-05",
+        time: "15:00",
+        status: "completed",
+        duration: 60,
         format: "online",
         description: "Вивчення тригонометричних функцій та їх графіків. Практичне застосування в задачах.",
         report: {
@@ -268,14 +280,14 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
       },
     ],
     completed: [
-      { 
+      {
         id: "demo-comp-1",
-        subject: "Логопед", 
+        subject: "Логопед",
         topic: "Вправи на дикцію",
-        date: "2026-02-03", 
-        time: "16:00", 
-        status: "completed", 
-        duration: 45, 
+        date: "2026-02-03",
+        time: "16:00",
+        status: "completed",
+        duration: 45,
         format: "offline",
         description: "Комплекс вправ для покращення дикції та артикуляції. Робота з скоромовками.",
         report: {
@@ -296,14 +308,14 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
       },
     ],
     scheduled: [
-      { 
+      {
         id: "demo-sched-1",
-        subject: "Психолог", 
+        subject: "Психолог",
         topic: "Підтримка мотивації",
-        date: "2026-02-12", 
-        time: "18:30", 
-        status: "scheduled", 
-        duration: 50, 
+        date: "2026-02-12",
+        time: "18:30",
+        status: "scheduled",
+        duration: 50,
         format: "online",
         description: "Індивідуальна консультація щодо підвищення навчальної мотивації та подолання стресу.",
         homework: {
@@ -327,7 +339,7 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
         <p className="text-[15px] text-[#69686f] mb-6">
           Зараз у вас немає реальних занять. Ось як вони будуть виглядати:
         </p>
-        
+
         <div className="space-y-4 text-left">
           {items.map((lesson) => (
             <LessonCard key={lesson.id} lesson={lesson} />
@@ -340,7 +352,7 @@ function LessonPlaceholder({ variant }: { variant: "all" | "completed" | "schedu
 
 function LessonCard({ lesson }: { lesson: any }) {
   const [isExpanded, setIsExpanded] = useState(false)
-  
+
   const statusColors = {
     completed: "bg-white border-l-4 border-l-[#00c5a6]",
     scheduled: "bg-white border-l-4 border-l-blue-500",
@@ -354,7 +366,7 @@ function LessonCard({ lesson }: { lesson: any }) {
     cancelled: "Скасовано",
     missed: "Пропущено",
   }
-  
+
   const statusBadgeColors = {
     completed: "bg-[#e8fffb] text-[#00a389]",
     scheduled: "bg-blue-50 text-blue-700",
@@ -366,10 +378,9 @@ function LessonCard({ lesson }: { lesson: any }) {
   const hasAnyInfo = lesson.description || lesson.report || lesson.homework || lesson.materials || lesson.topic
 
   return (
-    <div 
-      className={`rounded-[16px] border border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] ${statusColors[lesson.status as keyof typeof statusColors]} ${
-        hasAnyInfo ? "cursor-pointer hover:shadow-md transition-shadow" : ""
-      }`}
+    <div
+      className={`rounded-[16px] border border-slate-200/80 shadow-[0_4px_12px_rgba(0,0,0,0.03)] ${statusColors[lesson.status as keyof typeof statusColors]} ${hasAnyInfo ? "cursor-pointer hover:shadow-md transition-shadow" : ""
+        }`}
       onClick={() => hasAnyInfo && setIsExpanded(!isExpanded)}
     >
       <div className="p-6">
@@ -450,109 +461,108 @@ function LessonCard({ lesson }: { lesson: any }) {
                       <p className="mb-2 text-[14px] font-[600] text-[#00a389] flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4" /> Сильні сторони
                       </p>
-                          <ul className="space-y-1">
-                            {lesson.report.strengths.map((s: string, i: number) => (
-                              <li key={i} className="text-[14px] text-[#69686f] flex items-start gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#00c5a6] mt-1.5 shrink-0"></span>
-                                <span>{s}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                      <ul className="space-y-1">
+                        {lesson.report.strengths.map((s: string, i: number) => (
+                          <li key={i} className="text-[14px] text-[#69686f] flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#00c5a6] mt-1.5 shrink-0"></span>
+                            <span>{s}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {lesson.homework && (
+              <div className="rounded-[12px] border border-slate-200/80 p-5">
+                <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+                  <h5 className="font-[600] text-[16px] text-[#121117] flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-[#69686f]" /> Домашнє завдання
+                  </h5>
+                  <Badge
+                    variant="outline"
+                    className={`rounded-[6px] px-3 py-1 font-[600] border-0 ${lesson.homework.status === "checked"
+                        ? "bg-[#e8fffb] text-[#00a389]"
+                        : lesson.homework.status === "submitted"
+                          ? "bg-blue-50 text-blue-700"
+                          : "bg-[#f0f3f3] text-[#69686f]"
+                      }`}
+                  >
+                    {lesson.homework.status === "checked"
+                      ? "Перевірено"
+                      : lesson.homework.status === "submitted"
+                        ? "Відправлено"
+                        : "Очікує"}
+                  </Badge>
+                </div>
+                <p className="mb-1 text-[15px] font-[600] text-[#121117]">{lesson.homework.title}</p>
+                <p className="mb-4 text-[14px] text-[#69686f]">{lesson.homework.description}</p>
+                <div className="flex items-center gap-2 text-[13px] text-[#69686f] bg-[#f0f3f3] inline-flex px-3 py-1.5 rounded-[6px]">
+                  <Clock className="h-3.5 w-3.5" />
+                  Здати до:{" "}
+                  {new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA", {
+                    day: "numeric",
+                    month: "long",
+                  })}
+                </div>
+
+                {lesson.homework.grade && (
+                  <div className="mt-4 flex items-start gap-3 rounded-[8px] bg-[#fff8e1] p-4 border border-yellow-100">
+                    <Star className="h-5 w-5 fill-[#ffc800] text-[#ffc800] shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-[15px] font-[600] text-[#121117]">Оцінка: {lesson.homework.grade}/5</p>
+                      {lesson.homework.feedback && (
+                        <p className="text-[14px] text-[#69686f] mt-1">{lesson.homework.feedback}</p>
                       )}
                     </div>
                   </div>
                 )}
 
-                {lesson.homework && (
-                  <div className="rounded-[12px] border border-slate-200/80 p-5">
-                    <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
-                      <h5 className="font-[600] text-[16px] text-[#121117] flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-[#69686f]" /> Домашнє завдання
-                      </h5>
-                      <Badge
-                        variant="outline"
-                        className={`rounded-[6px] px-3 py-1 font-[600] border-0 ${
-                          lesson.homework.status === "checked"
-                            ? "bg-[#e8fffb] text-[#00a389]"
-                            : lesson.homework.status === "submitted"
-                              ? "bg-blue-50 text-blue-700"
-                              : "bg-[#f0f3f3] text-[#69686f]"
-                        }`}
-                      >
-                        {lesson.homework.status === "checked"
-                          ? "Перевірено"
-                          : lesson.homework.status === "submitted"
-                            ? "Відправлено"
-                            : "Очікує"}
-                      </Badge>
-                    </div>
-                    <p className="mb-1 text-[15px] font-[600] text-[#121117]">{lesson.homework.title}</p>
-                    <p className="mb-4 text-[14px] text-[#69686f]">{lesson.homework.description}</p>
-                    <div className="flex items-center gap-2 text-[13px] text-[#69686f] bg-[#f0f3f3] inline-flex px-3 py-1.5 rounded-[6px]">
-                      <Clock className="h-3.5 w-3.5" />
-                      Здати до:{" "}
-                      {new Date(lesson.homework.dueDate).toLocaleDateString("uk-UA", {
-                        day: "numeric",
-                        month: "long",
-                      })}
-                    </div>
-
-                    {lesson.homework.grade && (
-                      <div className="mt-4 flex items-start gap-3 rounded-[8px] bg-[#fff8e1] p-4 border border-yellow-100">
-                        <Star className="h-5 w-5 fill-[#ffc800] text-[#ffc800] shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-[15px] font-[600] text-[#121117]">Оцінка: {lesson.homework.grade}/5</p>
-                          {lesson.homework.feedback && (
-                            <p className="text-[14px] text-[#69686f] mt-1">{lesson.homework.feedback}</p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {lesson.homework.status === "pending" ? (
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.location.href = '/client/materials';
-                        }}
-                        className="mt-4 h-[40px] px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[14px] hover:bg-gray-50 transition-colors inline-flex items-center gap-2"
-                      >
-                        <FileText className="h-4 w-4" />
-                        Здати завдання
-                      </button>
-                    ) : lesson.homework.submittedFiles && lesson.homework.submittedFiles.length > 0 && (
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <p className="text-[14px] font-[600] text-[#121117] mb-2">Ваша здана робота:</p>
-                        <div className="flex flex-wrap gap-2">
-                          {lesson.homework.submittedFiles.map((file: string, i: number) => (
-                            <div key={i} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-[#f0f3f3] text-[13px] font-[500] text-[#121117]">
-                              <FileText className="h-3.5 w-3.5 text-[#69686f]" />
-                              {file}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {lesson.materials && lesson.materials.length > 0 && (
-                  <div>
-                    <h5 className="mb-3 text-[16px] font-[600] text-[#121117]">Матеріали до заняття</h5>
+                {lesson.homework.status === "pending" ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.location.href = '/client/materials';
+                    }}
+                    className="mt-4 h-[40px] px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[14px] hover:bg-gray-50 transition-colors inline-flex items-center gap-2"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Здати завдання
+                  </button>
+                ) : lesson.homework.submittedFiles && lesson.homework.submittedFiles.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <p className="text-[14px] font-[600] text-[#121117] mb-2">Ваша здана робота:</p>
                     <div className="flex flex-wrap gap-2">
-                      {lesson.materials.map((material: string, i: number) => (
-                        <button
-                          key={i}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] border border-slate-200 hover:border-[#121117] hover:bg-gray-50 transition-colors text-[14px] font-[500] text-[#121117]"
-                        >
-                          <Download className="h-4 w-4 text-[#69686f]" />
-                          {material}
-                        </button>
+                      {lesson.homework.submittedFiles.map((file: string, i: number) => (
+                        <div key={i} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[6px] bg-[#f0f3f3] text-[13px] font-[500] text-[#121117]">
+                          <FileText className="h-3.5 w-3.5 text-[#69686f]" />
+                          {file}
+                        </div>
                       ))}
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {lesson.materials && lesson.materials.length > 0 && (
+              <div>
+                <h5 className="mb-3 text-[16px] font-[600] text-[#121117]">Матеріали до заняття</h5>
+                <div className="flex flex-wrap gap-2">
+                  {lesson.materials.map((material: string, i: number) => (
+                    <button
+                      key={i}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-[8px] border border-slate-200 hover:border-[#121117] hover:bg-gray-50 transition-colors text-[14px] font-[500] text-[#121117]"
+                    >
+                      <Download className="h-4 w-4 text-[#69686f]" />
+                      {material}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
