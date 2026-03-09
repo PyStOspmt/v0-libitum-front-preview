@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Upload, Search, MapPin, Users, Plus, X, Video, Save, UserPlus } from "lucide-react"
+import { Upload, Search, MapPin, Users, Plus, X, Video, Save, UserPlus, Eye, EyeOff } from "lucide-react"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { useToast } from "@/hooks/use-toast"
 import { useDictionaryStore } from "@/store/dictionary.store"
@@ -19,6 +19,7 @@ import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { useTheme } from "@/providers/theme-provider"
 import { useAuthContext } from "@/features/auth/context/auth-context"
+import { PasswordForm } from "@/features/settings/components/password-form"
 
 export function TutorProfilePage() {
   const { user } = useAuthContext()
@@ -683,6 +684,16 @@ export function TutorProfilePage() {
                   Завантажити сертифікати
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-slate-200/80 bg-white shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-[24px]">
+            <CardHeader>
+              <CardTitle className="text-[20px] font-bold text-[#121117]">Зміна паролю</CardTitle>
+              <CardDescription className="text-[#69686f] text-[14px]">Оновіть ваш пароль для безпеки акаунту</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <PasswordForm />
             </CardContent>
           </Card>
 
