@@ -4,15 +4,19 @@ import type React from "react"
 import "./globals.css"
 
 export const metadata: Metadata = {
-    title: "Libitum Education - Платформа для репетиторів, психологів та логопедів",
-    description: "Знайдіть свого ідеального репетитора, психолога чи логопеда. Професійні спеціалісти онлайн та офлайн.",
-    generator: "v0.app",
+  title: "Libitum Education - Платформа для репетиторів, психологів та логопедів",
+  description: "Знайдіть свого ідеального репетитора, психолога чи логопеда. Професійні спеціалісти онлайн та офлайн.",
+  generator: "v0.app",
 }
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode
+  children: React.ReactNode
 }>) {
-    return children
+  return (
+    <html lang="uk">
+      <body className="antialiased">{children}</body>
+    </html>
+  )
 }

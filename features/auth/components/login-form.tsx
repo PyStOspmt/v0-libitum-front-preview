@@ -2,20 +2,28 @@
 
 import { UserRoles } from "@/graphql/generated/graphql"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { GoogleIcon } from "@/components/icons/google-icon"
 import { Input } from "@/components/ui/input"
 
 import { type LoginFormValues, loginSchema } from "@/features/auth/lib/schemas/login.schema"
 
 import { useAuthContext } from "../context/auth-context"
+import { useForm } from "react-hook-form"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 
 export function LoginForm() {
     const { handleLoginWithEmailAndPassword, handleOauth, requestOAuthUrlLoading } = useAuthContext()
@@ -179,7 +187,7 @@ export function LoginForm() {
                     {requestOAuthUrlLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                        <Chrome className="mr-2 h-5 w-5" />
+                        <GoogleIcon className="mr-2 h-5 w-5" />
                     )}
                     Увійти через Google
                 </Button>
@@ -191,6 +199,51 @@ export function LoginForm() {
                         Зареєструватись
                     </Link>
                 </p>
+
+                {/* Test accounts */}
+                <div className="mt-4 space-y-2 rounded-[12px] border border-dashed border-slate-200 bg-[#f8f9fa] p-4">
+                    <p className="text-center text-[12px] font-[600] uppercase tracking-wider text-slate-400 mb-3">
+                        Тестові акаунти
+                    </p>
+                    <div className="grid grid-cols-3 gap-2">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#009688] hover:text-[#009688]"
+                            onClick={() => {
+                                form.setValue("email", "client@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Клієнт
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#f57c00] hover:text-[#f57c00]"
+                            onClick={() => {
+                                form.setValue("email", "specialist@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Спеціаліст
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="h-[36px] rounded-[8px] text-[12px] font-[600] border-slate-200 hover:bg-white hover:border-[#9c27b0] hover:text-[#9c27b0]"
+                            onClick={() => {
+                                form.setValue("email", "admin@test.com")
+                                form.setValue("password", "password")
+                                form.handleSubmit(onSubmit)()
+                            }}
+                        >
+                            Адмін
+                        </Button>
+                    </div>
+                </div>
             </form>
         </Form>
     )

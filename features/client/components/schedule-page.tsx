@@ -1,23 +1,20 @@
 "use client"
 
 import { UserRoles } from "@/graphql/generated/graphql"
-import { motion } from "framer-motion"
-import { Calendar, ChevronRight, Clock, MapPin, Star, Users, Video } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { useRef, useState } from "react"
 
 import { FullCalendar } from "@/components/full-calendar"
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { useAuthContext } from "@/features/auth/context/auth-context"
-
+import { useRouter, useSearchParams } from "next/navigation"
+import { motion } from "framer-motion"
+import { Calendar, Clock, Users, ChevronRight, Video, MapPin, Star, DollarSign } from "lucide-react"
+import { useRef, useState } from "react"
 import { useLessonStore } from "@/lib/lesson-store"
 
 import { LessonDetailsDialog } from "./lesson-details"
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
 export function ClientSchedulePage() {
     const { user } = useAuthContext()
@@ -77,11 +74,10 @@ export function ClientSchedulePage() {
                                 <button
                                     key={child.id}
                                     onClick={() => router.push(`/client/schedule?child=${child.id}`)}
-                                    className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${
-                                        child.id === selectedChildId
-                                            ? "bg-[#121117] text-white border-transparent"
-                                            : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
-                                    }`}
+                                    className={`px-6 py-2 rounded-[8px] transition-all duration-200 font-[600] text-[16px] border-2 ${child.id === selectedChildId
+                                        ? "bg-[#121117] text-white border-transparent"
+                                        : "bg-white text-[#121117] border-[#121117] hover:bg-gray-50"
+                                        }`}
                                 >
                                     {child.label}
                                 </button>
@@ -215,24 +211,18 @@ export function ClientSchedulePage() {
                                                     }}
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div
-                                                            className={`h-14 w-14 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}
-                                                        >
+                                                        <div className={`h-14 w-14 rounded-full ${iconBg} flex items-center justify-center flex-shrink-0`}>
                                                             <Calendar className={`h-6 w-6 ${iconColor}`} />
                                                         </div>
                                                         <div className="min-w-0 flex-1">
-                                                            <div className="font-[600] text-[18px] text-[#121117] truncate">
-                                                                {lesson.subject}
-                                                            </div>
-                                                            <div className="text-[14px] text-[#69686f] truncate mt-1">
-                                                                {lesson.specialistName}
-                                                            </div>
+                                                            <div className="font-[600] text-[18px] text-[#121117] truncate">{lesson.subject}</div>
+                                                            <div className="text-[14px] text-[#69686f] truncate mt-1">{lesson.specialistName}</div>
                                                             <div className="text-[13px] text-[#69686f] mt-2 flex items-center gap-2">
                                                                 <span className="bg-[#f0f3f3] px-2 py-1 rounded-[6px]">
-                                                                    {new Date(lesson.date).toLocaleDateString("uk-UA", {
-                                                                        day: "numeric",
-                                                                        month: "long",
-                                                                        weekday: "short",
+                                                                    {new Date(lesson.date).toLocaleDateString('uk-UA', {
+                                                                        day: 'numeric',
+                                                                        month: 'long',
+                                                                        weekday: 'short'
                                                                     })}
                                                                 </span>
                                                                 <span className="bg-[#f0f3f3] px-2 py-1 rounded-[6px]">
@@ -244,37 +234,61 @@ export function ClientSchedulePage() {
                                                     <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t border-gray-100 sm:border-0">
                                                         <Badge
                                                             variant="outline"
-                                                            className={`rounded-[6px] px-3 py-1.5 font-[600] border-0 flex-shrink-0 ${
-                                                                isPsychology
-                                                                    ? "bg-orange-100 text-orange-700"
-                                                                    : lesson.format === "online"
-                                                                      ? "bg-[#e8fffb] text-[#00a389]"
-                                                                      : "bg-blue-50 text-blue-700"
-                                                            }`}
+                                                            className={`rounded-[6px] px-3 py-1.5 font-[600] border-0 flex-shrink-0 ${isPsychology
+                                                                ? "bg-orange-100 text-orange-700"
+                                                                : lesson.format === "online"
+                                                                    ? "bg-[#e8fffb] text-[#00a389]"
+                                                                    : "bg-blue-50 text-blue-700"
+                                                                }`}
                                                         >
                                                             {lesson.format === "online" ? (
-                                                                <>
-                                                                    <Video className="h-4 w-4 mr-1.5 inline" /> Онлайн
-                                                                </>
+                                                                <><Video className="h-4 w-4 mr-1.5 inline" /> Онлайн</>
                                                             ) : (
-                                                                <>
-                                                                    <MapPin className="h-4 w-4 mr-1.5 inline" /> Офлайн
-                                                                </>
+                                                                <><MapPin className="h-4 w-4 mr-1.5 inline" /> Офлайн</>
                                                             )}
                                                         </Badge>
+                                                        {lesson.isPaid === false && lesson.status === "completed" && (
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation()
+                                                                    // Simply open details where user can see payment info
+                                                                    setSelectedLesson(lesson)
+                                                                    setIsLessonDetailsOpen(true)
+                                                                }}
+                                                                className="rounded-[12px] bg-emerald-600 text-white hover:bg-emerald-700 font-[600]"
+                                                            >
+                                                                <DollarSign className="h-4 w-4 mr-1.5" />
+                                                                Оплатити
+                                                            </Button>
+                                                        )}
+
+                                                        {lesson.format === "online" && lesson.status === "scheduled" && (
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation()
+                                                                    if (lesson.meetingUrl) window.open(lesson.meetingUrl, '_blank')
+                                                                }}
+                                                                className="rounded-[12px] bg-primary text-[#121117] hover:bg-primary/90 font-[600]"
+                                                            >
+                                                                <Video className="h-4 w-4 mr-1.5" />
+                                                                Приєднатися
+                                                            </Button>
+                                                        )}
                                                         <ChevronRight className="h-5 w-5 text-[#69686f] flex-shrink-0 hidden sm:block" />
                                                     </div>
                                                 </div>
                                             )
-                                        })(),
+                                        })()
                                     )}
-                                {lessons.filter((lesson) => lesson.status === "scheduled").length === 0 && (
+                                {lessons.filter(lesson => lesson.status === "scheduled").length === 0 && (
                                     <div className="text-center py-12 rounded-[16px] border-2 border-dashed border-gray-200">
                                         <Calendar className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                                         <p className="text-[16px] text-[#69686f] mb-6">Запланованих занять немає</p>
                                         <button
                                             className="inline-flex items-center justify-center h-[48px] px-6 rounded-[8px] border-2 border-[#121117] text-[#121117] font-[600] text-[16px] hover:bg-gray-50 transition-colors"
-                                            onClick={() => router.push("/client/requests/new")}
+                                            onClick={() => router.push('/client/requests/new')}
                                         >
                                             Створити заявку
                                         </button>

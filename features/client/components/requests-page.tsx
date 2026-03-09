@@ -2,13 +2,12 @@
 
 import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
-import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle, Clock, Users } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState } from "react"
-
-import { SquishyButton } from "@/components/home/squishy-button"
+import { motion } from "framer-motion"
 import { TiltCard } from "@/components/home/tilt-card"
+import { SquishyButton } from "@/components/home/squishy-button"
+import { Clock, Users, CheckCircle, ArrowRight, Calendar, Star } from "lucide-react"
+import { useState } from "react"
 import { ProtectedRoute } from "@/components/protected-route"
 import { RequestCard } from "@/components/request-card"
 import { SidebarLayout } from "@/components/sidebar-layout"
@@ -92,11 +91,10 @@ export function ClientRequestsPage() {
                                     variant={child.id === selectedChildId ? "default" : "outline"}
                                     size="sm"
                                     onClick={() => router.push(`/client/requests?child=${child.id}`)}
-                                    className={`rounded-full transition-all ${
-                                        child.id === selectedChildId
+                                    className={`rounded-full transition-all ${child.id === selectedChildId
                                             ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-md"
                                             : "border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
-                                    }`}
+                                        }`}
                                 >
                                     {child.label}
                                 </Button>
@@ -119,29 +117,27 @@ export function ClientRequestsPage() {
                                     <button
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                                            activeTab === tab.id
+                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === tab.id
                                                 ? tab.color === "amber"
                                                     ? "bg-amber-500 text-white shadow-md"
                                                     : tab.color === "emerald"
-                                                      ? "bg-emerald-500 text-white shadow-md"
-                                                      : "bg-slate-600 text-white shadow-md"
+                                                        ? "bg-emerald-500 text-white shadow-md"
+                                                        : "bg-slate-600 text-white shadow-md"
                                                 : "text-slate-600 hover:bg-white hover:shadow-sm"
-                                        }`}
+                                            }`}
                                     >
                                         <Icon className="h-4 w-4" />
                                         <span>{tab.label}</span>
                                         <Badge
                                             variant="secondary"
-                                            className={`ml-1 px-1.5 py-0.5 text-[11px] ${
-                                                activeTab === tab.id
+                                            className={`ml-1 px-1.5 py-0.5 text-[11px] ${activeTab === tab.id
                                                     ? tab.color === "amber"
                                                         ? "bg-amber-100 text-amber-700"
                                                         : tab.color === "emerald"
-                                                          ? "bg-emerald-100 text-emerald-700"
-                                                          : "bg-slate-100 text-slate-700"
+                                                            ? "bg-emerald-100 text-emerald-700"
+                                                            : "bg-slate-100 text-slate-700"
                                                     : "bg-slate-100 text-slate-500"
-                                            }`}
+                                                }`}
                                         >
                                             {tab.count}
                                         </Badge>
@@ -178,52 +174,15 @@ export function ClientRequestsPage() {
                                                 <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
                                                     <Clock className="h-8 w-8 text-slate-300" />
                                                 </div>
-                                                <p className="text-slate-500">Немає запитів, що очікують</p>
+                                                <p className="text-slate-500 mb-6">Немає запитів, що очікують</p>
                                                 <SquishyButton
                                                     bgColor={B.pri}
-                                                    className="mt-4 rounded-full px-6 py-2 text-sm inline-flex items-center gap-2"
+                                                    className="rounded-full px-6 py-2.5 text-sm inline-flex items-center gap-2 font-[600]"
                                                     onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
                                                 >
                                                     Знайти спеціаліста
                                                     <ArrowRight className="h-4 w-4" />
                                                 </SquishyButton>
-
-                                                {/* Приклад для перегляду */}
-                                                <div className="mt-6 grid gap-3 text-left">
-                                                    <div className="rounded-xl border border-slate-200 p-3 bg-white text-sm text-slate-700">
-                                                        <div className="flex justify-between mb-1">
-                                                            <span className="font-semibold">Англійська, 7 клас</span>
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="text-emerald-600 border-emerald-200"
-                                                            >
-                                                                Очікує
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="text-slate-500">10 лютого, 17:00 • Онлайн</div>
-                                                    </div>
-                                                    <div className="rounded-xl border border-slate-200 p-3 bg-white text-sm text-slate-700">
-                                                        <div className="flex justify-between mb-1">
-                                                            <span className="font-semibold">Психологія, 8 клас</span>
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="text-orange-600 border-orange-200"
-                                                            >
-                                                                Очікує
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="text-slate-500">12 лютого, 15:00 • Онлайн</div>
-                                                    </div>
-                                                    <div className="rounded-xl border border-slate-200 p-3 bg-white text-sm text-slate-700">
-                                                        <div className="flex justify-between mb-1">
-                                                            <span className="font-semibold">Математика, 6 клас</span>
-                                                            <Badge variant="outline" className="text-blue-600 border-blue-200">
-                                                                Очікує
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="text-slate-500">14 лютого, 16:30 • Онлайн</div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -256,23 +215,15 @@ export function ClientRequestsPage() {
                                                 <div className="h-16 w-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
                                                     <Users className="h-8 w-8 text-slate-300" />
                                                 </div>
-                                                <p className="text-slate-500">Немає активних запитів</p>
-                                                <div className="mt-6 grid gap-3 text-left">
-                                                    <div className="rounded-xl border border-slate-200 p-3 bg-white text-sm text-slate-700">
-                                                        <div className="flex justify-between mb-1">
-                                                            <span className="font-semibold">Психолог</span>
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="text-emerald-600 border-emerald-200"
-                                                            >
-                                                                В процесі
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="text-slate-500">
-                                                            13 лютого, 18:30 • Онлайн • Узгодження деталей
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <p className="text-slate-500 mb-6">Немає активних запитів</p>
+                                                <SquishyButton
+                                                    bgColor={B.pri}
+                                                    className="rounded-full px-6 py-2.5 text-sm inline-flex items-center gap-2 font-[600]"
+                                                    onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
+                                                >
+                                                    Знайти спеціаліста
+                                                    <ArrowRight className="h-4 w-4" />
+                                                </SquishyButton>
                                             </div>
                                         )}
                                     </div>
@@ -301,22 +252,6 @@ export function ClientRequestsPage() {
                                                     <CheckCircle className="h-8 w-8 text-slate-300" />
                                                 </div>
                                                 <p className="text-slate-500">Немає завершених запитів</p>
-                                                <div className="mt-6 grid gap-3 text-left">
-                                                    <div className="rounded-xl border border-slate-200 p-3 bg-white text-sm text-slate-700">
-                                                        <div className="flex justify-between mb-1">
-                                                            <span className="font-semibold">Логопед</span>
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="text-slate-600 border-slate-200"
-                                                            >
-                                                                Завершено
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="text-slate-500">
-                                                            5 лютого, 16:00 • Офлайн • Оцінка результатів
-                                                        </div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         )}
                                     </div>

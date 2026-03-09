@@ -25,6 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import { type BookingRequest, useRequestStore } from "@/lib/request-store"
 import { cn } from "@/lib/utils"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function AdminRequestsPage() {
     const { requests, acceptRequest, rejectRequest, cancelRequest, markAsPaid } = useRequestStore()
@@ -34,7 +35,7 @@ export function AdminRequestsPage() {
     const completedRequests = requests.filter((req) => ["trial_completed", "paid"].includes(req.status))
 
     return (
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
             <SidebarLayout userType="admin">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
                     <div className="space-y-1">
@@ -257,10 +258,10 @@ function RequestRow({ request, onAccept, onReject, onCancel, onMarkPaid }: Reque
                                     request.status === "pending"
                                         ? "bg-orange-100 text-orange-700"
                                         : ["accepted", "communicating", "trial_scheduled"].includes(request.status)
-                                          ? "bg-[#e8fffb] text-[#00a389]"
-                                          : ["trial_completed", "paid"].includes(request.status)
-                                            ? "bg-[#00c5a6] text-white"
-                                            : "bg-slate-100 text-slate-700",
+                                            ? "bg-[#e8fffb] text-[#00a389]"
+                                            : ["trial_completed", "paid"].includes(request.status)
+                                                ? "bg-[#00c5a6] text-white"
+                                                : "bg-slate-100 text-slate-700",
                                 )}
                             >
                                 {statusLabel(request.status)}

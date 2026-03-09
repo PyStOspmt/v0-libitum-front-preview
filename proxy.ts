@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { defaultLocale, locales } from "@/lib/i18n/config"
 
-export function middleware(request: NextRequest) {
+const PUBLIC_FILE = /\.(.*)$/
+
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl
 
     console.log("Middleware request for:", pathname)

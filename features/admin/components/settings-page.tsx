@@ -6,10 +6,11 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function AdminSettingsPage() {
     return (
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
             <SidebarLayout userType="admin">
                 <div className="container mx-auto max-w-4xl space-y-6 p-6 font-sans">
                     <div className="space-y-1">

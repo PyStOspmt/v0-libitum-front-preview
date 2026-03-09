@@ -271,6 +271,7 @@ export function SpecialistCarousel({
     })
     const [selectedIndex, setSelectedIndex] = useState(0)
     const [isTouchMode, setIsTouchMode] = useState(false)
+    const [hoveredCardId, setHoveredCardId] = useState<string | null>(null)
 
     const scrollPrev = useCallback(() => {
         if (emblaApi) emblaApi.scrollPrev()
@@ -338,21 +339,21 @@ export function SpecialistCarousel({
     const activeThemeClasses =
         theme === "teal"
             ? {
-                  card: "border-[#00c5a6]/30 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
-                  text: "text-[#00a389]",
-                  chip: "bg-[#e8fffb] text-[#00a389] border-[#00c5a6]/30",
-                  arrow: "bg-[#00c5a6] text-[#121117]",
-                  deco: "opacity-[0.06] scale-[1.8]",
-                  divider: "border-slate-200",
-              }
+                card: "border-[#00c5a6]/30 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+                text: "text-[#00a389]",
+                chip: "bg-[#e8fffb] text-[#00a389] border-[#00c5a6]/30",
+                arrow: "bg-[#00c5a6] text-[#121117]",
+                deco: "opacity-[0.06] scale-[1.8]",
+                divider: "border-slate-200",
+            }
             : {
-                  card: "border-[#ffc800]/40 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
-                  text: "text-[#d87b00]",
-                  chip: "bg-[#fff8e1] text-[#d87b00] border-[#ffc800]/40",
-                  arrow: "bg-[#ffc800] text-[#121117]",
-                  deco: "opacity-[0.06] scale-[1.8]",
-                  divider: "border-slate-200",
-              }
+                card: "border-[#ffc800]/40 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+                text: "text-[#d87b00]",
+                chip: "bg-[#fff8e1] text-[#d87b00] border-[#ffc800]/40",
+                arrow: "bg-[#ffc800] text-[#121117]",
+                deco: "opacity-[0.06] scale-[1.8]",
+                divider: "border-slate-200",
+            }
 
     return (
         <div className="mb-10 last:mb-0 relative z-20 max-w-[1440px] mx-auto">
@@ -415,16 +416,31 @@ export function SpecialistCarousel({
                     {specialists.map((specialist, idx) => {
                         const isActiveSlide = selectedIndex === idx
                         const isMobileActive = isTouchMode && isActiveSlide
+                        const isDesktopHovered = !isTouchMode && hoveredCardId === specialist.id
+                        const shouldAnimateTags = isMobileActive || isDesktopHovered
 
                         return (
-                            <div key={specialist.id} className="flex-none w-[65vw] sm:w-[270px] md:w-[290px] min-w-0">
-                                <LocaleLink href={`/specialists/${specialist.id}`} className="block h-full group">
-                                    <div
-                                        className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isMobileActive ? activeThemeClasses.card : ""}`}
-                                    >
-                                        <div
-                                            className={`absolute -right-12 -top-12 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-[1.8] group-hover:opacity-[0.06] ${theme === "teal" ? "bg-[#00c5a6]" : "bg-[#ffc800]"} ${isMobileActive ? activeThemeClasses.deco : ""}`}
-                                        />
+                            <div
+                                key={specialist.id}
+                                className="flex-none w-[65vw] sm:w-[270px] md:w-[290px] min-w-0"
+                            >
+                                <LocaleLink
+                                    href={`/specialists/${specialist.id}`}
+                                    className="block h-full group"
+                                    onMouseEnter={() => {
+                                        if (!isTouchMode) {
+                                            setHoveredCardId(specialist.id)
+                                        }
+                                    }}
+                                    onMouseLeave={() => {
+                                        if (!isTouchMode) {
+                                            setHoveredCardId((current) => (current === specialist.id ? null : current))
+                                        }
+                                    }}
+                                >
+                                    <div className={`bg-white border flex-1 border-slate-200/80 rounded-[20px] sm:rounded-[24px] p-5 sm:p-6 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.12)] ${tClass.borderHighlight} transition-all duration-300 h-full flex flex-col items-start translate-y-0 hover:-translate-y-1.5 relative overflow-hidden ${isMobileActive ? activeThemeClasses.card : ""}`}>
+
+                                        <div className={`absolute -right-12 -top-12 w-32 h-32 rounded-full opacity-[0.03] transition-transform duration-500 group-hover:scale-[1.8] group-hover:opacity-[0.06] ${theme === 'teal' ? 'bg-[#00c5a6]' : 'bg-[#ffc800]'} ${isMobileActive ? activeThemeClasses.deco : ''}`} />
 
                                         <div className="flex gap-4 items-start w-full mb-5 relative z-10">
                                             <div className="relative w-[80px] h-[80px] rounded-full overflow-hidden shrink-0 shadow-sm border-2 border-white ring-1 ring-slate-100">
@@ -458,56 +474,13 @@ export function SpecialistCarousel({
                                             </div>
                                         </div>
 
-                                        <div
-                                            className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee"
-                                            onMouseEnter={(e) => {
-                                                if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector(
-                                                        ".animate-tags-marquee",
-                                                    ) as HTMLElement
-                                                    if (marquee) marquee.style.animationPlayState = "running"
-                                                }
-                                            }}
-                                            onMouseLeave={(e) => {
-                                                if (!isTouchMode) {
-                                                    const marquee = e.currentTarget.querySelector(
-                                                        ".animate-tags-marquee",
-                                                    ) as HTMLElement
-                                                    if (marquee) marquee.style.animationPlayState = "paused"
-                                                }
-                                            }}
-                                        >
-                                            <div className="flex items-center gap-2 mb-2 text-[13px] text-[#69686f] font-medium shrink-0">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    width="16"
-                                                    height="16"
-                                                    viewBox="0 0 24 24"
-                                                    fill="none"
-                                                    stroke="currentColor"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    className="text-slate-400"
-                                                >
-                                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
-                                                </svg>
-                                                <span>
-                                                    Викладає {specialist.subjects.length}{" "}
-                                                    {specialist.subjects.length === 1 ? "предмет" : "предмети"}
-                                                </span>
-                                            </div>
-                                            <div
-                                                className="flex items-center w-full relative overflow-hidden rounded-r-lg"
-                                                style={{
-                                                    maskImage: "linear-gradient(to right, black 80%, transparent 100%)",
-                                                    WebkitMaskImage: "linear-gradient(to right, black 80%, transparent 100%)",
-                                                }}
-                                            >
+                                        <div className="mb-4 w-full relative z-10 flex-1 flex flex-col justify-start overflow-hidden group/marquee">
+                                            <div className="flex items-center w-full relative overflow-hidden rounded-r-lg" style={{ maskImage: 'linear-gradient(to right, black 80%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 100%)' }}>
                                                 <div
-                                                    className={`flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5 ${isMobileActive ? "![animation-play-state:running]" : "![animation-play-state:paused]"}`}
+                                                    className="flex items-center gap-1.5 flex-nowrap w-max animate-tags-marquee pr-1.5"
                                                     style={{
-                                                        animationDuration: "15s",
+                                                        animationDuration: '15s',
+                                                        animationPlayState: shouldAnimateTags ? 'running' : 'paused'
                                                     }}
                                                 >
                                                     {[
@@ -518,10 +491,9 @@ export function SpecialistCarousel({
                                                         <span
                                                             key={idx}
                                                             className={`bg-[#f0f3f3] text-[#4d4c53] px-2 py-1 rounded-lg text-[12px] font-[600] leading-tight border border-slate-100 shrink-0 transition-colors
-                                                                ${
-                                                                    theme === "teal"
-                                                                        ? "group-hover/marquee:bg-[#e8fffb] group-hover/marquee:text-[#00a389] group-hover/marquee:border-[#00c5a6]/30"
-                                                                        : "group-hover/marquee:bg-[#fff8e1] group-hover/marquee:text-[#d87b00] group-hover/marquee:border-[#ffc800]/40"
+                                                                ${theme === "teal"
+                                                                    ? "group-hover/marquee:bg-[#e8fffb] group-hover/marquee:text-[#00a389] group-hover/marquee:border-[#00c5a6]/30"
+                                                                    : "group-hover/marquee:bg-[#fff8e1] group-hover/marquee:text-[#d87b00] group-hover/marquee:border-[#ffc800]/40"
                                                                 } 
                                                                 ${isMobileActive ? activeThemeClasses.chip : ""}`}
                                                         >

@@ -1,6 +1,5 @@
 "use client"
 
-import { DollarSign, Eye, Filter, RefreshCw, Search, ShieldCheck, XCircle } from "lucide-react"
 import { useMemo, useState } from "react"
 
 import { ProtectedRoute } from "@/components/protected-route"
@@ -16,15 +15,18 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
+import { DollarSign, Eye, Filter, RefreshCw, Search, ShieldCheck, XCircle, Settings2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
+import { UserRoles } from "@/graphql/generated/graphql"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
 
 type PaymentStatus = "pending" | "paid" | "refunded" | "failed"
 
@@ -133,7 +135,7 @@ export function AdminPaymentsPage() {
     }, [])
 
     return (
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
             <SidebarLayout userType="admin">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6 font-sans">
                     <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
@@ -270,55 +272,64 @@ function PaymentTable({ payments }: { payments: Payment[] }) {
     }
 
     return (
-        <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans">
+        <Card className="rounded-[24px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.04)] font-sans overflow-hidden">
             <CardHeader>
                 <CardTitle className="text-xl font-[700] text-[#121117]">Рух коштів</CardTitle>
                 <CardDescription className="text-[#69686f] font-[500]">Оплати, повернення та помилки</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="hidden md:grid gap-3 rounded-[12px] bg-[#f0f3f3] px-4 py-3 text-[13px] font-[600] text-[#69686f] md:grid-cols-[repeat(7,minmax(0,1fr))_auto]">
-                    <span>ID</span>
-                    <span>Запит</span>
-                    <span>Клієнт</span>
-                    <span>Спеціаліст</span>
-                    <span>Сума / комісія</span>
-                    <span>Метод</span>
-                    <span>Статус</span>
-                    <span className="text-right">Дії</span>
-                </div>
-                <div className="space-y-3">
-                    {payments.map((p) => (
-                        <Card
-                            key={p.id}
-                            className="border-slate-200/80 md:border-0 md:bg-transparent md:shadow-none transition-colors hover:bg-slate-50/50 rounded-[16px]"
-                        >
-                            <CardContent className="grid gap-3 px-4 py-4 md:items-center md:rounded-[12px] md:bg-white md:border md:border-slate-200/80 shadow-sm md:grid-cols-[repeat(7,minmax(0,1fr))_auto]">
-                                <div className="text-[14px] font-[600] text-[#121117]">{p.id}</div>
-                                <div className="text-[14px] font-[500] text-[#69686f]">{p.requestId}</div>
-                                <div>
-                                    <p className="text-[14px] font-[600] text-[#121117]">{p.client}</p>
+            <div className="overflow-x-auto pb-4">
+                <table className="w-full text-sm text-left">
+                    <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-y border-slate-200">
+                        <tr>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">ID</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Запит</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Клієнт</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Спеціаліст</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Сума / комісія</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Метод</th>
+                            <th className="px-6 py-4 font-semibold whitespace-nowrap">Статус</th>
+                            <th className="px-6 py-4 font-semibold text-right whitespace-nowrap">Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                        {payments.map((p) => (
+                            <tr key={p.id} className="hover:bg-slate-50/50 transition-colors bg-white group">
+                                <td className="px-6 py-4">
+                                    <div className="text-[14px] font-[600] text-[#121117]">{p.id}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="text-[14px] font-[500] text-[#69686f]">{p.requestId}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <p className="text-[14px] font-[600] text-[#121117] whitespace-nowrap">{p.client}</p>
                                     <p className="text-[12px] font-[500] text-[#69686f]">Клієнт</p>
-                                </div>
-                                <div>
-                                    <p className="text-[14px] font-[600] text-[#121117]">{p.specialist}</p>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <p className="text-[14px] font-[600] text-[#121117] whitespace-nowrap">{p.specialist}</p>
                                     <p className="text-[12px] font-[500] text-[#69686f]">Спеціаліст</p>
-                                </div>
-                                <div className="text-[14px]">
-                                    <p className="font-[700] text-[#121117]">{p.amount.toLocaleString()} ₴</p>
-                                    <p className="text-[12px] font-[500] text-[#69686f]">Комісія: {p.fee} ₴</p>
-                                </div>
-                                <div className="text-[14px] font-[500] text-[#69686f]">{p.method}</div>
-                                <div className="flex items-center gap-2 text-[14px]">{statusBadge(p.status)}</div>
-                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full mt-2 md:mt-0">
-                                    <PaymentDetails payment={p} />
-                                    {p.status === "pending" && <ConfirmMarkPaid paymentId={p.id} />}
-                                    {p.status === "paid" && <ConfirmRefund paymentId={p.id} />}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            </CardContent>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <p className="font-[700] text-[#121117] whitespace-nowrap">{p.amount.toLocaleString()} ₴</p>
+                                    <p className="text-[12px] font-[500] text-[#69686f] whitespace-nowrap">Комісія: {p.fee} ₴</p>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="text-[14px] font-[500] text-[#69686f]">{p.method}</div>
+                                </td>
+                                <td className="px-6 py-4">
+                                    <div className="flex items-center gap-2 text-[14px]">{statusBadge(p.status)}</div>
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                    <div className="flex items-center justify-end gap-2 w-full">
+                                        <PaymentDetails payment={p} />
+                                        {p.status === "pending" && <ConfirmMarkPaid paymentId={p.id} />}
+                                        {p.status === "paid" && <ConfirmRefund paymentId={p.id} />}
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </Card>
     )
 }
@@ -327,20 +338,14 @@ function PaymentDetails({ payment }: { payment: Payment }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm"
-                >
+                <Button variant="outline" size="sm" className="w-full sm:w-auto rounded-[8px] border-slate-200/80 text-[#121117] font-[600] hover:bg-slate-50 shadow-sm">
                     <Eye className="mr-2 h-4 w-4" /> Деталі
                 </Button>
             </DialogTrigger>
             <DialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] sm:max-w-md font-sans">
                 <DialogHeader className="pb-4 border-b border-slate-200/80">
                     <DialogTitle className="text-[24px] font-[700] text-[#121117]">Оплата {payment.id}</DialogTitle>
-                    <DialogDescription className="text-[#69686f] font-[500] text-[15px]">
-                        Запит {payment.requestId}
-                    </DialogDescription>
+                    <DialogDescription className="text-[#69686f] font-[500] text-[15px]">Запит {payment.requestId}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-3 text-[15px]">
                     <div className="flex items-center justify-between">
@@ -379,14 +384,54 @@ function PaymentDetails({ payment }: { payment: Payment }) {
                     <Separator className="bg-slate-200/80" />
                     <div className="flex items-center justify-between">
                         <span className="text-[#69686f] font-[500]">Дії</span>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2 justify-end">
                             {payment.status === "pending" && <ConfirmMarkPaid paymentId={payment.id} />}
                             {payment.status === "paid" && <ConfirmRefund paymentId={payment.id} />}
+                            <DisputeResolution paymentId={payment.id} currentStatus={payment.status} />
                         </div>
                     </div>
                 </div>
             </DialogContent>
         </Dialog>
+    )
+}
+
+function DisputeResolution({ paymentId, currentStatus }: { paymentId: string; currentStatus: string }) {
+    return (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button size="sm" variant="outline" className="w-full sm:w-auto rounded-[8px] border-amber-200 text-amber-700 font-[600] hover:bg-amber-50 shadow-sm">
+                    <Settings2 className="mr-2 h-4 w-4" /> Змінити статус
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent className="rounded-[24px] border-0 shadow-[0_8px_32px_rgba(0,0,0,0.08)] font-sans">
+                <AlertDialogHeader>
+                    <AlertDialogTitle className="text-[20px] font-[700] text-[#121117]">Вирішення суперечки</AlertDialogTitle>
+                    <AlertDialogDescription className="text-[#69686f] font-[500] space-y-3">
+                        <div>Зміна статусу для платежу {paymentId}. Використовуйте тільки у випадку суперечок (наприклад, репетитор скасував заявку, але заняття тривають).</div>
+                        <div className="space-y-2 mt-4">
+                            <Label className="text-[13px] font-[600] text-[#121117]">Новий статус</Label>
+                            <Select defaultValue={currentStatus}>
+                                <SelectTrigger className="w-full bg-white rounded-[8px] border-slate-200/80 focus:ring-[#00c5a6]">
+                                    <SelectValue placeholder="Оберіть статус" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-[12px] border-slate-200/80 shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+                                    <SelectItem value="paid" className="rounded-[8px] focus:bg-[#f0f3f3] cursor-pointer">Оплачено</SelectItem>
+                                    <SelectItem value="pending" className="rounded-[8px] focus:bg-[#f0f3f3] cursor-pointer">Очікує оплати</SelectItem>
+                                    <SelectItem value="overdue" className="rounded-[8px] focus:bg-[#f0f3f3] cursor-pointer">Прострочено</SelectItem>
+                                    <SelectItem value="refunded" className="rounded-[8px] focus:bg-[#f0f3f3] cursor-pointer">Повернено</SelectItem>
+                                    <SelectItem value="failed" className="rounded-[8px] focus:bg-[#f0f3f3] cursor-pointer">Помилка</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel className="rounded-[8px] border-slate-200/80 hover:bg-[#f0f3f3] text-[#121117] font-[600]">Скасувати</AlertDialogCancel>
+                    <AlertDialogAction className="rounded-[8px] bg-[#121117] text-white hover:bg-[#121117]/90 font-[600]">Зберегти статус</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     )
 }
 

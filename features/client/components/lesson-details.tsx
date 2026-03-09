@@ -40,15 +40,17 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
     const statusColors = {
         scheduled: "bg-blue-100 text-blue-700 border-blue-200",
         completed: "bg-green-100 text-green-700 border-green-200",
+        trial_completed: "bg-green-100 text-green-700 border-green-200",
         cancelled: "bg-red-100 text-red-700 border-red-200",
-        missed: "bg-orange-100 text-orange-700 border-orange-200",
+        missed: "bg-orange-100 text-orange-700 border-orange-200"
     }
 
     const statusLabels = {
         scheduled: "Заплановано",
         completed: "Завершено",
+        trial_completed: "Пробне завершено",
         cancelled: "Скасовано",
-        missed: "Пропущено",
+        missed: "Пропущено"
     }
 
     const goal = getGoalByLesson(lesson.id)
@@ -75,13 +77,12 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
                         <div className="flex items-center gap-2">
                             <Badge className={statusColors[lesson.status]}>{statusLabels[lesson.status]}</Badge>
                             <Badge
-                                className={`rounded-full ${
-                                    lesson.subject === "Психологія"
+                                className={`rounded-full ${lesson.subject === "Психологія"
                                         ? "bg-orange-100 text-orange-700 border-orange-200"
                                         : lesson.format === "online"
-                                          ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                                          : "bg-blue-100 text-blue-700 border-blue-200"
-                                }`}
+                                            ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                                            : "bg-blue-100 text-blue-700 border-blue-200"
+                                    }`}
                             >
                                 {lesson.format === "online" ? (
                                     <>
@@ -182,23 +183,20 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
                                     {goal.subGoals.map((subGoal) => (
                                         <div
                                             key={subGoal.id}
-                                            className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${
-                                                subGoal.completed
+                                            className={`flex items-center gap-3 p-3 rounded-lg border transition-all ${subGoal.completed
                                                     ? "bg-slate-50 border-transparent"
                                                     : "bg-white border-slate-200"
-                                            }`}
+                                                }`}
                                         >
                                             <div
-                                                className={`flex items-center justify-center h-5 w-5 rounded-full border-2 shrink-0 ${
-                                                    subGoal.completed ? "bg-[#00c5a6] border-[#00c5a6]" : "border-slate-300"
-                                                }`}
+                                                className={`flex items-center justify-center h-5 w-5 rounded-full border-2 shrink-0 ${subGoal.completed ? "bg-[#00c5a6] border-[#00c5a6]" : "border-slate-300"
+                                                    }`}
                                             >
                                                 {subGoal.completed && <CheckCircle2 className="h-3 w-3 text-white" />}
                                             </div>
                                             <span
-                                                className={`text-sm font-medium ${
-                                                    subGoal.completed ? "text-slate-500 line-through" : "text-slate-700"
-                                                }`}
+                                                className={`text-sm font-medium ${subGoal.completed ? "text-slate-500 line-through" : "text-slate-700"
+                                                    }`}
                                             >
                                                 {subGoal.title}
                                             </span>
@@ -212,12 +210,21 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
                     {/* Оплата */}
                     <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
                         <DollarSign className="h-4 w-4 text-slate-600" />
-                        <div>
+                        <div className="flex-1">
                             <p className="text-sm text-slate-600">Вартість</p>
-                            <p className="font-medium">{lesson.price} грн</p>
-                            <p className={`text-xs ${lesson.isPaid ? "text-green-600" : "text-orange-600"}`}>
-                                {lesson.isPaid ? "Оплачено" : "Очікує оплати"}
-                            </p>
+                            <div className="flex items-center justify-between">
+                                <p className="font-medium text-lg">{lesson.price} грн</p>
+                                <Badge className={`text-xs ${lesson.isPaid ? 'bg-green-100 text-green-700 border-green-200' : 'bg-orange-100 text-orange-700 border-orange-200'}`}>
+                                    {lesson.isPaid ? 'Оплачено' : 'Очікує оплати'}
+                                </Badge>
+                            </div>
+                            {lesson.status === "completed" && !lesson.isPaid && (
+                                <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                                    <p className="text-xs text-amber-800 mb-2">
+                                        💡 Будь ласка, сплатіть за проведене заняття. Оплата здійснюється за домовленістю з викладачем.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -292,7 +299,7 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
                         {lesson.status === "scheduled" && (
                             <>
                                 {lesson.format === "online" && lesson.meetingUrl && (
-                                    <Button className="flex-1" onClick={() => window.open(lesson.meetingUrl, "_blank")}>
+                                    <Button className="flex-1" onClick={() => window.open(lesson.meetingUrl, '_blank')}>
                                         <Video className="h-4 w-4 mr-2" />
                                         Приєднатись
                                     </Button>
@@ -305,21 +312,15 @@ export function LessonDetailsDialog({ lesson, open, onOpenChange }: LessonDetail
                                 </Button>
                             </>
                         )}
-                        {lesson.status === "completed" && !lesson.isPaid && (
+                        {(lesson.status === "trial_completed" || lesson.status === "completed") && !lesson.isPaid && (
                             <Button
-                                className="w-full"
-                                onClick={() => {
-                                    toast({
-                                        title: "Функціонал оплати",
-                                        description: "Функціонал оплати буде реалізовано в найближчому оновленні",
-                                        variant: "destructive",
-                                    })
-                                }}
+                                className="w-full bg-emerald-600 hover:bg-emerald-700 pointer-events-none"
                             >
-                                Оплатити {lesson.price} грн
+                                <DollarSign className="h-4 w-4 mr-2" />
+                                Сплатіть {lesson.price} грн особисто викладачу
                             </Button>
                         )}
-                        {lesson.status === "completed" && (
+                        {lesson.status === "completed" && lesson.isPaid && (
                             <Button variant="outline" className="w-full">
                                 Записатись ще
                             </Button>

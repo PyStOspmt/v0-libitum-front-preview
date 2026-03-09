@@ -202,9 +202,7 @@ export function ClientSpecialistsPage() {
                                                 variant="outline"
                                                 size="sm"
                                                 className="w-full bg-transparent rounded-full"
-                                                onClick={() =>
-                                                    router.push(`/specialists/${specialist.id}?child=${selectedChildId}`)
-                                                }
+                                                onClick={() => router.push(`/specialists/${specialist.id}?child=${selectedChildId}`)}
                                             >
                                                 <User className="mr-2 h-4 w-4" />
                                                 Переглянути профіль
@@ -222,12 +220,51 @@ export function ClientSpecialistsPage() {
                                 <p className="mb-6 text-center text-muted-foreground">
                                     Знайдіть спеціаліста, який підходить вам, та почніть навчання
                                 </p>
-                                <Button
-                                    onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
-                                    className="rounded-full"
-                                >
-                                    Створити запит
-                                </Button>
+
+                                {/* Example specialists preview */}
+                                <div className="mb-8 w-full max-w-2xl">
+                                    <p className="text-center text-sm text-muted-foreground mb-4">Популярні спеціалісти на платформі:</p>
+                                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                        {[
+                                            { name: "Олена Петренко", subject: "Математика", rating: 4.9, reviews: 127, price: 350 },
+                                            { name: "Ігор Мельник", subject: "Англійська мова", rating: 4.8, reviews: 89, price: 300 },
+                                            { name: "Марія Коваль", subject: "Фізика", rating: 5.0, reviews: 45, price: 400 },
+                                        ].map((specialist, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-slate-50/50">
+                                                <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center">
+                                                    <User className="h-5 w-5 text-slate-500" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-slate-800 truncate">{specialist.name}</p>
+                                                    <p className="text-xs text-slate-500">{specialist.subject}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="flex items-center gap-1">
+                                                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                                        <span className="text-xs font-medium">{specialist.rating}</span>
+                                                    </div>
+                                                    <p className="text-xs font-semibold text-slate-700">₴{specialist.price}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <Button
+                                        onClick={() => router.push(`/client/requests/new?child=${selectedChildId}`)}
+                                        className="rounded-full"
+                                    >
+                                        Створити запит
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => router.push(`/specialists?child=${selectedChildId}`)}
+                                        className="rounded-full"
+                                    >
+                                        Переглянути каталог
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     )}

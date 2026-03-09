@@ -25,29 +25,27 @@ import {
     Video,
 } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-
+import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BookingModal } from "@/components/booking-modal"
 import { Header } from "@/components/header"
-import { LanguageSwitcher } from "@/components/language-switcher"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 
 import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import { useRequestStore } from "@/lib/request-store"
+import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export function SpecialistProfilePage({ id }: { id: string }) {
-    const router = useRouter()
     const { user } = useAuthContext()
     const { toast } = useToast()
     const { getActiveTrialCount } = useRequestStore()
     const [bookingOpen, setBookingOpen] = useState(false)
     const [wishlisted, setWishlisted] = useState(false)
     const [showAllReviews, setShowAllReviews] = useState(false)
-    const [activeSection, setActiveSection] = useState("about")
+    const [activeSection, setActiveSection] = useState('about')
+    const [selectedBookingDate, setSelectedBookingDate] = useState<Date | undefined>(undefined)
+    const [selectedBookingTime, setSelectedBookingTime] = useState("")
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -217,16 +215,27 @@ export function SpecialistProfilePage({ id }: { id: string }) {
     const activeTrialCount = getActiveTrialCount(user?.id || "")
     const hasReachedLimit = activeTrialCount >= 3
 
-    const handleBookingClick = () => {
-        if (!user) {
-            toast({
-                title: "Потрібна авторизація",
-                description: "Увійдіть в акаунт, щоб залишити заявку",
-                variant: "destructive",
-            })
-            router.push("/login")
-            return
+    const getNextWeekdayDate = (weekdayLabel: string) => {
+        const weekdayMap: Record<string, number> = {
+            "Неділя": 0,
+            "Понеділок": 1,
+            "Вівторок": 2,
+            "Середа": 3,
+            "Четвер": 4,
+            "П'ятниця": 5,
+            "Субота": 6,
         }
+
+        const targetDay = weekdayMap[weekdayLabel]
+        const nextDate = new Date()
+        const currentDay = nextDate.getDay()
+        const daysToAdd = ((targetDay - currentDay + 7) % 7) || 7
+        nextDate.setDate(nextDate.getDate() + daysToAdd)
+        nextDate.setHours(12, 0, 0, 0)
+        return nextDate
+    }
+
+    const handleBookingClick = () => {
         if (hasReachedLimit) {
             toast({
                 title: "Досягнуто ліміт заявок",
@@ -235,6 +244,14 @@ export function SpecialistProfilePage({ id }: { id: string }) {
             })
             return
         }
+        setSelectedBookingDate(undefined)
+        setSelectedBookingTime("")
+        setBookingOpen(true)
+    }
+
+    const handleSlotBookingClick = (day: string, time: string) => {
+        setSelectedBookingDate(getNextWeekdayDate(day))
+        setSelectedBookingTime(time)
         setBookingOpen(true)
     }
 
@@ -487,33 +504,33 @@ export function SpecialistProfilePage({ id }: { id: string }) {
 
                                         {(specialist.education ||
                                             (specialist.achievements && specialist.achievements.length > 0)) && (
-                                            <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-slate-100 w-full max-w-3xl">
-                                                {specialist.education && (
-                                                    <div className="flex items-start justify-center sm:justify-start gap-2 text-center sm:text-left">
-                                                        <GraduationCap className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
-                                                        <span className="text-[13px] font-medium text-[#3e3d45] leading-snug">
-                                                            {specialist.education}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                {specialist.achievements && specialist.achievements.length > 0 && (
-                                                    <div className="flex flex-wrap justify-center sm:justify-start gap-2">
-                                                        {specialist.achievements.map((ach: string) => (
-                                                            <span
-                                                                key={ach}
-                                                                className="inline-flex items-center rounded-lg bg-[#f8f9fa] border border-slate-100 text-[#121117] px-2.5 py-1.5 text-[12px] font-[600]"
-                                                            >
-                                                                <Check
-                                                                    className={`w-3.5 h-3.5 mr-1 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`}
-                                                                />
-                                                                {ach}
+                                                <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-slate-100 w-full max-w-3xl">
+                                                    {specialist.education && (
+                                                        <div className="flex items-start justify-center sm:justify-start gap-2 text-center sm:text-left">
+                                                            <GraduationCap className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
+                                                            <span className="text-[13px] font-medium text-[#3e3d45] leading-snug">
+                                                                {specialist.education}
                                                             </span>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+                                                        </div>
+                                                    )}
+
+                                                    {specialist.achievements && specialist.achievements.length > 0 && (
+                                                        <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                                                            {specialist.achievements.map((ach: string) => (
+                                                                <span
+                                                                    key={ach}
+                                                                    className="inline-flex items-center rounded-lg bg-[#f8f9fa] border border-slate-100 text-[#121117] px-2.5 py-1.5 text-[12px] font-[600]"
+                                                                >
+                                                                    <Check
+                                                                        className={`w-3.5 h-3.5 mr-1 ${specialist.specialization === "Репетитор" ? "text-[#00c5a6]" : "text-[#f57c00]"}`}
+                                                                    />
+                                                                    {ach}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
                                     </div>
                                 </div>
                             </div>
@@ -748,10 +765,7 @@ export function SpecialistProfilePage({ id }: { id: string }) {
                                             { day: "Четвер", slots: ["11:00", "17:00"] },
                                             { day: "П'ятниця", slots: ["10:00", "13:00"] },
                                         ].map((day) => (
-                                            <div
-                                                key={day.day}
-                                                className="rounded-[16px] bg-[#f0f3f3] p-4 sm:p-5 border border-slate-200/50"
-                                            >
+                                            <div key={day.day} className="rounded-[16px] bg-[#f0f3f3] p-4 sm:p-5 border border-slate-200/50">
                                                 <div className="mb-4 flex items-center justify-between font-bold text-[#121117]">
                                                     <span>{day.day}</span>
                                                     <Calendar className="h-4 w-4 text-[#69686f]" />
@@ -760,6 +774,8 @@ export function SpecialistProfilePage({ id }: { id: string }) {
                                                     {day.slots.map((slot) => (
                                                         <button
                                                             key={slot}
+                                                            type="button"
+                                                            onClick={() => handleSlotBookingClick(day.day, slot)}
                                                             className="inline-flex items-center rounded-[8px] border border-slate-200/80 bg-white px-3 py-1.5 text-[13px] font-[600] text-[#121117] hover:border-[#121117] transition-colors cursor-pointer shadow-sm"
                                                         >
                                                             {slot}
@@ -924,7 +940,9 @@ export function SpecialistProfilePage({ id }: { id: string }) {
             <BookingModal
                 open={bookingOpen}
                 onOpenChange={setBookingOpen}
-                specialist={{ ...specialist, id: String(specialist.id) }}
+                specialist={{ ...specialist, id: String(specialist.id), subject: specialist.subjects?.[0] }}
+                initialDate={selectedBookingDate}
+                initialTime={selectedBookingTime}
             />
         </div>
     )

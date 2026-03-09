@@ -36,24 +36,9 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                     </LocaleLink>
 
                     <nav className="hidden lg:flex items-center gap-6 text-[15px] font-medium text-[#121117]">
-                        <LocaleLink
-                            href={specialistHref}
-                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
-                        >
-                            {t("nav.specialists")}
-                        </LocaleLink>
-                        <LocaleLink
-                            href="/#how"
-                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
-                        >
-                            {t("nav.how_it_works")}
-                        </LocaleLink>
-                        <LocaleLink
-                            href="/about"
-                            className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2"
-                        >
-                            {t("about.title")}
-                        </LocaleLink>
+                        <LocaleLink href={specialistHref} className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("nav.specialists")}</LocaleLink>
+                        <LocaleLink href="/#how" className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("nav.how_it_works")}</LocaleLink>
+                        <LocaleLink href="/#reviews" className="hover:text-primary transition-colors underline-offset-4 hover:underline decoration-2">{t("nav.reviews")}</LocaleLink>
                     </nav>
                 </div>
 
@@ -131,12 +116,8 @@ export function Header({ theme = "education" }: { theme?: "education" | "health"
                                 {t("nav.how_it_works")}
                                 <span className="text-slate-300">→</span>
                             </LocaleLink>
-                            <LocaleLink
-                                href="/about"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100"
-                            >
-                                {t("about.title")}
+                            <LocaleLink href="/#reviews" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 active:bg-slate-100">
+                                {t("nav.reviews")}
                                 <span className="text-slate-300">→</span>
                             </LocaleLink>
                         </nav>

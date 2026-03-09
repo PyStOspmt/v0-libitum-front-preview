@@ -1,25 +1,6 @@
 "use client"
 
 import { useTheme } from "@/providers/theme-provider"
-import {
-    BookOpen,
-    Calendar,
-    CheckCircle2,
-    ClipboardList,
-    DollarSign,
-    Globe,
-    Home,
-    LayoutDashboard,
-    Loader2,
-    LogOut,
-    Menu,
-    Settings,
-    ShieldCheck,
-    TrendingUp,
-    UserCog,
-    Users,
-    X,
-} from "lucide-react"
 import { usePathname } from "next/navigation"
 import type React from "react"
 import { useEffect, useState } from "react"
@@ -32,8 +13,28 @@ import { Button } from "@/components/ui/button"
 import { useAuthContext } from "@/features/auth/context/auth-context"
 
 import { useTranslation } from "@/lib/i18n"
-import { locales } from "@/lib/i18n/config"
 import { useLocale } from "@/lib/locale-context"
+import { locales } from "@/lib/i18n/config"
+import {
+    BookOpen,
+    LayoutDashboard,
+    Calendar,
+    Users,
+    DollarSign,
+    Settings,
+    LogOut,
+    Menu,
+    X,
+    CheckCircle2,
+    UserCog,
+    ClipboardList,
+    TrendingUp,
+    ShieldCheck,
+    Globe,
+    Home,
+    FileText,
+    Loader2
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface SidebarLayoutProps {
@@ -90,6 +91,7 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         { href: "/client", label: t("sidebar.dashboard"), icon: LayoutDashboard },
         { href: "/client/schedule", label: t("sidebar.schedule"), icon: Calendar },
         { href: "/client/requests", label: t("sidebar.requests"), icon: ClipboardList },
+        { href: "/client/materials", label: "Матеріали та ДЗ", icon: FileText },
         { href: "/client/progress", label: t("sidebar.progress"), icon: TrendingUp },
         { href: "/client/settings", label: t("sidebar.settings"), icon: Settings },
     ]
@@ -97,13 +99,12 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
     const tutorNavItems = [
         { href: "/tutor", label: t("sidebar.dashboard"), icon: LayoutDashboard },
         { href: "/tutor/requests", label: t("sidebar.requests"), icon: ClipboardList },
-        { href: "/tutor/exchange", label: t("sidebar.exchange"), icon: TrendingUp },
         { href: "/tutor/clients", label: t("sidebar.clients"), icon: Users },
         { href: "/tutor/schedule", label: t("sidebar.schedule"), icon: Calendar },
+        { href: "/tutor/journal", label: "Журнал та ДЗ", icon: BookOpen },
         { href: "/tutor/finances", label: t("sidebar.finances"), icon: DollarSign },
         { href: "/tutor/rewards", label: t("sidebar.rewards"), icon: TrendingUp },
         { href: "/tutor/profile", label: t("sidebar.profile"), icon: UserCog },
-        { href: "/tutor/settings", label: t("sidebar.settings"), icon: Settings },
     ]
 
     const adminNavItems = [
@@ -111,7 +112,6 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
         { href: "/admin/clients", label: t("sidebar.clients"), icon: Users },
         { href: "/admin/specialists", label: t("sidebar.specialists"), icon: UserCog },
         { href: "/admin/moderation", label: t("sidebar.moderation"), icon: CheckCircle2 },
-        { href: "/admin/verifications", label: t("sidebar.verifications"), icon: ShieldCheck },
         { href: "/admin/payments", label: t("sidebar.finances"), icon: DollarSign },
         { href: "/admin/analytics", label: t("sidebar.analytics"), icon: TrendingUp },
         { href: "/admin/dictionaries", label: t("sidebar.dictionaries"), icon: ClipboardList },
@@ -141,8 +141,8 @@ export function SidebarLayout({ children, userType }: SidebarLayoutProps) {
                             {userType === "client"
                                 ? t("role.client")
                                 : userType === "tutor"
-                                  ? t("role.tutor")
-                                  : t("role.admin")}
+                                    ? t("role.tutor")
+                                    : t("role.admin")}
                         </p>
                     </div>
                 </LocaleLink>

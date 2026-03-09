@@ -4,8 +4,8 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { translations } from "@/lib/i18n"
+import { getTranslation } from "@/lib/i18n"
+import { isValidLocale } from "@/lib/i18n/config"
 
 export const dynamic = "force-dynamic"
 
@@ -14,11 +14,11 @@ export const metadata = {
     description: "Сучасна платформа, що поєднує найкращих репетиторів, психологів та логопедів з учнями по всій Україні.",
 }
 
-const t = (key: string) => {
-    return (translations as Record<string, Record<string, string>>)["UA"]?.[key] || key
-}
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale: rawLocale } = await params
+    const locale = isValidLocale(rawLocale) ? rawLocale : "uk"
+    const t = getTranslation(locale)
 
-export default function AboutPage() {
     const features = [
         {
             icon: BookOpen,
@@ -114,20 +114,18 @@ export default function AboutPage() {
                         {features.map((feature, index) => (
                             <Card
                                 key={feature.title}
-                                className={`group hover:shadow-lg transition-all duration-300 bg-gradient-to-br ${
-                                    index % 2 === 0
+                                className={`group hover:shadow-lg transition-all duration-300 bg-gradient-to-br ${index % 2 === 0
                                         ? "from-white via-emerald-50/30 to-white hover:ring-1 hover:ring-emerald-200/50"
                                         : "from-white via-amber-50/30 to-white hover:ring-1 hover:ring-amber-200/50"
-                                }`}
+                                    }`}
                             >
                                 <CardHeader>
                                     <div className="flex items-center gap-3">
                                         <div
-                                            className={`p-2 rounded-lg ${
-                                                index % 2 === 0
+                                            className={`p-2 rounded-lg ${index % 2 === 0
                                                     ? "bg-emerald-100 text-emerald-600"
                                                     : "bg-amber-100 text-amber-600"
-                                            }`}
+                                                }`}
                                         >
                                             <feature.icon className="h-6 w-6" />
                                         </div>
@@ -140,11 +138,10 @@ export default function AboutPage() {
                                 <CardContent>
                                     <Button
                                         asChild
-                                        className={`${
-                                            index % 2 === 0
+                                        className={`${index % 2 === 0
                                                 ? "bg-[linear-gradient(135deg,#00796b,#009688,#0f766e)] hover:brightness-110"
                                                 : "bg-[linear-gradient(135deg,#f59e0b,#f97316,#fb923c)] hover:brightness-110"
-                                        } text-white border-transparent shadow-md transition-all duration-300`}
+                                            } text-white border-transparent shadow-md transition-all duration-300`}
                                     >
                                         <Link href={feature.link} className="inline-flex items-center gap-2">
                                             {feature.linkText}

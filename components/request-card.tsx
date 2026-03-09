@@ -1,20 +1,20 @@
 "use client"
 
-import { Calendar, CheckCircle2, Clock, DollarSign, Home, MessageCircle, Phone, Video, XCircle } from "lucide-react"
-import { useState } from "react"
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
+import { Calendar, Clock, CheckCircle2, XCircle, Video, Home, Phone, MessageCircle, DollarSign, ChevronRight } from "lucide-react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import { type BookingRequest, type CommunicationStatus, type TrialResult, useRequestStore } from "@/lib/request-store"
 
 import { CountdownTimer } from "./countdown-timer"
+import { Input } from "./ui/input"
 
 interface RequestCardProps {
     request: BookingRequest
@@ -25,6 +25,7 @@ interface RequestCardProps {
 }
 
 export function RequestCard({ request, userType, onAccept, onReject, onCancel }: RequestCardProps) {
+    const router = useRouter()
     const displayName = (userType === "specialist" ? request.clientName : request.specialistName) ?? "—"
     const [showCommunicationDialog, setShowCommunicationDialog] = useState(false)
     const [showTrialResultDialog, setShowTrialResultDialog] = useState(false)
@@ -39,6 +40,13 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
     const { updateCommunicationStatus, updateTrialResult, markAsPaid, expireRequest, rejectRequest } = useRequestStore()
 
     const paymentAmount = request.currentPrice ?? request.basePrice
+
+    const handleCardClick = () => {
+        // If it's a client and specialist is assigned, navigate to specialist profile
+        if (userType === "client" && request.specialistId) {
+            router.push(`/specialists/${request.specialistId}`)
+        }
+    }
 
     const [canMarkClientNotResponding] = useState(() => {
         if (!request.acceptedAt) return false
@@ -165,10 +173,10 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
             rejectReason === "other"
                 ? rejectReasonOther.trim()
                 : rejectReason === "schedule"
-                  ? "Не підійшов графік"
-                  : rejectReason === "full"
-                    ? "Заповнений розклад"
-                    : "Інше"
+                    ? "Не підійшов графік"
+                    : rejectReason === "full"
+                        ? "Заповнений розклад"
+                        : "Інше"
 
         if (!reasonText) return
 
@@ -181,18 +189,22 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
 
     return (
         <>
-            <Card className="rounded-2xl border border-slate-200 shadow-sm transition-all hover:shadow-md cursor-pointer hover:border-slate-300">
-                <CardContent className="p-5">
-                    <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-4">
-                            <Avatar className="h-12 w-12 rounded-xl border border-slate-100">
-                                <AvatarFallback className="bg-slate-100 text-slate-700 font-bold">
-                                    {displayName[0] ?? "?"}
-                                </AvatarFallback>
+            <Card
+                className={`rounded-[20px] sm:rounded-[24px] border border-slate-200/80 bg-white shadow-sm transition-all duration-200 hover:shadow-[0_10px_35px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 ${request.specialistId ? "cursor-pointer group" : ""}`}
+                onClick={handleCardClick}
+            >
+                <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                        <div className="flex items-start gap-3 sm:gap-4 w-full sm:w-auto flex-1 min-w-0">
+                            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 rounded-[14px] sm:rounded-[16px] border border-slate-100 shadow-sm shrink-0">
+                                <AvatarFallback className="bg-[#f0f3f3] text-slate-700 font-bold text-lg">{displayName[0] ?? "?"}</AvatarFallback>
                             </Avatar>
-                            <div className="flex-1">
-                                <p className="font-bold text-slate-800 text-lg">{displayName}</p>
-                                <p className="text-sm font-medium text-slate-500 mb-2">{request.subject}</p>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5 sm:mb-0">
+                                    <p className="font-bold text-[#121117] text-[16px] sm:text-[18px] group-hover:text-[#00c5a6] transition-colors truncate">{displayName}</p>
+                                    {request.specialistId && <ChevronRight className="h-4 w-4 text-slate-400 group-hover:text-[#00c5a6] opacity-0 group-hover:opacity-100 transition-all -ml-2 group-hover:ml-0" />}
+                                </div>
+                                <p className="text-[13px] sm:text-[14px] font-medium text-[#69686f] mb-3">{request.subject}</p>
 
                                 {userType === "specialist" && request.status !== "pending" && (
                                     <div className="mt-2 flex flex-wrap gap-2 text-xs mb-3">
@@ -211,33 +223,25 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
                                     </div>
                                 )}
 
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                                <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 sm:gap-4 text-[13px] sm:text-[14px] text-[#69686f]">
                                     <div className="flex items-center gap-1.5">
-                                        <Calendar className="h-4 w-4 text-slate-400" />
-                                        <span className="font-medium text-slate-700">{request.date}</span>{" "}
-                                        <span className="text-slate-400">о</span>{" "}
-                                        <span className="font-medium text-slate-700">{request.time}</span>
+                                        <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
+                                        <span className="font-medium text-[#121117]">{request.date}</span> <span>о</span> <span className="font-medium text-[#121117]">{request.time}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5">
-                                        {request.format === "online" ? (
-                                            <Video className="h-4 w-4 text-slate-400" />
-                                        ) : (
-                                            <Home className="h-4 w-4 text-slate-400" />
-                                        )}
-                                        <span className="font-medium text-slate-700">
-                                            {request.format === "online" ? "Онлайн" : "Офлайн"}
-                                        </span>
+                                        {request.format === "online" ? <Video className="h-4 w-4 text-slate-400 shrink-0" /> : <Home className="h-4 w-4 text-slate-400 shrink-0" />}
+                                        <span className="font-medium text-[#121117]">{request.format === "online" ? "Онлайн" : "Офлайн"}</span>
                                     </div>
                                 </div>
                                 {request.message && (
-                                    <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                        <p className="text-sm text-slate-600 italic">"{request.message}"</p>
+                                    <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-[12px] sm:rounded-[16px] bg-[#f0f3f3] border border-slate-100/50">
+                                        <p className="text-[13px] sm:text-[14px] text-[#4d4c53] leading-relaxed">"{request.message}"</p>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-end gap-2">
+                        <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start w-full sm:w-auto gap-2 pt-3 sm:pt-0 border-t border-slate-100 sm:border-0 mt-1 sm:mt-0">
                             {getStatusBadge()}
 
                             {request.status === "pending" && (
@@ -262,23 +266,14 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
                         </div>
                     </div>
 
-                    <div className="mt-6 flex gap-3">
+                    <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                         {request.status === "pending" && userType === "specialist" && onAccept && onReject && (
                             <>
-                                <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => setShowRejectDialog(true)}
-                                    className="flex-1 rounded-xl border-slate-200 hover:bg-slate-50 hover:text-red-600 hover:border-red-200"
-                                >
+                                <Button size="sm" variant="outline" onClick={() => setShowRejectDialog(true)} className="w-full sm:flex-1 h-[44px] rounded-[10px] sm:rounded-[12px] border-slate-200 text-slate-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors">
                                     <XCircle className="mr-2 h-4 w-4" />
                                     Відхилити
                                 </Button>
-                                <Button
-                                    size="sm"
-                                    onClick={() => onAccept(request.id)}
-                                    className="flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100"
-                                >
+                                <Button size="sm" onClick={() => onAccept(request.id)} className="w-full sm:flex-1 h-[44px] rounded-[10px] sm:rounded-[12px] bg-[#00c5a6] hover:bg-[#00a389] text-[#121117] font-bold shadow-sm transition-all">
                                     <CheckCircle2 className="mr-2 h-4 w-4" />
                                     Прийняти
                                 </Button>
@@ -286,33 +281,21 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
                         )}
 
                         {(request.status === "accepted" || request.status === "communicating") && userType === "specialist" && (
-                            <Button
-                                size="sm"
-                                onClick={() => setShowCommunicationDialog(true)}
-                                className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700"
-                            >
+                            <Button size="sm" onClick={() => setShowCommunicationDialog(true)} className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700">
                                 <MessageCircle className="mr-2 h-4 w-4" />
                                 Оновити статус комунікації
                             </Button>
                         )}
 
                         {request.status === "trial_scheduled" && userType === "specialist" && isPastTrialDateTime && (
-                            <Button
-                                size="sm"
-                                onClick={() => setShowTrialResultDialog(true)}
-                                className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700"
-                            >
+                            <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full h-[44px] rounded-[10px] sm:rounded-[12px] bg-[#121117] text-white hover:bg-slate-800 transition-colors">
                                 <CheckCircle2 className="mr-2 h-4 w-4" />
                                 Чи відбувся урок?
                             </Button>
                         )}
 
                         {request.status === "trial_completed" && userType === "specialist" && !request.trialResult && (
-                            <Button
-                                size="sm"
-                                onClick={() => setShowTrialResultDialog(true)}
-                                className="w-full rounded-xl bg-slate-800 text-white hover:bg-slate-700"
-                            >
+                            <Button size="sm" onClick={() => setShowTrialResultDialog(true)} className="w-full h-[44px] rounded-[10px] sm:rounded-[12px] bg-[#121117] text-white hover:bg-slate-800 transition-colors">
                                 <CheckCircle2 className="mr-2 h-4 w-4" />
                                 Вказати результат пробного
                             </Button>
@@ -321,21 +304,21 @@ export function RequestCard({ request, userType, onAccept, onReject, onCancel }:
                         {request.status === "awaiting_payment" && userType === "specialist" && (
                             <Button
                                 size="sm"
-                                onClick={() => markAsPaid(request.id)}
-                                className="w-full rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm shadow-emerald-100"
+                                onClick={() => {
+                                    window.open(`https://api.monobank.ua/payment?amount=${(paymentAmount || 0) * 100}&ccy=UAH&merchantId=libitum&order_id=${request.id}`, '_blank')
+                                    setTimeout(() => {
+                                        markAsPaid(request.id)
+                                    }, 2000)
+                                }}
+                                className="w-full h-[44px] rounded-[10px] sm:rounded-[12px] bg-[#ffc800] hover:bg-[#e6b400] text-[#121117] font-bold shadow-sm transition-all"
                             >
-                                <DollarSign className="mr-2 h-4 w-4" />
-                                Оплатити заявку{typeof paymentAmount === "number" ? ` (${paymentAmount} грн)` : ""}
+                                <DollarSign className="mr-2 h-4 w-4 opacity-70" />
+                                Оплатити за ліда (комісія){typeof paymentAmount === "number" ? ` - ${paymentAmount} грн` : ""}
                             </Button>
                         )}
 
                         {request.status === "pending" && userType === "client" && onCancel && (
-                            <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => onCancel(request.id)}
-                                className="w-full rounded-xl border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                            >
+                            <Button size="sm" variant="outline" onClick={() => onCancel(request.id)} className="w-full h-[44px] rounded-[10px] sm:rounded-[12px] border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors">
                                 <XCircle className="mr-2 h-4 w-4" />
                                 Скасувати запит
                             </Button>

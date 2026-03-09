@@ -6,10 +6,11 @@ import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function AdminReportsPage() {
     return (
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
             <SidebarLayout userType="admin">
                 <div className="container mx-auto max-w-7xl space-y-6 p-6">
                     <div>
