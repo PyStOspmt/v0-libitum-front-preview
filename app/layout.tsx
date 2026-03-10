@@ -1,5 +1,6 @@
-import type React from "react"
 import type { Metadata } from "next"
+import type React from "react"
+
 import "./globals.css"
 
 export const metadata: Metadata = {
@@ -13,5 +14,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return children
+  return (
+    <html lang="uk">
+      <body className="antialiased">{children}</body>
+    </html>
+  )
 }

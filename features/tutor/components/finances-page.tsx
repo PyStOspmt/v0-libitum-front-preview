@@ -1,33 +1,38 @@
 "use client"
 
-import { ProtectedRoute } from "@/components/protected-route"
-import { SidebarLayout } from "@/components/sidebar-layout"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { WithdrawDialog } from "./withdraw-dialog"
+import { useToast } from "@/hooks/use-toast"
 import {
-  DollarSign,
-  TrendingUp,
-  Calendar,
-  Download,
-  ArrowUpRight,
-  ArrowDownRight,
-  CreditCard,
-  Wallet,
-  Clock,
   AlertCircle,
+  ArrowDownRight,
+  ArrowUpRight,
+  Calendar,
+  Clock,
+  CreditCard,
+  DollarSign,
+  Download,
   ExternalLink,
   Receipt,
+  TrendingUp,
+  Wallet,
 } from "lucide-react"
-import { useLessonStore } from "@/lib/lesson-store"
-import { useAuth } from "@/lib/auth-context"
 import { useState } from "react"
-import { useToast } from "@/hooks/use-toast"
+
+import { ProtectedRoute } from "@/components/protected-route"
+import { SidebarLayout } from "@/components/sidebar-layout"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
+import { useLessonStore } from "@/lib/lesson-store"
+
+import { WithdrawDialog } from "./withdraw-dialog"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorFinancesPage() {
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const { lessons } = useLessonStore()
   const { toast } = useToast()
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false)
@@ -124,7 +129,7 @@ export function TutorFinancesPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["specialist"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-7xl space-y-8 p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -138,7 +143,7 @@ export function TutorFinancesPage() {
             </Button>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             <Card className="border-slate-200/70 bg-white/80 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Загальний дохід</CardTitle>
@@ -158,6 +163,33 @@ export function TutorFinancesPage() {
               <CardContent>
                 <div className="text-2xl font-bold text-amber-600">{totalPending} грн</div>
                 <p className="text-xs text-muted-foreground">За {completedUnpaidLessons.length} занять</p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-slate-200/70 bg-white/80 shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Заборгованість</CardTitle>
+                <AlertCircle className="h-4 w-4 text-orange-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-orange-600">600 грн</div>
+                <p className="text-xs text-muted-foreground">Комісія за 2 ліди</p>
+                <Button
+                  size="sm"
+                  className="w-full mt-3 bg-orange-600 hover:bg-orange-700"
+                  onClick={() => {
+                    toast({
+                      title: "Оплата через Monobank",
+                      description: "Редирект на сторінку оплати Monobank",
+                    })
+                    setTimeout(() => {
+                      window.open(`https://api.monobank.ua/payment?amount=60000&ccy=UAH&merchantId=libitum&order_id=leads_payment_1`, '_blank')
+                    }, 1000)
+                  }}
+                >
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Сплатити комісію
+                </Button>
               </CardContent>
             </Card>
 
@@ -212,9 +244,8 @@ export function TutorFinancesPage() {
                         >
                           <div className="flex items-center gap-4">
                             <div
-                              className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                                transaction.type === "income" ? "bg-emerald-100" : "bg-rose-100"
-                              }`}
+                              className={`flex h-10 w-10 items-center justify-center rounded-full ${transaction.type === "income" ? "bg-emerald-100" : "bg-rose-100"
+                                }`}
                             >
                               {transaction.type === "income" ? (
                                 <ArrowDownRight className="h-5 w-5 text-emerald-600" />
@@ -237,15 +268,21 @@ export function TutorFinancesPage() {
                           </div>
                           <div className="flex flex-col items-end gap-2">
                             <p
-                              className={`text-lg font-bold ${
-                                transaction.type === "income" ? "text-emerald-600" : "text-rose-600"
-                              }`}
+                              className={`text-lg font-bold ${transaction.type === "income"
+                                ? "text-emerald-600"
+                                : "text-rose-600"
+                                }`}
                             >
                               {transaction.type === "income" ? "+" : "-"}
                               {transaction.amount} грн
                             </p>
                             {transaction.receiptUrl && (
-                              <Button variant="link" size="sm" className="h-auto p-0 text-xs" asChild>
+                              <Button
+                                variant="link"
+                                size="sm"
+                                className="h-auto p-0 text-xs"
+                                asChild
+                              >
                                 <a
                                   href={transaction.receiptUrl}
                                   target="_blank"
@@ -284,7 +321,9 @@ export function TutorFinancesPage() {
                                 </p>
                               </div>
                             </div>
-                            <p className="text-lg font-bold text-emerald-600">+{transaction.amount} грн</p>
+                            <p className="text-lg font-bold text-emerald-600">
+                              +{transaction.amount} грн
+                            </p>
                           </div>
                         ))}
                     </div>
@@ -310,7 +349,9 @@ export function TutorFinancesPage() {
                                 </p>
                               </div>
                             </div>
-                            <p className="text-lg font-bold text-rose-600">-{transaction.amount} грн</p>
+                            <p className="text-lg font-bold text-rose-600">
+                              -{transaction.amount} грн
+                            </p>
                           </div>
                         ))}
                     </div>
@@ -338,9 +379,10 @@ export function TutorFinancesPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Баланс</span>
                     <span
-                      className={`text-xl font-bold ${
-                        monthlyStats.income - monthlyStats.expenses >= 0 ? "text-emerald-600" : "text-rose-600"
-                      }`}
+                      className={`text-xl font-bold ${monthlyStats.income - monthlyStats.expenses >= 0
+                        ? "text-emerald-600"
+                        : "text-rose-600"
+                        }`}
                     >
                       {monthlyStats.income - monthlyStats.expenses >= 0 ? "+" : ""}
                       {monthlyStats.income - monthlyStats.expenses} грн

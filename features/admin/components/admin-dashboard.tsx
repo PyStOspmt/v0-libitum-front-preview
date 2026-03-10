@@ -1,10 +1,12 @@
 "use client"
 
+import { AlertCircle, ArrowRight, Clock, DollarSign, TrendingUp, UserCheck, Users } from "lucide-react"
+import Link from "next/link"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
 import { Badge } from "@/components/ui/badge"
-import { Users, UserCheck, Clock, DollarSign, TrendingUp, AlertCircle, ArrowRight } from "lucide-react"
-import Link from "next/link"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 const stats = {
     totalUsers: 1247,
@@ -24,20 +26,29 @@ const activities = [
     { id: 4, type: "booking", text: "Створено новий запит на заняття", user: "Іван Сидоренко", time: "3 години тому" },
 ]
 
+const activityLinks: Record<string, string> = {
+    verification: "/admin/moderation",
+    payment: "/admin/payments",
+    registration: "/admin/clients",
+    booking: "/admin/clients",
+}
+
 export function AdminDashboard() {
     return (
-        <ProtectedRoute allowedRoles={["admin"]}>
+        <ProtectedRoute allowedRoles={[UserRoles.SuperAdmin]}>
             <SidebarLayout userType="admin">
                 <div className="p-6 lg:p-10 max-w-[1200px] mx-auto space-y-8 font-sans">
                     {/* Header */}
                     <div>
-                        <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Адміністративна панель</h1>
+                        <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">
+                            Адміністративна панель
+                        </h1>
                         <p className="text-[#69686f] mt-1 text-[16px]">Огляд платформи</p>
                     </div>
 
                     {/* Stats Grid */}
                     <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                        <div className="bg-white rounded-[24px] p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
+                        <div className="bg-white rounded-[24px] p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]">
                             <div className="flex items-center justify-between mb-4">
                                 <span className="text-[14px] font-[600] text-[#69686f]">Всього користувачів</span>
                                 <div className="h-10 w-10 rounded-full bg-[#f0f3f3] flex items-center justify-center">
@@ -57,7 +68,9 @@ export function AdminDashboard() {
                                     <UserCheck className="h-5 w-5 text-[#ffb74d]" />
                                 </div>
                             </div>
-                            <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingVerifications}</div>
+                            <div className="text-[32px] font-bold text-[#121117] leading-none">
+                                {stats.pendingVerifications}
+                            </div>
                             <p className="text-[13px] text-[#69686f] mt-2">Нові спеціалісти</p>
                         </div>
 
@@ -79,8 +92,12 @@ export function AdminDashboard() {
                                     <DollarSign className="h-5 w-5 text-[#43a047]" />
                                 </div>
                             </div>
-                            <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.monthlyRevenue.toLocaleString()} ₴</div>
-                            <p className="text-[13px] text-[#43a047] mt-2 font-[600]">+{stats.growthRate}% від минулого місяця</p>
+                            <div className="text-[32px] font-bold text-[#121117] leading-none">
+                                {stats.monthlyRevenue.toLocaleString()} ₴
+                            </div>
+                            <p className="text-[13px] text-[#43a047] mt-2 font-[600]">
+                                +{stats.growthRate}% від минулого місяця
+                            </p>
                         </div>
                     </div>
 
@@ -94,17 +111,24 @@ export function AdminDashboard() {
                                 <h3 className="text-[20px] font-bold text-[#121117]">Потребують уваги</h3>
                             </div>
                             <div className="space-y-4">
-                                <Link href="/admin/verifications" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                                <Link href="/admin/moderation" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
                                     <span className="text-[15px] font-[500] text-[#121117]">Верифікація спеціалістів</span>
                                     <div className="flex items-center gap-3">
-                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">{stats.pendingVerifications}</Badge>
+                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                                            {stats.pendingVerifications}
+                                        </Badge>
                                         <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                                     </div>
                                 </Link>
-                                <Link href="/admin/payments" className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group">
+                                <Link
+                                    href="/admin/payments"
+                                    className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50 hover:bg-gray-100 transition-colors group"
+                                >
                                     <span className="text-[15px] font-[500] text-[#121117]">Очікують оплати</span>
                                     <div className="flex items-center gap-3">
-                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">{stats.pendingPayments}</Badge>
+                                        <Badge className="bg-[#fff8e1] text-[#f57c00] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#fff8e1]">
+                                            {stats.pendingPayments}
+                                        </Badge>
                                         <ArrowRight className="h-4 w-4 text-[#69686f] group-hover:translate-x-1 group-hover:text-[#121117] transition-all" />
                                     </div>
                                 </Link>
@@ -121,11 +145,15 @@ export function AdminDashboard() {
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
                                     <span className="text-[15px] font-[500] text-[#121117]">Нові користувачі (тиждень)</span>
-                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">+47</Badge>
+                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                                        +47
+                                    </Badge>
                                 </div>
                                 <div className="flex items-center justify-between py-4 px-5 rounded-[12px] bg-gray-50">
                                     <span className="text-[15px] font-[500] text-[#121117]">Завершені заняття (тиждень)</span>
-                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">+156</Badge>
+                                    <Badge className="bg-[#e8f5e9] text-[#2e7d32] border-0 text-[14px] px-3 font-[600] rounded-[6px] hover:bg-[#e8f5e9]">
+                                        +156
+                                    </Badge>
                                 </div>
                             </div>
                         </div>
@@ -138,25 +166,34 @@ export function AdminDashboard() {
                             <p className="text-[#69686f] text-[16px] mt-1">Нещодавні події на платформі</p>
                         </div>
                         <div className="space-y-2">
-                            {activities.map((activity) => (
-                                <div key={activity.id} className="flex flex-col sm:flex-row sm:items-center justify-between py-4 px-5 rounded-[12px] hover:bg-gray-50 transition-colors border border-transparent hover:border-slate-200/50">
-                                    <div className="mb-2 sm:mb-0">
-                                        <p className="text-[15px] font-[600] text-[#121117]">{activity.text}</p>
-                                        <p className="text-[14px] text-[#69686f] mt-1 flex items-center gap-2">
-                                            <span className="font-[500]">{activity.user}</span>
-                                            {activity.amount && (
-                                                <>
-                                                    <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                                                    <span className="text-[#121117] font-[600]">{activity.amount}</span>
-                                                </>
-                                            )}
-                                        </p>
-                                    </div>
-                                    <span className="text-[13px] font-[500] text-[#69686f] bg-white px-3 py-1 rounded-full border border-gray-200 shrink-0 self-start sm:self-auto">
-                                        {activity.time}
-                                    </span>
-                                </div>
-                            ))}
+                            {activities.map((activity) => {
+                                const href = activityLinks[activity.type] || "#"
+                                const Wrapper = href === "#" ? "div" : Link
+
+                                return (
+                                    <Wrapper
+                                        key={activity.id}
+                                        href={href as string}
+                                        className="flex flex-col sm:flex-row sm:items-center justify-between py-4 px-5 rounded-[12px] hover:bg-gray-50 transition-colors border border-transparent hover:border-slate-200/50"
+                                    >
+                                        <div className="mb-2 sm:mb-0">
+                                            <p className="text-[15px] font-[600] text-[#121117]">{activity.text}</p>
+                                            <p className="text-[14px] text-[#69686f] mt-1 flex items-center gap-2">
+                                                <span className="font-[500]">{activity.user}</span>
+                                                {activity.amount && (
+                                                    <>
+                                                        <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+                                                        <span className="text-[#121117] font-[600]">{activity.amount}</span>
+                                                    </>
+                                                )}
+                                            </p>
+                                        </div>
+                                        <span className="text-[13px] font-[500] text-[#69686f] bg-white px-3 py-1 rounded-full border border-gray-200 shrink-0 self-start sm:self-auto">
+                                            {activity.time}
+                                        </span>
+                                    </Wrapper>
+                                )
+                            })}
                         </div>
                     </div>
                 </div>

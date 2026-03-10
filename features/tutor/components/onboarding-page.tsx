@@ -1,315 +1,412 @@
 "use client"
 
-import { useState } from "react"
+import { QuizType } from "@/graphql/generated/graphql"
+import { HANDLE_COMPLETE_QUIZ } from "@/graphql/quizzes"
+import { useMutation } from "@apollo/client/react"
+import { AlertCircle, ArrowRight, BookOpen, CheckCircle, Loader2, XCircle } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useMemo, useState } from "react"
+import { toast } from "sonner"
+
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Progress } from "@/components/ui/progress"
-import { CheckCircle, XCircle, AlertCircle, BookOpen, ArrowRight } from "lucide-react"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAuth } from "@/lib/auth-context"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-const QUIZ_QUESTIONS = [
-  {
-    id: 1,
-    question: "Коли ви платите комісію платформі за лід?",
-    options: [
-      { id: "a", text: "Одразу після отримання заявки", correct: false },
-      { id: "b", text: "Після успішного пробного заняття, якщо клієнт продовжує", correct: true },
-      { id: "c", text: "Щомісяця фіксована сума", correct: false },
-      { id: "d", text: "Платформа безкоштовна", correct: false },
-    ],
-  },
-  {
-    id: 2,
-    question: "Скільки часу у вас є на відповідь після отримання заявки?",
-    options: [
-      { id: "a", text: "24 години", correct: false },
-      { id: "b", text: "1 година", correct: false },
-      { id: "c", text: "3 години", correct: true },
-      { id: "d", text: "Необмежено", correct: false },
-    ],
-  },
-  {
-    id: 3,
-    question: "Що станеться, якщо ви відповісте на заявку протягом 20 хвилин?",
-    options: [
-      { id: "a", text: "Нічого особливого", correct: false },
-      { id: "b", text: "Отримаєте бонус до рейтингу", correct: true },
-      { id: "c", text: "Знижка на комісію", correct: false },
-      { id: "d", text: "Додаткова заявка безкоштовно", correct: false },
-    ],
-  },
-  {
-    id: 4,
-    question: "Що робити, якщо клієнт відмовився продовжувати після пробного заняття?",
-    options: [
-      { id: "a", text: "Все одно треба платити комісію", correct: false },
-      { id: "b", text: "Вказати причину в системі, комісія не стягується", correct: true },
-      { id: "c", text: "Написати в підтримку", correct: false },
-      { id: "d", text: "Видалити заявку", correct: false },
-    ],
-  },
-  {
-    id: 5,
-    question: "Скільки часу у вас є на оплату комісії після успішного пробного?",
-    options: [
-      { id: "a", text: "3 години", correct: false },
-      { id: "b", text: "12 годин", correct: false },
-      { id: "c", text: "24 години", correct: true },
-      { id: "d", text: "7 днів", correct: false },
-    ],
-  },
-]
+import { useAuthContext } from "@/features/auth/context/auth-context"
 
-export function TutorOnboardingPage() {
-  const router = useRouter()
-  const { user } = useAuth()
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<Record<number, string>>({})
-  const [showResults, setShowResults] = useState(false)
-  const [score, setScore] = useState(0)
+import { cn } from "@/lib/utils"
+import { revalidateAppPath } from "@/lib/utils/revalidate"
 
-  const handleAnswer = (optionId: string) => {
-    setAnswers({ ...answers, [currentQuestion]: optionId })
-  }
+interface TutorOnboardingPageProps {
+    quizzes: QuizType[]
+}
 
-  const handleNext = () => {
-    if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
-      setCurrentQuestion(currentQuestion + 1)
-    } else {
-      checkAnswers()
-    }
-  }
+type LocalQuizQuestion = {
+    id: string
+    question: string
+    explanation?: string | null
+    options: {
+        id: string
+        text: string
+    }[]
+}
 
-  const checkAnswers = () => {
-    let correct = 0
-    QUIZ_QUESTIONS.forEach((question, index) => {
-      const selectedOption = question.options.find((opt) => opt.id === answers[index])
-      if (selectedOption?.correct) {
-        correct++
-      }
-    })
-    setScore(correct)
-    setShowResults(true)
-  }
+type QuizResult = {
+    correctCount: number
+    isPassed: boolean
+    questionResults: {
+        correctOptionIds: string[]
+        isCorrect: boolean
+        questionId: string
+        selectedOptionIds: string[]
+    }[]
+    scorePercent: number
+    totalQuestions: number
+}
 
-  const handleRetry = () => {
-    setCurrentQuestion(0)
-    setAnswers({})
-    setShowResults(false)
-    setScore(0)
-  }
+export function TutorOnboardingPage({ quizzes }: TutorOnboardingPageProps) {
+    const router = useRouter()
+    const { user } = useAuthContext()
+    const [currentQuestion, setCurrentQuestion] = useState(0)
+    const [answers, setAnswers] = useState<Record<number, string>>({})
+    const [showResults, setShowResults] = useState(false)
+    const [quizResult, setQuizResult] = useState<QuizResult | null>(null)
 
-  const [step, setStep] = useState<"instructions" | "quiz">("instructions")
-
-  const handleStartQuiz = () => setStep("quiz")
-
-  const handleComplete = async () => {
-    // In a real app, this would be an API call to update hasPassedQuiz
-    if (user) {
-      const updatedUser = { ...user, hasPassedQuiz: true }
-      localStorage.setItem("user", JSON.stringify(updatedUser))
-      // Trigger a page refresh to update auth context state
-      window.location.href = "/tutor"
-    }
-  }
-
-  const progress = ((currentQuestion + 1) / QUIZ_QUESTIONS.length) * 100
-  const isPerfectScore = score === QUIZ_QUESTIONS.length
-
-  if (step === "instructions") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-        <Card className="max-w-2xl w-full">
-          <CardHeader>
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpen className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium text-muted-foreground">Онбординг спеціаліста</span>
-            </div>
-            <CardTitle className="text-2xl">Як працює Libitium?</CardTitle>
-            <CardDescription>Перед початком роботи ознайомтеся з основними правилами платформи.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-4">
-              <div className="rounded-lg border bg-card p-4 space-y-3">
-                <div className="flex gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                  <div>
-                    <p className="font-medium">Модель оплати за лід</p>
-                    <p className="text-sm text-muted-foreground">Ви платите комісію тільки за реального учня, який залишився з вами після пробного заняття.</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                  <div>
-                    <p className="font-medium">Швидкість відповіді</p>
-                    <p className="text-sm text-muted-foreground">У вас є 3 години, щоб прийняти або відхилити нову заявку. Відповідь за 20 хв дає бонус!</p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-                  <div>
-                    <p className="font-medium">Прозорість</p>
-                    <p className="text-sm text-muted-foreground">Якщо учень не підійшов або відмовився після першого уроку — ви нічого не платите.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Button onClick={handleStartQuiz} className="w-full">
-              Я все зрозумів, почати тест
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+    const [completeQuizMutation, { loading: isSubmitting }] = useMutation<{ handleCompleteQuiz: QuizResult }>(
+        HANDLE_COMPLETE_QUIZ,
     )
-  }
 
-  if (showResults) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
-        <Card className="w-full max-w-2xl">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-              {isPerfectScore ? (
-                <CheckCircle className="h-12 w-12 text-green-600" />
-              ) : (
-                <XCircle className="h-12 w-12 text-red-600" />
-              )}
+    const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null
+
+    const QUIZ_QUESTIONS: LocalQuizQuestion[] = useMemo(() => {
+        if (!quiz) return []
+
+        return [...quiz.questions]
+            .sort((a: any, b: any) => a.order - b.order)
+            .map((q: any) => ({
+                id: String(q.id),
+                question: q.text,
+                explanation: q.explanation,
+                options: q.options.map((opt: any) => ({
+                    id: String(opt.id),
+                    text: opt.text,
+                })),
+            }))
+    }, [quiz])
+
+    const handleAnswer = (optionId: string) => {
+        setAnswers({ ...answers, [currentQuestion]: optionId })
+    }
+
+    const handleNext = async () => {
+        if (currentQuestion < QUIZ_QUESTIONS.length - 1) {
+            setCurrentQuestion(currentQuestion + 1)
+        } else {
+            await submitQuiz()
+        }
+    }
+
+    const submitQuiz = async () => {
+        console.log("[submitQuiz] Started")
+        try {
+            const payload = {
+                quizId: quiz?.id,
+                answers: QUIZ_QUESTIONS.map((q, index) => ({
+                    questionId: q.id,
+                    selectedOptionsId: [answers[index]],
+                })),
+            }
+            console.log("[submitQuiz] Payload:", JSON.stringify(payload, null, 2))
+
+            console.log("[submitQuiz] Calling completeQuizMutation...")
+            const result = await completeQuizMutation({
+                variables: { payload },
+            })
+            console.log("[submitQuiz] Mutation result:", JSON.stringify(result, null, 2))
+
+            const { data } = result
+
+            if (data?.handleCompleteQuiz) {
+                console.log("[submitQuiz] Quiz completed successfully:", data.handleCompleteQuiz)
+                setQuizResult(data.handleCompleteQuiz)
+                setShowResults(true)
+            } else {
+                console.warn("[submitQuiz] No handleCompleteQuiz in response data:", data)
+            }
+        } catch (error: any) {
+            console.error("[submitQuiz] Error caught:", error)
+            console.error("[submitQuiz] Error message:", error?.message)
+            console.error("[submitQuiz] GraphQL errors:", error?.graphQLErrors)
+            console.error("[submitQuiz] Network error:", error?.networkError)
+            toast.error(error?.message || "Не вдалося відправити результати тесту. Спробуйте ще раз.")
+        }
+        console.log("[submitQuiz] Finished")
+    }
+
+    const handleRetry = () => {
+        setCurrentQuestion(0)
+        setAnswers({})
+        setShowResults(false)
+        setQuizResult(null)
+    }
+
+    const [step, setStep] = useState<"instructions" | "quiz">("instructions")
+
+    const question = QUIZ_QUESTIONS[currentQuestion]
+    const shuffledOptions = useMemo(() => {
+        if (!question) return []
+        return [...question.options].sort(() => Math.random() - 0.5)
+    }, [question])
+
+    if (!quiz || QUIZ_QUESTIONS.length === 0) {
+        return <div className="flex h-screen items-center justify-center p-8">Немає доступних квізів.</div>
+    }
+
+    const handleStartQuiz = () => setStep("quiz")
+
+    const handleComplete = async () => {
+        if (user) {
+            const updatedUser = { ...user, hasPassedQuiz: true }
+            localStorage.setItem("user", JSON.stringify(updatedUser))
+            revalidateAppPath("/tutor/profile")
+            router.push("/tutor/profile")
+        }
+    }
+
+    const progress = QUIZ_QUESTIONS.length > 0 ? (currentQuestion / QUIZ_QUESTIONS.length) * 100 : 0
+    const passingScore = quiz?.passingScore ?? 100
+    const isPassed = quizResult?.isPassed ?? false
+
+    if (step === "instructions") {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
+                <Card className="max-w-2xl w-full">
+                    <CardHeader>
+                        <div className="flex items-center gap-2 mb-2">
+                            <BookOpen className="h-5 w-5 text-primary" />
+                            <span className="text-sm font-medium text-muted-foreground">Онбординг спеціаліста</span>
+                        </div>
+                        <CardTitle className="text-2xl">Як працює Libitium?</CardTitle>
+                        <CardDescription>Перед початком роботи ознайомтеся з основними правилами платформи.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div className="space-y-4">
+                            <div className="rounded-lg border bg-card p-4 space-y-3">
+                                <div className="flex gap-3">
+                                    <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
+                                    <div>
+                                        <p className="font-medium">Модель оплати за лід</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Ви платите комісію тільки за реального учня, який залишився з вами після пробного
+                                            заняття.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
+                                    <div>
+                                        <p className="font-medium">Швидкість відповіді</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            У вас є 3 години, щоб прийняти або відхилити нову заявку. Відповідь за 20 хв дає
+                                            бонус!
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
+                                    <div>
+                                        <p className="font-medium">Прозорість</p>
+                                        <p className="text-sm text-muted-foreground">
+                                            Якщо учень не підійшов або відмовився після першого уроку — ви нічого не платите.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <Button onClick={handleStartQuiz} className="w-full">
+                            Я все зрозумів, почати тест
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                    </CardContent>
+                </Card>
             </div>
-            <CardTitle className="text-2xl">
-              {isPerfectScore ? "Вітаємо! Ви пройшли тест" : "Потрібно спробувати ще раз"}
-            </CardTitle>
-            <CardDescription>
-              Ви відповіли правильно на {score} з {QUIZ_QUESTIONS.length} питань
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {!isPerfectScore && (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  Для активації профілю необхідно правильно відповісти на всі питання. Будь ласка, уважно перечитайте{" "}
-                  <a href="/rules" className="text-teal-600 hover:underline">
-                    правила платформи
-                  </a>{" "}
-                  та спробуйте ще раз.
-                </AlertDescription>
-              </Alert>
-            )}
+        )
+    }
 
-            <div className="space-y-3">
-              {QUIZ_QUESTIONS.map((question, index) => {
-                const userAnswer = answers[index]
-                const selectedOption = question.options.find((opt) => opt.id === userAnswer)
-                const correctOption = question.options.find((opt) => opt.correct)
-                const isCorrect = selectedOption?.correct
+    if (showResults && quizResult) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
+                <Card className="w-full max-w-2xl">
+                    <CardHeader className="text-center">
+                        <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                            {isPassed ? (
+                                <CheckCircle className="h-12 w-12 text-green-600" />
+                            ) : (
+                                <XCircle className="h-12 w-12 text-red-600" />
+                            )}
+                        </div>
+                        <CardTitle className="text-2xl">
+                            {isPassed ? "Вітаємо! Ви пройшли тест" : "Потрібно спробувати ще раз"}
+                        </CardTitle>
+                        <CardDescription>
+                            Ви відповіли правильно на {quizResult.correctCount} з {quizResult.totalQuestions} питань (
+                            {quizResult.scorePercent}%)
+                            {passingScore < 100 && <span className="block mt-1 text-xs">Прохідний бал: {passingScore}%</span>}
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {!isPassed && (
+                            <Alert>
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription>
+                                    <p>
+                                        Для активації профілю необхідно правильно відповісти на {passingScore}% питань. Будь
+                                        ласка, уважно перечитайте{" "}
+                                        <a href="/rules" className="text-teal-600 hover:underline">
+                                            правила платформи
+                                        </a>{" "}
+                                        та спробуйте ще раз.
+                                    </p>
+                                </AlertDescription>
+                            </Alert>
+                        )}
 
-                return (
-                  <div
-                    key={question.id}
-                    className={`rounded-lg border-2 p-4 ${
-                      isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
-                    }`}
-                  >
-                    <div className="mb-2 flex items-start justify-between">
-                      <p className="text-sm font-medium">
-                        {index + 1}. {question.question}
-                      </p>
-                      {isCorrect ? (
-                        <CheckCircle className="h-5 w-5 flex-shrink-0 text-green-600" />
-                      ) : (
-                        <XCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
-                      )}
+                        <div className="space-y-3">
+                            {quizResult.questionResults.map((result, index) => {
+                                const questionData = QUIZ_QUESTIONS[index]
+                                if (!questionData) return null
+
+                                const selectedOptions = questionData.options.filter((opt) =>
+                                    result.selectedOptionIds.includes(opt.id),
+                                )
+                                const correctOptions = questionData.options.filter((opt) =>
+                                    result.correctOptionIds.includes(opt.id),
+                                )
+
+                                return (
+                                    <div
+                                        key={result.questionId}
+                                        className={`rounded-lg border-2 p-4 ${
+                                            result.isCorrect ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"
+                                        }`}
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <p className="text-sm font-medium">
+                                                {index + 1}. {questionData.question}
+                                            </p>
+                                            {result.isCorrect ? (
+                                                <CheckCircle className="h-5 w-5 flex-shrink-0 text-green-600" />
+                                            ) : (
+                                                <XCircle className="h-5 w-5 flex-shrink-0 text-red-600" />
+                                            )}
+                                        </div>
+                                        {!result.isCorrect && (
+                                            <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
+                                                <div className="flex flex-col gap-1 mb-2">
+                                                    <p className="text-red-700 font-medium">
+                                                        Ваша відповідь:{" "}
+                                                        <span className="font-normal text-slate-800">
+                                                            {selectedOptions.map((o) => o.text).join(", ")}
+                                                        </span>
+                                                    </p>
+                                                    <p className="text-green-700 font-medium">
+                                                        Правильна відповідь:{" "}
+                                                        <span className="font-normal text-slate-800">
+                                                            {correctOptions.map((o) => o.text).join(", ")}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                {questionData.explanation && (
+                                                    <p className="text-sm mt-3 pt-3 border-t text-muted-foreground">
+                                                        <span className="font-medium">Пояснення:</span>{" "}
+                                                        {questionData.explanation}
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
+                                        {result.isCorrect && questionData.explanation && (
+                                            <div className="mt-2 space-y-1 text-sm bg-white p-3 rounded-md border text-slate-700">
+                                                <p className="text-sm text-muted-foreground">
+                                                    <span className="font-medium">Пояснення:</span> {questionData.explanation}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
+                        </div>
+
+                        <div className="flex flex-col gap-3">
+                            {isPassed ? (
+                                <Button onClick={handleComplete} className="w-full">
+                                    Продовжити
+                                </Button>
+                            ) : (
+                                <>
+                                    <Button variant="outline" onClick={() => router.push("/rules")} className="w-full">
+                                        Переглянути правила
+                                    </Button>
+                                    <Button onClick={handleRetry} className="w-full">
+                                        Спробувати ще раз
+                                    </Button>
+                                </>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
+    const hasAnswer = answers[currentQuestion] !== undefined
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
+            <Card className="w-full max-w-2xl">
+                <CardHeader>
+                    <CardTitle className="text-2xl">{quiz.title || "Тест на знання правил платформи"}</CardTitle>
+                    <CardDescription>
+                        {quiz.description ||
+                            "Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання."}
+                    </CardDescription>
+                    <Progress value={progress} className="mt-4" />
+                    <p className="mt-2 text-sm text-muted-foreground">
+                        Питання {currentQuestion + 1} з {QUIZ_QUESTIONS.length}
+                    </p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div>
+                        <h3 className="mb-4 text-lg font-medium">{question.question}</h3>
+                        <RadioGroup value={answers[currentQuestion] ?? ""} onValueChange={handleAnswer}>
+                            <div className="space-y-3">
+                                {shuffledOptions.map((option) => (
+                                    <Label
+                                        key={`${question.id}-${option.id}`}
+                                        htmlFor={`${question.id}-${option.id}`}
+                                        className={cn(
+                                            "flex items-center space-x-3 cursor-pointer rounded-lg border-2 p-4 transition-colors",
+                                            {
+                                                "border-teal-600 bg-teal-50": answers[currentQuestion] === option.id,
+                                                "border-gray-200 hover:border-gray-300": answers[currentQuestion] !== option.id,
+                                            },
+                                        )}
+                                    >
+                                        <RadioGroupItem value={option.id} id={`${question.id}-${option.id}`} />
+                                        <p className="flex-1 font-normal">{option.text}</p>
+                                    </Label>
+                                ))}
+                            </div>
+                        </RadioGroup>
                     </div>
-                    {!isCorrect && (
-                      <div className="mt-2 space-y-1 text-sm">
-                        <p className="text-red-600">Ваша відповідь: {selectedOption?.text}</p>
-                        <p className="text-green-600">Правильна відповідь: {correctOption?.text}</p>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
 
-            <div className="flex gap-3">
-              {isPerfectScore ? (
-                <Button onClick={handleComplete} className="w-full">
-                  Продовжити до налаштування профілю
-                </Button>
-              ) : (
-                <>
-                  <Button variant="outline" onClick={() => router.push("/rules")} className="w-full">
-                    Переглянути правила
-                  </Button>
-                  <Button onClick={handleRetry} className="w-full">
-                    Спробувати ще раз
-                  </Button>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                    <div className="flex flex-col gap-3">
+                        {currentQuestion > 0 && (
+                            <Button
+                                variant="outline"
+                                onClick={() => setCurrentQuestion(currentQuestion - 1)}
+                                className="w-full"
+                            >
+                                Назад
+                            </Button>
+                        )}
+                        <Button onClick={handleNext} disabled={!hasAnswer || isSubmitting} className="w-full">
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Відправка...
+                                </>
+                            ) : currentQuestion < QUIZ_QUESTIONS.length - 1 ? (
+                                "Далі"
+                            ) : (
+                                "Завершити тест"
+                            )}
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
     )
-  }
-
-  const question = QUIZ_QUESTIONS[currentQuestion]
-  const hasAnswer = answers[currentQuestion] !== undefined
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-8">
-      <Card className="w-full max-w-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Тест на знання правил платформи</CardTitle>
-          <CardDescription>
-            Відповідайте уважно. Для активації профілю потрібно правильно відповісти на всі питання.
-          </CardDescription>
-          <Progress value={progress} className="mt-4" />
-          <p className="mt-2 text-sm text-muted-foreground">
-            Питання {currentQuestion + 1} з {QUIZ_QUESTIONS.length}
-          </p>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <h3 className="mb-4 text-lg font-medium">{question.question}</h3>
-            <RadioGroup value={answers[currentQuestion]} onValueChange={handleAnswer}>
-              <div className="space-y-3">
-                {question.options.map((option) => (
-                  <div
-                    key={option.id}
-                    className={`flex items-center space-x-3 rounded-lg border-2 p-4 transition-colors ${
-                      answers[currentQuestion] === option.id
-                        ? "border-teal-600 bg-teal-50"
-                        : "border-gray-200 hover:border-gray-300"
-                    }`}
-                  >
-                    <RadioGroupItem value={option.id} id={option.id} />
-                    <Label htmlFor={option.id} className="flex-1 cursor-pointer font-normal">
-                      {option.text}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="flex gap-3">
-            {currentQuestion > 0 && (
-              <Button variant="outline" onClick={() => setCurrentQuestion(currentQuestion - 1)} className="w-full">
-                Назад
-              </Button>
-            )}
-            <Button onClick={handleNext} disabled={!hasAnswer} className="w-full">
-              {currentQuestion < QUIZ_QUESTIONS.length - 1 ? "Далі" : "Завершити тест"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  )
 }

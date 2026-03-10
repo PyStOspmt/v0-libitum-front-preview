@@ -1,20 +1,23 @@
 "use client"
 
-import { ProtectedRoute } from "@/components/protected-route"
-import { SidebarLayout } from "@/components/sidebar-layout"
-import { useRequestStore } from "@/lib/request-store"
-import { useGamificationStore } from "@/lib/gamification-store"
-import { useAuth } from "@/lib/auth-context"
-import { RequestCard } from "@/components/request-card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { UserRoles } from "@/graphql/generated/graphql"
 import { useToast } from "@/hooks/use-toast"
-import { BookOpen, Clock, TrendingUp, Award, Search, FileText, Calendar, Star, ArrowRight } from "lucide-react"
-import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
+import { ArrowRight, BookOpen, Calendar, Clock, FileText, Search, Star, TrendingUp } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+
 import { TiltCard } from "@/components/home/tilt-card"
-import { SquishyButton } from "@/components/home/squishy-button"
+import { ProtectedRoute } from "@/components/protected-route"
+import { RequestCard } from "@/components/request-card"
+import { SidebarLayout } from "@/components/sidebar-layout"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
+import { useGamificationStore } from "@/lib/gamification-store"
+import { useRequestStore } from "@/lib/request-store"
 
 /* ── Brand palette ── */
 const B = {
@@ -30,7 +33,7 @@ export function ClientDashboardPage() {
   const { toast } = useToast()
   const { getRequestsByClient, cancelRequest } = useRequestStore()
   const { getProgress } = useGamificationStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
 
   const householdChildren = [
     { id: "child-1", name: "Марія Коваленко", label: "Марія, 12 років" },
@@ -38,7 +41,7 @@ export function ClientDashboardPage() {
   ]
 
   const selectableChildren = user
-    ? [{ id: user.id, name: user.name, label: user.name || "Я" }, ...householdChildren]
+    ? [{ id: user.id, name: user.email, label: user.email || "Я" }, ...householdChildren]
     : householdChildren
 
   const initialChild = searchParams.get("child") || selectableChildren[0]?.id
@@ -66,15 +69,11 @@ export function ClientDashboardPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["client"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Guest, UserRoles.Parent, UserRoles.Student]}>
       <SidebarLayout userType="client">
         <div className="p-3 sm:p-6 lg:p-10 max-w-[1200px] mx-auto space-y-6 sm:space-y-8 font-sans">
           {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <h1 className="text-[32px] lg:text-[40px] font-bold text-[#121117] tracking-tight">Головна</h1>
             <p className="text-[#69686f] mt-1 text-[16px]">Ваш особистий кабінет</p>
 
@@ -100,80 +99,185 @@ export function ClientDashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="cursor-pointer"
+              onClick={() => router.push(`/client/specialists?child=${selectedChildId}`)}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-[14px] font-[600] text-[#69686f]">Спеціалісти</p>
-                <div className="p-2 bg-[#f0f3f3] rounded-full">
-                  <BookOpen className="h-5 w-5 text-[#121117]" />
+              <TiltCard className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 hover:border-[#00c5a6]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-12 w-12 rounded-xl bg-[#e8fffb] flex items-center justify-center">
+                    <BookOpen className="h-6 w-6 text-[#00c5a6]" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.activeSpecialists}</div>
+                    <p className="text-[13px] text-[#69686f] mt-1">Активні спеціалісти</p>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-4 text-[32px] font-bold text-[#121117] leading-none">
-                {stats.activeSpecialists}
-              </p>
-              <p className="text-xs text-[#69686f] mt-1">Активні заняття</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-[600] text-[#00c5a6]">Мої спеціалісти</span>
+                  <ArrowRight className="h-4 w-4 text-[#00c5a6]" />
+                </div>
+              </TiltCard>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="cursor-pointer"
+              onClick={() => router.push(`/client/progress?child=${selectedChildId}`)}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-[14px] font-[600] text-[#69686f]">Пройдено</p>
-                <div className="p-2 bg-[#f0f3f3] rounded-full">
-                  <TrendingUp className="h-5 w-5 text-[#121117]" />
+              <TiltCard className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 hover:border-[#ffc107]/50 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-12 w-12 rounded-xl bg-[#fff8e1] flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-[#f57c00]" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.completedSessions}</div>
+                    <p className="text-[13px] text-[#69686f] mt-1">Завершено занять</p>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-4 text-[32px] font-bold text-[#121117] leading-none">
-                {stats.completedSessions}
-              </p>
-              <p className="text-xs text-[#69686f] mt-1">Загалом занять</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-[600] text-[#f57c00]">Мій прогрес</span>
+                  <ArrowRight className="h-4 w-4 text-[#f57c00]" />
+                </div>
+              </TiltCard>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="cursor-pointer"
+              onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-[14px] font-[600] text-[#69686f]">Заплановано</p>
-                <div className="p-2 bg-[#f0f3f3] rounded-full">
-                  <Clock className="h-5 w-5 text-[#121117]" />
+              <TiltCard className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 hover:border-emerald-200/80 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-12 w-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                    <Calendar className="h-6 w-6 text-emerald-600" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.upcomingSessions}</div>
+                    <p className="text-[13px] text-[#69686f] mt-1">Найближчі заняття</p>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-4 text-[32px] font-bold text-[#121117] leading-none">
-                {stats.upcomingSessions}
-              </p>
-              <p className="text-xs text-[#69686f] mt-1">Наступний тиждень</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-[600] text-emerald-600">Розклад</span>
+                  <ArrowRight className="h-4 w-4 text-emerald-600" />
+                </div>
+              </TiltCard>
             </motion.div>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.5 }}
-              className="bg-white rounded-[20px] sm:rounded-[24px] p-4 sm:p-6 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)]"
+              className="cursor-pointer"
+              onClick={() => router.push(`/client/requests?child=${selectedChildId}`)}
             >
-              <div className="flex items-center justify-between">
-                <p className="text-[14px] font-[600] text-[#69686f]">Рівень</p>
-                <div className="p-2 bg-[#f0f3f3] rounded-full">
-                  <Award className="h-5 w-5 text-[#121117]" />
+              <TiltCard className="bg-white rounded-[20px] sm:rounded-[24px] p-6 border border-slate-200/80 hover:border-blue-200/80 hover:shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-1">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                    <Clock className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[32px] font-bold text-[#121117] leading-none">{stats.pendingRequests}</div>
+                    <p className="text-[13px] text-[#69686f] mt-1">Очікують відповіді</p>
+                  </div>
                 </div>
-              </div>
-              <p className="mt-4 text-[32px] font-bold text-[#121117] leading-none">
-                {levelInfo.level}
-              </p>
-              <p className="text-xs text-[#69686f] mt-1">{levelInfo.title}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-[600] text-blue-600">Мої запити</span>
+                  <ArrowRight className="h-4 w-4 text-blue-600" />
+                </div>
+              </TiltCard>
             </motion.div>
           </div>
+
+          {/* Gamification Progress moved down, Quick Schedule moved up */}
+          {/* Quick Schedule */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+            className="col-span-1 sm:col-span-2 lg:col-span-3 bg-white rounded-[20px] sm:rounded-[24px] p-5 sm:p-8 border border-slate-200/80 shadow-[0_15px_35px_rgba(0,0,0,0.08)] transition-all"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-[24px] font-bold text-[#121117]">Розклад на сьогодні</h2>
+                <p className="text-[#69686f] text-[16px] mt-1">Ваші найближчі заняття</p>
+              </div>
+              <button
+                onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
+                className="text-primary font-[600] text-[15px] hover:underline"
+              >
+                Весь розклад
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-[16px] border border-slate-200/80 hover:border-primary/50 hover:bg-gray-50 transition-all gap-4 sm:gap-0 cursor-pointer"
+                onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <span className="text-blue-600 font-[700] text-[16px]">16:00</span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-[600] text-[16px] text-[#121117] truncate">Математика</div>
+                    <div className="text-[14px] text-[#69686f] truncate mt-1">Ігор Петренко • Онлайн</div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-0">
+                  <Badge variant="outline" className="bg-blue-50 text-blue-700 border-0">Заплановано</Badge>
+                  <Button
+                    size="sm"
+                    className="rounded-[12px] bg-primary text-[#121117] hover:bg-primary/90 font-[600]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      window.open('https://meet.google.com/xxx', '_blank');
+                    }}
+                  >
+                    Приєднатися
+                  </Button>
+                </div>
+              </div>
+
+              <div
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-[16px] border border-slate-200/80 hover:border-primary/50 hover:bg-gray-50 transition-all gap-4 sm:gap-0 cursor-pointer"
+                onClick={() => router.push(`/client/schedule?child=${selectedChildId}`)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-orange-50 flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-600 font-[700] text-[16px]">18:30</span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-[600] text-[16px] text-[#121117] truncate">Психологія</div>
+                    <div className="text-[14px] text-[#69686f] truncate mt-1">Олена Коваленко • Офлайн</div>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-2 sm:mt-0 pt-3 sm:pt-0 border-t border-gray-100 sm:border-0">
+                  <Badge variant="outline" className="bg-orange-50 text-orange-700 border-0">Заплановано</Badge>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-[12px] font-[600] border-slate-200/80 hover:bg-slate-50 hover:text-[#121117]"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push(`/client/schedule?child=${selectedChildId}`)
+                    }}
+                  >
+                    Деталі
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
           {/* Gamification Progress */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
             className="cursor-pointer group"
             onClick={() => router.push(`/client/progress?child=${selectedChildId}`)}
           >
@@ -195,7 +299,11 @@ export function ClientDashboardPage() {
                   </div>
                   <div className="text-left sm:text-right mt-2 sm:mt-0">
                     <span className="text-[32px] font-bold text-[#121117]">
-                      {Math.round(((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) * 100)}%
+                      {Math.round(
+                        ((progress.totalXP - levelInfo.minXP) / (levelInfo.maxXP - levelInfo.minXP)) *
+                        100,
+                      )}
+                      %
                     </span>
                     <span className="text-[#69686f] text-sm ml-1">виконано</span>
                   </div>
@@ -214,7 +322,11 @@ export function ClientDashboardPage() {
                     </div>
                     <div className="flex gap-2 flex-wrap">
                       {progress.achievements.slice(-3).map((achievement) => (
-                        <Badge key={achievement.id} variant="outline" className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]">
+                        <Badge
+                          key={achievement.id}
+                          variant="outline"
+                          className="border-gray-200 text-[#121117] bg-white px-3 py-1 text-[13px] rounded-[6px]"
+                        >
                           <span className="mr-1 text-[16px]">{achievement.icon}</span>
                           {achievement.title}
                         </Badge>
@@ -306,7 +418,12 @@ export function ClientDashboardPage() {
               <div className="space-y-6">
                 {pendingRequests.length > 0 ? (
                   pendingRequests.map((request) => (
-                    <RequestCard key={request.id} request={request} userType="client" onCancel={handleCancelRequest} />
+                    <RequestCard
+                      key={request.id}
+                      request={request}
+                      userType="client"
+                      onCancel={handleCancelRequest}
+                    />
                   ))
                 ) : (
                   <div className="py-12 text-center border-2 border-dashed border-gray-200 rounded-[16px]">

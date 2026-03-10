@@ -1,8 +1,9 @@
+import { CalendarIcon, Clock, Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { CalendarIcon, Clock, Plus } from "lucide-react"
+
+import type { CalendarEvent, Lesson } from "@/lib/lesson-store"
 import { cn } from "@/lib/utils"
-import type { Lesson, CalendarEvent } from "@/lib/lesson-store"
 
 interface MonthViewProps {
   dates: Date[]
@@ -38,7 +39,10 @@ export function MonthView({
       <div className="hidden sm:block sm:col-span-7">
         <div className="grid grid-cols-7">
           {weekDaysShort.map((day, index) => (
-            <div key={index} className="bg-[#f0f3f3] p-2 lg:p-3 text-center text-xs sm:text-[14px] font-[600] text-[#69686f]">
+            <div
+              key={index}
+              className="bg-[#f0f3f3] p-2 lg:p-3 text-center text-xs sm:text-[14px] font-[600] text-[#69686f]"
+            >
               {day}
             </div>
           ))}
@@ -63,7 +67,7 @@ export function MonthView({
           <div
             key={index}
             className={cn(
-              "group relative min-h-[100px] sm:min-h-[120px] bg-white p-1.5 sm:p-2 transition-colors hover:bg-slate-50/50",
+              "group relative min-h-[140px] sm:min-h-[160px] bg-white p-1.5 sm:p-2 transition-colors hover:bg-slate-50/50",
               !isCurrentMonth && "bg-[#f0f3f3]/50 text-[#69686f] opacity-60",
               isTodayDate && "bg-[#e8fffb]/30",
             )}
@@ -111,7 +115,7 @@ export function MonthView({
             </div>
 
             <div className="space-y-1 sm:space-y-1.5">
-              {daySessions.slice(0, 2).map((session) => {
+              {daySessions.slice(0, 1).map((session) => {
                 const isPsychology = session.subject === "Психологія"
                 const bgColor = isPsychology ? "bg-orange-50" : "bg-[#e8fffb]"
                 const textColor = isPsychology ? "text-orange-700" : "text-[#00a389]"

@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { useLocale } from "@/lib/locale-context"
-import { defaultLocale } from "@/lib/i18n/config"
 import type { ComponentProps } from "react"
+
+import { defaultLocale } from "@/lib/i18n/config"
+import { useLocale } from "@/lib/locale-context"
 
 type LocaleLinkProps = ComponentProps<typeof Link>
 

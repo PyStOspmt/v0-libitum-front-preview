@@ -1,26 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { UserRoles } from "@/graphql/generated/graphql"
+import { useToast } from "@/hooks/use-toast"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AlertCircle, Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { GoogleIcon } from "@/components/icons/google-icon"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { type RegisterFormValues, registerSchema } from "@/features/auth/schemas/register.schema"
-import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "@/lib/hooks/use-auth"
 
-import { AlertCircle, Chrome, Eye, EyeOff, Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { type RegisterFormValues, registerSchema } from "@/features/auth/lib/schemas/register.schema"
+
+import { useAuthContext } from "../context/auth-context"
 
 export function RegisterForm() {
-    const { register, loginWithGoogle } = useAuth()
+    const { handleRegisterWithEmailAndPassword, handleOauth } = useAuthContext()
     const { toast } = useToast()
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false)
@@ -35,7 +38,7 @@ export function RegisterForm() {
             email: "",
             password: "",
             confirmPassword: "",
-            role: "client",
+            role: UserRoles.Student,
         },
     })
 
@@ -49,13 +52,10 @@ export function RegisterForm() {
 
         setIsLoading(true)
         try {
-            await register(values.name, values.email, values.password, values.role)
+            await handleRegisterWithEmailAndPassword(values.name, values.email, values.password, values.role)
             router.push("/verify-email")
         } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : "Не вдалося створити акаунт. Спробуйте інший email."
+            const message = error instanceof Error ? error.message : "Не вдалося створити акаунт. Спробуйте інший email."
             toast({
                 title: "Помилка",
                 description: message,
@@ -69,7 +69,8 @@ export function RegisterForm() {
     async function handleGoogleRegister() {
         setIsGoogleLoading(true)
         try {
-            await loginWithGoogle()
+            const role = form.getValues("role")
+            await handleOauth(role)
         } catch {
             toast({
                 title: "Помилка",
@@ -90,9 +91,7 @@ export function RegisterForm() {
                         name="name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-semibold text-slate-800">
-                                    Ім&apos;я
-                                </FormLabel>
+                                <FormLabel className="text-sm font-semibold text-slate-800">Ім&apos;я</FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder="Ваше ім'я"
@@ -112,9 +111,7 @@ export function RegisterForm() {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-semibold text-slate-800">
-                                    Email
-                                </FormLabel>
+                                <FormLabel className="text-sm font-semibold text-slate-800">Email</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="email"
@@ -135,9 +132,7 @@ export function RegisterForm() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-semibold text-slate-800">
-                                    Пароль
-                                </FormLabel>
+                                <FormLabel className="text-sm font-semibold text-slate-800">Пароль</FormLabel>
                                 <FormControl>
                                     <div className="relative">
                                         <Input
@@ -157,9 +152,7 @@ export function RegisterForm() {
                                         </button>
                                     </div>
                                 </FormControl>
-                                <p className="text-xs text-slate-400">
-                                    Мінімум 8 символів, 1 велика літера, 1 цифра
-                                </p>
+                                <p className="text-xs text-slate-400">Мінімум 8 символів, 1 велика літера, 1 цифра</p>
                                 <FormMessage />
                             </FormItem>
                         )}
@@ -171,9 +164,7 @@ export function RegisterForm() {
                         name="confirmPassword"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-semibold text-slate-800">
-                                    Підтвердження паролю
-                                </FormLabel>
+                                <FormLabel className="text-sm font-semibold text-slate-800">Підтвердження паролю</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="password"
@@ -194,9 +185,7 @@ export function RegisterForm() {
                         name="role"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel className="text-sm font-semibold text-slate-800">
-                                    Я хочу
-                                </FormLabel>
+                                <FormLabel className="text-sm font-semibold text-slate-800">Я хочу</FormLabel>
                                 <FormControl>
                                     <RadioGroup
                                         onValueChange={field.onChange}
@@ -204,7 +193,7 @@ export function RegisterForm() {
                                         className="grid grid-cols-2 gap-3"
                                     >
                                         <div>
-                                            <RadioGroupItem value="client" id="client" className="peer sr-only" />
+                                            <RadioGroupItem value={UserRoles.Student} id="client" className="peer sr-only" />
                                             <Label
                                                 htmlFor="client"
                                                 className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#009688] peer-data-[state=checked]:border-[#009688] peer-data-[state=checked]:bg-[#E0F2F1]"
@@ -213,7 +202,11 @@ export function RegisterForm() {
                                             </Label>
                                         </div>
                                         <div>
-                                            <RadioGroupItem value="specialist" id="specialist" className="peer sr-only" />
+                                            <RadioGroupItem
+                                                value={UserRoles.Specialist}
+                                                id="specialist"
+                                                className="peer sr-only"
+                                            />
                                             <Label
                                                 htmlFor="specialist"
                                                 className="flex cursor-pointer items-center justify-center rounded-lg border-2 border-slate-200 bg-white p-3 text-sm font-medium transition-all hover:border-[#f57c00] peer-data-[state=checked]:border-[#f57c00] peer-data-[state=checked]:bg-[#FFF3E0]"
@@ -234,23 +227,25 @@ export function RegisterForm() {
                         name="agreeToTerms"
                         render={({ field }) => (
                             <FormItem>
-                                <div className="flex items-start gap-2.5">
+                                <div className="flex items-start gap-3">
                                     <FormControl>
                                         <Checkbox
                                             checked={field.value}
                                             onCheckedChange={field.onChange}
-                                            className="mt-0.5 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
+                                            className="mt-0.5 shrink-0 border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
                                         />
                                     </FormControl>
-                                    <FormLabel className="text-sm font-normal text-slate-600 leading-tight cursor-pointer">
-                                        Я погоджуюсь з{" "}
+                                    <FormLabel className="block min-w-0 text-sm font-normal text-slate-600 leading-6 cursor-pointer whitespace-normal break-words">
+                                        Я погоджуюсь з
+                                        {" "}
                                         <button
                                             type="button"
                                             onClick={() => setShowRules(true)}
-                                            className="font-semibold text-[#009688] hover:underline"
+                                            className="inline h-auto p-0 align-baseline font-semibold text-[#009688] hover:underline"
                                         >
                                             правилами платформи
-                                        </button>{" "}
+                                        </button>
+                                        {" "}
                                         та політикою конфіденційності
                                     </FormLabel>
                                 </div>
@@ -293,7 +288,7 @@ export function RegisterForm() {
                         {isGoogleLoading ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         ) : (
-                            <Chrome className="mr-2 h-4 w-4" />
+                            <GoogleIcon className="mr-2 h-4 w-4" />
                         )}
                         Зареєструватись через Google
                     </Button>
@@ -311,44 +306,65 @@ export function RegisterForm() {
                 <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-lg border border-slate-200">
                     <DialogHeader className="pb-5 border-b border-slate-100">
                         <DialogTitle className="text-2xl font-bold text-slate-800">Правила платформи</DialogTitle>
-                        <DialogDescription className="text-slate-500">Будь ласка, ознайомтесь перед реєстрацією</DialogDescription>
+                        <DialogDescription className="text-slate-500">
+                            Будь ласка, ознайомтесь перед реєстрацією
+                        </DialogDescription>
                     </DialogHeader>
 
                     <div className="space-y-6 py-5 text-sm text-slate-600">
                         <section className="space-y-4">
                             <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">1</span>
+                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">
+                                    1
+                                </span>
                                 Для спеціалістів
                             </h3>
                             <ul className="space-y-3 pl-2">
                                 <li className="flex gap-3">
                                     <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
-                                    <span><strong className="text-slate-700">Час відповіді:</strong> 3 години для прийняття/відхилення заявок.</span>
+                                    <span>
+                                        <strong className="text-slate-700">Час відповіді:</strong> 3 години для
+                                        прийняття/відхилення заявок.
+                                    </span>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
-                                    <span><strong className="text-slate-700">Оновлення статусу:</strong> 2 години після прийняття для оновлення статусу комунікації.</span>
+                                    <span>
+                                        <strong className="text-slate-700">Оновлення статусу:</strong> 2 години після прийняття
+                                        для оновлення статусу комунікації.
+                                    </span>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
-                                    <span><strong className="text-slate-700">Результат пробного уроку:</strong> 2 години після пробного уроку для звіту про результат.</span>
+                                    <span>
+                                        <strong className="text-slate-700">Результат пробного уроку:</strong> 2 години після
+                                        пробного уроку для звіту про результат.
+                                    </span>
                                 </li>
                             </ul>
                         </section>
 
                         <section className="space-y-4">
                             <h3 className="font-bold text-base text-slate-800 flex items-center gap-3">
-                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">2</span>
+                                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E0F2F1] text-[#009688] text-xs font-bold">
+                                    2
+                                </span>
                                 Для учнів
                             </h3>
                             <ul className="space-y-3 pl-2">
                                 <li className="flex gap-3">
                                     <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
-                                    <span><strong className="text-slate-700">Ліміт бронювань:</strong> Максимум 3 активні заявки одночасно.</span>
+                                    <span>
+                                        <strong className="text-slate-700">Ліміт бронювань:</strong> Максимум 3 активні заявки
+                                        одночасно.
+                                    </span>
                                 </li>
                                 <li className="flex gap-3">
                                     <div className="h-1.5 w-1.5 rounded-full bg-[#22d3ee] mt-2 shrink-0" />
-                                    <span><strong className="text-slate-700">Пробні уроки:</strong> Будь ласка, повідомте репетитора про ваше рішення після пробного уроку.</span>
+                                    <span>
+                                        <strong className="text-slate-700">Пробні уроки:</strong> Будь ласка, повідомте
+                                        репетитора про ваше рішення після пробного уроку.
+                                    </span>
                                 </li>
                             </ul>
                         </section>
@@ -359,7 +375,8 @@ export function RegisterForm() {
                                 <div>
                                     <h3 className="font-bold text-[#e65100] mb-1">Важливо</h3>
                                     <p className="text-[#795548] leading-relaxed">
-                                        Наша платформа працює на основі довіри та взаємної поваги. Порушення правил може призвести до постійного призупинення облікового запису.
+                                        Наша платформа працює на основі довіри та взаємної поваги. Порушення правил може
+                                        призвести до постійного призупинення облікового запису.
                                     </p>
                                 </div>
                             </div>
@@ -371,8 +388,8 @@ export function RegisterForm() {
                             id="rules-dialog"
                             checked={form.watch("agreeToTerms")}
                             onCheckedChange={(checked) => {
-                                form.setValue("agreeToTerms", checked as true);
-                                if (checked) setShowRules(false);
+                                form.setValue("agreeToTerms", checked as true)
+                                if (checked) setShowRules(false)
                             }}
                             className="border-slate-300 data-[state=checked]:bg-[#009688] data-[state=checked]:border-[#009688]"
                         />

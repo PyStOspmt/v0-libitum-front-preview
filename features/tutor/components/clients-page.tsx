@@ -1,26 +1,30 @@
 "use client"
 
+import { useToast } from "@/hooks/use-toast"
+import { useState } from "react"
+
 import { ProtectedRoute } from "@/components/protected-route"
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { useRequestStore } from "@/lib/request-store"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Calendar, User, Users, Plus, Link as LinkIcon, Copy, Check } from "lucide-react"
+import { Calendar, User, Users, Plus, Copy, Check, MessageSquare, BookOpen, UserMinus } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
-import { useState } from "react"
-import { useAuth } from "@/lib/auth-context"
+
+import { useAuthContext } from "@/features/auth/context/auth-context"
+
+import { useRequestStore } from "@/lib/request-store"
+import { UserRoles } from "@/graphql/generated/graphql"
 
 export function TutorClientsPage() {
   const router = useRouter()
   const { toast } = useToast()
   const { getRequestsBySpecialist, getStudentsByTutor, addOwnStudent } = useRequestStore()
-  const { user } = useAuth()
+  const { user } = useAuthContext()
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [copied, setCopied] = useState(false)
   const [newStudent, setNewStudent] = useState({
@@ -75,7 +79,7 @@ export function TutorClientsPage() {
   }
 
   return (
-    <ProtectedRoute allowedRoles={["specialist"]}>
+    <ProtectedRoute allowedRoles={[UserRoles.Specialist]}>
       <SidebarLayout userType="tutor">
         <div className="container mx-auto max-w-7xl space-y-6 sm:space-y-8 px-3 py-6 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-1 sm:px-0">
@@ -176,7 +180,9 @@ export function TutorClientsPage() {
           {students.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {students.map((student) => {
-                const relatedRequest = student.leadId ? specialistRequests.find((r) => r.id === student.leadId) : null
+                const relatedRequest = student.leadId
+                  ? specialistRequests.find((r) => r.id === student.leadId)
+                  : null
 
                 return (
                   <Card key={student.id} className="flex flex-col border-slate-200/70 bg-white/80 shadow-sm">
@@ -236,15 +242,59 @@ export function TutorClientsPage() {
                         </div>
                       )}
 
-                      <div className="flex flex-col gap-2">
+                      <div className="mt-4 grid gap-2 pt-4 border-t border-slate-100 sm:grid-cols-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full bg-transparent rounded-full"
-                          onClick={() => router.push("/tutor/schedule")}
+                          className="w-full justify-center bg-transparent rounded-[12px] border-slate-200 h-10"
+                          onClick={() => router.push(`/tutor/journal?student=${student.id}`)}
+                        >
+                          <BookOpen className="mr-2 h-4 w-4" />
+                          Журнал та ДЗ
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full justify-center bg-transparent rounded-[12px] border-slate-200 h-10"
+                          onClick={() => router.push(`/tutor/schedule?student=${student.id}`)}
                         >
                           <Calendar className="mr-2 h-4 w-4" />
-                          Переглянути розклад
+                          Розклад
+                        </Button>
+                        {student.telegram ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full min-w-0 justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 rounded-[12px] border-blue-200 h-10 px-3"
+                            onClick={() => window.open(`https://t.me/${student.telegram?.replace('@', '')}`, '_blank')}
+                          >
+                            <MessageSquare className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">Telegram</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full min-w-0 justify-center bg-slate-50 text-slate-500 rounded-[12px] border-slate-200 h-10 px-3"
+                            disabled
+                          >
+                            <MessageSquare className="mr-2 h-4 w-4 shrink-0" />
+                            <span className="truncate">Немає Telegram</span>
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full justify-center text-red-500 hover:text-red-600 hover:bg-red-50 rounded-[12px] border-slate-200 h-10"
+                          onClick={() => {
+                            toast({
+                              title: "Учня переміщено в архів",
+                              description: "Ця дія може бути скасована в налаштуваннях",
+                            })
+                          }}
+                        >
+                          <UserMinus className="h-4 w-4" />
+                          <span className="ml-2">В архів</span>
                         </Button>
                       </div>
                     </CardContent>

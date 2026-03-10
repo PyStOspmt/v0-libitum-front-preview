@@ -1,22 +1,25 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
+import { RESEND_VERIFICATION_EMAIL, VERIFY_USER } from "@/graphql/auth"
+import { useToast } from "@/hooks/use-toast"
 import { useMutation } from "@apollo/client/react"
+import { CheckCircle, Loader2, LogOut, Mail } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mail, LogOut, CheckCircle, Loader2 } from "lucide-react"
-import { useAuth } from "@/lib/auth-context"
-import { useToast } from "@/hooks/use-toast"
-import { VERIFY_USER } from "@/lib/graphql/auth"
+
+import { useAuthContext } from "../context/auth-context"
 
 export function VerifyEmailCard() {
-    const { user, logout } = useAuth()
+    const { user, handleLogout, logoutLoading } = useAuthContext()
     const { toast } = useToast()
     const searchParams = useSearchParams()
     const token = searchParams.get("token")
 
     const [verifyUser, { loading: isVerifying }] = useMutation<{ verifyUser: boolean }>(VERIFY_USER)
+    const [resendConfirmation] = useMutation<boolean>(RESEND_VERIFICATION_EMAIL)
     const [isVerified, setIsVerified] = useState(false)
     const [isResending, setIsResending] = useState(false)
     const [verifyError, setVerifyError] = useState<string | null>(null)
@@ -46,8 +49,8 @@ export function VerifyEmailCard() {
 
     const handleResend = async () => {
         setIsResending(true)
-        // TODO: Add resend verification email mutation when backend supports it
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        const res = await resendConfirmation()
+        console.log("resendConfirmation result", res)
         toast({
             title: "Посилання відправлено",
             description: `Ми відправили нове посилання на ${user?.email}`,
@@ -89,14 +92,15 @@ export function VerifyEmailCard() {
                         <Mail className="h-8 w-8 text-primary" />
                     )}
                 </div>
-                <CardTitle className="text-2xl">
-                    {isVerifying ? "Підтвердження..." : "Підтвердіть ваш Email"}
-                </CardTitle>
+                <CardTitle className="text-2xl">{isVerifying ? "Підтвердження..." : "Підтвердіть ваш Email"}</CardTitle>
                 <CardDescription>
-                    {isVerifying
-                        ? "Зачекайте, ми підтверджуємо вашу пошту..."
-                        : <>Ми відправили посилання для підтвердження на адресу <strong>{user?.email}</strong></>
-                    }
+                    {isVerifying ? (
+                        "Зачекайте, ми підтверджуємо вашу пошту..."
+                    ) : (
+                        <>
+                            Ми відправили посилання для підтвердження на адресу <strong>{user?.email}</strong>
+                        </>
+                    )}
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -119,8 +123,12 @@ export function VerifyEmailCard() {
                             >
                                 {isResending ? "Відправка..." : "Відправити ще раз"}
                             </Button>
-                            <Button variant="ghost" onClick={logout} className="w-full">
-                                <LogOut className="mr-2 h-4 w-4" />
+                            <Button variant="ghost" onClick={handleLogout} className="w-full">
+                                {logoutLoading ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                )}
                                 Вийти з акаунта
                             </Button>
                         </div>

@@ -1,111 +1,105 @@
 "use client"
 
 import { useDictionaryStore } from "@/store/dictionary.store"
-
 import { create } from "zustand"
 
 export type RequestStatus =
-  | "pending" // Waiting for specialist response (3 hours)
-  | "accepted" // Specialist accepted, needs to update communication status (2 hours)
-  | "communicating" // Specialist is communicating with client
-  | "trial_scheduled" // Trial lesson scheduled
-  | "trial_completed" // Trial completed, waiting for results (2 hours)
-  | "awaiting_payment" // Client continues, specialist must pay (24 hours)
-  | "paid" // Specialist paid, lead successful
-  | "rejected" // Specialist rejected
-  | "expired" // Deadline passed
-  | "cancelled" // Client cancelled
+    | "pending" // Waiting for specialist response (3 hours)
+    | "accepted" // Specialist accepted, needs to update communication status (2 hours)
+    | "communicating" // Specialist is communicating with client
+    | "trial_scheduled" // Trial lesson scheduled
+    | "trial_completed" // Trial completed, waiting for results (2 hours)
+    | "awaiting_payment" // Client continues, specialist must pay (24 hours)
+    | "paid" // Specialist paid, lead successful
+    | "rejected" // Specialist rejected
+    | "expired" // Deadline passed
+    | "cancelled" // Client cancelled
 
 export type CommunicationStatus =
-  | "agreed_on_trial" // Agreed on trial date/time
-  | "client_not_responding" // Client not responding (available after 1 hour)
-  | "client_cancelled" // Client cancelled
-  | "negotiating" // Still negotiating date/time
+    | "agreed_on_trial" // Agreed on trial date/time
+    | "client_not_responding" // Client not responding (available after 1 hour)
+    | "client_cancelled" // Client cancelled
+    | "negotiating" // Still negotiating date/time
 
 export type TrialResult =
-  | "client_continues" // Client wants to continue
-  | "client_declined" // Client doesn't want to continue
-  | "client_thinking" // Client is thinking / wants more trials
-  | "client_not_responding" // Client not responding
+    | "client_continues" // Client wants to continue
+    | "client_declined" // Client doesn't want to continue
+    | "client_thinking" // Client is thinking / wants more trials
+    | "client_not_responding" // Client not responding
 
 export type LeadType = "public" | "private"
 
 export interface BookingRequest {
-  id: string
-  type: LeadType // public (goes to exchange) or private (direct to specialist)
-  clientId: string
-  clientName: string
-  clientPhone?: string
-  clientTelegram?: string
-  specialistId: string | null // null for public leads
-  specialistName?: string
-  subject: string
-  level?: string
-  date: string
-  time: string
-  format: "online" | "offline" | "in-person"
-  message?: string
-  location?: string
-  status: RequestStatus
-  rejectReason?: string
-  communicationStatus?: CommunicationStatus
-  trialResult?: TrialResult
-  createdAt: string
-  acceptedAt?: string
-  responseDeadline: string
-  communicationDeadline?: string
-  trialResultDeadline?: string
-  paymentDeadline?: string
-  basePrice?: number // Starting price for the lead (e.g., 200 UAH)
-  currentPrice?: number // Current price after auction降价
-  minPriceLimit?: number // Minimum price threshold (e.g., 50 UAH)
-  stepValue?: number // Price reduction step for the lead
-  lastPriceUpdate?: string // Last time price was reduced
+    id: string
+    type: LeadType // public (goes to exchange) or private (direct to specialist)
+    clientId: string
+    clientName: string
+    clientPhone?: string
+    clientTelegram?: string
+    specialistId: string | null // null for public leads
+    specialistName?: string
+    subject: string
+    level?: string
+    date: string
+    time: string
+    format: "online" | "offline" | "in-person"
+    message?: string
+    location?: string
+    status: RequestStatus
+    rejectReason?: string
+    communicationStatus?: CommunicationStatus
+    trialResult?: TrialResult
+    createdAt: string
+    acceptedAt?: string
+    responseDeadline: string
+    communicationDeadline?: string
+    trialResultDeadline?: string
+    paymentDeadline?: string
+    basePrice?: number // Starting price for the lead (e.g., 200 UAH)
+    currentPrice?: number // Current price after auction降价
+    minPriceLimit?: number // Minimum price threshold (e.g., 50 UAH)
+    stepValue?: number // Price reduction step for the lead
+    lastPriceUpdate?: string // Last time price was reduced
 }
 
 export type StudentType = "platform" | "own"
 
 export interface Student {
-  id: string
-  tutorId: string
-  name: string
-  grade?: string
-  age?: number
-  phone?: string
-  telegram?: string
-  type: StudentType // platform (from lead) or own (added manually)
-  subject: string
-  addedAt: string
-  status: "active" | "paused" | "archived"
-  leadId?: string // Reference to original lead if platform student
+    id: string
+    tutorId: string
+    name: string
+    grade?: string
+    age?: number
+    phone?: string
+    telegram?: string
+    type: StudentType // platform (from lead) or own (added manually)
+    subject: string
+    addedAt: string
+    status: "active" | "paused" | "archived"
+    leadId?: string // Reference to original lead if platform student
 }
 
 interface RequestStore {
-  requests: BookingRequest[]
-  students: Student[]
-  addRequest: (request: Omit<BookingRequest, "id" | "createdAt" | "status" | "responseDeadline">) => void
-  addOwnStudent: (student: Omit<Student, "id" | "addedAt" | "type">) => void
-  acceptRequest: (requestId: string) => void
-  rejectRequest: (requestId: string, reason?: string) => void
-  cancelRequest: (requestId: string) => void
-  updateCommunicationStatus: (
-    requestId: string,
-    status: CommunicationStatus,
-    trialDate?: string,
-    trialTime?: string,
-  ) => void
-  updateTrialResult: (requestId: string, result: TrialResult) => void
-  markAsPaid: (requestId: string) => void
-  expireRequest: (requestId: string) => void
-  getPublicLeads: () => BookingRequest[]
-  takePublicLead: (requestId: string, specialistId: string) => void
-  reduceLeadPrice: (requestId: string) => void
-  autoReducePublicLeads: () => void
-  getRequestsBySpecialist: (specialistId: string) => BookingRequest[]
-  getRequestsByClient: (clientId: string) => BookingRequest[]
-  getActiveTrialCount: (clientId: string) => number
-  getStudentsByTutor: (tutorId: string) => Student[]
-  updateStudentStatus: (studentId: string, status: "active" | "paused" | "archived") => void
+    requests: BookingRequest[]
+    students: Student[]
+    addRequest: (request: Omit<BookingRequest, "id" | "createdAt" | "status" | "responseDeadline">) => void
+    addOwnStudent: (student: Omit<Student, "id" | "addedAt" | "type">) => void
+    acceptRequest: (requestId: string) => void
+    rejectRequest: (requestId: string, reason?: string) => void
+    cancelRequest: (requestId: string) => void
+    updateCommunicationStatus: (requestId: string, status: CommunicationStatus, trialDate?: string, trialTime?: string) => void
+    updateTrialResult: (requestId: string, result: TrialResult) => void
+    markAsPaid: (requestId: string) => void
+    expireRequest: (requestId: string) => void
+    getPublicLeads: () => BookingRequest[]
+    takePublicLead: (requestId: string, specialistId: string) => void
+    reduceLeadPrice: (requestId: string) => void
+    autoReducePublicLeads: () => void
+    getRequestsBySpecialist: (specialistId: string) => BookingRequest[]
+    getRequestsByClient: (clientId: string) => BookingRequest[]
+    getActiveTrialCount: (clientId: string) => number
+    getStudentsByTutor: (tutorId: string) => Student[]
+    updateStudentStatus: (studentId: string, status: "active" | "paused" | "archived") => void
 }
 
 // Mock initial data
@@ -136,8 +130,8 @@ const mockRequests: BookingRequest[] = [
     clientName: "Марія Коваленко",
     clientPhone: "+380501234567",
     clientTelegram: "@maria_k",
-    specialistId: "specialist-2",
-    specialistName: "Ігор Петренко",
+    specialistId: "specialist-1",
+    specialistName: "Олена Іваненко",
     subject: "Психологія",
     level: "Середній клас",
     date: "2025-01-20",
@@ -175,7 +169,7 @@ const mockRequests: BookingRequest[] = [
     clientId: "client-3",
     clientName: "Петро Сидоренко",
     clientPhone: "+380671234567",
-    specialistId: "specialist-3",
+    specialistId: "specialist-1",
     specialistName: "Анна Мельник",
     subject: "Фізика",
     level: "9 клас",
@@ -194,20 +188,58 @@ const mockRequests: BookingRequest[] = [
     clientId: "client-1",
     clientName: "Марія Коваленко",
     clientPhone: "+380501234567",
-    specialistId: "specialist-4",
+    specialistId: "specialist-1",
     specialistName: "Олександр Ковальчук",
     subject: "Логопед",
-    level: "Початкова школа",
-    date: "2025-01-15",
-    time: "10:00",
-    format: "offline",
-    message: "Проблеми з вимовою",
+    level: "Дошкільний",
+    date: "2025-01-10",
+    time: "11:00",
+    format: "in-person",
+    location: "Київ, вул. Хрещатик",
     status: "paid",
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    responseDeadline: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
     id: "6",
+    type: "private",
+    clientId: "client-2",
+    clientName: "Іван Іванов",
+    clientPhone: "+380991234567",
+    specialistId: "specialist-1",
+    specialistName: "Олена Іваненко",
+    subject: "Математика",
+    level: "5 клас",
+    date: "2025-02-01",
+    time: "10:00",
+    format: "online",
+    message: "Підтягнути шкільну програму",
+    status: "trial_scheduled",
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "7",
+    type: "private",
+    clientId: "client-4",
+    clientName: "Софія Мельник",
+    clientPhone: "+380509876543",
+    specialistId: "specialist-1",
+    specialistName: "Олена Іваненко",
+    subject: "Хімія",
+    level: "8 клас",
+    date: "2025-01-28",
+    time: "15:00",
+    format: "online",
+    message: "Допомога з домашніми завданнями",
+    status: "awaiting_payment",
+    createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    paymentDeadline: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+    basePrice: 350,
+  },
+  {
+    id: "8",
     type: "private",
     clientId: "client-3",
     clientName: "Петро Сидоренко",
@@ -225,276 +257,381 @@ const mockRequests: BookingRequest[] = [
     responseDeadline: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
     paymentDeadline: new Date(Date.now() + 23 * 60 * 60 * 1000).toISOString(),
   },
+  {
+    id: "9",
+    type: "private",
+    clientId: "client-5",
+    clientName: "Діана Романюк",
+    clientPhone: "+380631112233",
+    clientTelegram: "@diana_parent",
+    specialistId: "specialist-1",
+    specialistName: "Олена Іваненко",
+    subject: "Українська мова",
+    level: "7 клас",
+    date: "2025-02-04",
+    time: "17:30",
+    format: "online",
+    message: "Потрібна системна підготовка до контрольних і творів.",
+    status: "pending",
+    createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() + 2 * 60 * 60 + 35 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "10",
+    type: "private",
+    clientId: "client-6",
+    clientName: "Артем Бондар",
+    clientPhone: "+380661234111",
+    clientTelegram: "@artem_nmt",
+    specialistId: "specialist-1",
+    specialistName: "Олена Іваненко",
+    subject: "Математика",
+    level: "Підготовка до НМТ",
+    date: "2025-02-06",
+    time: "19:00",
+    format: "online",
+    message: "Хочу інтенсив 2 рази на тиждень до іспиту.",
+    status: "communicating",
+    communicationStatus: "negotiating",
+    createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
+    acceptedAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() - 15 * 60 * 60 * 1000).toISOString(),
+    communicationDeadline: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
+    basePrice: 420,
+    currentPrice: 420,
+  },
+  {
+    id: "11",
+    type: "public",
+    clientId: "client-7",
+    clientName: "Оксана Климчук",
+    specialistId: null,
+    subject: "Англійська мова",
+    level: "A2-B1",
+    date: "2025-02-07",
+    time: "18:30",
+    format: "online",
+    message: "Потрібно покращити speaking для роботи.",
+    status: "pending",
+    createdAt: new Date(Date.now() - 50 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    basePrice: 480,
+    currentPrice: 480,
+    minPriceLimit: 320,
+    stepValue: 40,
+  },
+  {
+    id: "12",
+    type: "public",
+    clientId: "client-8",
+    clientName: "Назар Гуменюк",
+    specialistId: null,
+    subject: "Фізика",
+    level: "10 клас",
+    date: "2025-02-08",
+    time: "16:00",
+    format: "online",
+    message: "Треба наздогнати шкільну програму та підготуватись до лабораторних.",
+    status: "pending",
+    createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    basePrice: 430,
+    currentPrice: 390,
+    minPriceLimit: 310,
+    stepValue: 40,
+    lastPriceUpdate: new Date(Date.now() - 50 * 60 * 1000).toISOString(),
+  },
+  {
+    id: "13",
+    type: "public",
+    clientId: "client-9",
+    clientName: "Ірина Савчук",
+    specialistId: null,
+    subject: "Логопед",
+    level: "Дошкільний вік",
+    date: "2025-02-09",
+    time: "11:30",
+    format: "in-person",
+    location: "Львів, Сихів",
+    message: "Шукаю логопеда для дитини 5 років, бажано офлайн.",
+    status: "pending",
+    createdAt: new Date(Date.now() - 80 * 60 * 1000).toISOString(),
+    responseDeadline: new Date(Date.now() + 90 * 60 * 1000).toISOString(),
+    basePrice: 550,
+    currentPrice: 550,
+    minPriceLimit: 420,
+    stepValue: 50,
+  },
 ]
 
 const getPricingDefaults = (subjectName: string, levelLabel?: string) => {
-  const { subjects } = useDictionaryStore.getState()
-  const subject = subjects.find((item) => item.name === subjectName)
-  if (!subject) {
-    return {
-      basePrice: undefined,
-      minPriceLimit: undefined,
-      stepValue: undefined,
+    const { subjects } = useDictionaryStore.getState()
+    const subject = subjects.find((item) => item.name === subjectName)
+    if (!subject) {
+        return {
+            basePrice: undefined,
+            minPriceLimit: undefined,
+            stepValue: undefined,
+        }
     }
-  }
 
-  const level = levelLabel ? subject.levels.find((item) => item.label === levelLabel) : undefined
-  return {
-    basePrice: level?.basePrice ?? subject.defaultBasePrice,
-    minPriceLimit: level?.minPrice ?? subject.defaultMinPrice,
-    stepValue: level?.stepValue ?? subject.defaultStepValue,
-  }
+    const level = levelLabel ? subject.levels.find((item) => item.label === levelLabel) : undefined
+    return {
+        basePrice: level?.basePrice ?? subject.defaultBasePrice,
+        minPriceLimit: level?.minPrice ?? subject.defaultMinPrice,
+        stepValue: level?.stepValue ?? subject.defaultStepValue,
+    }
 }
 
 const mockStudents: Student[] = [
-  {
-    id: "s1",
-    tutorId: "specialist-1",
-    name: "Анна Іваненко",
-    grade: "10 клас",
-    phone: "+380671234567",
-    type: "own",
-    subject: "Англійська мова",
-    addedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-    status: "active",
-  },
+    {
+        id: "s1",
+        tutorId: "specialist-1",
+        name: "Анна Іваненко",
+        grade: "10 клас",
+        phone: "+380671234567",
+        type: "own",
+        subject: "Англійська мова",
+        addedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        status: "active",
+    },
 ]
 
 export const useRequestStore = create<RequestStore>((set, get) => ({
-  requests: mockRequests,
-  students: mockStudents,
+    requests: mockRequests,
+    students: mockStudents,
 
-  addRequest: (request) => {
-    const now = new Date()
-    const pricingDefaults = request.type === "public" ? getPricingDefaults(request.subject, request.level) : null
-    const basePrice = request.basePrice ?? pricingDefaults?.basePrice
-    const minPriceLimit = request.minPriceLimit ?? pricingDefaults?.minPriceLimit
-    const stepValue = request.stepValue ?? pricingDefaults?.stepValue
-    const newRequest: BookingRequest = {
-      ...request,
-      id: Math.random().toString(36).substr(2, 9),
-      status: "pending",
-      createdAt: now.toISOString(),
-      responseDeadline: new Date(now.getTime() + 3 * 60 * 60 * 1000).toISOString(), // 3 hours
-      basePrice,
-      currentPrice: request.currentPrice ?? basePrice,
-      minPriceLimit,
-      stepValue,
-    }
-    set((state) => ({ requests: [...state.requests, newRequest] }))
-  },
-
-  addOwnStudent: (studentData) => {
-    const newStudent: Student = {
-      ...studentData,
-      id: Math.random().toString(36).substr(2, 9),
-      type: "own",
-      addedAt: new Date().toISOString(),
-    }
-    set((state) => ({ students: [...state.students, newStudent] }))
-  },
-
-  acceptRequest: (requestId) => {
-    const now = new Date()
-    const request = get().requests.find((r) => r.id === requestId)
-    const responseTime = request ? now.getTime() - new Date(request.createdAt).getTime() : 0
-    const fastResponseBonus = responseTime <= 20 * 60 * 1000
-
-    set((state) => ({
-      requests: state.requests.map((req) =>
-        req.id === requestId
-          ? {
-            ...req,
-            status: "accepted" as RequestStatus,
-            acceptedAt: now.toISOString(),
-            communicationDeadline: new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString(),
-          }
-          : req,
-      ),
-    }))
-
-    const acceptedRequest = get().requests.find((r) => r.id === requestId)
-    if (acceptedRequest && acceptedRequest.specialistId) {
-      const newStudent: Student = {
-        id: `student-${requestId}`,
-        tutorId: acceptedRequest.specialistId,
-        name: acceptedRequest.clientName,
-        phone: acceptedRequest.clientPhone,
-        telegram: acceptedRequest.clientTelegram,
-        type: "platform",
-        subject: acceptedRequest.subject,
-        addedAt: now.toISOString(),
-        status: "active",
-        leadId: requestId,
-      }
-      set((state) => ({ students: [...state.students, newStudent] }))
-    }
-  },
-
-  rejectRequest: (requestId, reason) => {
-    set((state) => ({
-      requests: state.requests.map((req) =>
-        req.id === requestId ? { ...req, status: "rejected" as RequestStatus, rejectReason: reason } : req,
-      ),
-    }))
-  },
-
-  cancelRequest: (requestId) => {
-    set((state) => ({
-      requests: state.requests.map((req) =>
-        req.id === requestId ? { ...req, status: "cancelled" as RequestStatus } : req,
-      ),
-    }))
-  },
-
-  updateCommunicationStatus: (requestId, status, trialDate, trialTime) => {
-    set((state) => ({
-      requests: state.requests.map((req) => {
-        if (req.id === requestId) {
-          const updates: Partial<BookingRequest> = {
-            communicationStatus: status,
-            status: status === "agreed_on_trial" ? "trial_scheduled" : "communicating",
-          }
-
-          if (trialDate && trialTime) {
-            updates.date = trialDate
-            updates.time = trialTime
-            const trialDateTime = new Date(`${trialDate}T${trialTime}`)
-            updates.trialResultDeadline = new Date(trialDateTime.getTime() + 2 * 60 * 60 * 1000).toISOString()
-          }
-
-          return { ...req, ...updates }
+    addRequest: (request) => {
+        const now = new Date()
+        const pricingDefaults = request.type === "public" ? getPricingDefaults(request.subject, request.level) : null
+        const basePrice = request.basePrice ?? pricingDefaults?.basePrice
+        const minPriceLimit = request.minPriceLimit ?? pricingDefaults?.minPriceLimit
+        const stepValue = request.stepValue ?? pricingDefaults?.stepValue
+        const newRequest: BookingRequest = {
+            ...request,
+            id: Math.random().toString(36).substr(2, 9),
+            status: "pending",
+            createdAt: now.toISOString(),
+            responseDeadline: new Date(now.getTime() + 3 * 60 * 60 * 1000).toISOString(), // 3 hours
+            basePrice,
+            currentPrice: request.currentPrice ?? basePrice,
+            minPriceLimit,
+            stepValue,
         }
-        return req
-      }),
-    }))
-  },
+        set((state) => ({ requests: [...state.requests, newRequest] }))
+    },
 
-  updateTrialResult: (requestId, result) => {
-    const now = new Date()
-    set((state) => ({
-      requests: state.requests.map((req) => {
-        if (req.id === requestId) {
-          const updates: Partial<BookingRequest> = {
-            trialResult: result,
-            status: "trial_completed",
-          }
-
-          if (result === "client_continues") {
-            updates.status = "awaiting_payment"
-            updates.paymentDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString() // 24 hours to pay
-          }
-
-          return { ...req, ...updates }
+    addOwnStudent: (studentData) => {
+        const newStudent: Student = {
+            ...studentData,
+            id: Math.random().toString(36).substr(2, 9),
+            type: "own",
+            addedAt: new Date().toISOString(),
         }
-        return req
-      }),
-    }))
-  },
+        set((state) => ({ students: [...state.students, newStudent] }))
+    },
 
-  markAsPaid: (requestId) => {
-    set((state) => ({
-      requests: state.requests.map((req) => (req.id === requestId ? { ...req, status: "paid" as RequestStatus } : req)),
-    }))
-  },
+    acceptRequest: (requestId) => {
+        const now = new Date()
+        const request = get().requests.find((r) => r.id === requestId)
+        const responseTime = request ? now.getTime() - new Date(request.createdAt).getTime() : 0
+        const fastResponseBonus = responseTime <= 20 * 60 * 1000
 
-  expireRequest: (requestId) => {
-    set((state) => ({
-      requests: state.requests.map((req) =>
-        req.id === requestId ? { ...req, status: "expired" as RequestStatus } : req,
-      ),
-    }))
-  },
+        set((state) => ({
+            requests: state.requests.map((req) =>
+                req.id === requestId
+                    ? {
+                          ...req,
+                          status: "accepted" as RequestStatus,
+                          acceptedAt: now.toISOString(),
+                          communicationDeadline: new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+                      }
+                    : req,
+            ),
+        }))
 
-  getPublicLeads: () => {
-    return get().requests.filter((req) => req.type === "public" && req.status === "pending")
-  },
-
-  takePublicLead: (requestId, specialistId) => {
-    const now = new Date()
-    set((state) => ({
-      requests: state.requests.map((req) =>
-        req.id === requestId
-          ? {
-            ...req,
-            specialistId,
-            status: "accepted" as RequestStatus,
-            acceptedAt: now.toISOString(),
-            communicationDeadline: new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString(),
-          }
-          : req,
-      ),
-    }))
-  },
-
-  reduceLeadPrice: (requestId) => {
-    set((state) => ({
-      requests: state.requests.map((req) => {
-        if (req.id === requestId && req.type === "public" && req.currentPrice && req.minPriceLimit) {
-          const stepValue = req.stepValue ?? 100
-          const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
-          return {
-            ...req,
-            currentPrice: newPrice,
-            lastPriceUpdate: new Date().toISOString(),
-          }
+        const acceptedRequest = get().requests.find((r) => r.id === requestId)
+        if (acceptedRequest && acceptedRequest.specialistId) {
+            const newStudent: Student = {
+                id: `student-${requestId}`,
+                tutorId: acceptedRequest.specialistId,
+                name: acceptedRequest.clientName,
+                phone: acceptedRequest.clientPhone,
+                telegram: acceptedRequest.clientTelegram,
+                type: "platform",
+                subject: acceptedRequest.subject,
+                addedAt: now.toISOString(),
+                status: "active",
+                leadId: requestId,
+            }
+            set((state) => ({ students: [...state.students, newStudent] }))
         }
-        return req
-      }),
-    }))
-  },
+    },
 
-  autoReducePublicLeads: () => {
-    const nowMs = Date.now()
-    set((state) => ({
-      requests: state.requests.map((req) => {
-        if (req.type !== "public" || req.status !== "pending" || !req.currentPrice || !req.minPriceLimit) {
-          return req
-        }
+    rejectRequest: (requestId, reason) => {
+        set((state) => ({
+            requests: state.requests.map((req) =>
+                req.id === requestId ? { ...req, status: "rejected" as RequestStatus, rejectReason: reason } : req,
+            ),
+        }))
+    },
 
-        const createdAtMs = new Date(req.createdAt).getTime()
-        const lastUpdateMs = req.lastPriceUpdate ? new Date(req.lastPriceUpdate).getTime() : createdAtMs
+    cancelRequest: (requestId) => {
+        set((state) => ({
+            requests: state.requests.map((req) =>
+                req.id === requestId ? { ...req, status: "cancelled" as RequestStatus } : req,
+            ),
+        }))
+    },
 
-        const nextDropAtMs = req.lastPriceUpdate ? lastUpdateMs + 60 * 60 * 1000 : createdAtMs + 2 * 60 * 60 * 1000
-        if (Number.isNaN(nextDropAtMs) || nowMs < nextDropAtMs) {
-          return req
-        }
+    updateCommunicationStatus: (requestId, status, trialDate, trialTime) => {
+        set((state) => ({
+            requests: state.requests.map((req) => {
+                if (req.id === requestId) {
+                    const updates: Partial<BookingRequest> = {
+                        communicationStatus: status,
+                        status: status === "agreed_on_trial" ? "trial_scheduled" : "communicating",
+                    }
 
-        const stepValue = req.stepValue ?? 100
-        const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
-        if (newPrice === req.currentPrice) {
-          return req
-        }
+                    if (trialDate && trialTime) {
+                        updates.date = trialDate
+                        updates.time = trialTime
+                        const trialDateTime = new Date(`${trialDate}T${trialTime}`)
+                        updates.trialResultDeadline = new Date(trialDateTime.getTime() + 2 * 60 * 60 * 1000).toISOString()
+                    }
 
-        return {
-          ...req,
-          currentPrice: newPrice,
-          lastPriceUpdate: new Date(nowMs).toISOString(),
-        }
-      }),
-    }))
-  },
+                    return { ...req, ...updates }
+                }
+                return req
+            }),
+        }))
+    },
 
-  getRequestsBySpecialist: (specialistId) => {
-    return get().requests.filter((req) => req.specialistId === specialistId)
-  },
+    updateTrialResult: (requestId, result) => {
+        const now = new Date()
+        set((state) => ({
+            requests: state.requests.map((req) => {
+                if (req.id === requestId) {
+                    const updates: Partial<BookingRequest> = {
+                        trialResult: result,
+                        status: "trial_completed",
+                    }
 
-  getRequestsByClient: (clientId) => {
-    return get().requests.filter((req) => req.clientId === clientId)
-  },
+                    if (result === "client_continues") {
+                        updates.status = "awaiting_payment"
+                        updates.paymentDeadline = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString() // 24 hours to pay
+                    }
 
-  getActiveTrialCount: (clientId) => {
-    const activeStatuses: RequestStatus[] = ["pending", "accepted", "communicating", "trial_scheduled"]
-    return get().requests.filter((req) => req.clientId === clientId && activeStatuses.includes(req.status)).length
-  },
+                    return { ...req, ...updates }
+                }
+                return req
+            }),
+        }))
+    },
 
-  getStudentsByTutor: (tutorId) => {
-    return get().students.filter((s) => s.tutorId === tutorId)
-  },
+    markAsPaid: (requestId) => {
+        set((state) => ({
+            requests: state.requests.map((req) => (req.id === requestId ? { ...req, status: "paid" as RequestStatus } : req)),
+        }))
+    },
 
-  updateStudentStatus: (studentId, status) => {
-    set((state) => ({
-      students: state.students.map((s) => (s.id === studentId ? { ...s, status } : s)),
-    }))
-  },
+    expireRequest: (requestId) => {
+        set((state) => ({
+            requests: state.requests.map((req) =>
+                req.id === requestId ? { ...req, status: "expired" as RequestStatus } : req,
+            ),
+        }))
+    },
+
+    getPublicLeads: () => {
+        return get().requests.filter((req) => req.type === "public" && req.status === "pending")
+    },
+
+    takePublicLead: (requestId, specialistId) => {
+        const now = new Date()
+        set((state) => ({
+            requests: state.requests.map((req) =>
+                req.id === requestId
+                    ? {
+                          ...req,
+                          specialistId,
+                          status: "accepted" as RequestStatus,
+                          acceptedAt: now.toISOString(),
+                          communicationDeadline: new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString(),
+                      }
+                    : req,
+            ),
+        }))
+    },
+
+    reduceLeadPrice: (requestId) => {
+        set((state) => ({
+            requests: state.requests.map((req) => {
+                if (req.id === requestId && req.type === "public" && req.currentPrice && req.minPriceLimit) {
+                    const stepValue = req.stepValue ?? 100
+                    const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
+                    return {
+                        ...req,
+                        currentPrice: newPrice,
+                        lastPriceUpdate: new Date().toISOString(),
+                    }
+                }
+                return req
+            }),
+        }))
+    },
+
+    autoReducePublicLeads: () => {
+        const nowMs = Date.now()
+        set((state) => ({
+            requests: state.requests.map((req) => {
+                if (req.type !== "public" || req.status !== "pending" || !req.currentPrice || !req.minPriceLimit) {
+                    return req
+                }
+
+                const createdAtMs = new Date(req.createdAt).getTime()
+                const lastUpdateMs = req.lastPriceUpdate ? new Date(req.lastPriceUpdate).getTime() : createdAtMs
+
+                const nextDropAtMs = req.lastPriceUpdate ? lastUpdateMs + 60 * 60 * 1000 : createdAtMs + 2 * 60 * 60 * 1000
+                if (Number.isNaN(nextDropAtMs) || nowMs < nextDropAtMs) {
+                    return req
+                }
+
+                const stepValue = req.stepValue ?? 100
+                const newPrice = Math.max(req.currentPrice - stepValue, req.minPriceLimit)
+                if (newPrice === req.currentPrice) {
+                    return req
+                }
+
+                return {
+                    ...req,
+                    currentPrice: newPrice,
+                    lastPriceUpdate: new Date(nowMs).toISOString(),
+                }
+            }),
+        }))
+    },
+
+    getRequestsBySpecialist: (specialistId) => {
+        return get().requests.filter((req) => req.specialistId === specialistId)
+    },
+
+    getRequestsByClient: (clientId) => {
+        return get().requests.filter((req) => req.clientId === clientId)
+    },
+
+    getActiveTrialCount: (clientId) => {
+        const activeStatuses: RequestStatus[] = ["pending", "accepted", "communicating", "trial_scheduled"]
+        return get().requests.filter((req) => req.clientId === clientId && activeStatuses.includes(req.status)).length
+    },
+
+    getStudentsByTutor: (tutorId) => {
+        return get().students.filter((s) => s.tutorId === tutorId)
+    },
+
+    updateStudentStatus: (studentId, status) => {
+        set((state) => ({
+            students: state.students.map((s) => (s.id === studentId ? { ...s, status } : s)),
+        }))
+    },
 }))
