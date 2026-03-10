@@ -1,8 +1,13 @@
 import { gql } from "@/graphql/generated"
 
+import { UserRoles } from "./generated/graphql"
+
 export const VERIFY_USER = gql(`
     mutation VerifyUser($verifyUserPayload: VerifyUserDto!) {
-        verifyUser(verifyUserPayload: $verifyUserPayload)
+        user: verifyUser(verifyUserPayload: $verifyUserPayload) {
+            id
+            isVerified
+        }
     }
 `)
 

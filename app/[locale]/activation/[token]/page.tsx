@@ -16,7 +16,7 @@ export default function ActivationPage({ params }: { params: Promise<{ token: st
 
     const [verifyUser, { loading }] = useMutation(VERIFY_USER, {
         onCompleted: (data) => {
-            if (data?.verifyUser) {
+            if (data.user.isVerified) {
                 setIsSuccess(true)
             } else {
                 setErrorMessage("Не вдалося підтвердити акаунт.")
