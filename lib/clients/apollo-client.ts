@@ -13,8 +13,6 @@ const resolvePendingRequests = () => {
     pendingRequests = []
 }
 
-const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://localhost:3001/graphql"
-
 const fingerprintLink = new SetContextLink(async ({ headers }) => {
     const fingerprint = await getFingerprint()
 
@@ -29,7 +27,7 @@ const fingerprintLink = new SetContextLink(async ({ headers }) => {
 })
 
 const httpLink = new HttpLink({
-    uri: GRAPHQL_URL,
+    uri: "/graphql",
     credentials: "include",
 })
 
@@ -63,7 +61,7 @@ const errorLink = new ErrorLink(({ error, operation, forward }) => {
 
         isRefreshing = true
 
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/token/refresh`, {
+        fetch("/api/auth/token/refresh", {
             method: "POST",
             credentials: "include",
         })

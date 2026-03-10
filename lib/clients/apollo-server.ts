@@ -2,14 +2,12 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/clien
 import { registerApolloClient } from "@apollo/client-integration-nextjs"
 import { cookies } from "next/headers"
 
-const GRAPHQL_URL = `${process.env.NEXT_PUBLIC_API_URL}/graphql` || "http://localhost:3001/graphql"
-
 const getHttpLink = async () => {
     const cookieStore = await cookies()
     const fingerprint = cookieStore.get("device-fingerprint")
 
     return new HttpLink({
-        uri: GRAPHQL_URL,
+        uri: "/graphql",
         credentials: "include",
         headers: {
             Cookie: cookieStore.toString(),

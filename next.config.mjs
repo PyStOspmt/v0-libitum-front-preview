@@ -6,6 +6,18 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
+    async rewrites() {
+        return [
+            {
+                source: "/api/:path*",
+                destination: `${process.env.NEXT_PUBLIC_API_URL}/:path*`,
+            },
+            {
+                source: "/graphql/:path*",
+                destination: `${process.env.NEXT_PUBLIC_API_URL}/graphql/:path*`,
+            },
+        ]
+    },
 }
 
 export default nextConfig
