@@ -3,7 +3,7 @@ import { GET_QUIZZES } from "@/graphql/quizzes"
 
 import { TutorOnboardingPage } from "@/features/tutor/components/onboarding-page"
 
-import { getApolloServerClient } from "@/lib/clients/apollo-server"
+import { getClient } from "@/lib/clients/apollo-server"
 
 export const metadata = {
     title: "Онбординг | Libitum",
@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic"
 
 async function getQuizzes() {
     try {
-        const apolloClient = await getApolloServerClient()
+        const apolloClient = await getClient()
 
         const { data } = await apolloClient.query<GetQuizzesQuery>({
             query: GET_QUIZZES,
